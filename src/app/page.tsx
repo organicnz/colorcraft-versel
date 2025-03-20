@@ -60,62 +60,66 @@ export default function Home() {
               target.src = "/images/hero-furniture.png"; // Fallback image
             }}
           />
-          <div className="absolute inset-0 bg-black/30 bg-gradient-to-b from-black/40 to-transparent"></div>
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-black bg-opacity-40"></div>
         </div>
-
-        <div className="absolute inset-0 flex items-center justify-center">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={stagger}
-            className="container mx-auto px-8 text-center md:px-10 lg:max-w-4xl"
-            style={{ opacity: textOpacity }}
-          >
-            <motion.h2
-              variants={fadeIn}
-              className="text-2xl font-light text-white/90 mb-4"
-            >
-              Expert Furniture Transformation
-            </motion.h2>
-
-            <motion.h1
-              variants={fadeIn}
-              className="text-4xl md:text-5xl lg:text-6xl font-normal text-white mb-6 leading-tight"
-            >
-              ColorCraft
-              <motion.span 
-                className="font-bold relative ml-2 inline-block"
-                style={{ y: parallaxY, scale: parallaxScale }}
-              >
-                Furniture
-              </motion.span>
-            </motion.h1>
-
-            <motion.p
-              variants={fadeIn}
-              className="text-lg md:text-xl text-white/80 mb-10 max-w-2xl mx-auto"
-            >
-              We transform ordinary furniture into extraordinary statements, combining traditional craftsmanship with modern design to create pieces that truly reflect your vision.
-            </motion.p>
-
+        
+        {/* Content */}
+        <div className="relative h-full flex items-center">
+          <div className="container mx-auto px-6 py-16">
             <motion.div
-              variants={fadeIn}
-              className="flex flex-wrap gap-5 justify-center"
+              initial="hidden"
+              animate="visible"
+              variants={stagger}
+              className="container mx-auto px-8 text-center md:px-10 lg:max-w-4xl"
+              style={{ opacity: textOpacity }}
             >
-              <Link
-                href="/portfolio"
-                className="px-8 py-3 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition duration-300 text-lg"
+              <motion.h2
+                variants={fadeIn}
+                className="text-2xl font-light text-white/90 mb-4"
               >
-                View Our Work
-              </Link>
-              <Link
-                href="/contact"
-                className="px-8 py-3 bg-primary border-2 border-primary text-white hover:bg-primary/90 transition duration-300 text-lg"
+                Expert Furniture Transformation
+              </motion.h2>
+
+              <motion.h1
+                variants={fadeIn}
+                className="text-4xl md:text-5xl lg:text-6xl font-normal text-white mb-6 leading-tight"
               >
-                Get a Quote
-              </Link>
+                ColorCraft
+                <motion.span 
+                  className="font-bold relative ml-2 inline-block"
+                  style={{ y: parallaxY, scale: parallaxScale }}
+                >
+                  Furniture
+                </motion.span>
+              </motion.h1>
+
+              <motion.p
+                variants={fadeIn}
+                className="text-lg md:text-xl text-white/80 mb-10 max-w-2xl mx-auto"
+              >
+                We transform ordinary furniture into extraordinary statements, combining traditional craftsmanship with modern design to create pieces that truly reflect your vision.
+              </motion.p>
+
+              <motion.div
+                variants={fadeIn}
+                className="flex flex-wrap gap-5 justify-center"
+              >
+                <Link
+                  href="/portfolio"
+                  className="px-8 py-3 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition duration-300 text-lg"
+                >
+                  View Our Work
+                </Link>
+                <Link
+                  href="/contact"
+                  className="px-8 py-3 bg-primary border-2 border-primary text-white hover:bg-primary/90 transition duration-300 text-lg"
+                >
+                  Get a Quote
+                </Link>
+              </motion.div>
             </motion.div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
