@@ -52,60 +52,6 @@ export default function Home() {
 
   return (
     <div className="flex flex-col">
-      {/* Image Test Section */}
-      <section className="bg-white py-8">
-        <div className="container mx-auto px-6">
-          <h2 className="text-2xl font-bold mb-4">Image Test</h2>
-          <div className="grid grid-cols-1 gap-6">
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Standard Image Tag Test:</h3>
-              <img
-                src="/images/hero-house.png"
-                alt="House test"
-                className="w-full max-w-lg h-auto border border-gray-300"
-                onLoad={() => console.log("Standard img loaded")}
-                onError={() => console.log("Standard img error")}
-              />
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Next.js Image Component Test:</h3>
-              <div className="relative w-full max-w-lg h-64 border border-gray-300">
-                <Image
-                  src="/images/hero-house.png"
-                  alt="House test with Next.js Image"
-                  fill
-                  className="object-cover"
-                  onLoadingComplete={() => {
-                    console.log("Next.js Image loaded");
-                    setImageLoaded(true);
-                  }}
-                  onError={() => {
-                    console.log("Next.js Image error");
-                    setImgError(true);
-                  }}
-                />
-              </div>
-              <p className="mt-2">
-                Status: {imageLoaded ? "✅ Loaded" : imgError ? "❌ Error" : "⏳ Loading..."}
-              </p>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Alternate Image Test:</h3>
-              <div className="relative w-full max-w-lg h-64 border border-gray-300">
-                <Image
-                  src="/images/hero-furniture.png"
-                  alt="Furniture test with Next.js Image"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Hero Section */}
       <section className="relative h-screen w-full">
         <div className="absolute inset-0">
@@ -157,14 +103,14 @@ export default function Home() {
               variants={fadeIn}
               className="flex flex-wrap gap-5 justify-center md:justify-start"
             >
-              <Link
-                href="/portfolio"
+          <Link 
+            href="/portfolio" 
                 className="px-8 py-3 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition duration-300 text-lg"
-              >
-                View Our Work
-              </Link>
-              <Link
-                href="/contact"
+          >
+            View Our Work
+          </Link>
+          <Link 
+            href="/contact" 
                 className="px-8 py-3 bg-primary border-2 border-primary text-white hover:bg-primary/90 transition duration-300 text-lg"
               >
                 Get a Quote
@@ -400,6 +346,20 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
-    </div>
+
+      {/* Call to Action Section */}
+      <section className="py-16 px-4 bg-blue-500">
+        <div className="container mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
+            Ready to Transform Your Furniture?
+          </h2>
+          <Link href="/contact">
+            <button className="px-6 py-3 bg-white text-blue-500 font-semibold rounded-full hover:bg-blue-100 transition duration-300">
+              Contact Us Today
+            </button>
+          </Link>
+        </div>
+      </section>
+      </div>
   )
 }
