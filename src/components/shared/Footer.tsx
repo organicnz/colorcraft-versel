@@ -91,7 +91,7 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
             <address className="not-italic text-gray-300 space-y-2">
-              <p>Los Angeles, CA 90001</p>
+              <p>23120 Schumann Rd, Chatsworth, CA 91311</p>
               <p className="pt-2">+1 747 755 7695</p>
               <p>
                 <a href="mailto:contact@colorcraft.com" className="hover:text-white">

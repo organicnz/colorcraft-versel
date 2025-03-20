@@ -40,7 +40,7 @@ export default function ContactPage() {
               <div>
                 <h3 className="text-md font-medium text-gray-700">Address</h3>
                 <p className="text-gray-600">
-                  Los Angeles, CA 90001
+                  23120 Schumann Rd, Chatsworth, CA 91311
                 </p>
               </div>
               
