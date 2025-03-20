@@ -19,13 +19,14 @@
   --border: #E8ECF2;
 }
 
-/* Override dark mode preferences to ensure light mode always applies */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 51, 51, 51;
-    --background-start-rgb: 249, 250, 252;
-    --background-end-rgb: 240, 242, 245;
-  }
+[data-theme='dark'] {
+  --foreground-rgb: 229, 231, 235;
+  --background-start-rgb: 17, 24, 39;
+  --background-end-rgb: 11, 15, 25;
+  --primary: #3B82F6;
+  --primary-light: #60A5FA;
+  --primary-dark: #2563EB;
+  --border: #1F2937;
 }
 
 body {
@@ -67,15 +68,15 @@ body {
   }
 
   .btn-secondary {
-    @apply bg-white hover:bg-gray-100 text-gray-800 font-medium py-2 px-6 rounded-md border border-gray-300 transition-colors;
+    @apply bg-white hover:bg-gray-100 text-gray-800 font-medium py-2 px-6 rounded-md border border-gray-300 transition-colors dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-700;
   }
 
   .section-heading {
-    @apply text-3xl md:text-4xl font-semibold mb-6 text-gray-800;
+    @apply text-3xl md:text-4xl font-semibold mb-6 text-gray-800 dark:text-gray-100;
   }
 
   .section-subheading {
-    @apply text-xl font-medium mb-4 text-gray-700;
+    @apply text-xl font-medium mb-4 text-gray-700 dark:text-gray-300;
   }
 
   .container-padding {
@@ -90,7 +91,7 @@ h3,
 h4,
 h5,
 h6 {
-  @apply font-medium text-gray-800;
+  @apply font-medium text-gray-800 dark:text-gray-100;
 }
 
 h1 {
@@ -107,12 +108,12 @@ h3 {
 
 /* Paragraphs */
 p {
-  @apply text-gray-600 leading-relaxed;
+  @apply text-gray-600 dark:text-gray-300 leading-relaxed;
 }
 
 /* Links */
 a {
-  @apply text-gray-700 hover:text-primary transition-colors;
+  @apply text-gray-700 hover:text-primary transition-colors dark:text-gray-300 dark:hover:text-primary;
 }
 
 /* Buttons */
@@ -121,7 +122,7 @@ a {
 }
 
 .btn-outline {
-  @apply bg-transparent border border-gray-300 text-gray-700 hover:bg-gray-100;
+  @apply bg-transparent border border-gray-300 text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800;
 }
 
 /* Containers */
@@ -131,16 +132,16 @@ a {
 
 /* Cards */
 .card {
-  @apply bg-white rounded-lg shadow-soft overflow-hidden border border-gray-100;
+  @apply bg-white rounded-lg shadow-soft overflow-hidden border border-gray-100 dark:bg-gray-800 dark:border-gray-700;
 }
 
 /* RealVantage specific styles */
 .hero-text {
-  @apply text-2xl md:text-3xl lg:text-4xl font-light text-gray-800 leading-relaxed tracking-tight;
+  @apply text-2xl md:text-3xl lg:text-4xl font-light text-gray-800 leading-relaxed tracking-tight dark:text-gray-100;
 }
 
 .section-title {
-  @apply text-3xl md:text-4xl font-light text-gray-800 leading-tight mb-6;
+  @apply text-3xl md:text-4xl font-light text-gray-800 leading-tight mb-6 dark:text-gray-100;
 }
 
 .section-subtitle {
@@ -148,7 +149,7 @@ a {
 }
 
 .property-card {
-  @apply bg-white p-8 rounded-lg shadow-lg border border-gray-100;
+  @apply bg-white p-8 rounded-lg shadow-lg border border-gray-100 dark:bg-gray-800 dark:border-gray-700;
 }
 
 /* Animations */
@@ -169,20 +170,15 @@ a {
 input,
 select,
 textarea {
-  @apply bg-white border border-gray-200 rounded px-4 py-2 text-gray-700;
+  @apply bg-white border border-gray-200 rounded px-4 py-2 text-gray-700 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200;
   @apply focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent;
 }
 
 /* Navigation */
 .nav-link {
-  @apply text-gray-700 hover:text-primary transition-colors relative;
+  @apply text-gray-700 hover:text-primary transition-colors relative dark:text-gray-300;
   @apply after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-0 after:bg-primary;
   @apply hover:after:w-full after:transition-all after:duration-300;
-}
-
-/* Dark mode adjustments */
-.dark-mode-text {
-  @apply text-gray-800;
 }
 
 /* Hero section dark overlay for light background */
@@ -208,9 +204,9 @@ textarea {
 
 /* Footer */
 .footer-area {
-  @apply bg-white py-16;
+  @apply bg-white py-16 dark:bg-gray-900;
 }
 
 .footer-bottom {
-  @apply bg-gray-50 py-4;
+  @apply bg-gray-50 py-4 dark:bg-gray-800;
 }

@@ -114,14 +114,14 @@ export default function Home() {
             <h2 className="text-2xl md:text-3xl font-light text-gray-800 mb-2">Vintage Dresser Restoration</h2>
             <p className="text-gray-600 mb-5 font-light">Custom Hand-Painted, Solid Mahogany, $1,450</p>
             <div className="flex justify-between items-center">
-              <Link 
-                href="/portfolio" 
+          <Link 
+            href="/portfolio" 
                 className="px-5 py-2 bg-primary text-white rounded hover:bg-primary-light transition-colors duration-300 text-sm"
-              >
+          >
                 View Similar Projects
-              </Link>
-              <Link 
-                href="/contact" 
+          </Link>
+          <Link 
+            href="/contact" 
                 className="text-primary hover:text-primary-dark transition-colors flex items-center text-sm"
               >
                 Request Quote
@@ -433,6 +433,6 @@ export default function Home() {
           </Link>
         </div>
       </section>
-    </div>
+      </div>
   );
 }
