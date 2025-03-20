@@ -9,17 +9,16 @@ const nextConfig: NextConfig = {
     formats: ["image/webp"],
   },
   reactStrictMode: true,
-  swcMinify: true,
   logging: {
     fetches: {
       fullUrl: process.env.NODE_ENV === "development",
     },
   },
+  serverExternalPackages: ["resend"],
   experimental: {
     serverActions: {
       allowedOrigins: [process.env.NEXT_PUBLIC_SITE_URL || ""],
     },
-    serverComponentsExternalPackages: ["resend"],
   },
 };
 
