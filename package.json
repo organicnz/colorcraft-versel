@@ -6,6 +6,7 @@
     "dev": "next dev",
     "dev:turbo": "next dev --turbopack",
     "build": "next build",
+    "vercel-build": "bash ./scripts/build.sh",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
@@ -16,7 +17,7 @@
     "logs:latest": "vercel logs $(vercel ls -l 1 --output tsv | tail -1 | cut -f1)",
     "logs:json": "vercel logs $(vercel ls -l 1 --output tsv | tail -1 | cut -f1) --json",
     "ls": "vercel ls",
-    "deploy": "vercel",
+    "deploy": "bash ./scripts/deploy.sh",
     "deploy:prod": "vercel --prod",
     "webhook": "node scripts/vercel-webhook.js"
   },
@@ -52,12 +53,15 @@
     "@types/react-datepicker": "^7.0.0",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.4.14",
-    "eslint": "^9",
+    "eslint": "^8.57.0",
     "eslint-config-next": "14.1.0",
     "postcss": "^8.4.24",
     "prettier": "^3.0.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwindcss": "^3",
     "typescript": "^5"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }
