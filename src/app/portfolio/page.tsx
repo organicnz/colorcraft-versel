@@ -26,7 +26,7 @@ const projects = [
     title: "Farmhouse Dining Table",
     description: "Solid oak dining table refinished with a distressed white base and natural wood top. This rustic centerpiece combines traditional craftsmanship with modern farmhouse aesthetics.",
     tags: ["Dining Table", "Farmhouse", "Distressed", "Custom"],
-    imageSrc: "/images/portfolio/farmhouse-dining-table.jpg",
+    imageSrc: "https://placehold.co/600x400/e2e8f0/1e293b?text=Farmhouse+Dining+Table",
     category: "Custom Finish"
   },
   {
