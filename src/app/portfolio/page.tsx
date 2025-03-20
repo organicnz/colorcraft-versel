@@ -5,10 +5,11 @@ import Image from "next/image";
 import { useState } from "react";
 import { motion } from "framer-motion";
 
-export const metadata: Metadata = {
-  title: "Portfolio | Our Furniture Painting Projects",
-  description: "Browse our portfolio of furniture painting and restoration projects to see our quality craftsmanship in action.",
-};
+// Removed metadata export as it's incompatible with client components
+// export const metadata: Metadata = {
+//   title: "Portfolio | Our Furniture Painting Projects",
+//   description: "Browse our portfolio of furniture painting and restoration projects to see our quality craftsmanship in action.",
+// };
 
 // Portfolio data
 const projects = [

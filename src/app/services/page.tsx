@@ -5,10 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
-export const metadata: Metadata = {
-  title: "Services | Our Furniture Painting Solutions",
-  description: "Explore our range of professional furniture painting, restoration, and refinishing services.",
-};
+// Removed metadata export as it's incompatible with client components
+// export const metadata: Metadata = {
+//   title: "Services | Our Furniture Painting Solutions",
+//   description: "Explore our range of professional furniture painting, restoration, and refinishing services.",
+// };
 
 const services = [
   {
