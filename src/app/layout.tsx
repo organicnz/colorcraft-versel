@@ -104,6 +104,16 @@ export default function RootLayout({
                       </svg>
                       +1 747 755 7695
                     </a>
+                    
+                    <Link 
+                      href="/signin" 
+                      className="flex items-center bg-white/20 backdrop-blur-sm border border-white/30 text-white px-5 py-2 rounded-full text-sm hover:bg-white/30 transition-colors"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                      </svg>
+                      Sign In
+                    </Link>
                   </div>
                 </div>
               </div>
