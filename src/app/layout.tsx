@@ -24,24 +24,24 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <div className="flex min-h-screen flex-col">
-          <header className="bg-white shadow-md">
-            <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+          <header className="absolute top-0 left-0 w-full z-50">
+            <div className="container mx-auto px-6 py-6 flex justify-between items-center">
               <div>
-                <Link href="/" className="text-xl font-semibold text-gray-900">
+                <Link href="/" className="text-xl font-semibold text-white">
                   ColorCraft
                 </Link>
               </div>
               <nav className="hidden md:flex space-x-8">
-                <Link href="/services" className="text-gray-700 hover:text-gray-900 transition duration-300">
+                <Link href="/services" className="text-white hover:text-white/80 transition duration-300">
                   Services
                 </Link>
-                <Link href="/portfolio" className="text-gray-700 hover:text-gray-900 transition duration-300">
+                <Link href="/portfolio" className="text-white hover:text-white/80 transition duration-300">
                   Portfolio
                 </Link>
-                <Link href="/about" className="text-gray-700 hover:text-gray-900 transition duration-300">
+                <Link href="/about" className="text-white hover:text-white/80 transition duration-300">
                   About
                 </Link>
-                <Link href="/contact" className="text-gray-700 hover:text-gray-900 transition duration-300">
+                <Link href="/contact" className="text-white hover:text-white/80 transition duration-300">
                   Contact
                 </Link>
               </nav>
