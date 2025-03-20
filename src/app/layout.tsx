@@ -20,8 +20,8 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | Color Craft",
-    default: "Color Craft - Professional Furniture Transformation",
+    template: "%s | Color & Craft Furniture Painter",
+    default: "Color & Craft Furniture Painter - Professional Furniture Transformation",
   },
   description: "Transforming furniture with professional painting and restoration services.",
   icons: {
@@ -73,13 +73,13 @@ export default function RootLayout({
                     <Link href="/" className="flex items-center">
                       <Image
                         src="/images/logo.png"
-                        alt="Color Craft Logo"
+                        alt="Color & Craft Furniture Painter Logo"
                         width={42}
                         height={42}
                         className="mr-3"
                       />
                       <span className="text-xl font-medium text-white">
-                        Color Craft
+                        Color & Craft
                       </span>
                     </Link>
                   </div>

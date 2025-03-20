@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Column 1 - About */}
           <div>
-            <h3 className="text-xl font-light mb-4 text-white">Color Craft</h3>
+            <h3 className="text-xl font-light mb-4 text-white">Color & Craft</h3>
             <p className="text-neutral-300 mb-6 text-sm font-light">
               Expert furniture painting and restoration services, transforming ordinary pieces into extraordinary statements.
             </p>
@@ -99,7 +99,7 @@ export default function Footer() {
       <div className="bg-[#060d1b] py-6">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-neutral-500 text-xs font-light">© {new Date().getFullYear()} Color Craft. All rights reserved.</p>
+            <p className="text-neutral-500 text-xs font-light">© {new Date().getFullYear()} Color & Craft Furniture Painter. All rights reserved.</p>
             <div className="mt-4 md:mt-0">
               <ul className="flex space-x-6 text-xs">
                 <li><a href="#" className="text-neutral-500 hover:text-white transition-colors">Privacy Policy</a></li>
