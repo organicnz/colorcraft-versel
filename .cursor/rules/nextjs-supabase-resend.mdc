@@ -489,4 +489,495 @@ describe('Button', () => {
     expect(onClick).toHaveBeenCalledTimes(1)
   })
 })
+```---
+description: 
+globs: 
+alwaysApply: true
+---
+# Cursor IDE Rules and Best Practices for Next.js 15 + Supabase + Resend
+
+## Project Setup
+
+### Initial Configuration
+- Use pnpm as the package manager for better performance and disk space efficiency
+- Implement TypeScript for type safety throughout the project
+- Configure ESLint and Prettier with strict rules for consistent code quality
+- Use the App Router architecture (Next.js 15 standard)
+- Set up environment variables properly with strong typing
+
+```bash
+# Initialize project with TypeScript
+pnpm create next-app@latest my-project --typescript --eslint --app --tailwind --src-dir
+
+# Navigate to project directory
+cd my-project
+
+# Install key dependencies
+pnpm add @supabase/supabase-js @supabase/auth-helpers-nextjs resend zod react-hook-form @tanstack/react-query
+
+# Dev dependencies
+pnpm add -D @types/node @types/react @types/react-dom typescript eslint eslint-config-next prettier
+```
+
+### Environment Variables
+Create a `.env.local` file (added to .gitignore) with:
+
+```
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+
+# Resend
+RESEND_API_KEY=your_resend_api_key
+```
+
+Create a strongly-typed config file:
+
+```typescript
+// src/config/env.ts
+import { z } from 'zod'
+
+const envSchema = z.object({
+  NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
+  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
+  RESEND_API_KEY: z.string().min(1),
+})
+
+export const env = envSchema.parse({
+  NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+  RESEND_API_KEY: process.env.RESEND_API_KEY,
+})
+```
+
+## Cursor IDE Configuration
+
+### Editor Settings
+- Set tab size to 2 spaces
+- Enable format on save
+- Use bracket pair colorization
+- Enable import sorting
+
+### Snippets
+Configure custom snippets for common patterns:
+
+```json
+{
+  "React Server Component": {
+    "prefix": "rsc",
+    "body": [
+      "export default async function ${1:ComponentName}() {",
+      "  return (",
+      "    <div>",
+      "      $0",
+      "    </div>",
+      "  )",
+      "}"
+    ]
+  },
+  "React Client Component": {
+    "prefix": "rcc",
+    "body": [
+      "\"use client\"",
+      "",
+      "import { useState } from 'react'",
+      "",
+      "export default function ${1:ComponentName}() {",
+      "  const [state, setState] = useState()",
+      "  ",
+      "  return (",
+      "    <div>",
+      "      $0",
+      "    </div>",
+      "  )",
+      "}"
+    ]
+  }
+}
+```
+
+### Extensions
+Install and configure these extensions:
+- ESLint
+- Prettier
+- Tailwind CSS IntelliSense
+- Import Cost
+- GitHub Copilot (if available)
+
+## Architecture Best Practices
+
+### Directory Structure
+Follow a domain-driven design approach:
+
+```
+src/
+├── app/                  # Next.js App Router
+│   ├── (auth)/           # Auth-related routes (grouped)
+│   ├── (dashboard)/      # Dashboard routes (grouped)
+│   ├── api/              # API routes
+│   └── layout.tsx        # Root layout
+├── components/           # Shared components
+│   ├── ui/               # UI components
+│   └── [feature]/        # Feature-specific components
+├── lib/                  # Utility functions and libraries
+│   ├── supabase/         # Supabase client setup
+│   └── resend/           # Resend client setup
+├── hooks/                # Custom React hooks
+├── types/                # TypeScript type definitions
+├── styles/               # Global styles
+└── config/               # Configuration files
+```
+
+### Supabase Integration
+
+#### Client Setup
+```typescript
+// src/lib/supabase/client.ts
+import { createBrowserClient } from '@supabase/supabase-js'
+
+export const createClient = () => {
+  return createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+}
+```
+
+#### Server Setup
+```typescript
+// src/lib/supabase/server.ts
+import { createServerClient } from '@supabase/supabase-js'
+import { cookies } from 'next/headers'
+import { env } from '@/config/env'
+
+export const createClient = () => {
+  const cookieStore = cookies()
+  
+  return createServerClient(
+    env.NEXT_PUBLIC_SUPABASE_URL, 
+    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    {
+      cookies: {
+        get: (name) => cookieStore.get(name)?.value,
+        set: (name, value, options) => {
+          cookieStore.set(name, value, options)
+        },
+        remove: (name, options) => {
+          cookieStore.set(name, '', { ...options, maxAge: 0 })
+        }
+      }
+    }
+  )
+}
+```
+
+### Resend Integration
+
+```typescript
+// src/lib/resend/client.ts
+import { Resend } from 'resend'
+import { env } from '@/config/env'
+
+export const resend = new Resend(env.RESEND_API_KEY)
+```
+
+### Data Fetching
+
+Use React Query for client-side data fetching:
+
+```typescript
+// src/hooks/use-data.ts
+import { useQuery } from '@tanstack/react-query'
+import { createClient } from '@/lib/supabase/client'
+
+export function useUserData(userId: string) {
+  return useQuery({
+    queryKey: ['user', userId],
+    queryFn: async () => {
+      const supabase = createClient()
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', userId)
+        .single()
+        
+      if (error) throw new error
+      return data
+    }
+  })
+}
+```
+
+For server components:
+
+```typescript
+// In a server component
+import { createClient } from '@/lib/supabase/server'
+
+export default async function UserProfile({ params }) {
+  const supabase = createClient()
+  const { data } = await supabase
+    .from('users')
+    .select('*')
+    .eq('id', params.id)
+    .single()
+    
+  return <div>{data.name}</div>
+}
+```
+
+## Authentication
+
+Implement a robust auth system using Supabase Auth:
+
+```typescript
+// src/components/auth/sign-in-form.tsx
+"use client"
+
+import { useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import { useRouter } from 'next/navigation'
+
+export default function SignInForm() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
+  const supabase = createClient()
+  
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+    
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+      
+      if (error) throw error
+      
+      router.push('/dashboard')
+      router.refresh()
+    } catch (err: any) {
+      setError(err.message)
+    }
+  }
+  
+  return (
+    <form onSubmit={handleSubmit}>
+      {/* Form fields */}
+    </form>
+  )
+}
+```
+
+## Email with Resend
+
+```typescript
+// src/app/api/send-email/route.ts
+import { NextResponse } from 'next/server'
+import { resend } from '@/lib/resend/client'
+import { z } from 'zod'
+
+const emailSchema = z.object({
+  to: z.string().email(),
+  subject: z.string().min(1),
+  html: z.string().min(1),
+})
+
+export async function POST(request: Request) {
+  try {
+    const json = await request.json()
+    const { to, subject, html } = emailSchema.parse(json)
+    
+    const { data, error } = await resend.emails.send({
+      from: 'Your App <no-reply@yourdomain.com>',
+      to,
+      subject,
+      html,
+    })
+    
+    if (error) {
+      return NextResponse.json({ error }, { status: 400 })
+    }
+    
+    return NextResponse.json({ data })
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Invalid request' },
+      { status: 400 }
+    )
+  }
+}
+```
+
+## Error Handling
+
+Implement robust error handling:
+
+```typescript
+// src/app/error.tsx
+"use client"
+
+import { useEffect } from 'react'
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string }
+  reset: () => void
+}) {
+  useEffect(() => {
+    // Log the error to an error reporting service
+    console.error(error)
+  }, [error])
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen px-4">
+      <h2 className="text-2xl font-bold">Something went wrong!</h2>
+      <button
+        className="px-4 py-2 mt-4 text-white bg-blue-500 rounded hover:bg-blue-600"
+        onClick={reset}
+      >
+        Try again
+      </button>
+    </div>
+  )
+}
+```
+
+## Performance Optimization
+
+### Code Splitting
+- Use dynamic imports for large components
+- Implement proper loading states
+
+```typescript
+// src/app/dashboard/page.tsx
+import { Suspense } from 'react'
+import dynamic from 'next/dynamic'
+import Loading from './loading'
+
+const DashboardChart = dynamic(() => import('@/components/dashboard/chart'), {
+  loading: () => <div>Loading chart...</div>,
+  ssr: false // If it's a client-only component
+})
+
+export default function Dashboard() {
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      <Suspense fallback={<Loading />}>
+        <DashboardChart />
+      </Suspense>
+    </div>
+  )
+}
+```
+
+### Image Optimization
+Use Next.js Image component for optimized images:
+
+```typescript
+import Image from 'next/image'
+
+export default function Avatar({ src, alt }) {
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      width={64}
+      height={64}
+      className="rounded-full"
+      priority={false}
+    />
+  )
+}
+```
+
+## Deployment
+
+### Vercel Integration
+- Connect your GitHub repository to Vercel
+- Set up environment variables in Vercel dashboard
+- Configure deployment settings for preview branches
+
+### CI/CD
+- Set up GitHub Actions for CI/CD
+- Implement automated testing before deployment
+- Configure linting and type checking in CI pipeline
+
+## Security Best Practices
+
+- Never expose sensitive keys in client-side code
+- Implement proper CORS policies
+- Use Supabase Row Level Security (RLS) for database access control
+- Sanitize all user inputs
+- Implement rate limiting for API routes
+- Use HTTPS exclusively
+- Create middleware for authentication checks
+
+```typescript
+// src/middleware.ts
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+import { createClient } from '@/lib/supabase/middleware'
+
+export async function middleware(request: NextRequest) {
+  const { supabase, response } = createClient(request)
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
+
+  if (!session && request.nextUrl.pathname.startsWith('/dashboard')) {
+    return NextResponse.redirect(new URL('/login', request.url))
+  }
+
+  return response
+}
+
+export const config = {
+  matcher: ['/dashboard/:path*', '/api/:path*'],
+}
+```
+
+## Documentation
+
+- Document key components with JSDoc comments
+- Create README.md with setup instructions
+- Document API endpoints
+- Create a contribution guide
+
+## Testing
+
+- Implement Jest for unit testing
+- Use React Testing Library for component tests
+- Set up Cypress for E2E testing
+- Implement test coverage reporting
+
+```typescript
+// Example test for a component
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import Button from './button'
+
+describe('Button', () => {
+  it('renders correctly', () => {
+    render(<Button>Click me</Button>)
+    expect(screen.getByRole('button')).toHaveTextContent('Click me')
+  })
+
+  it('calls onClick when clicked', async () => {
+    const onClick = jest.fn()
+    render(<Button onClick={onClick}>Click me</Button>)
+    await userEvent.click(screen.getByRole('button'))
+    expect(onClick).toHaveBeenCalledTimes(1)
+  })
+})
 ```
