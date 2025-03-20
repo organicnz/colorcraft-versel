@@ -50,6 +50,20 @@ const projects = [
     tags: ["Chair", "Upholstery", "Gold", "Emerald"],
     imageSrc: "/images/portfolio/accent-chair.jpg",
   },
+  {
+    id: 7,
+    title: "Coastal Console Table",
+    description: "Beach-inspired console table with a weathered blue finish and custom shell hardware.",
+    tags: ["Console", "Coastal", "Blue", "Distressed"],
+    imageSrc: "/images/portfolio/service-painting.jpg",
+  },
+  {
+    id: 8,
+    title: "Industrial Bookshelf Makeover",
+    description: "Repurposed wooden bookshelf with industrial metal accents and a rustic finish.",
+    tags: ["Bookshelf", "Industrial", "Rustic", "Upcycled"],
+    imageSrc: "/images/portfolio/service-upcycling.jpg",
+  },
 ];
 
 export default function PortfolioPage() {
