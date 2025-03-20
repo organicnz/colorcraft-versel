@@ -20,8 +20,8 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | ColorCraft Furniture",
-    default: "ColorCraft Furniture - Professional Furniture Painting",
+    template: "%s | Color Craft",
+    default: "Color Craft - Professional Furniture Transformation",
   },
   description: "Transforming furniture with professional painting and restoration services.",
   icons: {

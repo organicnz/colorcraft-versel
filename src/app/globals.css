@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 26, 32, 44; /* Dark text (dark-200) */
-  --background-start-rgb: 255, 255, 255; /* White */
-  --background-end-rgb: 247, 249, 252; /* Light gray (background-dark) */
+  --foreground-rgb: 255, 255, 255; /* White text */
+  --background-start-rgb: 26, 42, 73; /* Dark blue background */
+  --background-end-rgb: 13, 27, 55; /* Darker blue for gradient */
   --primary: #0B4C6F;
   --primary-foreground: #FFFFFF;
   --secondary: #2E7D32;
@@ -17,8 +17,8 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 26, 32, 44;
-    --background-end-rgb: 45, 55, 72;
+    --background-start-rgb: 26, 42, 73;
+    --background-end-rgb: 13, 27, 55;
   }
 }
 
@@ -34,17 +34,17 @@ body {
 
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
-  @apply font-heading text-dark font-medium leading-tight;
+  @apply font-heading text-white font-medium leading-tight;
 }
 
 /* Paragraphs */
 p {
-  @apply text-neutral-700 leading-relaxed;
+  @apply text-neutral-200 leading-relaxed;
 }
 
 /* Links */
 a {
-  @apply text-primary hover:text-primary-700 transition-colors duration-300;
+  @apply text-primary-200 hover:text-primary-100 transition-colors duration-300;
 }
 
 /* Buttons */

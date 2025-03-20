@@ -184,11 +184,11 @@ export default function Home() {
       </section>
 
       {/* Featured Portfolio Section - RealVantage Style */}
-      <section className="py-24 px-4 bg-neutral-50">
+      <section className="py-24 px-4 bg-[#0d1b37]">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h4 className="text-primary uppercase tracking-wider text-sm font-medium mb-3">Our Work</h4>
-            <h2 className="text-3xl md:text-5xl font-light mb-6 leading-tight">Featured Portfolio</h2>
+            <h4 className="text-primary-300 uppercase tracking-wider text-sm font-medium mb-3">Our Work</h4>
+            <h2 className="text-3xl md:text-5xl font-light mb-6 leading-tight text-white">Featured Portfolio</h2>
             <div className="w-20 h-1 bg-secondary mx-auto"></div>
           </div>
           
