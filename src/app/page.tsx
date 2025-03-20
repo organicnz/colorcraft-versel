@@ -48,13 +48,13 @@ export default function Home() {
       <section ref={heroRef} className="relative h-screen w-full">
         <div className="absolute inset-0">
           <Image
-            src="/images/hero-house.png"
-            alt="Beautiful home interior"
+            src="/images/hero-kitchen.png"
+            alt="Modern kitchen interior"
             fill
             className="object-cover"
             priority
             onError={(e) => {
-              // Fallback to another image if hero-house.png fails to load
+              // Fallback to another image if hero-kitchen.png fails to load
               const target = e.target as HTMLImageElement;
               target.onerror = null; // Prevent infinite loops
               target.src = "/images/hero-furniture.png"; // Fallback image
