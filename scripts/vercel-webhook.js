@@ -25,7 +25,13 @@ const server = http.createServer((req, res) => {
         if (payload.type === 'deployment.succeeded' || payload.type === 'deployment.failed') {
           console.log('Fetching deployment logs...');
           try {
-            execSync('pnpm logs:latest', { stdio: 'inherit' });
+            // Get logs for this specific deployment
+            if (payload.deployment?.url) {
+              execSync(`vercel logs ${payload.deployment.url}`, { stdio: 'inherit' });
+            } else {
+              // Fallback to latest deployment logs
+              execSync('pnpm logs:latest', { stdio: 'inherit' });
+            }
           } catch (error) {
             console.error('Failed to fetch logs:', error.message);
           }

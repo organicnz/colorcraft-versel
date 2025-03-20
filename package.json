@@ -13,7 +13,9 @@
     "clean": "rm -rf .next",
     "analyze": "ANALYZE=true next build",
     "logs": "vercel logs",
-    "logs:latest": "vercel logs --limit 20 --since 30m",
+    "logs:latest": "vercel logs $(vercel ls -l 1 --output tsv | tail -1 | cut -f1)",
+    "logs:json": "vercel logs $(vercel ls -l 1 --output tsv | tail -1 | cut -f1) --json",
+    "ls": "vercel ls",
     "deploy": "vercel",
     "deploy:prod": "vercel --prod",
     "webhook": "node scripts/vercel-webhook.js"
