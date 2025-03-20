@@ -61,65 +61,51 @@ export default function Home() {
             }}
           />
           {/* Overlay */}
-          <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]"></div>
         </div>
         
-        {/* Content */}
-        <div className="relative h-full flex items-center">
-          <div className="container mx-auto px-6 py-16">
+        {/* Content - RealVantage Style */}
+        <div className="relative h-full flex flex-col justify-center items-center">
+          <div className="container mx-auto px-6 text-center max-w-4xl mb-20">
             <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={stagger}
-              className="container mx-auto px-8 text-center md:px-10 lg:max-w-4xl"
-              style={{ opacity: textOpacity }}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="mb-24"
             >
-              <motion.h2
-                variants={fadeIn}
-                className="text-2xl font-light text-white/90 mb-4"
-              >
-                Expert Furniture Transformation
-              </motion.h2>
-
-              <motion.h1
-                variants={fadeIn}
-                className="text-4xl md:text-5xl lg:text-6xl font-normal text-white mb-6 leading-tight"
-              >
-                ColorCraft
-                <motion.span 
-                  className="font-bold relative ml-2 inline-block"
-                  style={{ y: parallaxY, scale: parallaxScale }}
-                >
-                  Furniture
-                </motion.span>
-              </motion.h1>
-
-              <motion.p
-                variants={fadeIn}
-                className="text-lg md:text-xl text-white/80 mb-10 max-w-2xl mx-auto"
-              >
-                We transform ordinary furniture into extraordinary statements, combining traditional craftsmanship with modern design to create pieces that truly reflect your vision.
-              </motion.p>
-
-              <motion.div
-                variants={fadeIn}
-                className="flex flex-wrap gap-5 justify-center"
-              >
-                <Link
-                  href="/portfolio"
-                  className="px-8 py-3 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition duration-300 text-lg"
-                >
-                  View Our Work
-                </Link>
-                <Link
-                  href="/contact"
-                  className="px-8 py-3 bg-primary border-2 border-primary text-white hover:bg-primary/90 transition duration-300 text-lg"
-                >
-                  Get a Quote
-                </Link>
-              </motion.div>
+              <h1 className="text-2xl md:text-3xl lg:text-4xl text-white font-light leading-relaxed mb-6">
+                Crafting beautiful furniture that transforms ordinary spaces into extraordinary homes. Each piece tells a story, where artistry and functionality create lasting impressions.
+              </h1>
             </motion.div>
           </div>
+          
+          {/* Bottom Property-style Box */}
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="absolute bottom-16 left-0 right-0 mx-auto max-w-xl bg-white/90 backdrop-blur-md p-8 rounded-lg shadow-lg"
+          >
+            <h2 className="text-3xl md:text-4xl font-semibold text-dark mb-2">Vintage Dresser Restoration</h2>
+            <p className="text-neutral-700 mb-5">Custom Hand-Painted, Solid Mahogany, $1,450</p>
+            <div className="flex justify-between items-center">
+              <Link
+                href="/portfolio"
+                className="px-6 py-3 bg-primary text-white rounded-md hover:bg-primary-700 transition duration-300"
+              >
+                View Similar Projects
+              </Link>
+              <Link
+                href="/contact"
+                className="text-primary hover:text-primary-700 font-medium flex items-center"
+              >
+                Request Quote
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </Link>
+            </div>
+          </motion.div>
         </div>
       </section>
 
