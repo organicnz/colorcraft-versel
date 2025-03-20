@@ -59,9 +59,10 @@ export default function CustomerForm({ initialData, onSuccess }: CustomerFormPro
       }
       
       if (onSuccess) onSuccess()
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error saving customer:", err)
-      setError(err.message || "An error occurred while saving the customer")
+      const errorMessage = err instanceof Error ? err.message : "An error occurred while saving the customer"
+      setError(errorMessage)
     } finally {
       setIsLoading(false)
     }
