@@ -13,6 +13,24 @@ export const metadata: Metadata = {
     default: "ColorCraft Furniture - Professional Furniture Painting",
   },
   description: "Transforming furniture with professional painting and restoration services.",
+  icons: {
+    icon: [
+      {
+        url: "/favicon/favicon.ico",
+        sizes: "any",
+      },
+      {
+        url: "/favicon/icon.svg",
+        type: "image/svg+xml",
+      }
+    ],
+    apple: {
+      url: "/favicon/apple-touch-icon.png",
+      sizes: "180x180",
+    },
+    shortcut: "/favicon/favicon.ico",
+  },
+  manifest: "/favicon/site.webmanifest",
 };
 
 export default function RootLayout({
