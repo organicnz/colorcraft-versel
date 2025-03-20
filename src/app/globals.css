@@ -7,13 +7,16 @@
   --foreground-rgb: 51, 51, 51;
   --background-start-rgb: 249, 250, 252;
   --background-end-rgb: 240, 242, 245;
-  
-  --primary-rgb: 59, 130, 246;
-  --primary-light-rgb: 96, 165, 250;
-  --primary-dark-rgb: 37, 99, 235;
-  
-  --secondary-rgb: 249, 115, 22;
-  --accent-rgb: 236, 72, 153;
+  --primary: #0F72C1;
+  --primary-light: #1a85d9;
+  --primary-dark: #0c5ea0;
+  --secondary: #E4A04C;
+  --secondary-light: #f4b871;
+  --secondary-dark: #c4842c;
+  --accent: #2A9D8F;
+  --accent-light: #34c2b0;
+  --accent-dark: #1c7268;
+  --border: #E8ECF2;
 }
 
 /* Override dark mode preferences to ensure light mode always applies */
@@ -43,29 +46,50 @@ body {
 }
 
 @layer components {
-  .btn-primary {
-    @apply bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-6 rounded-md transition-colors;
+  .text-primary {
+    color: var(--primary);
   }
-  
+
+  .hover\:text-primary:hover {
+    color: var(--primary);
+  }
+
+  .bg-primary {
+    background-color: var(--primary);
+  }
+
+  .hover\:bg-primary:hover {
+    background-color: var(--primary-light);
+  }
+
+  .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-md transition-colors;
+  }
+
   .btn-secondary {
     @apply bg-white hover:bg-gray-100 text-gray-800 font-medium py-2 px-6 rounded-md border border-gray-300 transition-colors;
   }
-  
+
   .section-heading {
     @apply text-3xl md:text-4xl font-semibold mb-6 text-gray-800;
   }
-  
+
   .section-subheading {
     @apply text-xl font-medium mb-4 text-gray-700;
   }
-  
+
   .container-padding {
     @apply px-4 sm:px-6 lg:px-8;
   }
 }
 
-/* Typography - RealVantage style */
-h1, h2, h3, h4, h5, h6 {
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   @apply font-medium text-gray-800;
 }
 
@@ -88,7 +112,7 @@ p {
 
 /* Links */
 a {
-  @apply text-blue-500 hover:text-blue-600 transition-colors;
+  @apply text-gray-700 hover:text-primary transition-colors;
 }
 
 /* Buttons */
@@ -142,7 +166,9 @@ a {
 }
 
 /* Form elements */
-input, select, textarea {
+input,
+select,
+textarea {
   @apply bg-white border border-gray-200 rounded px-4 py-2 text-gray-700;
   @apply focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent;
 }
