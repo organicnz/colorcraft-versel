@@ -19,6 +19,7 @@ export default function ContactForm() {
   const [formStatus, setFormStatus] = useState<{
     success?: string
     error?: string
+    warning?: string
   }>({})
 
   const form = useForm<ContactFormValues>({
@@ -50,6 +51,18 @@ export default function ContactForm() {
         throw new Error(result.error || "Something went wrong")
       }
 
+      // Check if there's a warning (like in demo mode)
+      if (result.warning) {
+        // Still reset the form as the submission was technically successful
+        form.reset()
+        
+        // But show a warning instead of a success message
+        setFormStatus({
+          warning: result.message || "Your message was received in demo mode.",
+        })
+        return
+      }
+
       // Reset the form on success
       form.reset()
       setFormStatus({
@@ -69,6 +82,10 @@ export default function ContactForm() {
       {formStatus.success ? (
         <div className="rounded-md bg-green-50 p-4 text-sm text-green-700">
           {formStatus.success}
+        </div>
+      ) : formStatus.warning ? (
+        <div className="rounded-md bg-yellow-50 p-4 text-sm text-yellow-700">
+          {formStatus.warning}
         </div>
       ) : (
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

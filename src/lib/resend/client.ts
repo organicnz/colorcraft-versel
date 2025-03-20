@@ -14,12 +14,20 @@ export async function sendEmail(options: {
   bcc?: string | string[];
 }) {
   try {
+    // During testing, we need to set "to" as the verified email in Resend
+    const testMode = process.env.NODE_ENV !== 'production';
+    const toAddress = testMode ? 'werbatstalker@gmail.com' : options.to;
+    
     // Use default from address if not provided
     const from = options.from || 'Color&Craft Real Estate <onboarding@resend.dev>';
     
+    console.log(`Sending email in ${testMode ? 'TEST' : 'PRODUCTION'} mode`);
+    console.log(`From: ${from}`);
+    console.log(`To: ${toAddress} (original: ${options.to})`);
+    
     const { data, error } = await resend.emails.send({
       from,
-      to: options.to,
+      to: toAddress,
       subject: options.subject,
       text: options.text,
       html: options.html,

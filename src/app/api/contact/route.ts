@@ -64,6 +64,9 @@ The Color&Craft Team
 </div>
     `;
     
+    // For development testing, we'll show a note about where the email would go
+    const isDevEnvironment = process.env.NODE_ENV === 'development';
+    
     // Send the email
     const emailResult = await sendEmail({
       to: email,
@@ -75,6 +78,19 @@ The Color&Craft Team
     
     if (!emailResult.success) {
       console.error('Failed to send email:', emailResult.error);
+      
+      // Special handling for Resend's email restriction error
+      if (emailResult.error && emailResult.error.includes('can only send testing emails to your own email address')) {
+        return NextResponse.json(
+          { 
+            warning: true,
+            message: "Your message was received! In demo mode, emails are only simulated. In production, you would receive a confirmation email.",
+            details: "Development environment - emails are not actually sent to users during testing."
+          },
+          { status: 200 }
+        );
+      }
+      
       return NextResponse.json(
         { error: `Failed to send email: ${emailResult.error}` },
         { status: 500 }

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  /* Light background colors */
+  /* Light theme variables */
   --foreground-rgb: 51, 51, 51;
   --background-start-rgb: 249, 250, 252;
   --background-end-rgb: 240, 242, 245;
@@ -17,6 +17,10 @@
   --accent-light: #34c2b0;
   --accent-dark: #1c7268;
   --border: #E8ECF2;
+  --text-main: #333333;
+  --text-secondary: #666666;
+  --bg-card: #FFFFFF;
+  --bg-muted: #F5F7FA;
 }
 
 [data-theme='dark'] {
@@ -27,10 +31,15 @@
   --primary-light: #60A5FA;
   --primary-dark: #2563EB;
   --border: #1F2937;
+  --text-main: #F3F4F6;
+  --text-secondary: #D1D5DB;
+  --bg-card: #111827;
+  --bg-muted: #1F2937;
 }
 
+/* Apply theme variables to elements */
 body {
-  color: rgb(var(--foreground-rgb));
+  color: var(--text-main);
   background: linear-gradient(
       to bottom,
       rgb(var(--background-start-rgb)),
@@ -38,6 +47,14 @@ body {
     )
     fixed;
   min-height: 100vh;
+}
+
+.card, .bg-card {
+  background-color: var(--bg-card);
+}
+
+.bg-muted {
+  background-color: var(--bg-muted);
 }
 
 @layer utilities {
@@ -91,7 +108,8 @@ h3,
 h4,
 h5,
 h6 {
-  @apply font-medium text-gray-800 dark:text-gray-100;
+  @apply font-medium;
+  color: var(--text-main);
 }
 
 h1 {
@@ -108,7 +126,7 @@ h3 {
 
 /* Paragraphs */
 p {
-  @apply text-gray-600 dark:text-gray-300 leading-relaxed;
+  color: var(--text-secondary);
 }
 
 /* Links */
@@ -132,16 +150,18 @@ a {
 
 /* Cards */
 .card {
-  @apply bg-white rounded-lg shadow-soft overflow-hidden border border-gray-100 dark:bg-gray-800 dark:border-gray-700;
+  @apply rounded-lg shadow-soft overflow-hidden border border-gray-100 dark:border-gray-700;
 }
 
 /* RealVantage specific styles */
 .hero-text {
-  @apply text-2xl md:text-3xl lg:text-4xl font-light text-gray-800 leading-relaxed tracking-tight dark:text-gray-100;
+  @apply text-2xl md:text-3xl lg:text-4xl font-light leading-relaxed tracking-tight;
+  color: var(--text-main);
 }
 
 .section-title {
-  @apply text-3xl md:text-4xl font-light text-gray-800 leading-tight mb-6 dark:text-gray-100;
+  @apply text-3xl md:text-4xl font-light leading-tight mb-6;
+  color: var(--text-main);
 }
 
 .section-subtitle {
@@ -149,7 +169,8 @@ a {
 }
 
 .property-card {
-  @apply bg-white p-8 rounded-lg shadow-lg border border-gray-100 dark:bg-gray-800 dark:border-gray-700;
+  @apply p-8 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700;
+  background-color: var(--bg-card);
 }
 
 /* Animations */
@@ -170,13 +191,16 @@ a {
 input,
 select,
 textarea {
-  @apply bg-white border border-gray-200 rounded px-4 py-2 text-gray-700 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200;
+  @apply border border-gray-200 rounded px-4 py-2 dark:border-gray-600;
+  background-color: var(--bg-card);
+  color: var(--text-main);
   @apply focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent;
 }
 
 /* Navigation */
 .nav-link {
-  @apply text-gray-700 hover:text-primary transition-colors relative dark:text-gray-300;
+  @apply hover:text-primary transition-colors relative dark:text-gray-300;
+  color: var(--text-main);
   @apply after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-0 after:bg-primary;
   @apply hover:after:w-full after:transition-all after:duration-300;
 }
@@ -204,9 +228,11 @@ textarea {
 
 /* Footer */
 .footer-area {
-  @apply bg-white py-16 dark:bg-gray-900;
+  background-color: var(--bg-card);
+  @apply py-16;
 }
 
 .footer-bottom {
-  @apply bg-gray-50 py-4 dark:bg-gray-800;
+  background-color: var(--bg-muted);
+  @apply py-4;
 }
