@@ -4,8 +4,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useState, useEffect, useRef } from 'react'
-import { projects } from "@/lib/data"; // Import project data
-import ProjectCard from "@/components/ProjectCard";
 
 // Animation variants
 const fadeIn = {
@@ -36,7 +34,7 @@ export default function Home() {
   // Auto-rotate projects every 5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentProjectIndex((prevIndex) => (prevIndex + 1) % projects.length);
+      setCurrentProjectIndex((prevIndex) => (prevIndex + 1) % 4); // Changed from projects.length to 4
     }, 5000);
 
     return () => clearInterval(interval);
@@ -185,23 +183,112 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Projects Section */}
-      <section className="py-16 px-4 bg-gray-50">
+      {/* Featured Portfolio Section - RealVantage Style */}
+      <section className="py-24 px-4 bg-neutral-50">
         <div className="container mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
-            Featured Projects
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.map((project, index) => (
-              <motion.div
-                key={project.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.2 }}
-              >
-                <ProjectCard project={project} />
-              </motion.div>
-            ))}
+          <div className="text-center mb-16">
+            <h4 className="text-primary uppercase tracking-wider text-sm font-medium mb-3">Our Work</h4>
+            <h2 className="text-3xl md:text-5xl font-light mb-6 leading-tight">Featured Portfolio</h2>
+            <div className="w-20 h-1 bg-secondary mx-auto"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Featured Item 1 */}
+            <div className="group relative rounded-lg overflow-hidden shadow-medium h-[450px]">
+              <Image 
+                src="/images/portfolio/dresser.png" 
+                alt="Vintage Dresser Restoration" 
+                fill
+                className="object-cover transition-all duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-dark/80 via-dark/20 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-xl font-medium mb-2">Vintage Dresser</h3>
+                <div className="flex flex-col space-y-1 text-sm opacity-90 mb-4">
+                  <span>Custom Hand-Painted</span>
+                  <span>Solid Mahogany</span>
+                  <span className="font-medium text-base">$1,450</span>
+                </div>
+                <Link href="/portfolio/vintage-dresser" className="inline-block text-white bg-primary/90 hover:bg-primary px-4 py-2 rounded text-sm transition-colors duration-300">
+                  View Details
+                </Link>
+              </div>
+            </div>
+            
+            {/* Featured Item 2 */}
+            <div className="group relative rounded-lg overflow-hidden shadow-medium h-[450px]">
+              <Image 
+                src="/images/portfolio/dining-table.png" 
+                alt="Farmhouse Dining Table" 
+                fill
+                className="object-cover transition-all duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-dark/80 via-dark/20 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-xl font-medium mb-2">Farmhouse Dining Table</h3>
+                <div className="flex flex-col space-y-1 text-sm opacity-90 mb-4">
+                  <span>Traditional Finish</span>
+                  <span>Reclaimed Oak</span>
+                  <span className="font-medium text-base">$2,250</span>
+                </div>
+                <Link href="/portfolio/farmhouse-table" className="inline-block text-white bg-primary/90 hover:bg-primary px-4 py-2 rounded text-sm transition-colors duration-300">
+                  View Details
+                </Link>
+              </div>
+            </div>
+            
+            {/* Featured Item 3 */}
+            <div className="group relative rounded-lg overflow-hidden shadow-medium h-[450px]">
+              <Image 
+                src="/images/portfolio/bookcase.png" 
+                alt="Modern Bookcase" 
+                fill
+                className="object-cover transition-all duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-dark/80 via-dark/20 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-xl font-medium mb-2">Modern Bookcase</h3>
+                <div className="flex flex-col space-y-1 text-sm opacity-90 mb-4">
+                  <span>Contemporary Design</span>
+                  <span>Walnut & Steel</span>
+                  <span className="font-medium text-base">$1,850</span>
+                </div>
+                <Link href="/portfolio/modern-bookcase" className="inline-block text-white bg-primary/90 hover:bg-primary px-4 py-2 rounded text-sm transition-colors duration-300">
+                  View Details
+                </Link>
+              </div>
+            </div>
+            
+            {/* Featured Item 4 */}
+            <div className="group relative rounded-lg overflow-hidden shadow-medium h-[450px]">
+              <Image 
+                src="/images/portfolio/cabinet.png" 
+                alt="Antique Cabinet" 
+                fill
+                className="object-cover transition-all duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-dark/80 via-dark/20 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-xl font-medium mb-2">Antique Cabinet</h3>
+                <div className="flex flex-col space-y-1 text-sm opacity-90 mb-4">
+                  <span>Victorian Restoration</span>
+                  <span>Cherry Wood</span>
+                  <span className="font-medium text-base">$3,150</span>
+                </div>
+                <Link href="/portfolio/antique-cabinet" className="inline-block text-white bg-primary/90 hover:bg-primary px-4 py-2 rounded text-sm transition-colors duration-300">
+                  View Details
+                </Link>
+              </div>
+            </div>
+          </div>
+          
+          <div className="text-center mt-12">
+            <Link href="/portfolio" className="inline-flex items-center text-primary hover:text-primary-700 font-medium">
+              View All Portfolio Pieces
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </Link>
           </div>
         </div>
       </section>
