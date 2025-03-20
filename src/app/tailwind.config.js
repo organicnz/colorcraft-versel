@@ -6,49 +6,50 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#0F72C1',
-          light: '#1a85d9',
-          dark: '#0c5ea0',
+          DEFAULT: 'var(--primary)',
+          light: 'var(--primary-light)',
+          dark: 'var(--primary-dark)',
         },
         secondary: {
-          DEFAULT: '#E4A04C',
-          light: '#f4b871',
-          dark: '#c4842c',
+          DEFAULT: 'var(--secondary)',
+          light: 'var(--secondary-light)',
+          dark: 'var(--secondary-dark)',
         },
         accent: {
-          DEFAULT: '#2A9D8F',
-          light: '#34c2b0',
-          dark: '#1c7268',
+          DEFAULT: 'var(--accent)',
+          light: 'var(--accent-light)',
+          dark: 'var(--accent-dark)',
         },
       },
       typography: {
         DEFAULT: {
           css: {
             maxWidth: '65ch',
-            color: 'rgb(var(--foreground-rgb))',
+            color: 'var(--text-main)',
             p: {
-              color: 'rgb(var(--foreground-rgb))',
+              color: 'var(--text-main)',
             },
             h1: {
-              color: 'rgb(var(--foreground-rgb))',
+              color: 'var(--text-main)',
             },
             h2: {
-              color: 'rgb(var(--foreground-rgb))',
+              color: 'var(--text-main)',
             },
             h3: {
-              color: 'rgb(var(--foreground-rgb))',
+              color: 'var(--text-main)',
             },
             h4: {
-              color: 'rgb(var(--foreground-rgb))',
+              color: 'var(--text-main)',
             },
             a: {
-              color: '#0F72C1',
+              color: 'var(--primary)',
               '&:hover': {
-                color: '#1a85d9',
+                color: 'var(--primary-light)',
               },
             },
           },

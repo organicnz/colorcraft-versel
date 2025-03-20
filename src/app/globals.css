@@ -23,7 +23,7 @@
   --bg-muted: #F5F7FA;
 }
 
-[data-theme='dark'] {
+.dark {
   --foreground-rgb: 229, 231, 235;
   --background-start-rgb: 17, 24, 39;
   --background-end-rgb: 11, 15, 25;
@@ -75,9 +75,45 @@ body {
   .bg-primary {
     background-color: var(--primary);
   }
+  
+  .bg-primary-light {
+    background-color: var(--primary-light);
+  }
+  
+  .bg-primary-dark {
+    background-color: var(--primary-dark);
+  }
 
   .hover\:bg-primary:hover {
     background-color: var(--primary-light);
+  }
+
+  .hover\:bg-primary-dark:hover {
+    background-color: var(--primary-dark);
+  }
+
+  .text-primary {
+    color: var(--primary);
+  }
+
+  .border-primary {
+    border-color: var(--primary);
+  }
+
+  .nav-link {
+    @apply relative text-gray-700 hover:text-primary transition-colors dark:text-gray-300 dark:hover:text-primary font-medium;
+  }
+
+  .nav-link.active {
+    @apply text-primary;
+  }
+
+  .nav-link::after {
+    @apply content-[''] absolute left-0 bottom-0 w-0 h-[2px] bg-primary transition-all duration-300;
+  }
+  
+  .nav-link:hover::after, .nav-link.active::after {
+    @apply w-full;
   }
 
   .btn-primary {
@@ -98,6 +134,14 @@ body {
 
   .container-padding {
     @apply px-4 sm:px-6 lg:px-8;
+  }
+  
+  .hover-lift {
+    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  }
+  
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent;
   }
 }
 

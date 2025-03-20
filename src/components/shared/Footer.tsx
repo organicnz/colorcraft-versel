@@ -13,7 +13,7 @@ export default function Footer() {
           <div className="md:col-span-2">
             <h4 className="text-xl font-semibold mb-6 text-gray-800 dark:text-white">Color&Craft</h4>
             <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-md">
-              Your vantage point for smart real estate investing. Build a diversified real estate portfolio without the hassle of property management.
+              Transforming furniture with expert craftsmanship. We breathe new life into treasured pieces through premium painting, restoration, and custom finishes.
             </p>
             <div className="flex space-x-4">
               <a
@@ -77,16 +77,21 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h5 className="text-gray-800 dark:text-white font-medium mb-4">Get Started</h5>
+            <h5 className="text-gray-800 dark:text-white font-medium mb-4">Services</h5>
             <ul className="space-y-3">
               <li>
-                <Link href="/" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
-                  Sign Up
+                <Link href="/services/custom-painting" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
+                  Custom Painting
                 </Link>
               </li>
               <li>
-                <Link href="/login" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
-                  Login
+                <Link href="/services/restoration" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
+                  Furniture Restoration
+                </Link>
+              </li>
+              <li>
+                <Link href="/services/upcycling" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
+                  Upcycling & Repurposing
                 </Link>
               </li>
             </ul>
@@ -94,26 +99,26 @@ export default function Footer() {
 
           {/* Learn */}
           <div>
-            <h5 className="text-gray-800 dark:text-white font-medium mb-4">Learn</h5>
+            <h5 className="text-gray-800 dark:text-white font-medium mb-4">About</h5>
             <ul className="space-y-3">
               <li>
                 <Link href="/about" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
-                  About Us
+                  Our Story
                 </Link>
               </li>
               <li>
-                <Link href="/portfolio" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
+                <Link href="/about#team" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
                   Our Team
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
-                  Our Strategies
+                <Link href="/portfolio" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
+                  Portfolio
                 </Link>
               </li>
               <li>
                 <Link href="/blog" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
-                  Blog
+                  Tips & Inspiration
                 </Link>
               </li>
             </ul>
@@ -121,10 +126,10 @@ export default function Footer() {
 
           {/* Support */}
           <div>
-            <h5 className="text-gray-800 dark:text-white font-medium mb-4">Support</h5>
+            <h5 className="text-gray-800 dark:text-white font-medium mb-4">Contact</h5>
             <ul className="space-y-3">
               <li>
-                <Link href="/how-it-works" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
+                <Link href="/services#process" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
                   How It Works
                 </Link>
               </li>
@@ -171,7 +176,7 @@ export default function Footer() {
             </div>
           </div>
           <div className="mt-6 text-xs text-gray-500 dark:text-gray-500 text-center md:text-left max-w-3xl">
-            This website and its content are owned, managed and published by Color&Craft Investment Ltd. The investment opportunities and products featured on our website are available exclusively to the investors who have satisfied our onboarding requirements. The information about the investment opportunities has not been reviewed by financial authorities and is provided solely for general informational and marketing purposes only.
+            Color&Craft is committed to providing high-quality furniture painting and restoration services. Our expert craftspeople use premium materials and time-tested techniques to transform your cherished furniture pieces into stunning works of art.
           </div>
         </div>
       </div>

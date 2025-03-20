@@ -94,7 +94,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section - RealVantage Style */}
+      {/* Hero Section - Color&Craft Style */}
       <section ref={heroRef} className="relative pt-24 pb-16 md:pt-32 md:pb-24 bg-gray-50 dark:bg-gray-900 overflow-hidden">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -139,7 +139,7 @@ export default function Home() {
               <div className="relative h-[400px] md:h-[500px] w-full overflow-hidden rounded-lg shadow-2xl">
                 <Image
                   src={currentProperty.image}
-                  alt="Real estate investment"
+                  alt="Furniture project showcase"
                   fill
                   className="object-cover"
                   priority
@@ -343,7 +343,7 @@ export default function Home() {
               </div>
               
               <Link href="/about" className="inline-flex items-center mt-8 text-primary font-medium group">
-                Learn more about our platform
+                Learn more about our studio
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2 transform transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
                 </svg>
@@ -561,7 +561,7 @@ export default function Home() {
       </section>
 
       {/* Call to Action Section */}
-      <section className="py-24 px-4 bg-gradient-to-r from-primary-900 to-primary-700">
+      <section className="py-24 px-4 bg-gradient-to-r from-primary to-accent">
         <div className="container mx-auto text-center max-w-3xl">
           <h2 className="text-3xl md:text-4xl font-light mb-6 text-white">
             Ready to Transform Your Furniture?
@@ -570,7 +570,7 @@ export default function Home() {
             Contact us today to discuss your furniture transformation project. Our expert team is ready to bring your vision to life.
           </p>
           <Link href="/contact">
-            <button className="px-8 py-3 bg-white text-primary font-medium hover:bg-white/90 transition duration-300 rounded">
+            <button className="px-8 py-3 bg-white text-primary font-medium hover:bg-white/90 transition duration-300 rounded shadow-lg hover:shadow-xl transform hover:-translate-y-1">
               Contact Us Today
             </button>
           </Link>
