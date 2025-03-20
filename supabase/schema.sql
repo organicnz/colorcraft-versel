@@ -128,7 +128,7 @@ create policy "Projects are viewable by everyone."
 
 create policy "Only admins can insert projects."
   on projects for insert
-  using (
+  with check (
     exists (
       select 1 from users
       where users.id = auth.uid() and users.role = 'admin'
@@ -169,7 +169,7 @@ create policy "Customers can view own record."
 
 create policy "Only admins can insert customers."
   on customers for insert
-  using (
+  with check (
     exists (
       select 1 from users
       where users.id = auth.uid() and users.role = 'admin'
@@ -190,8 +190,26 @@ create policy "Services are viewable by everyone."
   on services for select
   using (true);
 
-create policy "Only admins can manage services."
-  on services for all
+create policy "Only admins can insert services."
+  on services for insert
+  with check (
+    exists (
+      select 1 from users
+      where users.id = auth.uid() and users.role = 'admin'
+    )
+  );
+
+create policy "Only admins can update services."
+  on services for update
+  using (
+    exists (
+      select 1 from users
+      where users.id = auth.uid() and users.role = 'admin'
+    )
+  );
+
+create policy "Only admins can delete services."
+  on services for delete
   using (
     exists (
       select 1 from users
@@ -219,7 +237,7 @@ create policy "Customers can view own inquiries."
 
 create policy "Anyone can insert inquiries."
   on inquiries for insert
-  using (true);
+  with check (true);
 
 create policy "Only admins can update inquiries."
   on inquiries for update
@@ -248,8 +266,26 @@ create policy "Customers can view own projects."
     )
   );
 
-create policy "Only admins can manage client projects."
-  on client_projects for all
+create policy "Only admins can insert client projects."
+  on client_projects for insert
+  with check (
+    exists (
+      select 1 from users
+      where users.id = auth.uid() and users.role = 'admin'
+    )
+  );
+
+create policy "Only admins can update client projects."
+  on client_projects for update
+  using (
+    exists (
+      select 1 from users
+      where users.id = auth.uid() and users.role = 'admin'
+    )
+  );
+
+create policy "Only admins can delete client projects."
+  on client_projects for delete
   using (
     exists (
       select 1 from users
@@ -262,8 +298,17 @@ create policy "Site content is viewable by everyone."
   on site_content for select
   using (true);
 
-create policy "Only admins can manage site content."
-  on site_content for all
+create policy "Only admins can modify site content."
+  on site_content for insert
+  with check (
+    exists (
+      select 1 from users
+      where users.id = auth.uid() and users.role = 'admin'
+    )
+  );
+
+create policy "Only admins can update site content."
+  on site_content for update
   using (
     exists (
       select 1 from users
@@ -271,11 +316,29 @@ create policy "Only admins can manage site content."
     )
   );
 
--- Initial admin user setup
--- Run this after creating your first user through Supabase Auth
--- Replace 'your-user-id' with the actual user ID from auth.users
--- INSERT INTO public.users (id, email, full_name, role) 
--- VALUES ('your-user-id', 'admin@example.com', 'Admin User', 'admin');
+create policy "Only admins can delete site content."
+  on site_content for delete
+  using (
+    exists (
+      select 1 from users
+      where users.id = auth.uid() and users.role = 'admin'
+    )
+  );
+
+-- Function to handle user creation
+create or replace function public.handle_new_user()
+returns trigger as $$
+begin
+  insert into public.users (id, email, full_name, avatar_url, role)
+  values (new.id, new.email, new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'avatar_url', 'customer');
+  return new;
+end;
+$$ language plpgsql security definer;
+
+-- Trigger for new user creation
+create or replace trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
 
 -- Create some initial services
 INSERT INTO public.services (name, description, brief_description, price_range, is_active)

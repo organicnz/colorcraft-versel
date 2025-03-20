@@ -1,84 +1,140 @@
-# Furniture Painter Website
+# ColorCraft - Furniture Painting & Restoration
 
-A professional website for a furniture painter business with a portfolio section and integrated CRM system. Built with Next.js, Supabase, TailwindCSS, and Shadcn UI.
+A complete business solution for custom furniture painting and restoration services. This Next.js application combines a beautiful client-facing website with powerful admin tools for customer relationship management.
 
 ## Features
 
-- 🎨 Beautiful design with warm wood-toned color palette
-- 💼 Complete CRM for managing customers, projects, and inquiries
-- 📷 Portfolio showcase with before/after images
-- 🔒 Admin dashboard with content management
-- 📱 Fully responsive across all devices
-- 📧 Email notifications via Resend
+- **Beautiful Client-Facing Website**
+  - Showcase portfolio of completed projects
+  - Service information and pricing
+  - Contact form for inquiries
+  - Customer testimonials
+  - About page with company story
+
+- **Customer Portal**
+  - View project status
+  - Message the craftsperson
+  - View and pay invoices
+  - Request quotes for new work
+
+- **Admin Dashboard**
+  - Customer relationship management (CRM)
+  - Project tracking and management
+  - Portfolio management
+  - Content management for website
+  - Analytics and reporting
 
 ## Tech Stack
 
-- **Framework:** Next.js 15 with App Router
-- **Database & Auth:** Supabase
-- **Styling:** TailwindCSS
-- **Components:** Shadcn UI
-- **Form Handling:** React Hook Form + Zod
-- **State Management:** Zustand
-- **Email Service:** Resend
-- **File Uploads:** Supabase Storage
+- **Frontend**: Next.js 15, React 19, Tailwind CSS
+- **Backend**: Supabase (PostgreSQL, Auth, Storage)
+- **Email**: Resend API
+- **Analytics**: Vercel Analytics
+- **Deployment**: Vercel
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 18.17+ 
-- pnpm (recommended) or npm/yarn
+- Node.js 18+ and pnpm
 - Supabase account
-- Resend account
+- Resend account (for email notifications)
 
 ### Installation
 
 1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/furniture-painter.git
-   cd furniture-painter
+   ```
+   git clone https://github.com/yourusername/colorcraft.git
+   cd colorcraft
    ```
 
 2. Install dependencies:
-   ```bash
+   ```
    pnpm install
    ```
 
-3. Set up environment variables:
-   Create a `.env.local` file in the root directory with the following variables:
+3. Create a `.env.local` file with the following variables:
    ```
    # Supabase
-   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-   SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+   NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+   SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
 
    # Resend (for email notifications)
-   RESEND_API_KEY=your_resend_api_key
+   RESEND_API_KEY=your-resend-api-key
 
    # Site URL
    NEXT_PUBLIC_SITE_URL=http://localhost:3000
    ```
 
-4. Run the development server:
-   ```bash
+4. Set up Supabase database:
+   - Navigate to your Supabase project dashboard
+   - Go to the SQL Editor
+   - Copy and paste the contents of `supabase/schema.sql`
+   - Execute the query to set up the database schema
+
+5. Start the development server:
+   ```
    pnpm dev
    ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
+6. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## Database Setup
+## Database Schema
 
-Run the SQL scripts in the `supabase/schema.sql` file in your Supabase SQL editor to set up the required tables and relationships.
+The application uses the following database tables:
+
+1. **users** - User accounts (extends Supabase auth.users)
+   - Customer accounts
+   - Admin accounts
+
+2. **projects** - Portfolio projects 
+   - Before/after images
+   - Techniques and materials used
+   - Client testimonials
+
+3. **customers** - CRM information
+   - Contact details
+   - Notes
+   - Relationship management
+
+4. **services** - Services offered
+   - Descriptions
+   - Price ranges
+   - Service images
+
+5. **inquiries** - Customer inquiries/quotes
+   - Service requested
+   - Details about furniture
+   - Budget and timeline
+
+6. **client_projects** - Active client projects
+   - Project status and progress
+   - Payment tracking
+   - Project timeline
+
+7. **site_content** - Website content
+   - Editable content for website pages
+   - Company information
+   - FAQ and policies
 
 ## Deployment
 
-The project is configured for easy deployment on Vercel.
+This application is designed to be deployed on Vercel. Follow these steps:
 
-1. Push your code to GitHub
+1. Push your code to a GitHub repository
 2. Connect the repository to Vercel
-3. Configure the environment variables in the Vercel dashboard
+3. Add environment variables in Vercel dashboard
 4. Deploy!
 
 ## License
 
-[MIT](LICENSE)
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgements
+
+- [Next.js](https://nextjs.org/)
+- [Supabase](https://supabase.io/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Resend](https://resend.io/)
+- [Vercel Analytics](https://vercel.com/analytics)
