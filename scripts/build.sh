@@ -1,15 +1,22 @@
 #!/bin/bash
 set -e
 
-# Print versions and environment information
+# Print environment information
+echo "===================== ENVIRONMENT INFO ====================="
 echo "Node version: $(node -v)"
-echo "NPM version: $(npm -v)"
+echo "npm version: $(npm -v)"
 echo "Current directory: $(pwd)"
-echo "Directory contents:"
-ls -la
+echo "Directory structure:"
+find . -type d -maxdepth 3 | sort
 
-# Build the project
-echo "Building the project with npm..."
-npm run build
+echo "===================== PACKAGE INFO ====================="
+cat package.json
 
-echo "Build completed successfully!" 
+echo "===================== ENV VARIABLES ====================="
+printenv | grep NEXT || true
+
+echo "===================== STARTING BUILD ====================="
+# Run Next.js build directly from node_modules
+./node_modules/.bin/next build
+
+echo "Build completed!" 
