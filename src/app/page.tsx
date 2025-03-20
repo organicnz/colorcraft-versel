@@ -40,102 +40,245 @@ export default function Home() {
   const parallaxY = useTransform(scrollY, [0, 500], [0, -100]);
   const parallaxScale = useTransform(scrollY, [0, 500], [1, 1.2]);
   const textOpacity = useTransform(scrollY, [0, 300], [1, 0]);
+  
+  // Properties data for carousel
+  const properties = [
+    {
+      id: 1,
+      title: "Urban Apartments",
+      location: "San Francisco, CA",
+      price: "$420,000",
+      type: "Residential",
+      return: "12.5% IRR",
+      image: "/images/hero-kitchen.png"
+    },
+    {
+      id: 2,
+      title: "Office Complex",
+      location: "New York, NY",
+      price: "$1,250,000",
+      type: "Commercial",
+      return: "9.8% IRR",
+      image: "/images/hero-furniture.png"
+    },
+    {
+      id: 3,
+      title: "Shopping Mall",
+      location: "Miami, FL",
+      price: "$5,750,000",
+      type: "Retail",
+      return: "11.2% IRR",
+      image: "/images/portfolio/dresser.png"
+    },
+    {
+      id: 4,
+      title: "Data Center",
+      location: "Austin, TX",
+      price: "$3,200,000",
+      type: "Industrial",
+      return: "14.5% IRR",
+      image: "/images/hero-kitchen.png"
+    }
+  ];
 
   // Auto-rotate projects every 5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentProjectIndex((prevIndex) => (prevIndex + 1) % 4);
+      setCurrentProjectIndex((prevIndex) => (prevIndex + 1) % properties.length);
     }, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [properties.length]);
+
+  const currentProperty = properties[currentProjectIndex];
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section ref={heroRef} className="relative h-screen w-full overflow-hidden">
-        <div className="absolute inset-0">
-          <Image
-            src="/images/hero-kitchen.png"
-            alt="Modern kitchen interior"
-            fill
-            className="object-cover"
-            priority
-            onError={(e) => {
-              // Fallback to another image if hero-kitchen.png fails to load
-              const target = e.target as HTMLImageElement;
-              target.onerror = null; // Prevent infinite loops
-              target.src = "/images/hero-furniture.png"; // Fallback image
-            }}
-          />
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px]"></div>
-        </div>
-        
-        {/* Content - RealVantage Style */}
-        <div className="relative h-full flex flex-col justify-center items-center">
-          <div className="container mx-auto px-6 text-center max-w-4xl mb-20">
+      {/* Hero Section - RealVantage Style */}
+      <section ref={heroRef} className="relative pt-24 pb-16 md:pt-32 md:pb-24 bg-gray-50 dark:bg-gray-900 overflow-hidden">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: "easeOut" }}
-              className="mb-24"
+              className="max-w-2xl"
             >
-              <motion.h1 
-                className="text-2xl md:text-3xl lg:text-4xl text-white font-light leading-relaxed mb-8 tracking-tight"
-                style={{ opacity: textOpacity }}
-              >
-                Crafting beautiful furniture that transforms ordinary spaces into <span className="text-primary-300 font-normal">extraordinary homes</span>. Each piece tells a story, where artistry and functionality create lasting impressions.
-              </motion.h1>
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-light text-gray-800 dark:text-white leading-tight mb-6">
+                Now invest in <span className="font-medium text-primary">real estate</span> worldwide
+              </h1>
+              <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 font-light">
+                Build a diversified real estate portfolio without the hassle of property management. Access exclusive opportunities in residential, commercial, and industrial properties.
+              </p>
               
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.8 }}
-                className="flex flex-wrap justify-center gap-4 mt-8"
-              >
-                <Link href="/portfolio" className="px-6 py-3 bg-primary text-white rounded hover:bg-primary-light transition-colors duration-300">
-                  View Our Work
-                </Link>
-                <Link href="/contact" className="px-6 py-3 border border-white/20 text-white rounded hover:bg-white/10 transition-colors duration-300">
-                  Get in Touch
-                </Link>
-              </motion.div>
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-8">
+                <div className="flex flex-col mb-4">
+                  <label htmlFor="email" className="text-sm text-gray-600 dark:text-gray-400 mb-2">Enter your email address</label>
+                  <input
+                    type="email"
+                    id="email"
+                    placeholder="you@example.com"
+                    className="p-3 border border-gray-300 dark:border-gray-700 rounded-md"
+                  />
+                </div>
+                <button className="w-full bg-primary hover:bg-primary-dark text-white font-medium py-3 px-6 rounded-md transition-colors">
+                  Get Started
+                </button>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center">
+                  Regulated by financial authorities
+                </p>
+              </div>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="relative"
+            >
+              <div className="relative h-[400px] md:h-[500px] w-full overflow-hidden rounded-lg shadow-2xl">
+                <Image
+                  src={currentProperty.image}
+                  alt="Real estate investment"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+                {/* Property Info Overlay */}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-6">
+                  <div className="flex justify-between items-end">
+                    <div>
+                      <span className="text-primary text-sm font-medium px-2 py-1 rounded bg-primary/10 mb-2 inline-block">
+                        {currentProperty.type}
+                      </span>
+                      <h3 className="text-xl md:text-2xl font-light text-white mb-1">
+                        {currentProperty.title}
+                      </h3>
+                      <p className="text-gray-300 text-sm mb-1">
+                        {currentProperty.location}
+                      </p>
+                      <div className="flex items-center mt-2">
+                        <span className="text-white font-bold mr-3">{currentProperty.price}</span>
+                        <span className="text-green-400 text-sm">{currentProperty.return}</span>
+                      </div>
+                    </div>
+                    <Link
+                      href="/portfolio"
+                      className="bg-primary hover:bg-primary-dark text-white text-sm px-4 py-2 rounded transition-colors"
+                    >
+                      View Details
+                    </Link>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Property Indicators */}
+              <div className="flex justify-center mt-6 space-x-2">
+                {properties.map((property, index) => (
+                  <button
+                    key={property.id}
+                    onClick={() => setCurrentProjectIndex(index)}
+                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                      index === currentProjectIndex
+                        ? "bg-primary w-6"
+                        : "bg-gray-300 dark:bg-gray-700"
+                    }`}
+                    aria-label={`View ${property.title}`}
+                  />
+                ))}
+              </div>
             </motion.div>
           </div>
-          
-          {/* Bottom Property-style Box */}
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="absolute bottom-16 left-0 right-0 mx-auto max-w-xl bg-white/90 backdrop-blur-md p-8 rounded-lg shadow-lg"
-          >
-            <h2 className="text-2xl md:text-3xl font-light text-gray-800 mb-2">Vintage Dresser Restoration</h2>
-            <p className="text-gray-600 mb-5 font-light">Custom Hand-Painted, Solid Mahogany, $1,450</p>
-            <div className="flex justify-between items-center">
-          <Link 
-            href="/portfolio" 
-                className="px-5 py-2 bg-primary text-white rounded hover:bg-primary-light transition-colors duration-300 text-sm"
-          >
-                View Similar Projects
-          </Link>
-          <Link 
-            href="/contact" 
-                className="text-primary hover:text-primary-dark transition-colors flex items-center text-sm"
-              >
-                Request Quote
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-              </Link>
-            </div>
-          </motion.div>
         </div>
       </section>
 
-      {/* About Section - Redesigned with RealVantage inspiration */}
-      <section className="py-24 px-4 bg-gray-50">
+      {/* Features Section - RealVantage Style */}
+      <section className="py-16 md:py-24 bg-white dark:bg-gray-800">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h4 className="text-primary uppercase tracking-wider text-sm font-medium mb-3">How It Works</h4>
+            <h2 className="text-3xl md:text-4xl font-light mb-6 leading-tight text-gray-800 dark:text-white">Invest in multiple properties <span className="font-medium">at the click of a button</span></h2>
+            <div className="w-20 h-[2px] bg-primary/50 mx-auto"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <motion.div
+              variants={fadeIn}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              className="bg-gray-50 dark:bg-gray-900 p-8 rounded-lg shadow-sm hover-lift"
+            >
+              <div className="bg-primary/10 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-medium mb-4 text-gray-800 dark:text-white">Get access to deals</h3>
+              <p className="text-gray-600 dark:text-gray-300 font-light mb-6">
+                Get access to deals previously reserved for institutions with minimum sums exceeding $1 million. We make these deals accessible to everyone.
+              </p>
+              <Link href="/how-it-works" className="text-primary inline-flex items-center group">
+                Learn more
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2 transform transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </Link>
+            </motion.div>
+            
+            <motion.div
+              variants={fadeIn}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              className="bg-gray-50 dark:bg-gray-900 p-8 rounded-lg shadow-sm hover-lift"
+            >
+              <div className="bg-primary/10 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-medium mb-4 text-gray-800 dark:text-white">Diversify like never before</h3>
+              <p className="text-gray-600 dark:text-gray-300 font-light mb-6">
+                Build your own real estate portfolio through fractional ownership with deals across different sectors, countries, and strategies.
+              </p>
+              <Link href="/how-it-works" className="text-primary inline-flex items-center group">
+                Learn more
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2 transform transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </Link>
+            </motion.div>
+            
+            <motion.div
+              variants={fadeIn}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              className="bg-gray-50 dark:bg-gray-900 p-8 rounded-lg shadow-sm hover-lift"
+            >
+              <div className="bg-primary/10 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-medium mb-4 text-gray-800 dark:text-white">You invest, we do the rest</h3>
+              <p className="text-gray-600 dark:text-gray-300 font-light mb-6">
+                We do all the hard work so you don't have to. From finding and negotiating the deal to distributing your returns.
+              </p>
+              <Link href="/how-it-works" className="text-primary inline-flex items-center group">
+                Learn more
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2 transform transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </Link>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* About Platform Section */}
+      <section className="py-16 md:py-24 px-4 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
             <motion.div
@@ -146,10 +289,10 @@ export default function Home() {
             >
               <div className="relative">
                 <div className="absolute -top-4 -left-4 w-24 h-24 bg-primary/10 rounded-tl-2xl z-0"></div>
-                <div className="relative h-[500px] w-full overflow-hidden rounded-lg shadow-xl z-10">
+                <div className="relative h-[400px] w-full overflow-hidden rounded-lg shadow-xl z-10">
                   <Image
                     src="/images/portfolio/dresser.png"
-                    alt="Our craftsmanship"
+                    alt="Platform dashboard"
                     fill
                     className="object-cover"
                   />
@@ -166,41 +309,41 @@ export default function Home() {
               className="flex flex-col justify-center"
             >
               <h4 className="text-primary uppercase tracking-wider text-sm font-medium mb-3">About Color&Craft</h4>
-              <h2 className="text-3xl md:text-4xl font-light mb-6 leading-tight text-gray-800">Creating <span className="font-medium">Beautiful Furniture</span> That Transforms Spaces</h2>
+              <h2 className="text-3xl md:text-4xl font-light mb-6 leading-tight text-gray-800 dark:text-white">Award-winning <span className="font-medium">real estate</span> co-investment platform</h2>
               
-              <div className="bg-white p-6 rounded-lg mb-8 shadow-sm">
-                <p className="text-gray-600 leading-relaxed font-light">
-                  At Color&Craft Furniture Painter, we believe that furniture is more than just functional—it's an expression of your personal style. Our team of passionate artisans is dedicated to bringing new life to your beloved furniture pieces through expert craftsmanship and innovative design solutions.
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg mb-8 shadow-sm">
+                <p className="text-gray-600 dark:text-gray-300 leading-relaxed font-light">
+                  At Color&Craft, we've simplified real estate investment by creating a platform that allows investors of all sizes to participate in high-quality real estate deals around the world. Our team of experts handles everything from property selection to management, letting you focus on building your portfolio.
                 </p>
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="flex items-start bg-white p-4 rounded-lg shadow-sm hover-lift">
+                <div className="flex items-start bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm hover-lift">
                   <div className="bg-primary/20 p-3 rounded-full mr-4">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-800 mb-1">Expert Artisans</h3>
-                    <p className="text-sm text-gray-600 font-light">Years of experience in furniture transformation</p>
+                    <h3 className="font-medium text-gray-800 dark:text-white mb-1">Regulated Platform</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 font-light">Regulated by financial authorities</p>
                   </div>
                 </div>
-                <div className="flex items-start bg-white p-4 rounded-lg shadow-sm hover-lift">
+                <div className="flex items-start bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm hover-lift">
                   <div className="bg-primary/20 p-3 rounded-full mr-4">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-800 mb-1">Quality Materials</h3>
-                    <p className="text-sm text-gray-600 font-light">Premium paints and finishes for lasting beauty</p>
+                    <h3 className="font-medium text-gray-800 dark:text-white mb-1">Proven Track Record</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 font-light">Consistent returns across our portfolio</p>
                   </div>
                 </div>
               </div>
               
               <Link href="/about" className="inline-flex items-center mt-8 text-primary font-medium group">
-                Learn more about our story
+                Learn more about our platform
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2 transform transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
                 </svg>
@@ -210,12 +353,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Portfolio Section - RealVantage Style */}
-      <section className="py-24 px-4 bg-white">
+      {/* Featured Properties Section */}
+      <section className="py-24 px-4 bg-white dark:bg-gray-800">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h4 className="text-primary uppercase tracking-wider text-sm font-medium mb-3">Our Work</h4>
-            <h2 className="text-3xl md:text-5xl font-light mb-6 leading-tight text-gray-800">Featured Portfolio</h2>
+            <h4 className="text-primary uppercase tracking-wider text-sm font-medium mb-3">Real Estate Opportunities</h4>
+            <h2 className="text-3xl md:text-5xl font-light mb-6 leading-tight text-gray-800 dark:text-white">Featured Properties</h2>
             <div className="w-20 h-[2px] bg-primary/50 mx-auto"></div>
           </div>
           
@@ -433,6 +576,6 @@ export default function Home() {
           </Link>
         </div>
       </section>
-      </div>
+    </div>
   );
 }
