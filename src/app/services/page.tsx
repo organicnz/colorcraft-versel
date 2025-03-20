@@ -20,7 +20,7 @@ const services = [
       "Protective top coats",
       "Custom finishes (distressed, antiqued, etc.)",
     ],
-    image: "/images/hero-furniture.jpg",
+    image: "/images/hero-furniture.png",
   },
   {
     id: "restoration",
@@ -34,7 +34,7 @@ const services = [
       "Traditional restoration techniques",
       "Conservation of original elements",
     ],
-    image: "/images/hero-furniture.jpg",
+    image: "/images/hero-furniture.png",
   },
   {
     id: "upcycling",
@@ -48,7 +48,7 @@ const services = [
       "Custom solutions for unique spaces",
       "Environmentally friendly approach",
     ],
-    image: "/images/hero-furniture.jpg",
+    image: "/images/hero-furniture.png",
   },
   {
     id: "cabinets",
@@ -62,7 +62,7 @@ const services = [
       "Hardware updates",
       "Protective clear coats for longevity",
     ],
-    image: "/images/hero-furniture.jpg",
+    image: "/images/hero-furniture.png",
   },
 ];
 

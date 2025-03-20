@@ -8,7 +8,7 @@ export default function Home() {
       <section className="relative h-[80vh] w-full">
         <div className="absolute inset-0">
           <Image
-            src="/images/hero-furniture.jpg"
+            src="/images/hero-furniture.png"
             alt="Beautifully painted furniture"
             fill
             className="object-cover brightness-75"
