@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
@@ -29,8 +30,15 @@ export default function Header() {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href="/" className="text-xl font-bold text-primary">
-            ColorCraft
+          <Link href="/" className="flex items-center">
+            <Image 
+              src="/images/logo.png" 
+              alt="ColorCraft Logo" 
+              width={40} 
+              height={40} 
+              className="mr-2"
+            />
+            <span className="text-xl font-bold text-primary">ColorCraft</span>
           </Link>
 
           {/* Desktop Menu */}

@@ -91,15 +91,19 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
             <address className="not-italic text-gray-300 space-y-2">
-              <p>123 Paint Avenue</p>
-              <p>Furniture District</p>
-              <p>Boston, MA 02108</p>
-              <p className="pt-2">(555) 123-4567</p>
+              <p>Los Angeles, CA 90001</p>
+              <p className="pt-2">+1 747 755 7695</p>
               <p>
                 <a href="mailto:contact@colorcraft.com" className="hover:text-white">
                   contact@colorcraft.com
                 </a>
               </p>
+              <div className="pt-2">
+                <p className="font-semibold text-white">Business Hours:</p>
+                <p>Monday - Friday: 9:00 AM - 5:00 PM</p>
+                <p>Saturday: 10:00 AM - 3:00 PM</p>
+                <p>Sunday: Closed</p>
+              </div>
             </address>
           </div>
         </div>

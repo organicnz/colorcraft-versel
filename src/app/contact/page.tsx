@@ -29,7 +29,7 @@ export default function ContactPage() {
             <div className="space-y-4">
               <div>
                 <h3 className="text-md font-medium text-gray-700">Phone</h3>
-                <p className="text-gray-600">(555) 123-4567</p>
+                <p className="text-gray-600">+1 747 755 7695</p>
               </div>
               
               <div>
@@ -40,9 +40,7 @@ export default function ContactPage() {
               <div>
                 <h3 className="text-md font-medium text-gray-700">Address</h3>
                 <p className="text-gray-600">
-                  123 Paint Avenue<br />
-                  Furniture District<br />
-                  Boston, MA 02108
+                  Los Angeles, CA 90001
                 </p>
               </div>
               
