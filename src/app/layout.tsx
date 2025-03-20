@@ -12,15 +12,15 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   metadataBase: new URL("https://color-craft.vercel.app"),
   title: {
-    template: "%s | Color&Craft Real Estate Investment",
-    default: "Color&Craft Real Estate Investment",
+    template: "%s | Color&Craft Furniture Painting",
+    default: "Color&Craft Furniture Painting",
   },
   description:
-    "Your vantage point for smart real estate investing. Build a diversified real estate portfolio without the hassle of property management.",
+    "Professional furniture painting and restoration services. Transform your beloved furniture with expert craftsmanship and premium finishes.",
   openGraph: {
-    title: "Color&Craft Real Estate Investment",
+    title: "Color&Craft Furniture Painting",
     description:
-      "Your vantage point for smart real estate investing",
+      "Transform your furniture with expert painting services",
     url: "https://color-craft.vercel.app",
     siteName: "Color&Craft",
     locale: "en_US",
@@ -28,9 +28,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Color&Craft Real Estate Investment",
+    title: "Color&Craft Furniture Painting",
     description:
-      "Your vantage point for smart real estate investing",
+      "Transform your furniture with expert painting services",
   },
 };
 
@@ -43,7 +43,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <Providers>
-          {/* Main header - RealVantage style */}
+          {/* Main header - Color&Craft style */}
           <header className="bg-white dark:bg-gray-900 shadow-sm py-3 sticky top-0 z-40">
             <div className="container mx-auto px-4">
               <div className="flex items-center justify-between">
@@ -64,13 +64,13 @@ export default function RootLayout({
                     href="/services"
                     className="nav-link py-2"
                   >
-                    Properties
+                    Services
                   </Link>
                   <Link
                     href="/portfolio"
                     className="nav-link py-2"
                   >
-                    Invest
+                    Portfolio
                   </Link>
                   <Link
                     href="/about"
@@ -82,7 +82,7 @@ export default function RootLayout({
                     href="/contact"
                     className="nav-link py-2"
                   >
-                    Learn
+                    Contact
                   </Link>
                 </nav>
 
@@ -99,7 +99,7 @@ export default function RootLayout({
                     href="/contact"
                     className="bg-primary hover:bg-primary-dark text-white text-sm font-medium px-4 py-2 rounded transition-colors"
                   >
-                    Get Started
+                    Free Consultation
                   </Link>
 
                   {/* Mobile Menu Button */}

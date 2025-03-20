@@ -45,38 +45,38 @@ export default function Home() {
   const properties = [
     {
       id: 1,
-      title: "Urban Apartments",
+      title: "Kitchen Cabinet Refresh",
       location: "San Francisco, CA",
-      price: "$420,000",
-      type: "Residential",
-      return: "12.5% IRR",
+      price: "$1,800",
+      type: "Cabinet Painting",
+      return: "Completed 2023",
       image: "/images/hero-kitchen.png"
     },
     {
       id: 2,
-      title: "Office Complex",
-      location: "New York, NY",
-      price: "$1,250,000",
-      type: "Commercial",
-      return: "9.8% IRR",
+      title: "Antique Furniture Revival",
+      location: "Oakland, CA",
+      price: "$950",
+      type: "Furniture Restoration",
+      return: "Completed 2023", 
       image: "/images/hero-furniture.png"
     },
     {
       id: 3,
-      title: "Shopping Mall",
-      location: "Miami, FL",
-      price: "$5,750,000",
-      type: "Retail",
-      return: "11.2% IRR",
+      title: "Vintage Dresser Makeover",
+      location: "San Jose, CA",
+      price: "$750",
+      type: "Custom Painting",
+      return: "Completed 2023",
       image: "/images/portfolio/dresser.png"
     },
     {
       id: 4,
-      title: "Data Center",
-      location: "Austin, TX",
-      price: "$3,200,000",
-      type: "Industrial",
-      return: "14.5% IRR",
+      title: "Modern Dining Set",
+      location: "Palo Alto, CA",
+      price: "$1,200",
+      type: "Furniture Painting",
+      return: "Completed 2023",
       image: "/images/hero-kitchen.png"
     }
   ];
@@ -105,15 +105,15 @@ export default function Home() {
               className="max-w-2xl"
             >
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-light text-gray-800 dark:text-white leading-tight mb-6">
-                Now invest in <span className="font-medium text-primary">real estate</span> worldwide
+                Transform your furniture with <span className="font-medium text-primary">expert painting</span> services
               </h1>
               <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 font-light">
-                Build a diversified real estate portfolio without the hassle of property management. Access exclusive opportunities in residential, commercial, and industrial properties.
+                Breathe new life into your beloved furniture pieces with our professional painting and restoration services. From vintage revivals to modern makeovers.
               </p>
               
               <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-8">
                 <div className="flex flex-col mb-4">
-                  <label htmlFor="email" className="text-sm text-gray-600 dark:text-gray-400 mb-2">Enter your email address</label>
+                  <label htmlFor="email" className="text-sm text-gray-600 dark:text-gray-400 mb-2">Request a free consultation</label>
                   <input
                     type="email"
                     id="email"
@@ -125,7 +125,7 @@ export default function Home() {
                   Get Started
                 </button>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center">
-                  Regulated by financial authorities
+                  Professional furniture painting services
                 </p>
               </div>
             </motion.div>
@@ -192,12 +192,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section - RealVantage Style */}
+      {/* Features Section - Color&Craft Style */}
       <section className="py-16 md:py-24 bg-white dark:bg-gray-800">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h4 className="text-primary uppercase tracking-wider text-sm font-medium mb-3">How It Works</h4>
-            <h2 className="text-3xl md:text-4xl font-light mb-6 leading-tight text-gray-800 dark:text-white">Invest in multiple properties <span className="font-medium">at the click of a button</span></h2>
+            <h2 className="text-3xl md:text-4xl font-light mb-6 leading-tight text-gray-800 dark:text-white">Transform your furniture <span className="font-medium">in three simple steps</span></h2>
             <div className="w-20 h-[2px] bg-primary/50 mx-auto"></div>
           </div>
           
@@ -214,11 +214,11 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-medium mb-4 text-gray-800 dark:text-white">Get access to deals</h3>
+              <h3 className="text-xl font-medium mb-4 text-gray-800 dark:text-white">Initial Consultation</h3>
               <p className="text-gray-600 dark:text-gray-300 font-light mb-6">
-                Get access to deals previously reserved for institutions with minimum sums exceeding $1 million. We make these deals accessible to everyone.
+                Schedule a free consultation to discuss your furniture piece, desired finish, and timeline. We'll provide expert advice and a custom quote.
               </p>
-              <Link href="/how-it-works" className="text-primary inline-flex items-center group">
+              <Link href="/services" className="text-primary inline-flex items-center group">
                 Learn more
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2 transform transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -238,11 +238,11 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-medium mb-4 text-gray-800 dark:text-white">Diversify like never before</h3>
+              <h3 className="text-xl font-medium mb-4 text-gray-800 dark:text-white">Preparation & Painting</h3>
               <p className="text-gray-600 dark:text-gray-300 font-light mb-6">
-                Build your own real estate portfolio through fractional ownership with deals across different sectors, countries, and strategies.
+                We carefully prepare your furniture, removing old finishes and repairing imperfections. Then we apply premium paints and finishes for a flawless result.
               </p>
-              <Link href="/how-it-works" className="text-primary inline-flex items-center group">
+              <Link href="/services" className="text-primary inline-flex items-center group">
                 Learn more
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2 transform transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -262,11 +262,11 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-medium mb-4 text-gray-800 dark:text-white">You invest, we do the rest</h3>
+              <h3 className="text-xl font-medium mb-4 text-gray-800 dark:text-white">Delivery & Care Guide</h3>
               <p className="text-gray-600 dark:text-gray-300 font-light mb-6">
-                We do all the hard work so you don't have to. From finding and negotiating the deal to distributing your returns.
+                We deliver your beautifully transformed furniture and provide a personalized care guide to ensure your piece maintains its stunning finish for years to come.
               </p>
-              <Link href="/how-it-works" className="text-primary inline-flex items-center group">
+              <Link href="/services" className="text-primary inline-flex items-center group">
                 Learn more
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2 transform transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -309,11 +309,11 @@ export default function Home() {
               className="flex flex-col justify-center"
             >
               <h4 className="text-primary uppercase tracking-wider text-sm font-medium mb-3">About Color&Craft</h4>
-              <h2 className="text-3xl md:text-4xl font-light mb-6 leading-tight text-gray-800 dark:text-white">Award-winning <span className="font-medium">real estate</span> co-investment platform</h2>
+              <h2 className="text-3xl md:text-4xl font-light mb-6 leading-tight text-gray-800 dark:text-white">Award-winning <span className="font-medium">furniture painting</span> and restoration studio</h2>
               
               <div className="bg-white dark:bg-gray-800 p-6 rounded-lg mb-8 shadow-sm">
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed font-light">
-                  At Color&Craft, we've simplified real estate investment by creating a platform that allows investors of all sizes to participate in high-quality real estate deals around the world. Our team of experts handles everything from property selection to management, letting you focus on building your portfolio.
+                  At Color&Craft, we transform treasured furniture pieces into stunning works of art. Our team of skilled artisans combines traditional techniques with modern finishes to breathe new life into your furniture. Whether you're looking to refresh a family heirloom or update a thrift store find, we bring your vision to life.
                 </p>
               </div>
               
@@ -325,8 +325,8 @@ export default function Home() {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-800 dark:text-white mb-1">Regulated Platform</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 font-light">Regulated by financial authorities</p>
+                    <h3 className="font-medium text-gray-800 dark:text-white mb-1">Premium Materials</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 font-light">We use only the highest quality paints and finishes</p>
                   </div>
                 </div>
                 <div className="flex items-start bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm hover-lift">
@@ -336,8 +336,8 @@ export default function Home() {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-800 dark:text-white mb-1">Proven Track Record</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 font-light">Consistent returns across our portfolio</p>
+                    <h3 className="font-medium text-gray-800 dark:text-white mb-1">Skilled Craftspeople</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 font-light">Our artisans have years of professional experience</p>
                   </div>
                 </div>
               </div>
@@ -353,12 +353,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Properties Section */}
+      {/* Featured Projects Section */}
       <section className="py-24 px-4 bg-white dark:bg-gray-800">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h4 className="text-primary uppercase tracking-wider text-sm font-medium mb-3">Real Estate Opportunities</h4>
-            <h2 className="text-3xl md:text-5xl font-light mb-6 leading-tight text-gray-800 dark:text-white">Featured Properties</h2>
+            <h4 className="text-primary uppercase tracking-wider text-sm font-medium mb-3">Our Latest Work</h4>
+            <h2 className="text-3xl md:text-5xl font-light mb-6 leading-tight text-gray-800 dark:text-white">Featured Projects</h2>
             <div className="w-20 h-[2px] bg-primary/50 mx-auto"></div>
           </div>
           
