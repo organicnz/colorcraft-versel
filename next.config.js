@@ -1,6 +1,5 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   images: {
     domains: [
       "tydgehnkaszuvcaywwdm.supabase.co", // Supabase storage domain
@@ -14,7 +13,6 @@ const nextConfig: NextConfig = {
       fullUrl: process.env.NODE_ENV === "development",
     },
   },
-  serverExternalPackages: ["resend"],
   experimental: {
     serverActions: {
       allowedOrigins: [process.env.NEXT_PUBLIC_SITE_URL || ""],
@@ -22,4 +20,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig; 

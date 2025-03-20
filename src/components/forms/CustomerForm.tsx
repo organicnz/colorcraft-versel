@@ -15,6 +15,8 @@ const customerSchema = z.object({
   notes: z.string().optional(),
 })
 
+type CustomerFormValues = z.infer<typeof customerSchema>
+
 type CustomerFormProps = {
   initialData?: Partial<Customer>
   onSuccess?: () => void
@@ -25,18 +27,21 @@ export default function CustomerForm({ initialData, onSuccess }: CustomerFormPro
   const [error, setError] = useState<string | null>(null)
   const supabase = createClient()
   
-  const form = useForm<z.infer<typeof customerSchema>>({
+  // Convert initialData to form values format, handling null values
+  const defaultValues: CustomerFormValues = {
+    full_name: initialData?.full_name ?? "",
+    email: initialData?.email ?? "",
+    phone: initialData?.phone ?? "",
+    address: initialData?.address ?? "",
+    notes: initialData?.notes ?? "",
+  }
+  
+  const form = useForm<CustomerFormValues>({
     resolver: zodResolver(customerSchema),
-    defaultValues: initialData || {
-      full_name: "",
-      email: "",
-      phone: "",
-      address: "",
-      notes: "",
-    },
+    defaultValues,
   })
   
-  async function onSubmit(values: z.infer<typeof customerSchema>) {
+  async function onSubmit(values: CustomerFormValues) {
     setIsLoading(true)
     setError(null)
     
