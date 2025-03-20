@@ -1,5 +1,9 @@
+"use client";
+
 import { Metadata } from "next";
 import Image from "next/image";
+import { useState } from "react";
+import { motion } from "framer-motion";
 
 export const metadata: Metadata = {
   title: "Portfolio | Our Furniture Painting Projects",
@@ -71,9 +75,61 @@ const projects = [
     tags: ["Armoire", "Antique", "Restoration", "Traditional"],
     imageSrc: "/images/portfolio/antique-armoire.jpg",
   },
+  {
+    id: 10,
+    title: "Art Deco Bar Cabinet",
+    description: "Sophisticated bar cabinet restored with gold accents and mirrored interior.",
+    tags: ["Bar Cabinet", "Art Deco", "Gold", "Mirrored"],
+    imageSrc: "/images/portfolio/bar-cabinet.png",
+  },
+  {
+    id: 11,
+    title: "Modern Console Table",
+    description: "Sleek console table refinished in charcoal gray with brushed gold legs.",
+    tags: ["Console", "Modern", "Charcoal", "Gold"],
+    imageSrc: "/images/portfolio/console-table.png",
+  },
+  {
+    id: 12,
+    title: "Vintage Nightstand Pair",
+    description: "Matching pair of 1960s nightstands updated with navy blue paint and original hardware.",
+    tags: ["Nightstand", "Vintage", "Navy", "Pair"],
+    imageSrc: "/images/portfolio/nightstand.png",
+  },
+  {
+    id: 13,
+    title: "Contemporary Writing Desk",
+    description: "Minimalist writing desk refinished in crisp white with sustainable bamboo accents.",
+    tags: ["Desk", "Contemporary", "White", "Bamboo"],
+    imageSrc: "/images/portfolio/desk.png",
+  },
 ];
 
 export default function PortfolioPage() {
+  const [showAll, setShowAll] = useState(false);
+  const displayedProjects = showAll ? projects : projects.slice(0, 6);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5
+      }
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="mb-12 text-center">
@@ -82,49 +138,77 @@ export default function PortfolioPage() {
           Browse our collection of furniture painting and restoration projects. Each piece tells a story of transformation and renewal.
         </p>
       </div>
-
-      {/* Filter options could be added here */}
       
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {projects.map((project) => (
-          <div key={project.id} className="overflow-hidden rounded-lg shadow-lg transition hover:shadow-xl">
-            <div className="relative h-64 w-full">
+      <motion.div
+        className="grid gap-8 md:grid-cols-2 lg:grid-cols-3"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        {displayedProjects.map((project) => (
+          <motion.div
+            key={project.id}
+            className="group overflow-hidden rounded-lg bg-white shadow-md transition-all hover:shadow-xl"
+            variants={itemVariants}
+          >
+            <div className="relative h-72 w-full overflow-hidden">
               <Image
                 src={project.imageSrc}
                 alt={project.title}
                 fill
-                className="object-cover"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
+              <div className="absolute inset-0 bg-black bg-opacity-20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
             </div>
             <div className="p-6">
-              <h3 className="mb-2 text-xl font-semibold">{project.title}</h3>
+              <h3 className="mb-2 text-xl font-semibold text-gray-900">{project.title}</h3>
               <p className="mb-4 text-gray-600">{project.description}</p>
               <div className="flex flex-wrap gap-2">
                 {project.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-700"
+                    className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 transition-colors duration-300 hover:bg-primary hover:text-white"
                   >
                     {tag}
                   </span>
                 ))}
               </div>
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
+
+      {!showAll && (
+        <div className="mt-12 text-center">
+          <button
+            onClick={() => setShowAll(true)}
+            className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-primary p-0.5 font-semibold text-white transition-all duration-300 hover:bg-white"
+          >
+            <span className="relative z-10 flex items-center space-x-2 rounded-full bg-primary px-6 py-3 transition-all duration-300 group-hover:bg-transparent">
+              <span>Show More</span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </span>
+            <span className="absolute inset-0 z-0 scale-105 rounded-full bg-gradient-to-r from-primary via-primary-light to-primary opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
+          </button>
+        </div>
+      )}
 
       {/* Call to action */}
-      <div className="mt-16 rounded-lg bg-primary p-8 text-center text-white">
+      <div className="mt-16 overflow-hidden rounded-lg bg-gradient-to-r from-primary to-primary-dark p-8 text-center text-white shadow-lg">
         <h2 className="mb-4 text-2xl font-bold">Ready to transform your furniture?</h2>
-        <p className="mb-6 text-lg">
-          Contact us today to discuss your project and get a free quote.
+        <p className="mx-auto mb-6 max-w-2xl text-lg">
+          Contact us today to discuss your project and get a free quote. Our team of experts is ready to bring your vision to life.
         </p>
         <a
           href="/contact"
-          className="inline-block rounded-md bg-white px-6 py-3 font-semibold text-primary transition hover:bg-gray-100"
+          className="group relative inline-flex items-center overflow-hidden rounded-full bg-white px-8 py-3 font-semibold text-primary transition-all duration-300 hover:bg-opacity-90"
         >
-          Get in Touch
+          <span className="relative">Get in Touch</span>
+          <svg xmlns="http://www.w3.org/2000/svg" className="relative ml-2 h-5 w-5 transform transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+          </svg>
         </a>
       </div>
     </div>
