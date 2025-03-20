@@ -109,20 +109,20 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="absolute bottom-16 left-0 right-0 mx-auto max-w-xl bg-white/5 backdrop-blur-md p-8 rounded-lg shadow-lg border border-white/10"
+            className="absolute bottom-16 left-0 right-0 mx-auto max-w-xl bg-white/90 backdrop-blur-md p-8 rounded-lg shadow-lg"
           >
-            <h2 className="text-2xl md:text-3xl font-light text-white mb-2">Vintage Dresser Restoration</h2>
-            <p className="text-neutral-300 mb-5 font-light">Custom Hand-Painted, Solid Mahogany, $1,450</p>
+            <h2 className="text-2xl md:text-3xl font-light text-gray-800 mb-2">Vintage Dresser Restoration</h2>
+            <p className="text-gray-600 mb-5 font-light">Custom Hand-Painted, Solid Mahogany, $1,450</p>
             <div className="flex justify-between items-center">
-          <Link 
-            href="/portfolio" 
+              <Link 
+                href="/portfolio" 
                 className="px-5 py-2 bg-primary text-white rounded hover:bg-primary-light transition-colors duration-300 text-sm"
-          >
+              >
                 View Similar Projects
-          </Link>
-          <Link 
-            href="/contact" 
-                className="text-white hover:text-primary-300 transition-colors flex items-center text-sm"
+              </Link>
+              <Link 
+                href="/contact" 
+                className="text-primary hover:text-primary-dark transition-colors flex items-center text-sm"
               >
                 Request Quote
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
@@ -135,7 +135,7 @@ export default function Home() {
       </section>
 
       {/* About Section - Redesigned with RealVantage inspiration */}
-      <section className="py-24 px-4">
+      <section className="py-24 px-4 bg-gray-50">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
             <motion.div
@@ -165,41 +165,41 @@ export default function Home() {
               viewport={{ once: true, margin: "-100px" }}
               className="flex flex-col justify-center"
             >
-              <h4 className="text-primary-300 uppercase tracking-wider text-sm font-medium mb-3">About Color & Craft</h4>
-              <h2 className="text-3xl md:text-4xl font-light mb-6 leading-tight text-white">Creating <span className="font-medium">Beautiful Furniture</span> That Transforms Spaces</h2>
+              <h4 className="text-primary uppercase tracking-wider text-sm font-medium mb-3">About Color & Craft</h4>
+              <h2 className="text-3xl md:text-4xl font-light mb-6 leading-tight text-gray-800">Creating <span className="font-medium">Beautiful Furniture</span> That Transforms Spaces</h2>
               
-              <div className="bg-white/5 backdrop-blur-sm p-6 rounded-lg mb-8 border border-white/10">
-                <p className="text-neutral-300 leading-relaxed font-light">
+              <div className="bg-white p-6 rounded-lg mb-8 shadow-sm">
+                <p className="text-gray-600 leading-relaxed font-light">
                   At Color & Craft Furniture Painter, we believe that furniture is more than just functional—it's an expression of your personal style. Our team of passionate artisans is dedicated to bringing new life to your beloved furniture pieces through expert craftsmanship and innovative design solutions.
                 </p>
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="flex items-start bg-white/5 p-4 rounded-lg border border-white/10 hover-lift">
+                <div className="flex items-start bg-white p-4 rounded-lg shadow-sm hover-lift">
                   <div className="bg-primary/20 p-3 rounded-full mr-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-medium text-white mb-1">Expert Artisans</h3>
-                    <p className="text-sm text-neutral-300 font-light">Years of experience in furniture transformation</p>
+                    <h3 className="font-medium text-gray-800 mb-1">Expert Artisans</h3>
+                    <p className="text-sm text-gray-600 font-light">Years of experience in furniture transformation</p>
                   </div>
                 </div>
-                <div className="flex items-start bg-white/5 p-4 rounded-lg border border-white/10 hover-lift">
+                <div className="flex items-start bg-white p-4 rounded-lg shadow-sm hover-lift">
                   <div className="bg-primary/20 p-3 rounded-full mr-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-medium text-white mb-1">Quality Materials</h3>
-                    <p className="text-sm text-neutral-300 font-light">Premium paints and finishes for lasting beauty</p>
+                    <h3 className="font-medium text-gray-800 mb-1">Quality Materials</h3>
+                    <p className="text-sm text-gray-600 font-light">Premium paints and finishes for lasting beauty</p>
                   </div>
                 </div>
               </div>
               
-              <Link href="/about" className="inline-flex items-center mt-8 text-primary-300 font-medium group">
+              <Link href="/about" className="inline-flex items-center mt-8 text-primary font-medium group">
                 Learn more about our story
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2 transform transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -211,12 +211,12 @@ export default function Home() {
       </section>
 
       {/* Featured Portfolio Section - RealVantage Style */}
-      <section className="py-24 px-4 bg-[#0a1427]">
+      <section className="py-24 px-4 bg-white">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h4 className="text-primary-300 uppercase tracking-wider text-sm font-medium mb-3">Our Work</h4>
-            <h2 className="text-3xl md:text-5xl font-light mb-6 leading-tight text-white">Featured Portfolio</h2>
-            <div className="w-20 h-[2px] bg-primary-300/50 mx-auto"></div>
+            <h4 className="text-primary uppercase tracking-wider text-sm font-medium mb-3">Our Work</h4>
+            <h2 className="text-3xl md:text-5xl font-light mb-6 leading-tight text-gray-800">Featured Portfolio</h2>
+            <div className="w-20 h-[2px] bg-primary/50 mx-auto"></div>
           </div>
           
           <motion.div 
@@ -328,7 +328,7 @@ export default function Home() {
           </motion.div>
           
           <div className="text-center mt-12">
-            <Link href="/portfolio" className="inline-flex items-center text-primary-300 hover:text-primary-200 font-medium group">
+            <Link href="/portfolio" className="inline-flex items-center text-primary hover:text-primary-dark font-medium group">
               View All Portfolio Pieces
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2 transform transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -339,10 +339,10 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <section className="py-24 px-4 bg-[#0d1b37]">
+      <section className="py-24 px-4 bg-gray-50">
         <div className="container mx-auto text-center">
-          <h4 className="text-primary-300 uppercase tracking-wider text-sm font-medium mb-3">What We Offer</h4>
-          <h2 className="text-3xl md:text-4xl font-light mb-10 text-white">Our Services</h2>
+          <h4 className="text-primary uppercase tracking-wider text-sm font-medium mb-3">What We Offer</h4>
+          <h2 className="text-3xl md:text-4xl font-light mb-10 text-gray-800">Our Services</h2>
           
           <motion.div 
             variants={stagger}
@@ -352,56 +352,56 @@ export default function Home() {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto"
           >
             {/* Service 1 */}
-            <motion.div variants={fadeIn} className="bg-white/5 backdrop-blur-sm p-6 rounded-lg border border-white/10 hover-lift">
+            <motion.div variants={fadeIn} className="bg-white p-6 rounded-lg shadow-md hover-lift">
               <div className="bg-primary/20 p-4 rounded-full mx-auto mb-5 w-16 h-16 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-primary-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
                 </svg>
               </div>
-              <h3 className="text-xl font-medium mb-3 text-white">Custom Furniture Painting</h3>
-              <p className="text-neutral-300 font-light text-sm mb-4">Transform your furniture with our premium, professional painting services, customized to your exact specifications.</p>
-              <Link href="/services/custom-painting" className="text-primary-300 hover:text-primary-200 text-sm font-medium">Learn More</Link>
+              <h3 className="text-xl font-medium mb-3 text-gray-800">Custom Furniture Painting</h3>
+              <p className="text-gray-600 font-light text-sm mb-4">Transform your furniture with our premium, professional painting services, customized to your exact specifications.</p>
+              <Link href="/services/custom-painting" className="text-primary hover:text-primary-dark text-sm font-medium">Learn More</Link>
             </motion.div>
             
             {/* Service 2 */}
-            <motion.div variants={fadeIn} className="bg-white/5 backdrop-blur-sm p-6 rounded-lg border border-white/10 hover-lift">
+            <motion.div variants={fadeIn} className="bg-white p-6 rounded-lg shadow-md hover-lift">
               <div className="bg-primary/20 p-4 rounded-full mx-auto mb-5 w-16 h-16 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-primary-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-medium mb-3 text-white">Furniture Restoration</h3>
-              <p className="text-neutral-300 font-light text-sm mb-4">Bring your cherished pieces back to life with our comprehensive restoration services, preserving their unique character.</p>
-              <Link href="/services/restoration" className="text-primary-300 hover:text-primary-200 text-sm font-medium">Learn More</Link>
+              <h3 className="text-xl font-medium mb-3 text-gray-800">Furniture Restoration</h3>
+              <p className="text-gray-600 font-light text-sm mb-4">Bring your cherished pieces back to life with our comprehensive restoration services, preserving their unique character.</p>
+              <Link href="/services/restoration" className="text-primary hover:text-primary-dark text-sm font-medium">Learn More</Link>
             </motion.div>
             
             {/* Service 3 */}
-            <motion.div variants={fadeIn} className="bg-white/5 backdrop-blur-sm p-6 rounded-lg border border-white/10 hover-lift">
+            <motion.div variants={fadeIn} className="bg-white p-6 rounded-lg shadow-md hover-lift">
               <div className="bg-primary/20 p-4 rounded-full mx-auto mb-5 w-16 h-16 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-primary-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
               </div>
-              <h3 className="text-xl font-medium mb-3 text-white">Upcycling & Repurposing</h3>
-              <p className="text-neutral-300 font-light text-sm mb-4">Give old furniture new purpose with our creative upcycling services, combining sustainability with innovative design.</p>
-              <Link href="/services/upcycling" className="text-primary-300 hover:text-primary-200 text-sm font-medium">Learn More</Link>
+              <h3 className="text-xl font-medium mb-3 text-gray-800">Upcycling & Repurposing</h3>
+              <p className="text-gray-600 font-light text-sm mb-4">Give old furniture new purpose with our creative upcycling services, combining sustainability with innovative design.</p>
+              <Link href="/services/upcycling" className="text-primary hover:text-primary-dark text-sm font-medium">Learn More</Link>
             </motion.div>
           </motion.div>
         </div>
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-24 px-4">
+      <section className="py-24 px-4 bg-white">
         <div className="container mx-auto text-center">
-          <h4 className="text-primary-300 uppercase tracking-wider text-sm font-medium mb-3">Client Testimonials</h4>
-          <h2 className="text-3xl md:text-4xl font-light mb-16 text-white">What Our Clients Say</h2>
+          <h4 className="text-primary uppercase tracking-wider text-sm font-medium mb-3">Client Testimonials</h4>
+          <h2 className="text-3xl md:text-4xl font-light mb-16 text-gray-800">What Our Clients Say</h2>
           
-          <div className="max-w-4xl mx-auto p-8 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
-            <svg className="w-12 h-12 text-primary-300/50 mx-auto mb-6" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+          <div className="max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-md">
+            <svg className="w-12 h-12 text-primary/50 mx-auto mb-6" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
               <path d="M464 256h-80v-64c0-35.3 28.7-64 64-64h8c13.3 0 24-10.7 24-24V56c0-13.3-10.7-24-24-24h-8c-88.4 0-160 71.6-160 160v240c0 26.5 21.5 48 48 48h128c26.5 0 48-21.5 48-48V304c0-26.5-21.5-48-48-48zm-288 0H96v-64c0-35.3 28.7-64 64-64h8c13.3 0 24-10.7 24-24V56c0-13.3-10.7-24-24-24h-8C71.6 32 0 103.6 0 192v240c0 26.5 21.5 48 48 48h128c26.5 0 48-21.5 48-48V304c0-26.5-21.5-48-48-48z"></path>
             </svg>
-            <p className="text-xl text-white font-light italic mb-8">
+            <p className="text-xl text-gray-700 font-light italic mb-8">
               "Color & Craft Furniture Painter transformed my grandmother's old dresser into a stunning centerpiece for our bedroom. The attention to detail and craftsmanship exceeded all my expectations."
             </p>
             <div className="flex items-center justify-center">
@@ -409,8 +409,8 @@ export default function Home() {
                 <Image src="/images/testimonial-1.jpg" width={48} height={48} alt="Jane D." className="object-cover" />
               </div>
               <div className="text-left">
-                <h4 className="font-medium text-white">Jane Donovan</h4>
-                <p className="text-neutral-400 text-sm">Los Angeles, CA</p>
+                <h4 className="font-medium text-gray-800">Jane Donovan</h4>
+                <p className="text-gray-500 text-sm">Los Angeles, CA</p>
               </div>
             </div>
           </div>
@@ -433,6 +433,6 @@ export default function Home() {
           </Link>
         </div>
       </section>
-      </div>
-  )
+    </div>
+  );
 }

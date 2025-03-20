@@ -3,14 +3,19 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 255, 255, 255; /* White text */
-  --background-start-rgb: 13, 24, 43; /* Darker blue */
-  --background-end-rgb: 10, 18, 35; /* Deep blue */
+  /* Light background colors */
+  --foreground-rgb: 51, 51, 51;
+  --background-start-rgb: 249, 250, 252;
+  --background-end-rgb: 240, 242, 245;
   --primary: #0F4C81;
   --primary-light: #1a6bae;
   --primary-dark: #0a3256;
-  --secondary: #2E7D32;
-  --accent: #D5A021;
+  --secondary: #E4A04C;
+  --secondary-light: #f4b871;
+  --secondary-dark: #c4842c;
+  --accent: #2A9D8F;
+  --accent-light: #34c2b0;
+  --accent-dark: #1c7268;
   --border: #E8ECF2;
 }
 
@@ -26,15 +31,15 @@ body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,
-      rgb(var(--background-start-rgb)),
-      rgb(var(--background-end-rgb))
-    )
-    fixed;
+      rgba(var(--background-start-rgb)),
+      rgba(var(--background-end-rgb))
+    );
+  min-height: 100vh;
 }
 
 /* Typography - RealVantage style */
 h1, h2, h3, h4, h5, h6 {
-  @apply font-heading text-white font-light leading-tight;
+  @apply font-heading text-gray-800 font-light leading-tight;
 }
 
 h1 {
@@ -51,12 +56,12 @@ h3 {
 
 /* Paragraphs */
 p {
-  @apply text-neutral-200 leading-relaxed font-light;
+  @apply text-gray-700 leading-relaxed font-light;
 }
 
 /* Links */
 a {
-  @apply text-neutral-200 hover:text-white transition-colors duration-300;
+  @apply text-primary hover:text-primary-dark transition-colors duration-300;
 }
 
 /* Buttons */
@@ -73,7 +78,7 @@ a {
 }
 
 .btn-outline {
-  @apply border border-white/20 text-white hover:bg-white/10 rounded;
+  @apply border border-primary text-primary hover:bg-primary hover:text-white;
 }
 
 /* Containers */
@@ -83,33 +88,33 @@ a {
 
 /* Cards */
 .card {
-  @apply bg-white/5 backdrop-blur-sm rounded-lg shadow-soft overflow-hidden border border-white/10;
+  @apply bg-white rounded-lg shadow-soft overflow-hidden border border-gray-100;
 }
 
 /* RealVantage specific styles */
 .hero-text {
-  @apply text-2xl md:text-3xl lg:text-4xl font-light text-white leading-relaxed tracking-tight;
+  @apply text-2xl md:text-3xl lg:text-4xl font-light text-gray-800 leading-relaxed tracking-tight;
 }
 
 .section-title {
-  @apply text-3xl md:text-4xl font-light text-white leading-tight mb-6;
+  @apply text-3xl md:text-4xl font-light text-gray-800 leading-tight mb-6;
 }
 
 .section-subtitle {
-  @apply uppercase tracking-wider text-sm font-medium mb-3 text-primary-300;
+  @apply uppercase tracking-wider text-sm font-medium mb-3 text-primary;
 }
 
 .property-card {
-  @apply bg-white/5 backdrop-blur-md p-8 rounded-lg shadow-lg border border-white/10;
+  @apply bg-white p-8 rounded-lg shadow-lg border border-gray-100;
 }
 
 /* Animations */
 .hover-lift {
-  @apply transition-transform duration-300 hover:-translate-y-1;
+  @apply transition-all duration-300;
 }
 
-.hover-scale {
-  @apply transition-transform duration-300 hover:scale-105;
+.hover-lift:hover {
+  @apply transform -translate-y-1 shadow-md;
 }
 
 /* Grid layouts */
@@ -119,20 +124,25 @@ a {
 
 /* Form elements */
 input, select, textarea {
-  @apply bg-white/5 border border-white/20 rounded px-4 py-2 text-white;
+  @apply bg-white border border-gray-200 rounded px-4 py-2 text-gray-700;
   @apply focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent;
 }
 
 /* Navigation */
 .nav-link {
-  @apply text-neutral-200 hover:text-white transition-colors relative;
-  @apply after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-0 after:bg-white;
+  @apply text-gray-700 hover:text-primary transition-colors relative;
+  @apply after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-0 after:bg-primary;
   @apply hover:after:w-full after:transition-all after:duration-300;
 }
 
 /* Dark mode adjustments */
 .dark-mode-text {
-  @apply text-white/90;
+  @apply text-gray-800;
+}
+
+/* Hero section dark overlay for light background */
+.hero-overlay {
+  @apply bg-black/30;
 }
 
 /* Mobile adjustments */
@@ -140,4 +150,22 @@ input, select, textarea {
   .container {
     @apply px-6;
   }
+}
+
+/* Images */
+.image-hover {
+  @apply transition-all duration-500;
+}
+
+.image-hover:hover {
+  @apply scale-105;
+}
+
+/* Footer */
+.footer-area {
+  @apply bg-white py-16;
+}
+
+.footer-bottom {
+  @apply bg-gray-50 py-4;
 }
