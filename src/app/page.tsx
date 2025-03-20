@@ -59,6 +59,12 @@ export default function Home() {
             fill
             className="object-cover"
             priority
+            onError={(e) => {
+              // Fallback to another image if hero-house.png fails to load
+              const target = e.target as HTMLImageElement;
+              target.onerror = null; // Prevent infinite loops
+              target.src = "/images/hero-furniture.png"; // Fallback image
+            }}
           />
           <div className="absolute inset-0 bg-black/30 bg-gradient-to-b from-black/50 to-transparent"></div>
         </div>
