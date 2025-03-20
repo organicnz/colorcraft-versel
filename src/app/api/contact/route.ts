@@ -84,7 +84,7 @@ The Color & Craft Team
         return NextResponse.json(
           { 
             warning: true,
-            message: "Your message was received! In demo mode, emails are only simulated. In production, you would receive a confirmation email.",
+            message: "Message received! (Demo mode: emails are simulated)",
             details: "Development environment - emails are not actually sent to users during testing."
           },
           { status: 200 }
