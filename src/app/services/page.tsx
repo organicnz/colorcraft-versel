@@ -60,7 +60,7 @@ const services = [
       {
         title: "Farmhouse Dining Table",
         description: "Century-old farm table restored with traditional techniques, preserving original patina while ensuring structural integrity.",
-        image: "/images/portfolio/farmhouse-dining-table.jpg"
+        image: "/images/portfolio/farmhouse-dining-table.png"
       }
     ]
   },

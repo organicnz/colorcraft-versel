@@ -399,9 +399,9 @@ export default function Home() {
               variants={fadeIn}
               className="group relative rounded-lg overflow-hidden shadow-xl h-[450px] hover-lift"
             >
-              <Image 
-                src="/images/portfolio/dining-table.png" 
-                alt="Farmhouse Dining Table" 
+              <Image
+                src="/images/portfolio/farmhouse-dining-table.png"
+                alt="Farmhouse Dining Table"
                 fill
                 className="object-cover transition-all duration-700 group-hover:scale-110"
               />
@@ -550,15 +550,15 @@ export default function Home() {
             <div className="flex items-center justify-center">
               <div className="w-12 h-12 rounded-full bg-primary/20 mr-4 overflow-hidden">
                 <Image
-                  src="/images/testimonial-1.jpg"
+                  src="/images/testimonials/rustam-testimonial.png"
                   width={48}
                   height={48}
-                  alt="Jane Donovan"
+                  alt="Rustam Avanesian"
                   className="object-cover"
                 />
               </div>
               <div className="text-left">
-                <h4 className="font-medium text-gray-800">Jane Donovan</h4>
+                <h4 className="font-medium text-gray-800">Rustam Avanesian</h4>
                 <p className="text-gray-500 text-sm">Los Angeles, CA</p>
               </div>
             </div>

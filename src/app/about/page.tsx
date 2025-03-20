@@ -35,10 +35,10 @@ const stagger = {
 const teamMembers = [
   {
     id: 1,
-    name: "Jane Donovan",
-    role: "Lead Designer",
-    bio: "Jane brings over 15 years of experience in interior design and furniture restoration. Her eye for detail and passion for sustainable design practices has made her a leader in the furniture upcycling community.",
-    image: "/images/team/jane-donovan.jpg",
+    name: "Rustam Avanesian",
+    role: "Lead Designer and Painter",
+    bio: "Rustam brings over 15 years of experience in furniture design and restoration. His eye for detail and passion for sustainable design practices has made him a leader in the furniture upcycling community.",
+    image: "/images/team/rustam-avanesian.png",
     social: {
       linkedin: "#",
       instagram: "#",
@@ -47,24 +47,13 @@ const teamMembers = [
   },
   {
     id: 2,
-    name: "Mark Stevens",
-    role: "Master Craftsman",
-    bio: "With a background in traditional woodworking, Mark specializes in structural repairs and authentic restoration techniques that preserve the integrity of antique pieces.",
-    image: "/images/team/mark-stevens.jpg",
+    name: "Kseniia Avanesian",
+    role: "Project Manager",
+    bio: "With a background in interior design and project management, Kseniia ensures each project is completed to the highest standards, on time and within budget, while maintaining clear communication with clients.",
+    image: "/images/team/kseniia-avanesian.png",
     social: {
       linkedin: "#",
       instagram: "#"
-    }
-  },
-  {
-    id: 3,
-    name: "Sarah Chen",
-    role: "Color Specialist",
-    bio: "Sarah's background in fine arts and color theory allows her to create custom color palettes that perfectly complement your space and vision.",
-    image: "/images/team/sarah-chen.jpg",
-    social: {
-      instagram: "#",
-      pinterest: "#"
     }
   }
 ];
