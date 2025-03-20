@@ -1,4 +1,4 @@
-# Color&Craft - Furniture Painting & Restoration
+# Color & Craft - Furniture Painting & Restoration
 
 A complete business solution for custom furniture painting and restoration services. This Next.js application combines a beautiful client-facing website with powerful admin tools for customer relationship management.
 
@@ -72,97 +72,9 @@ A complete business solution for custom furniture painting and restoration servi
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/color&craft.git
-   cd color&craft
+   git clone https://github.com/yourusername/color-craft.git
+   cd color-craft
    ```
 
 2. Install dependencies:
    ```
-   pnpm install
-   ```
-
-3. Create a `.env.local` file with the following variables:
-   ```
-   # Supabase
-   NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
-   SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
-
-   # Resend (for email notifications)
-   RESEND_API_KEY=your-resend-api-key
-
-   # Site URL
-   NEXT_PUBLIC_SITE_URL=http://localhost:3000
-   ```
-
-4. Set up Supabase database:
-   - Navigate to your Supabase project dashboard
-   - Go to the SQL Editor
-   - Copy and paste the contents of `supabase/schema.sql`
-   - Execute the query to set up the database schema
-
-5. Start the development server:
-   ```
-   pnpm dev
-   ```
-
-6. Open [http://localhost:3000](http://localhost:3000) in your browser
-
-## Database Schema
-
-The application uses the following database tables:
-
-1. **users** - User accounts (extends Supabase auth.users)
-   - Customer accounts
-   - Admin accounts
-
-2. **projects** - Portfolio projects 
-   - Before/after images
-   - Techniques and materials used
-   - Client testimonials
-
-3. **customers** - CRM information
-   - Contact details
-   - Notes
-   - Relationship management
-
-4. **services** - Services offered
-   - Descriptions
-   - Price ranges
-   - Service images
-
-5. **inquiries** - Customer inquiries/quotes
-   - Service requested
-   - Details about furniture
-   - Budget and timeline
-
-6. **client_projects** - Active client projects
-   - Project status and progress
-   - Payment tracking
-   - Project timeline
-
-7. **site_content** - Website content
-   - Editable content for website pages
-   - Company information
-   - FAQ and policies
-
-## Deployment
-
-This application is designed to be deployed on Vercel. Follow these steps:
-
-1. Push your code to a GitHub repository
-2. Connect the repository to Vercel
-3. Add environment variables in Vercel dashboard
-4. Deploy!
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgements
-
-- [Next.js](https://nextjs.org/)
-- [Supabase](https://supabase.io/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Resend](https://resend.io/)
-- [Vercel Analytics](https://vercel.com/analytics)

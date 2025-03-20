@@ -12,23 +12,23 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   metadataBase: new URL("https://color-craft.vercel.app"),
   title: {
-    template: "%s | Color&Craft Furniture Painting",
-    default: "Color&Craft Furniture Painting",
+    template: "%s | Color & Craft Furniture Painting",
+    default: "Color & Craft Furniture Painting",
   },
   description:
     "Professional furniture painting and restoration services. Transform your beloved furniture with expert craftsmanship and premium finishes.",
   openGraph: {
-    title: "Color&Craft Furniture Painting",
+    title: "Color & Craft Furniture Painting",
     description:
       "Transform your furniture with expert painting services",
     url: "https://color-craft.vercel.app",
-    siteName: "Color&Craft",
+    siteName: "Color & Craft",
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Color&Craft Furniture Painting",
+    title: "Color & Craft Furniture Painting",
     description:
       "Transform your furniture with expert painting services",
   },
@@ -43,13 +43,13 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <Providers>
-          {/* Main header - Color&Craft style */}
+          {/* Main header - Color & Craft style */}
           <header className="bg-white dark:bg-gray-900 shadow-sm py-3 sticky top-0 z-40">
             <div className="container mx-auto px-4">
               <div className="flex items-center justify-between">
                 {/* Logo */}
                 <Link href="/" className="flex items-center">
-                  <span className="text-xl font-semibold text-primary">Color&Craft</span>
+                  <span className="text-xl font-semibold text-primary">Color & Craft</span>
                 </Link>
 
                 {/* Main Navigation - Desktop */}

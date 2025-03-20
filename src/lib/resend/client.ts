@@ -19,7 +19,7 @@ export async function sendEmail(options: {
     const toAddress = testMode ? 'werbatstalker@gmail.com' : options.to;
     
     // Use default from address if not provided
-    const from = options.from || 'Color&Craft Real Estate <onboarding@resend.dev>';
+    const from = options.from || 'Color & Craft <onboarding@resend.dev>';
     
     console.log(`Sending email in ${testMode ? 'TEST' : 'PRODUCTION'} mode`);
     console.log(`From: ${from}`);

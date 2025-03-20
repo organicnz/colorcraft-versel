@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Verify Email | Color&Craft Furniture",
-  description: "Verify your email address to complete your registration",
+  title: "Verify Email | Color & Craft Furniture Painting",
+  description: "Verify your email to complete your registration.",
 };
 
 export default function VerifyPage() {

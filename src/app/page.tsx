@@ -94,7 +94,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section - Color&Craft Style */}
+      {/* Hero Section - Color & Craft Style */}
       <section ref={heroRef} className="relative pt-24 pb-16 md:pt-32 md:pb-24 bg-gray-50 dark:bg-gray-900 overflow-hidden">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -192,7 +192,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section - Color&Craft Style */}
+      {/* Features Section - Color & Craft Style */}
       <section className="py-16 md:py-24 bg-white dark:bg-gray-800">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
@@ -308,12 +308,12 @@ export default function Home() {
               viewport={{ once: true, margin: "-100px" }}
               className="flex flex-col justify-center"
             >
-              <h4 className="text-primary uppercase tracking-wider text-sm font-medium mb-3">About Color&Craft</h4>
+              <h4 className="text-primary uppercase tracking-wider text-sm font-medium mb-3">About Color & Craft</h4>
               <h2 className="text-3xl md:text-4xl font-light mb-6 leading-tight text-gray-800 dark:text-white">Award-winning <span className="font-medium">furniture painting</span> and restoration studio</h2>
               
               <div className="bg-white dark:bg-gray-800 p-6 rounded-lg mb-8 shadow-sm">
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed font-light">
-                  At Color&Craft, we transform treasured furniture pieces into stunning works of art. Our team of skilled artisans combines traditional techniques with modern finishes to breathe new life into your furniture. Whether you're looking to refresh a family heirloom or update a thrift store find, we bring your vision to life.
+                  At Color & Craft, we transform treasured furniture pieces into stunning works of art. Our team of skilled artisans combines traditional techniques with modern finishes to breathe new life into your furniture. Whether you're looking to refresh a family heirloom or update a thrift store find, we bring your vision to life.
                 </p>
               </div>
               
@@ -545,7 +545,7 @@ export default function Home() {
               <path d="M464 256h-80v-64c0-35.3 28.7-64 64-64h8c13.3 0 24-10.7 24-24V56c0-13.3-10.7-24-24-24h-8c-88.4 0-160 71.6-160 160v240c0 26.5 21.5 48 48 48h128c26.5 0 48-21.5 48-48V304c0-26.5-21.5-48-48-48zm-288 0H96v-64c0-35.3 28.7-64 64-64h8c13.3 0 24-10.7 24-24V56c0-13.3-10.7-24-24-24h-8C71.6 32 0 103.6 0 192v240c0 26.5 21.5 48 48 48h128c26.5 0 48-21.5 48-48V304c0-26.5-21.5-48-48-48z"></path>
             </svg>
             <p className="text-xl text-gray-700 font-light italic mb-8">
-              "Color&Craft Furniture Painter transformed my grandmother's old dresser into a stunning centerpiece for our bedroom. The attention to detail and craftsmanship exceeded all my expectations."
+              "Color & Craft Furniture Painter transformed my grandmother's old dresser into a stunning centerpiece for our bedroom. The attention to detail and craftsmanship exceeded all my expectations."
             </p>
             <div className="flex items-center justify-center">
               <div className="w-12 h-12 rounded-full bg-primary/20 mr-4 overflow-hidden">

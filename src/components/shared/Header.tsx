@@ -38,7 +38,7 @@ export default function Header() {
               height={48} 
               className="mr-3"
             />
-            <span className="text-xl font-bold text-primary">Color&Craft</span>
+            <span className="text-xl font-semibold text-primary">Color & Craft</span>
           </Link>
 
           {/* Desktop Menu */}

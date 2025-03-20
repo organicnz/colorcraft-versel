@@ -1,10 +1,13 @@
+"use client";
+
+import React, { useState } from 'react';
 import { Metadata } from "next";
 import Link from "next/link";
 import SignUpForm from "@/components/forms/SignUpForm";
 
 export const metadata: Metadata = {
-  title: "Sign Up | Color&Craft Furniture",
-  description: "Create a new Color&Craft Furniture account",
+  title: "Create an Account | Color & Craft Furniture Painting",
+  description: "Sign up for a Color & Craft account to save your favorite furniture styles and track your orders.",
 };
 
 export default function SignUpPage() {

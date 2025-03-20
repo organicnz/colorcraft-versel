@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     
     // Prepare email content
     const emailText = `
-Thank you for contacting Color&Craft Furniture Painting!
+Thank you for contacting Color & Craft Furniture Painting!
 
 We've received your message and will get back to you shortly.
 
@@ -43,12 +43,12 @@ Phone: ${phone || 'Not provided'}
 Message: ${message}
 
 Best regards,
-The Color&Craft Team
+The Color & Craft Team
     `;
 
     const emailHtml = `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
-  <h2 style="color: #0F72C1;">Thank you for contacting Color&Craft Furniture Painting!</h2>
+  <h2 style="color: #0F72C1;">Thank you for contacting Color & Craft Furniture Painting!</h2>
   <p>We've received your message and will get back to you shortly.</p>
   
   <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin-top: 20px;">
@@ -60,7 +60,7 @@ The Color&Craft Team
     <p>${message}</p>
   </div>
   
-  <p style="margin-top: 20px;">Best regards,<br>The Color&Craft Team</p>
+  <p style="margin-top: 20px;">Best regards,<br>The Color & Craft Team</p>
 </div>
     `;
     
@@ -70,7 +70,7 @@ The Color&Craft Team
     // Send the email
     const emailResult = await sendEmail({
       to: email,
-      subject: 'Your message to Color&Craft Furniture Painting',
+      subject: 'Your message to Color & Craft Furniture Painting',
       text: emailText,
       html: emailHtml,
       bcc: 'tamerlanium@gmail.com',

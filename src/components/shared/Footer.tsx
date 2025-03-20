@@ -11,7 +11,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-5 gap-10">
           {/* Company Info */}
           <div className="md:col-span-2">
-            <h4 className="text-xl font-semibold mb-6 text-gray-800 dark:text-white">Color&Craft</h4>
+            <h4 className="text-xl font-semibold mb-6 text-gray-800 dark:text-white">Color & Craft</h4>
             <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-md">
               Transforming furniture with expert craftsmanship. We breathe new life into treasured pieces through premium painting, restoration, and custom finishes.
             </p>
@@ -163,7 +163,7 @@ export default function Footer() {
         <div className="container mx-auto py-6 px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-600 dark:text-gray-400 text-sm text-center md:text-left">
-              &copy; {new Date().getFullYear()} Color&Craft. All rights reserved.
+              &copy; {new Date().getFullYear()} Color & Craft. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link href="/privacy" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
@@ -178,7 +178,7 @@ export default function Footer() {
             </div>
           </div>
           <div className="mt-6 text-xs text-gray-500 dark:text-gray-500 text-center md:text-left max-w-3xl">
-            Color&Craft is committed to providing high-quality furniture painting and restoration services. Our expert craftspeople use premium materials and time-tested techniques to transform your cherished furniture pieces into stunning works of art.
+            Color & Craft is committed to providing high-quality furniture painting and restoration services. Our expert craftspeople use premium materials and time-tested techniques to transform your cherished furniture pieces into stunning works of art.
           </div>
         </div>
       </div>
