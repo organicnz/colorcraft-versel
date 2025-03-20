@@ -64,6 +64,13 @@ const projects = [
     tags: ["Vanity", "Vintage", "Pink", "Feminine"],
     imageSrc: "/images/portfolio/vanity.png",
   },
+  {
+    id: 9,
+    title: "Antique Armoire Restoration",
+    description: "A century-old armoire carefully restored with traditional techniques and finished in its original color.",
+    tags: ["Armoire", "Antique", "Restoration", "Traditional"],
+    imageSrc: "/images/portfolio/antique-armoire.jpg",
+  },
 ];
 
 export default function PortfolioPage() {
