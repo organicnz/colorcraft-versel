@@ -119,21 +119,84 @@ export default function Home() {
         </div>
       </section>
 
-      {/* About Section */}
-      <section className="py-16 px-4 bg-gray-50">
-        <div className="container mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">About ColorCraft</h2>
-          <p className="text-lg text-gray-600">
-            We are a team of passionate artisans dedicated to bringing new life
-            to your beloved furniture pieces. With years of experience, we
-            provide high-quality craftsmanship and exceptional customer
-            service.
-          </p>
+      {/* About Section - Redesigned with RealVantage inspiration */}
+      <section className="py-24 px-4">
+        <div className="container mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true, margin: "-100px" }}
+            >
+              <div className="relative">
+                <div className="absolute -top-4 -left-4 w-24 h-24 bg-primary/10 rounded-tl-2xl z-0"></div>
+                <div className="relative h-[500px] w-full overflow-hidden rounded-lg shadow-xl z-10">
+                  <Image
+                    src="/images/portfolio/dresser.png"
+                    alt="Our craftsmanship"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-primary/20 rounded-br-2xl z-0"></div>
+              </div>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true, margin: "-100px" }}
+              className="flex flex-col justify-center"
+            >
+              <h4 className="text-primary uppercase tracking-wider text-sm font-medium mb-3">About ColorCraft</h4>
+              <h2 className="text-3xl md:text-4xl font-light mb-6 leading-tight">Creating <span className="font-semibold">Beautiful Furniture</span> That Transforms Spaces</h2>
+              
+              <div className="bg-gray-50 p-6 rounded-lg mb-8">
+                <p className="text-gray-600 leading-relaxed">
+                  At ColorCraft, we believe that furniture is more than just functional—it's an expression of your personal style. Our team of passionate artisans is dedicated to bringing new life to your beloved furniture pieces through expert craftsmanship and innovative design solutions.
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="flex items-start">
+                  <div className="bg-primary/10 p-3 rounded-full mr-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-gray-900 mb-1">Expert Artisans</h3>
+                    <p className="text-sm text-gray-600">Years of experience in furniture transformation</p>
+                  </div>
+                </div>
+                <div className="flex items-start">
+                  <div className="bg-primary/10 p-3 rounded-full mr-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-gray-900 mb-1">Quality Materials</h3>
+                    <p className="text-sm text-gray-600">Premium paints and finishes for lasting beauty</p>
+                  </div>
+                </div>
+              </div>
+              
+              <Link href="/about" className="inline-flex items-center mt-8 text-primary font-medium group">
+                Learn more about our story
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2 transform transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </Link>
+            </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Featured Projects Section */}
-      <section className="py-16 px-4">
+      <section className="py-16 px-4 bg-gray-50">
         <div className="container mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
             Featured Projects
@@ -154,7 +217,7 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <section className="py-16 px-4 bg-gray-50">
+      <section className="py-16 px-4">
         <div className="container mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Our Services</h2>
           <p className="text-lg text-gray-600 mb-8">
@@ -172,7 +235,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-16 px-4">
+      <section className="py-16 px-4 bg-gray-50">
         <div className="container mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             What Our Clients Say
@@ -186,13 +249,13 @@ export default function Home() {
       </section>
 
       {/* Call to Action Section */}
-      <section className="py-16 px-4 bg-blue-500">
+      <section className="py-16 px-4 bg-primary">
         <div className="container mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
             Ready to Transform Your Furniture?
           </h2>
           <Link href="/contact">
-            <button className="px-6 py-3 bg-white text-blue-500 font-semibold rounded-full hover:bg-blue-100 transition duration-300">
+            <button className="px-6 py-3 bg-white text-primary font-semibold hover:bg-white/90 transition duration-300">
               Contact Us Today
             </button>
           </Link>
