@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/shared/Header";
 import Footer from "@/components/shared/Footer";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,7 +24,29 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <div className="flex min-h-screen flex-col">
-          <Header />
+          <header className="bg-white shadow-md">
+            <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+              <div>
+                <Link href="/" className="text-xl font-semibold text-gray-900">
+                  ColorCraft
+                </Link>
+              </div>
+              <nav className="hidden md:flex space-x-8">
+                <Link href="/services" className="text-gray-700 hover:text-gray-900 transition duration-300">
+                  Services
+                </Link>
+                <Link href="/portfolio" className="text-gray-700 hover:text-gray-900 transition duration-300">
+                  Portfolio
+                </Link>
+                <Link href="/about" className="text-gray-700 hover:text-gray-900 transition duration-300">
+                  About
+                </Link>
+                <Link href="/contact" className="text-gray-700 hover:text-gray-900 transition duration-300">
+                  Contact
+                </Link>
+              </nav>
+            </div>
+          </header>
           <main className="flex-1">{children}</main>
           <Footer />
         </div>
