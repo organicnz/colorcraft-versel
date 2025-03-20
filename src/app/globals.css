@@ -4,12 +4,12 @@
 
 :root {
   --foreground-rgb: 255, 255, 255; /* White text */
-  --background-start-rgb: 26, 42, 73; /* Dark blue background */
-  --background-end-rgb: 13, 27, 55; /* Darker blue for gradient */
-  --primary: #0B4C6F;
-  --primary-foreground: #FFFFFF;
+  --background-start-rgb: 13, 24, 43; /* Darker blue */
+  --background-end-rgb: 10, 18, 35; /* Deep blue */
+  --primary: #0F4C81;
+  --primary-light: #1a6bae;
+  --primary-dark: #0a3256;
   --secondary: #2E7D32;
-  --secondary-foreground: #FFFFFF;
   --accent: #D5A021;
   --border: #E8ECF2;
 }
@@ -17,8 +17,8 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 26, 42, 73;
-    --background-end-rgb: 13, 27, 55;
+    --background-start-rgb: 13, 24, 43;
+    --background-end-rgb: 10, 18, 35;
   }
 }
 
@@ -32,19 +32,31 @@ body {
     fixed;
 }
 
-/* Headings */
+/* Typography - RealVantage style */
 h1, h2, h3, h4, h5, h6 {
-  @apply font-heading text-white font-medium leading-tight;
+  @apply font-heading text-white font-light leading-tight;
+}
+
+h1 {
+  @apply text-4xl md:text-5xl lg:text-6xl tracking-tight;
+}
+
+h2 {
+  @apply text-3xl md:text-4xl tracking-tight;
+}
+
+h3 {
+  @apply text-2xl md:text-3xl;
 }
 
 /* Paragraphs */
 p {
-  @apply text-neutral-200 leading-relaxed;
+  @apply text-neutral-200 leading-relaxed font-light;
 }
 
 /* Links */
 a {
-  @apply text-primary-200 hover:text-primary-100 transition-colors duration-300;
+  @apply text-neutral-200 hover:text-white transition-colors duration-300;
 }
 
 /* Buttons */
@@ -53,15 +65,15 @@ a {
 }
 
 .btn-primary {
-  @apply bg-primary text-white hover:bg-primary-700 rounded-md;
+  @apply bg-primary text-white hover:bg-primary-light rounded;
 }
 
 .btn-secondary {
-  @apply bg-secondary text-white hover:bg-secondary-600 rounded-md;
+  @apply bg-secondary text-white hover:bg-secondary-600 rounded;
 }
 
 .btn-outline {
-  @apply border border-primary text-primary hover:bg-primary hover:text-white rounded-md;
+  @apply border border-white/20 text-white hover:bg-white/10 rounded;
 }
 
 /* Containers */
@@ -71,62 +83,61 @@ a {
 
 /* Cards */
 .card {
-  @apply bg-white rounded-lg shadow-soft overflow-hidden;
+  @apply bg-white/5 backdrop-blur-sm rounded-lg shadow-soft overflow-hidden border border-white/10;
 }
 
 /* RealVantage specific styles */
 .hero-text {
-  @apply text-2xl md:text-3xl lg:text-4xl font-light text-white leading-relaxed;
+  @apply text-2xl md:text-3xl lg:text-4xl font-light text-white leading-relaxed tracking-tight;
 }
 
 .section-title {
-  @apply text-3xl md:text-4xl font-medium text-dark leading-tight mb-6;
+  @apply text-3xl md:text-4xl font-light text-white leading-tight mb-6;
+}
+
+.section-subtitle {
+  @apply uppercase tracking-wider text-sm font-medium mb-3 text-primary-300;
 }
 
 .property-card {
-  @apply bg-white/90 backdrop-blur-md p-8 rounded-lg shadow-lg;
+  @apply bg-white/5 backdrop-blur-md p-8 rounded-lg shadow-lg border border-white/10;
 }
 
-@layer base {
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-heading text-gray-900 font-medium;
-  }
-  
-  h1 {
-    @apply text-4xl md:text-5xl lg:text-6xl font-light leading-tight;
-  }
-  
-  h2 {
-    @apply text-3xl md:text-4xl font-light leading-tight;
-  }
-  
-  h3 {
-    @apply text-2xl font-medium;
-  }
-  
-  p {
-    @apply text-gray-700 leading-relaxed;
-  }
-  
-  a {
-    @apply text-primary hover:text-primary-600 transition-colors;
-  }
+/* Animations */
+.hover-lift {
+  @apply transition-transform duration-300 hover:-translate-y-1;
 }
 
-@layer components {
+.hover-scale {
+  @apply transition-transform duration-300 hover:scale-105;
+}
+
+/* Grid layouts */
+.feature-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8;
+}
+
+/* Form elements */
+input, select, textarea {
+  @apply bg-white/5 border border-white/20 rounded px-4 py-2 text-white;
+  @apply focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent;
+}
+
+/* Navigation */
+.nav-link {
+  @apply text-neutral-200 hover:text-white transition-colors relative;
+  @apply after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-0 after:bg-white;
+  @apply hover:after:w-full after:transition-all after:duration-300;
+}
+
+/* Dark mode adjustments */
+.dark-mode-text {
+  @apply text-white/90;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
   .container {
-    @apply mx-auto px-4;
-  }
-  
-  .section-title {
-    @apply text-3xl md:text-4xl font-light mb-6 leading-tight;
-  }
-  
-  .section-subtitle {
-    @apply text-primary uppercase tracking-wider text-sm font-medium mb-3;
-  }
-  
-  .card {
-    @apply bg-white rounded-lg shadow-soft overflow-hidden;
+    @apply px-6;
   }
 }

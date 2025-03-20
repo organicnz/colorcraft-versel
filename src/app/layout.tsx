@@ -53,26 +53,38 @@ export default function RootLayout({
     <html lang="en" className={`${dmSans.variable} ${poppins.variable}`}>
       <body className="font-sans">
         <div className="flex min-h-screen flex-col">
-          <header className="absolute top-0 left-0 w-full z-50">
+          {/* Pre-header contact strip */}
+          <div className="bg-gradient-to-r from-primary-900 to-primary-700 text-white py-2 px-4">
+            <div className="container mx-auto flex justify-end">
+              <a href="tel:+17477557695" className="flex items-center text-sm font-light">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                +1 747 755 7695
+              </a>
+            </div>
+          </div>
+          
+          <header className="absolute top-0 left-0 w-full z-50 mt-8">
             <nav className="bg-transparent">
-              <div className="container mx-auto px-4 py-6">
-                <div className="flex flex-col md:flex-row items-center justify-between">
-                  <div className="flex items-center mb-4 md:mb-0">
+              <div className="container mx-auto px-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
                     <Link href="/" className="flex items-center">
                       <Image
                         src="/images/logo.png"
-                        alt="ColorCraft Logo"
-                        width={48}
-                        height={48}
+                        alt="Color Craft Logo"
+                        width={42}
+                        height={42}
                         className="mr-3"
                       />
-                      <span className="text-xl font-semibold text-white">
-                        ColorCraft
+                      <span className="text-xl font-medium text-white">
+                        Color Craft
                       </span>
                     </Link>
                   </div>
-                  <div className="flex items-center justify-center space-x-8">
-                    <ul className="flex space-x-8 font-medium">
+                  <div className="hidden md:flex items-center space-x-10">
+                    <ul className="flex space-x-8 font-light text-sm">
                       <li>
                         <Link href="/" className="text-white hover:text-white/80 transition-colors">
                           Home
@@ -95,25 +107,21 @@ export default function RootLayout({
                       </li>
                     </ul>
                     
-                    <a 
-                      href="tel:+17477557695" 
-                      className="flex items-center bg-white text-primary px-4 py-2 rounded-full text-sm hover:bg-white/90 transition-colors"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                      </svg>
-                      +1 747 755 7695
-                    </a>
-                    
                     <Link 
-                      href="/signin" 
-                      className="flex items-center bg-white/20 backdrop-blur-sm border border-white/30 text-white px-5 py-2 rounded-full text-sm hover:bg-white/30 transition-colors"
+                      href="/contact" 
+                      className="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-5 py-2 rounded text-sm hover:bg-white/20 transition-colors"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                      </svg>
-                      Sign In
+                      Request Quote
                     </Link>
+                  </div>
+                  
+                  {/* Mobile menu button - hidden on desktop */}
+                  <div className="md:hidden">
+                    <button className="text-white">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
               </div>
