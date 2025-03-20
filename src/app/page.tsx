@@ -549,7 +549,13 @@ export default function Home() {
             </p>
             <div className="flex items-center justify-center">
               <div className="w-12 h-12 rounded-full bg-primary/20 mr-4 overflow-hidden">
-                <Image src="/images/testimonial-1.jpg" width={48} height={48} alt="Jane D." className="object-cover" />
+                <Image
+                  src="/images/testimonial-1.jpg"
+                  width={48}
+                  height={48}
+                  alt="Jane Donovan"
+                  className="object-cover"
+                />
               </div>
               <div className="text-left">
                 <h4 className="font-medium text-gray-800">Jane Donovan</h4>

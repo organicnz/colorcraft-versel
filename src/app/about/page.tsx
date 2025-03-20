@@ -38,7 +38,7 @@ const teamMembers = [
     name: "Jane Donovan",
     role: "Lead Designer",
     bio: "Jane brings over 15 years of experience in interior design and furniture restoration. Her eye for detail and passion for sustainable design practices has made her a leader in the furniture upcycling community.",
-    image: "https://placehold.co/400x500/e2e8f0/1e293b?text=Jane+Donovan",
+    image: "/images/team/jane-donovan.jpg",
     social: {
       linkedin: "#",
       instagram: "#",
@@ -50,7 +50,7 @@ const teamMembers = [
     name: "Mark Stevens",
     role: "Master Craftsman",
     bio: "With a background in traditional woodworking, Mark specializes in structural repairs and authentic restoration techniques that preserve the integrity of antique pieces.",
-    image: "https://placehold.co/400x500/e2e8f0/1e293b?text=Mark+Stevens",
+    image: "/images/team/mark-stevens.jpg",
     social: {
       linkedin: "#",
       instagram: "#"
@@ -61,7 +61,7 @@ const teamMembers = [
     name: "Sarah Chen",
     role: "Color Specialist",
     bio: "Sarah's background in fine arts and color theory allows her to create custom color palettes that perfectly complement your space and vision.",
-    image: "https://placehold.co/400x500/e2e8f0/1e293b?text=Sarah+Chen",
+    image: "/images/team/sarah-chen.jpg",
     social: {
       instagram: "#",
       pinterest: "#"
@@ -101,7 +101,7 @@ export default function AboutPage() {
             >
               <div className="relative h-[400px] md:h-[500px] w-full overflow-hidden rounded-lg shadow-lg">
                 <Image
-                  src="https://placehold.co/800x500/e2e8f0/1e293b?text=Workshop"
+                  src="/images/workshop.jpg"
                   alt="Our workshop"
                   fill
                   className="object-cover"
