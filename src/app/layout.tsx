@@ -1,22 +1,17 @@
 import type { Metadata } from "next";
-import { Raleway, Playfair_Display } from "next/font/google";
-import { Analytics } from "@vercel/analytics/react";
-import SupabaseProvider from "@/components/providers/SupabaseProvider";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import Header from "@/components/shared/Header";
+import Footer from "@/components/shared/Footer";
 
-const raleway = Raleway({
-  variable: "--font-raleway",
-  subsets: ["latin"],
-});
-
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Furniture Painter",
-  description: "Transform your furniture with our professional painting and restoration services",
+  title: {
+    template: "%s | ColorCraft Furniture",
+    default: "ColorCraft Furniture - Professional Furniture Painting",
+  },
+  description: "Transforming furniture with professional painting and restoration services.",
 };
 
 export default function RootLayout({
@@ -26,13 +21,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${raleway.variable} ${playfair.variable} antialiased`}
-      >
-        <SupabaseProvider>
-          {children}
-          <Analytics />
-        </SupabaseProvider>
+      <body className={inter.className}>
+        <div className="flex min-h-screen flex-col">
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </div>
       </body>
     </html>
   );
