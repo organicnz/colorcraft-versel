@@ -45,7 +45,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section ref={heroRef} className="relative h-[90vh] md:h-[80vh] w-full">
+      <section ref={heroRef} className="relative h-screen w-full">
         <div className="absolute inset-0">
           <Image
             src="/images/hero-house.png"
