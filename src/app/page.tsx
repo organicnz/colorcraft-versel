@@ -54,13 +54,13 @@ export default function Home() {
       <section className="relative h-screen w-full">
         <div className="absolute inset-0">
           <Image
-            src={projects[currentProject].image}
-            alt="Beautifully painted furniture"
+            src="/images/hero-house.png"
+            alt="Beautiful home interior"
             fill
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-black/40"></div>
+          <div className="absolute inset-0 bg-black/30 bg-gradient-to-b from-black/50 to-transparent"></div>
         </div>
 
         <div className="absolute inset-0 flex items-center justify-center">
@@ -74,7 +74,7 @@ export default function Home() {
               variants={fadeIn}
               className="text-2xl font-light text-white/90 mb-4"
             >
-              {projects[currentProject].name}
+              Expert Furniture Transformation
             </motion.h2>
             
             <motion.h1 
@@ -88,7 +88,7 @@ export default function Home() {
               variants={fadeIn}
               className="text-lg md:text-xl text-white/80 mb-10 max-w-2xl"
             >
-              {projects[currentProject].description}
+              We transform ordinary furniture into extraordinary statements, combining traditional craftsmanship with modern design to create pieces that truly reflect your vision.
             </motion.p>
             
             <motion.div 
@@ -109,20 +109,6 @@ export default function Home() {
               </Link>
             </motion.div>
           </motion.div>
-        </div>
-
-        {/* Project Navigation */}
-        <div className="absolute bottom-10 left-0 right-0 flex justify-center gap-3">
-          {projects.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentProject(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                currentProject === index ? "bg-white scale-125" : "bg-white/50"
-              }`}
-              aria-label={`View project ${index + 1}`}
-            />
-          ))}
         </div>
       </section>
 
