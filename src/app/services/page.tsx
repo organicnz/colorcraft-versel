@@ -25,6 +25,18 @@ const services = [
       "Custom finishes (distressed, antiqued, etc.)",
     ],
     image: "/images/portfolio/service-painting.jpg",
+    showcaseWork: [
+      {
+        title: "Coastal Blue Sideboard",
+        description: "A vintage sideboard transformed with a custom-mixed coastal blue finish and new hardware.",
+        image: "/images/portfolio/sideboard.png"
+      },
+      {
+        title: "Sage Green Buffet",
+        description: "Mid-century buffet painted in a serene sage green with original brass hardware restored.",
+        image: "/images/portfolio/cabinet.png"
+      }
+    ]
   },
   {
     id: "restoration",
@@ -39,6 +51,18 @@ const services = [
       "Conservation of original elements",
     ],
     image: "/images/portfolio/service-restoration.jpg",
+    showcaseWork: [
+      {
+        title: "Victorian Dresser Restoration",
+        description: "Complete restoration of a 19th century dresser with veneer repair and authentic finish matching.",
+        image: "/images/portfolio/dresser.png"
+      },
+      {
+        title: "Farmhouse Dining Table",
+        description: "Century-old farm table restored with traditional techniques, preserving original patina while ensuring structural integrity.",
+        image: "/images/portfolio/farmhouse-dining-table.jpg"
+      }
+    ]
   },
   {
     id: "upcycling",
@@ -186,6 +210,39 @@ export default function ServicesPage() {
                 />
               </div>
             </motion.div>
+            
+            {/* Showcase Work Section */}
+            {service.showcaseWork && service.showcaseWork.length > 0 && (
+              <div className="mt-16">
+                <h3 className="text-2xl font-light mb-8">Recent {service.title} Projects</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {service.showcaseWork.map((work, idx) => (
+                    <motion.div
+                      key={idx}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: idx * 0.2 }}
+                      viewport={{ once: true }}
+                      className="group relative overflow-hidden rounded-lg shadow-md"
+                    >
+                      <div className="relative h-64 w-full overflow-hidden">
+                        <Image
+                          src={work.image}
+                          alt={work.title}
+                          fill
+                          className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      </div>
+                      <div className="p-6 bg-white dark:bg-gray-800">
+                        <h4 className="text-lg font-medium text-gray-900 dark:text-white mb-2">{work.title}</h4>
+                        <p className="text-gray-600 dark:text-gray-300 text-sm">{work.description}</p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            )}
           </section>
         ))}
       </div>
