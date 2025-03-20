@@ -1,4 +1,4 @@
-# ColorCraft - Furniture Painting & Restoration
+# Color&Craft - Furniture Painting & Restoration
 
 A complete business solution for custom furniture painting and restoration services. This Next.js application combines a beautiful client-facing website with powerful admin tools for customer relationship management.
 
@@ -72,8 +72,8 @@ A complete business solution for custom furniture painting and restoration servi
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/colorcraft.git
-   cd colorcraft
+   git clone https://github.com/yourusername/color&craft.git
+   cd color&craft
    ```
 
 2. Install dependencies:

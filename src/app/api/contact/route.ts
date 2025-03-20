@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     
     // Send email using Resend
     const { data, error } = await resend.emails.send({
-      from: 'ColorCraft Furniture <contact@your-domain.com>',
+      from: 'Color&Craft Furniture <contact@your-domain.com>',
       to: ['admin@your-domain.com'],
       subject: 'New Contact Form Submission',
       text: `

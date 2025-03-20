@@ -44,7 +44,7 @@ export default function LoginPage() {
             <div className="relative w-12 h-12">
               <Image
                 src="/logo.svg"
-                alt="Color & Craft Logo"
+                alt="Color&Craft Logo"
                 fill
                 className="object-contain"
               />
@@ -169,7 +169,7 @@ export default function LoginPage() {
       </div>
       
       <p className="mt-8 text-center text-sm text-gray-600">
-        &copy; {new Date().getFullYear()} Color & Craft Furniture Painter. All rights reserved.
+        &copy; {new Date().getFullYear()} Color&Craft Furniture Painter. All rights reserved.
       </p>
     </div>
   );

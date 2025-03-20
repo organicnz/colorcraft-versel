@@ -1,6 +1,6 @@
 {
-  "name": "ColorCraft Furniture",
-  "short_name": "ColorCraft",
+  "name": "Color&Craft Furniture",
+  "short_name": "Color&Craft",
   "icons": [
     {
       "src": "/favicon/android-chrome-192x192.png",
@@ -13,7 +13,7 @@
       "type": "image/png"
     }
   ],
-  "theme_color": "#ffffff",
+  "theme_color": "#0F4C81",
   "background_color": "#ffffff",
   "display": "standalone"
 } 

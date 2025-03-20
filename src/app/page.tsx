@@ -165,12 +165,12 @@ export default function Home() {
               viewport={{ once: true, margin: "-100px" }}
               className="flex flex-col justify-center"
             >
-              <h4 className="text-primary uppercase tracking-wider text-sm font-medium mb-3">About Color & Craft</h4>
+              <h4 className="text-primary uppercase tracking-wider text-sm font-medium mb-3">About Color&Craft</h4>
               <h2 className="text-3xl md:text-4xl font-light mb-6 leading-tight text-gray-800">Creating <span className="font-medium">Beautiful Furniture</span> That Transforms Spaces</h2>
               
               <div className="bg-white p-6 rounded-lg mb-8 shadow-sm">
                 <p className="text-gray-600 leading-relaxed font-light">
-                  At Color & Craft Furniture Painter, we believe that furniture is more than just functional—it's an expression of your personal style. Our team of passionate artisans is dedicated to bringing new life to your beloved furniture pieces through expert craftsmanship and innovative design solutions.
+                  At Color&Craft Furniture Painter, we believe that furniture is more than just functional—it's an expression of your personal style. Our team of passionate artisans is dedicated to bringing new life to your beloved furniture pieces through expert craftsmanship and innovative design solutions.
                 </p>
               </div>
               
@@ -402,7 +402,7 @@ export default function Home() {
               <path d="M464 256h-80v-64c0-35.3 28.7-64 64-64h8c13.3 0 24-10.7 24-24V56c0-13.3-10.7-24-24-24h-8c-88.4 0-160 71.6-160 160v240c0 26.5 21.5 48 48 48h128c26.5 0 48-21.5 48-48V304c0-26.5-21.5-48-48-48zm-288 0H96v-64c0-35.3 28.7-64 64-64h8c13.3 0 24-10.7 24-24V56c0-13.3-10.7-24-24-24h-8C71.6 32 0 103.6 0 192v240c0 26.5 21.5 48 48 48h128c26.5 0 48-21.5 48-48V304c0-26.5-21.5-48-48-48z"></path>
             </svg>
             <p className="text-xl text-gray-700 font-light italic mb-8">
-              "Color & Craft Furniture Painter transformed my grandmother's old dresser into a stunning centerpiece for our bedroom. The attention to detail and craftsmanship exceeded all my expectations."
+              "Color&Craft Furniture Painter transformed my grandmother's old dresser into a stunning centerpiece for our bedroom. The attention to detail and craftsmanship exceeded all my expectations."
             </p>
             <div className="flex items-center justify-center">
               <div className="w-12 h-12 rounded-full bg-primary/20 mr-4 overflow-hidden">

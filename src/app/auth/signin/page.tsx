@@ -3,8 +3,8 @@ import Link from "next/link";
 import SignInForm from "@/components/forms/SignInForm";
 
 export const metadata: Metadata = {
-  title: "Sign In | ColorCraft Furniture",
-  description: "Sign in to your ColorCraft Furniture account",
+  title: "Sign In | Color&Craft Furniture",
+  description: "Sign in to your Color&Craft Furniture account",
 };
 
 export default function SignInPage() {

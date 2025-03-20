@@ -3,8 +3,8 @@ import Link from "next/link";
 import SignUpForm from "@/components/forms/SignUpForm";
 
 export const metadata: Metadata = {
-  title: "Sign Up | ColorCraft Furniture",
-  description: "Create a new ColorCraft Furniture account",
+  title: "Sign Up | Color&Craft Furniture",
+  description: "Create a new Color&Craft Furniture account",
 };
 
 export default function SignUpPage() {

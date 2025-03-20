@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Verify Email | ColorCraft Furniture",
+  title: "Verify Email | Color&Craft Furniture",
   description: "Verify your email address to complete your registration",
 };
 

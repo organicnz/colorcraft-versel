@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import ContactForm from "@/components/forms/ContactForm"
 
 export const metadata: Metadata = {
-  title: "Contact Us | ColorCraft Furniture Painting",
+  title: "Contact Us | Color&Craft Furniture Painting",
   description: "Get in touch with us for custom furniture painting services, quotes, or any questions you might have.",
 }
 
@@ -34,7 +34,7 @@ export default function ContactPage() {
               
               <div>
                 <h3 className="text-md font-medium text-gray-700">Email</h3>
-                <p className="text-gray-600">contact@colorcraft.com</p>
+                <p className="text-gray-600">contact@color&craft.com</p>
               </div>
               
               <div>

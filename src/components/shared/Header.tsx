@@ -33,12 +33,12 @@ export default function Header() {
           <Link href="/" className="flex items-center">
             <Image 
               src="/images/logo.png" 
-              alt="ColorCraft Logo" 
-              width={40} 
-              height={40} 
-              className="mr-2"
+              alt="Color&Craft Logo" 
+              width={48} 
+              height={48} 
+              className="mr-3"
             />
-            <span className="text-xl font-bold text-primary">ColorCraft</span>
+            <span className="text-xl font-bold text-primary">Color&Craft</span>
           </Link>
 
           {/* Desktop Menu */}
