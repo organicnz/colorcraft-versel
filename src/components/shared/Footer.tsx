@@ -17,7 +17,9 @@ export default function Footer() {
             </p>
             <div className="flex space-x-4">
               <a
-                href="#"
+                href="https://www.facebook.com/profile.php?id=61557012322783"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="bg-gray-200 dark:bg-gray-800 p-2 rounded-full hover:bg-primary hover:text-white transition-colors"
                 aria-label="Follow us on Facebook"
               >
