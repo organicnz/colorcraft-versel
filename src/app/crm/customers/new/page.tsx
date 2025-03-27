@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import CustomerFormWrapper from './customer-form';
 
 export const metadata = {
   title: 'New Customer | Color & Craft CRM',
