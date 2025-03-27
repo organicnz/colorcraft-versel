@@ -18,8 +18,8 @@ export async function sendEmail(options: {
     const testMode = process.env.NODE_ENV !== 'production';
     const toAddress = testMode ? 'werbatstalker@gmail.com' : options.to;
     
-    // Use default from address if not provided
-    const from = options.from || 'Color & Craft <onboarding@resend.dev>';
+    // Use default from address if not provided, with the verified domain
+    const from = options.from || env.NEXT_PUBLIC_EMAIL_FROM;
     
     console.log(`Sending email in ${testMode ? 'TEST' : 'PRODUCTION'} mode`);
     console.log(`From: ${from}`);
