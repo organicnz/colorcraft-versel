@@ -1,0 +1,57 @@
+## Vercel CLI and Logs
+
+### Installation and Authentication
+```bash
+# Install Vercel CLI globally
+npm install -g vercel
+
+# Authenticate with Vercel
+vercel login
+```
+
+### Viewing Deployment Logs
+```bash
+# List all your projects
+vercel ls
+
+# View real-time logs for a specific deployment
+vercel logs [deployment-url]
+
+# Filter logs by type (info, error, warning, debug)
+vercel logs [deployment-url] --type=error
+
+# Pull logs from the last 1 hour
+vercel logs [deployment-url] --since=1h
+
+# Follow logs in real-time (like tail -f)
+vercel logs [deployment-url] --follow
+
+# View logs from a specific production deployment
+vercel logs [project-name] --prod
+```
+
+### Checking Function Execution and Performance
+```bash
+# View logs with performance data
+vercel logs [deployment-url] --show-meta
+
+# Filter logs by path to inspect specific API routes
+vercel logs [deployment-url] --path=/api/auth
+
+# Check the last 50 entries
+vercel logs [deployment-url] --limit=50
+```
+
+### Troubleshooting Deployments
+```bash
+# Get detailed deployment information
+vercel inspect [deployment-id]
+
+# Check deployment environment variables
+vercel env ls
+
+# View build logs for a specific deployment
+vercel logs [deployment-url] --scope=build
+```
+
+Use these commands to monitor your application regularly for errors, performance issues, and abnormal behavior. Set up periodic checks as part of your maintenance routine. 
