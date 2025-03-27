@@ -6,8 +6,26 @@ export const metadata = {
   description: 'Manage your customers, leads, and projects',
 };
 
+export const dynamic = 'force-dynamic'; // Ensure this page is always dynamically rendered
+
 export default async function CrmDashboard() {
-  const stats = await CrmApi.getDashboardStats();
+  // Add try/catch for error handling
+  let stats;
+  try {
+    stats = await CrmApi.getDashboardStats();
+  } catch (error) {
+    console.error('Error fetching dashboard stats:', error);
+    // Provide fallback data
+    stats = {
+      counts: {
+        customers: 0,
+        leads: 0,
+        projects: 0,
+        activeProjects: 0
+      },
+      recentActivity: []
+    };
+  }
   
   return (
     <div className="container mx-auto px-4 py-8">
