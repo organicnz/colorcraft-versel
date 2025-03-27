@@ -18,31 +18,31 @@ export default async function CrmDashboard() {
       
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatsCard 
-          title="Customers" 
-          value={stats.counts.customers} 
-          link="/crm/customers" 
+        <StatsCard
+          title="Customers"
+          value={stats.counts.customers ?? 0}
+          link="/crm/customers"
           linkText="View All"
           color="bg-blue-500"
         />
-        <StatsCard 
-          title="Active Leads" 
-          value={stats.counts.leads} 
-          link="/crm/leads" 
+        <StatsCard
+          title="Active Leads"
+          value={stats.counts.leads ?? 0}
+          link="/crm/leads"
           linkText="View All"
           color="bg-green-500"
         />
-        <StatsCard 
-          title="Total Projects" 
-          value={stats.counts.projects} 
-          link="/crm/projects" 
+        <StatsCard
+          title="Total Projects"
+          value={stats.counts.projects ?? 0}
+          link="/crm/projects"
           linkText="View All"
           color="bg-purple-500"
         />
-        <StatsCard 
-          title="Active Projects" 
-          value={stats.counts.activeProjects} 
-          link="/crm/projects?status=active" 
+        <StatsCard
+          title="Active Projects"
+          value={stats.counts.activeProjects ?? 0}
+          link="/crm/projects?status=active"
           linkText="View Active"
           color="bg-yellow-500"
         />
