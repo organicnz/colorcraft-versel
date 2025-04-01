@@ -198,18 +198,18 @@ export default function Home() {
         {/* Hero Section */}
         <section className="relative pt-24 pb-16 md:pt-32 md:pb-24 bg-neutral-50 dark:bg-neutral-900 overflow-hidden">
           <div className="container px-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <motion.div
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <motion.div
                  variants={fadeIn(0, 1)} initial="hidden" animate="visible"
-                className="max-w-2xl"
-              >
+              className="max-w-2xl"
+            >
                 <h1 className="text-3xl md:text-4xl lg:text-5xl font-light text-foreground leading-tight mb-6">
                   Transform your furniture with <span className="font-semibold text-primary">expert painting</span> services
-                </h1>
+              </h1>
                 <p className="text-lg md:text-xl text-muted-foreground mb-8 font-light">
-                  Breathe new life into your beloved furniture pieces with our professional painting and restoration services. From vintage revivals to modern makeovers.
-                </p>
-
+                Breathe new life into your beloved furniture pieces with our professional painting and restoration services. From vintage revivals to modern makeovers.
+              </p>
+              
                 <Card className="mb-8">
                   <CardContent className="p-6 space-y-4">
                      <div className="space-y-2">
@@ -217,26 +217,26 @@ export default function Home() {
                           Request a free consultation
                         </label>
                         <Input
-                          type="email"
+                    type="email"
                           id="hero-email"
-                          placeholder="you@example.com"
-                        />
-                     </div>
+                    placeholder="you@example.com"
+                  />
+                </div>
                     <Button className="w-full" size="lg" asChild>
                       <Link href="/contact">Get Started</Link>
                     </Button>
                     <p className="text-xs text-muted-foreground text-center">
-                      Professional furniture painting services
-                    </p>
+                  Professional furniture painting services
+                </p>
                   </CardContent>
                 </Card>
-              </motion.div>
-
-              <motion.div
+            </motion.div>
+            
+            <motion.div
                 variants={fadeIn(0.3, 0.8)} initial="hidden" animate="visible"
-                className="relative"
-              >
-                <div className="relative h-[400px] md:h-[500px] w-full overflow-hidden rounded-lg shadow-2xl">
+              className="relative"
+            >
+              <div className="relative h-[400px] md:h-[500px] w-full overflow-hidden rounded-lg shadow-2xl">
                    {/* Carousel Image */}
                   <AnimatePresence mode="wait">
                     <motion.div
@@ -247,19 +247,19 @@ export default function Home() {
                       transition={{ duration: 0.5 }}
                       className="absolute inset-0"
                     >
-                      <Image
-                        src={currentProperty.image}
+                <Image
+                  src={currentProperty.image}
                         alt={currentProperty.title}
-                        fill
-                        className="object-cover"
+                  fill
+                  className="object-cover"
                         priority={currentProjectIndex === 0} // Only prioritize the first image
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 50vw"
-                      />
+                />
                     </motion.div>
                   </AnimatePresence>
 
-                  {/* Property Info Overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-6">
+                {/* Property Info Overlay */}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-6">
                     <motion.div
                       key={currentProperty.id + '-info'} // Key change triggers animation
                       initial={{ opacity: 0, y: 10 }}
@@ -267,109 +267,109 @@ export default function Home() {
                       transition={{ delay: 0.2, duration: 0.4 }}
                       className="flex justify-between items-end"
                     >
-                      <div>
+                    <div>
                          <Badge variant="secondary" className="mb-2">{currentProperty.type}</Badge>
-                        <h3 className="text-xl md:text-2xl font-light text-white mb-1">
-                          {currentProperty.title}
-                        </h3>
+                      <h3 className="text-xl md:text-2xl font-light text-white mb-1">
+                        {currentProperty.title}
+                      </h3>
                         <p className="text-neutral-300 text-sm mb-1">
-                          {currentProperty.location}
-                        </p>
-                        <div className="flex items-center mt-2">
-                          <span className="text-white font-bold mr-3">{currentProperty.price}</span>
-                           <span className="text-green-400 text-sm">{currentProperty.return}</span>
-                        </div>
+                        {currentProperty.location}
+                      </p>
+                      <div className="flex items-center mt-2">
+                        <span className="text-white font-bold mr-3">{currentProperty.price}</span>
+                        <span className="text-green-400 text-sm">{currentProperty.return}</span>
                       </div>
+                    </div>
                       <Button size="sm" asChild>
                         <Link href="/portfolio">View Details</Link>
                       </Button>
                     </motion.div>
-                  </div>
                 </div>
-
-                {/* Property Indicators */}
-                <div className="flex justify-center mt-6 space-x-2">
+              </div>
+              
+              {/* Property Indicators */}
+              <div className="flex justify-center mt-6 space-x-2">
                   {properties.map((_, index) => (
-                    <button
+                  <button
                       key={index}
-                      onClick={() => setCurrentProjectIndex(index)}
+                    onClick={() => setCurrentProjectIndex(index)}
                       className={`h-2 rounded-full transition-all duration-300 ${index === currentProjectIndex ? "bg-primary w-6" : "bg-muted-foreground/50 w-2"}`}
                       aria-label={`View project ${index + 1}`}
-                    />
-                  ))}
-                </div>
-              </motion.div>
-            </div>
+                  />
+                ))}
+              </div>
+            </motion.div>
           </div>
-        </section>
+        </div>
+      </section>
 
         {/* How It Works Section */}
         <section className="py-16 md:py-24 bg-background">
           <div className="container px-6">
-            <div className="text-center mb-16">
+          <div className="text-center mb-16">
               <h4 className="text-primary uppercase tracking-wider text-sm font-semibold mb-3">How It Works</h4>
               <h2 className="text-3xl md:text-4xl font-light mb-4 text-foreground">Transform your furniture <span className="font-semibold">in three simple steps</span></h2>
               <div className="w-20 h-1 bg-primary/30 mx-auto"></div>
-            </div>
-
+          </div>
+          
             <motion.div
               variants={staggerContainer()} initial="hidden" whileInView="visible"
               viewport={{ once: true, amount: 0.3 }}
               className="grid grid-cols-1 md:grid-cols-3 gap-8"
             >
               {howItWorksSteps.map((step, index) => (
-                <motion.div
+            <motion.div
                   key={index}
                   variants={fadeIn(0, 0.6)}
                   className="text-center p-8 bg-card rounded-lg shadow-sm border border-border/50 hover:shadow-md transition-shadow"
                 >
                   <div className="bg-primary/10 text-primary p-4 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
                     <step.icon className="h-8 w-8" strokeWidth={1.5} />
-                  </div>
+              </div>
                   <h3 className="text-xl font-medium mb-3 text-card-foreground">{step.title}</h3>
                   <p className="text-muted-foreground font-light mb-6">
                     {step.description}
                   </p>
                   <Button variant="link" asChild className="text-primary group">
                     <Link href={step.link}>
-                      Learn more
+                Learn more
                       <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
-                    </Link>
+              </Link>
                   </Button>
-                </motion.div>
+            </motion.div>
               ))}
             </motion.div>
-          </div>
-        </section>
+        </div>
+      </section>
 
         {/* About Section */}
         <section className="py-16 md:py-24 px-4 bg-neutral-50 dark:bg-neutral-900">
            <div className="container">
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-                <motion.div
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <motion.div
                    variants={fadeIn(0, 0.8)} initial="hidden" whileInView="visible"
                    viewport={{ once: true, amount: 0.3 }}
                  >
                   <div className="relative aspect-[4/3]">
-                    <div className="absolute -top-4 -left-4 w-24 h-24 bg-primary/10 rounded-tl-2xl z-0"></div>
+                <div className="absolute -top-4 -left-4 w-24 h-24 bg-primary/10 rounded-tl-2xl z-0"></div>
                     <div className="relative h-full w-full overflow-hidden rounded-lg shadow-xl z-10">
-                      <Image
+                  <Image
                         src="/images/about-us-workshop.png" // Replace with relevant image
                         alt="Color & Craft Workshop"
-                        fill
-                        className="object-cover"
+                    fill
+                    className="object-cover"
                         sizes="(max-width: 768px) 100vw, 50vw"
-                      />
-                    </div>
+                  />
+                </div>
                     <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-secondary/20 rounded-br-2xl z-0"></div>
-                  </div>
-                </motion.div>
-
-                <motion.div
+              </div>
+            </motion.div>
+            
+            <motion.div
                    variants={fadeIn(0.2, 0.8)} initial="hidden" whileInView="visible"
                    viewport={{ once: true, amount: 0.3 }}
-                   className="flex flex-col justify-center"
-                 >
+              className="flex flex-col justify-center"
+            >
                   <h4 className="text-primary uppercase tracking-wider text-sm font-semibold mb-3">About Color & Craft</h4>
                   <h2 className="text-3xl md:text-4xl font-light mb-6 leading-tight text-foreground">Passionate artisans dedicated to <span className="font-semibold">quality craftsmanship</span></h2>
 
@@ -385,57 +385,57 @@ export default function Home() {
                      <div className="flex items-start space-x-3">
                         <div className="bg-primary/10 text-primary flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full">
                            <Award className="h-5 w-5" />
-                         </div>
-                       <div>
+                  </div>
+                  <div>
                          <h3 className="font-medium text-foreground mb-1">Premium Materials</h3>
                          <p className="text-sm text-muted-foreground font-light">Highest quality, eco-friendly paints and finishes.</p>
-                       </div>
-                     </div>
+                  </div>
+                </div>
                      <div className="flex items-start space-x-3">
                        <div className="bg-secondary/10 text-secondary flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full">
                          <Palette className="h-5 w-5" />
-                       </div>
-                       <div>
+                  </div>
+                  <div>
                          <h3 className="font-medium text-foreground mb-1">Skilled Craftspeople</h3>
                          <p className="text-sm text-muted-foreground font-light">Years of professional experience and artistry.</p>
-                       </div>
-                     </div>
-                   </div>
-
+                  </div>
+                </div>
+              </div>
+              
                   <Button variant="link" asChild className="text-primary group self-start px-0">
                     <Link href="/about">
-                      Learn more about our studio
+                Learn more about our studio
                       <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
-                    </Link>
+              </Link>
                   </Button>
-                </motion.div>
-              </div>
-            </div>
-          </section>
+            </motion.div>
+          </div>
+        </div>
+      </section>
 
 
-        {/* Featured Projects Section */}
+      {/* Featured Projects Section */}
         <section className="py-16 md:py-24 bg-background">
           <div className="container px-6">
-            <div className="text-center mb-16">
+          <div className="text-center mb-16">
               <h4 className="text-primary uppercase tracking-wider text-sm font-semibold mb-3">Our Latest Work</h4>
               <h2 className="text-3xl md:text-4xl font-light mb-4 text-foreground">Featured Projects</h2>
               <div className="w-20 h-1 bg-primary/30 mx-auto"></div>
-            </div>
-
-            <motion.div
+          </div>
+          
+          <motion.div 
               variants={staggerContainer(0.15)} initial="hidden" whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
             >
               {featuredProjects.map((project, index) => (
-                <motion.div
+            <motion.div 
                   key={project.id}
                   variants={fadeIn(0, 0.6)}
-                >
+            >
                   <Card className="group overflow-hidden h-full flex flex-col border-border/50 hover:shadow-lg transition-shadow duration-300">
                     <CardHeader className="p-0 relative aspect-[4/3]">
-                       <Image
+              <Image
                         src={project.image}
                         alt={project.title}
                         fill
@@ -453,10 +453,10 @@ export default function Home() {
                       </Button>
                     </CardContent>
                   </Card>
-                </motion.div>
+            </motion.div>
               ))}
             </motion.div>
-
+            
             <div className="text-center mt-12">
                <Button variant="link" asChild className="text-primary group">
                 <Link href="/portfolio">
@@ -464,17 +464,17 @@ export default function Home() {
                   <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>
-            </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Services Section */}
+      {/* Services Section */}
         <section className="py-16 md:py-24 px-4 bg-neutral-50 dark:bg-neutral-900">
           <div className="container text-center">
             <h4 className="text-primary uppercase tracking-wider text-sm font-semibold mb-3">What We Offer</h4>
             <h2 className="text-3xl md:text-4xl font-light mb-12 text-foreground">Our Services</h2>
-
-            <motion.div
+          
+          <motion.div 
               variants={staggerContainer()} initial="hidden" whileInView="visible"
               viewport={{ once: true, amount: 0.3 }}
               className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto"
@@ -485,7 +485,7 @@ export default function Home() {
                     <CardHeader className="p-0 mb-5">
                       <div className="bg-primary/10 text-primary p-4 rounded-full mx-auto w-16 h-16 flex items-center justify-center">
                         <service.icon className="h-8 w-8" strokeWidth={1.5}/>
-                      </div>
+              </div>
                     </CardHeader>
                     <CardContent className="p-0 flex-grow flex flex-col">
                       <h3 className="text-xl font-medium mb-3 text-card-foreground">{service.title}</h3>
@@ -498,11 +498,11 @@ export default function Home() {
                        </Button>
                     </CardContent>
                   </Card>
-                </motion.div>
-              ))}
             </motion.div>
-          </div>
-        </section>
+              ))}
+          </motion.div>
+        </div>
+      </section>
 
          {/* Testimonials Section - Updated */}
         <section className="py-16 md:py-24 bg-background">
@@ -525,36 +525,36 @@ export default function Home() {
                   <Card className="h-full flex flex-col p-6 md:p-8 border-border/50 shadow-sm hover:shadow-md transition-shadow duration-300">
                     <CardContent className="p-0 flex-grow flex flex-col">
                       <svg className="w-8 h-8 text-primary/40 mb-4 flex-shrink-0" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                        <path d="M464 256h-80v-64c0-35.3 28.7-64 64-64h8c13.3 0 24-10.7 24-24V56c0-13.3-10.7-24-24-24h-8c-88.4 0-160 71.6-160 160v240c0 26.5 21.5 48 48 48h128c26.5 0 48-21.5 48-48V304c0-26.5-21.5-48-48-48zm-288 0H96v-64c0-35.3 28.7-64 64-64h8c13.3 0 24-10.7 24-24V56c0-13.3-10.7-24-24-24h-8C71.6 32 0 103.6 0 192v240c0 26.5 21.5 48 48 48h128c26.5 0 48-21.5 48-48V304c0-26.5-21.5-48-48-48z"></path>
-                      </svg>
+              <path d="M464 256h-80v-64c0-35.3 28.7-64 64-64h8c13.3 0 24-10.7 24-24V56c0-13.3-10.7-24-24-24h-8c-88.4 0-160 71.6-160 160v240c0 26.5 21.5 48 48 48h128c26.5 0 48-21.5 48-48V304c0-26.5-21.5-48-48-48zm-288 0H96v-64c0-35.3 28.7-64 64-64h8c13.3 0 24-10.7 24-24V56c0-13.3-10.7-24-24-24h-8C71.6 32 0 103.6 0 192v240c0 26.5 21.5 48 48 48h128c26.5 0 48-21.5 48-48V304c0-26.5-21.5-48-48-48z"></path>
+            </svg>
                       <p className="text-base md:text-lg text-foreground font-light italic mb-6 leading-relaxed flex-grow">
                         "{testimonial.quote}"
-                      </p>
+            </p>
                       <div className="flex items-center mt-auto pt-4 border-t border-border/50">
                         <div className="w-12 h-12 rounded-full bg-muted mr-4 overflow-hidden flex-shrink-0">
                           {/* Basic Image Placeholder - Consider using Shadcn Avatar if needed */}
-                          <Image
+                <Image
                             src={testimonial.image || "/images/testimonials/placeholder.png"} // Fallback image
-                            width={48}
-                            height={48}
+                  width={48}
+                  height={48}
                             alt={testimonial.name}
-                            className="object-cover"
-                          />
-                        </div>
-                        <div className="text-left">
+                  className="object-cover"
+                />
+              </div>
+              <div className="text-left">
                           <h4 className="font-medium text-foreground">{testimonial.name}</h4>
                           <p className="text-muted-foreground text-sm">{testimonial.location}</p>
-                        </div>
-                      </div>
+              </div>
+            </div>
                     </CardContent>
                   </Card>
                 </motion.div>
               ))}
             </motion.div>
-          </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Call to Action Section */}
+      {/* Call to Action Section */}
         <section className="py-16 md:py-24 bg-gradient-to-r from-primary via-primary/90 to-accent">
           <div className="container px-6 text-center max-w-3xl mx-auto">
             <motion.div
@@ -562,8 +562,8 @@ export default function Home() {
               viewport={{ once: true, amount: 0.5 }}
             >
               <h2 className="text-3xl md:text-4xl font-semibold mb-6 text-primary-foreground">
-                Ready to Transform Your Furniture?
-              </h2>
+            Ready to Transform Your Furniture?
+          </h2>
               <p className="text-lg text-primary-foreground/80 mb-10 font-light">
                 Contact us today for a free consultation. Let our expert team bring your vision to life with beautiful, lasting results.
               </p>
@@ -571,8 +571,8 @@ export default function Home() {
                 <Link href="/contact">Get Your Free Quote</Link>
               </Button>
             </motion.div>
-          </div>
-        </section>
+        </div>
+      </section>
       </main>
     </div>
   );

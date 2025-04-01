@@ -121,6 +121,11 @@ create policy "Users can update own record."
   on users for update
   using (auth.uid() = id);
 
+-- ADDED INSERT POLICY
+create policy "Users can insert own record."
+  on users for insert
+  with check (auth.uid() = id);
+
 -- Projects policies
 create policy "Projects are viewable by everyone."
   on projects for select
