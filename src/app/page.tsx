@@ -106,6 +106,31 @@ const howItWorksSteps = [
   },
 ];
 
+// ADDED: Testimonials Data
+const testimonialsData = [
+  {
+    id: 1,
+    quote: "Color & Craft transformed my grandmother's old dresser into a stunning centerpiece. The attention to detail and craftsmanship exceeded all expectations!",
+    name: "Rustam Avanesian",
+    location: "Los Angeles, CA",
+    image: "/images/testimonials/rustam-testimonial.png", // Example path
+  },
+  {
+    id: 2,
+    quote: "Absolutely thrilled with the kitchen cabinet refresh. The team was professional, clean, and the finish is flawless. It feels like a brand new kitchen.",
+    name: "Jessica Miller",
+    location: "San Francisco, CA",
+    image: "/images/testimonials/jessica-testimonial.png", // Example path
+  },
+  {
+    id: 3,
+    quote: "They brought my vintage armchair back to life! The restoration work is incredible, preserving the character while making it look fantastic. Highly recommend.",
+    name: "David Chen",
+    location: "Oakland, CA",
+    image: "/images/testimonials/david-testimonial.png", // Example path
+  },
+];
+
 export default function Home() {
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
   const heroRef = useRef(null);
@@ -479,43 +504,52 @@ export default function Home() {
           </div>
         </section>
 
-         {/* Testimonials Section */}
+         {/* Testimonials Section - Updated */}
         <section className="py-16 md:py-24 bg-background">
-          <div className="container text-center px-6">
-            <h4 className="text-primary uppercase tracking-wider text-sm font-semibold mb-3">Client Love</h4>
-            <h2 className="text-3xl md:text-4xl font-light mb-12 text-foreground">What Our Clients Say</h2>
+          <div className="container px-6">
+            <div className="text-center mb-12 md:mb-16">
+              <h4 className="text-primary uppercase tracking-wider text-sm font-semibold mb-3">Client Love</h4>
+              <h2 className="text-3xl md:text-4xl font-light text-foreground">What Our Clients Say</h2>
+            </div>
 
             <motion.div
-              variants={fadeIn(0, 0.8)} initial="hidden" whileInView="visible"
-              viewport={{ once: true, amount: 0.5 }}
-              className="max-w-3xl mx-auto"
+              variants={staggerContainer(0.15)} initial="hidden" whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
             >
-              <Card className="p-8 md:p-10 border-border/50 shadow-sm">
-                <CardContent className="p-0">
-                  <svg className="w-10 h-10 text-primary/40 mx-auto mb-6" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                     {/* Quote Icon Path */}
-                     <path d="M464 256h-80v-64c0-35.3 28.7-64 64-64h8c13.3 0 24-10.7 24-24V56c0-13.3-10.7-24-24-24h-8c-88.4 0-160 71.6-160 160v240c0 26.5 21.5 48 48 48h128c26.5 0 48-21.5 48-48V304c0-26.5-21.5-48-48-48zm-288 0H96v-64c0-35.3 28.7-64 64-64h8c13.3 0 24-10.7 24-24V56c0-13.3-10.7-24-24-24h-8C71.6 32 0 103.6 0 192v240c0 26.5 21.5 48 48 48h128c26.5 0 48-21.5 48-48V304c0-26.5-21.5-48-48-48z"></path>
-                   </svg>
-                  <p className="text-lg md:text-xl text-foreground font-light italic mb-8 leading-relaxed">
-                    "Color & Craft transformed my grandmother's old dresser into a stunning centerpiece. The attention to detail and craftsmanship exceeded all expectations. Highly recommended!"
-                  </p>
-                  <div className="flex items-center justify-center">
-                    <div className="w-12 h-12 rounded-full bg-muted mr-4 overflow-hidden flex-shrink-0">
-                      <Image
-                        src="/images/testimonials/rustam-testimonial.png" // Placeholder image
-                        width={48}
-                        height={48}
-                        alt="Sarah L."
-                        className="object-cover"
-                      />
-                    </div>
-                    <div className="text-left">
-                      <h4 className="font-medium text-foreground">Rustam Avanesian</h4>
-                      <p className="text-muted-foreground text-sm">Los Angeles, CA</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              {testimonialsData.map((testimonial) => (
+                <motion.div
+                  key={testimonial.id}
+                  variants={fadeIn(0, 0.6)}
+                >
+                  <Card className="h-full flex flex-col p-6 md:p-8 border-border/50 shadow-sm hover:shadow-md transition-shadow duration-300">
+                    <CardContent className="p-0 flex-grow flex flex-col">
+                      <svg className="w-8 h-8 text-primary/40 mb-4 flex-shrink-0" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                        <path d="M464 256h-80v-64c0-35.3 28.7-64 64-64h8c13.3 0 24-10.7 24-24V56c0-13.3-10.7-24-24-24h-8c-88.4 0-160 71.6-160 160v240c0 26.5 21.5 48 48 48h128c26.5 0 48-21.5 48-48V304c0-26.5-21.5-48-48-48zm-288 0H96v-64c0-35.3 28.7-64 64-64h8c13.3 0 24-10.7 24-24V56c0-13.3-10.7-24-24-24h-8C71.6 32 0 103.6 0 192v240c0 26.5 21.5 48 48 48h128c26.5 0 48-21.5 48-48V304c0-26.5-21.5-48-48-48z"></path>
+                      </svg>
+                      <p className="text-base md:text-lg text-foreground font-light italic mb-6 leading-relaxed flex-grow">
+                        "{testimonial.quote}"
+                      </p>
+                      <div className="flex items-center mt-auto pt-4 border-t border-border/50">
+                        <div className="w-12 h-12 rounded-full bg-muted mr-4 overflow-hidden flex-shrink-0">
+                          {/* Basic Image Placeholder - Consider using Shadcn Avatar if needed */}
+                          <Image
+                            src={testimonial.image || "/images/testimonials/placeholder.png"} // Fallback image
+                            width={48}
+                            height={48}
+                            alt={testimonial.name}
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="text-left">
+                          <h4 className="font-medium text-foreground">{testimonial.name}</h4>
+                          <p className="text-muted-foreground text-sm">{testimonial.location}</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
             </motion.div>
           </div>
         </section>
