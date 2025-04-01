@@ -55,9 +55,13 @@ export default function ContactForm() {
       setFormStatus({
         success: "Your message has been sent. We'll get back to you soon!",
       })
-    } catch (error: any) {
+    } catch (error) {
+      let errorMessage = "Failed to send message. Please try again.";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
       setFormStatus({
-        error: error.message || "Failed to send message. Please try again.",
+        error: errorMessage,
       })
     } finally {
       setIsLoading(false)

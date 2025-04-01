@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { CrmApi } from '@/lib/crm/api';
+import { Communication, Customer, Lead } from '@/types/database.types';
 
 export const metadata = {
   title: 'CRM Dashboard | Color & Craft',
@@ -7,6 +8,12 @@ export const metadata = {
 };
 
 export const dynamic = 'force-dynamic'; // Ensure this page is always dynamically rendered
+
+// Define a type for the Recent Activity item based on the API response
+type RecentActivity = Communication & {
+  customers?: Pick<Customer, 'name'> | null;
+  leads?: Pick<Lead, 'name'> | null;
+};
 
 export default async function CrmDashboard() {
   // Add try/catch for error handling
@@ -164,7 +171,7 @@ function QuickLink({
   );
 }
 
-function ActivityItem({ activity }: { activity: any }) {
+function ActivityItem({ activity }: { activity: RecentActivity }) {
   // Determine the activity target name (customer or lead)
   const targetName = activity.customers?.name || activity.leads?.name || 'Unknown';
   
