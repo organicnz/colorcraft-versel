@@ -6,6 +6,9 @@ import { Analytics } from "@vercel/analytics/react";
 import Link from "next/link";
 import ThemeSwitcher from "@/components/shared/ThemeSwitcher";
 import { Providers } from "./providers";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Menu } from "lucide-react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -39,96 +42,88 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const navLinks = [
+    { href: "/", label: "Home" },
+    { href: "/services", label: "Services" },
+    { href: "/portfolio", label: "Portfolio" },
+    { href: "/about", label: "About" },
+    { href: "/contact", label: "Contact" },
+  ];
+
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body
+        className={`min-h-screen bg-background font-sans antialiased ${inter.className}`}
+      >
         <Providers>
-          {/* Main header - Color & Craft style */}
-          <header className="bg-white dark:bg-gray-900 shadow-sm py-3 sticky top-0 z-40">
-            <div className="container mx-auto px-4">
-              <div className="flex items-center justify-between">
-                {/* Logo */}
-                <Link href="/" className="flex items-center">
-                  <span className="text-xl font-semibold text-primary">Color & Craft</span>
-                </Link>
+          <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="container flex h-14 items-center">
+              {/* Logo */}
+              <Link href="/" className="mr-6 flex items-center space-x-2">
+                <span className="font-bold text-primary sm:inline-block">
+                  Color & Craft
+                </span>
+              </Link>
 
-                {/* Main Navigation - Desktop */}
-                <nav className="hidden md:flex space-x-8">
+              {/* Desktop Navigation */}
+              <nav className="hidden flex-1 items-center space-x-6 text-sm font-medium md:flex">
+                {navLinks.map((link) => (
                   <Link
-                    href="/"
-                    className="nav-link py-2"
+                    key={link.href}
+                    href={link.href}
+                    className="transition-colors hover:text-foreground/80 text-foreground/60"
                   >
-                    Home
+                    {link.label}
                   </Link>
-                  <Link
-                    href="/services"
-                    className="nav-link py-2"
-                  >
-                    Services
-                  </Link>
-                  <Link
-                    href="/portfolio"
-                    className="nav-link py-2"
-                  >
-                    Portfolio
-                  </Link>
-                  <Link
-                    href="/about"
-                    className="nav-link py-2"
-                  >
-                    About
-                  </Link>
-                  <Link
-                    href="/contact"
-                    className="nav-link py-2"
-                  >
-                    Contact
-                  </Link>
-                </nav>
+                ))}
+              </nav>
 
-                {/* Action Buttons */}
-                <div className="flex items-center space-x-5">
+              {/* Right Side Actions */}
+              <div className="flex flex-1 items-center justify-end space-x-4">
+                <nav className="flex items-center space-x-2">
                   <ThemeSwitcher />
-                  <Link
-                    href="/login"
-                    className="text-gray-700 hover:text-primary transition-colors text-sm font-medium dark:text-gray-300"
-                  >
-                    Log in
-                  </Link>
-                  <Link
-                    href="/contact"
-                    className="bg-primary hover:bg-primary-dark text-white text-sm font-medium px-4 py-2 rounded transition-colors"
-                  >
-                    Free Consultation
-                  </Link>
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link href="/login">Log in</Link>
+                  </Button>
+                  <Button size="sm" asChild>
+                    <Link href="/contact">Free Consultation</Link>
+                  </Button>
 
-                  {/* Mobile Menu Button */}
-                  <button
-                    type="button"
-                    className="md:hidden text-gray-800 hover:text-primary dark:text-gray-100 ml-4"
-                    aria-label="Toggle mobile menu"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 6h16M4 12h16M4 18h16"
-                      />
-                    </svg>
-                  </button>
-                </div>
+                  {/* Mobile Menu */}
+                  <Sheet>
+                    <SheetTrigger asChild>
+                      <Button variant="outline" size="icon" className="md:hidden">
+                        <Menu className="h-5 w-5" />
+                        <span className="sr-only">Toggle Menu</span>
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent side="right">
+                      <nav className="grid gap-6 text-lg font-medium mt-6">
+                        <Link
+                          href="/"
+                          className="flex items-center space-x-2 text-lg font-semibold"
+                        >
+                          <span className="font-bold text-primary">Color & Craft</span>
+                        </Link>
+                        {navLinks.map((link) => (
+                          <Link
+                            key={link.href}
+                            href={link.href}
+                            className="transition-colors hover:text-foreground/80 text-foreground/60"
+                          >
+                            {link.label}
+                          </Link>
+                        ))}
+                      </nav>
+                    </SheetContent>
+                  </Sheet>
+                </nav>
               </div>
             </div>
           </header>
 
-          {children}
+          <main className="flex-grow">{children}</main>
+
           <Footer />
           <Analytics />
         </Providers>
