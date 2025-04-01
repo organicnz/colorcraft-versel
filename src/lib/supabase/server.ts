@@ -75,4 +75,10 @@ export const createClient = () => {
       }
     )
   }
-} 
+}
+
+// Simplified auth helper for server actions and server components
+export async function auth() {
+  const supabase = createClient();
+  return supabase.auth.getSession();
+}
