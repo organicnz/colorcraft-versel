@@ -42,8 +42,6 @@ const nextConfig = {
       'date-fns',
     ],
   },
-  // Enable Edge Runtime for API routes by default
-  runtime: 'edge',
 };
 
 // Add bundle analyzer if environment variable is set
