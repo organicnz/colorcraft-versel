@@ -42,6 +42,7 @@ const formSchema = z.object({
   is_featured: z.boolean().default(false),
 });
 
+// Make sure this exactly matches the schema above
 type FormValues = z.infer<typeof formSchema>;
 
 interface PortfolioFormProps {
@@ -68,7 +69,7 @@ export default function PortfolioForm({ project }: PortfolioFormProps = {}) {
       completion_date: project?.completion_date || "",
       client_name: project?.client_name || "",
       client_testimonial: project?.client_testimonial || "",
-      is_featured: project?.is_featured ?? false,
+      is_featured: project?.is_featured === true ? true : false,
     },
   });
 
