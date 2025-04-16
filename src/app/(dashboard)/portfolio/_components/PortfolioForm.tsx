@@ -3,7 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import {
@@ -87,7 +87,8 @@ export default function PortfolioForm({ project }: PortfolioFormProps = {}) {
     },
   });
 
-  const onSubmit = async (data: FormValues) => {
+  // Use SubmitHandler generic type to match the form's expected type
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setIsPending(true);
 
     try {
