@@ -68,7 +68,7 @@ export default function PortfolioForm({ project }: PortfolioFormProps = {}) {
       completion_date: project?.completion_date || "",
       client_name: project?.client_name || "",
       client_testimonial: project?.client_testimonial || "",
-      is_featured: project?.is_featured || false,
+      is_featured: project?.is_featured ?? false,
     },
   });
 

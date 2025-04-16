@@ -1,5 +1,4 @@
 import { pgTable, text, boolean, timestamp, jsonb, uuid } from 'drizzle-orm/pg-core';
-import { addTimestampFields } from '@/lib/db/schema';
 
 /**
  * Feature flags table to store feature flag configurations
@@ -15,9 +14,6 @@ export const feature_flags = pgTable('feature_flags', {
   created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
-
-// Add index for more efficient queries
-addTimestampFields(feature_flags);
 
 // Add composite index for name + environment
 export const feature_flags_indices = {
