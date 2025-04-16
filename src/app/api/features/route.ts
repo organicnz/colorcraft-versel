@@ -1,72 +1,67 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { isFeatureEnabled } from '@/lib/features';
-import { FEATURES } from '@/lib/features/schema';
 import { apiLogger } from '@/lib/logger';
-import { errorMonitor } from '@/lib/errors/monitoring';
-import { measurePerformance } from '@/lib/logger';
+import { Feature_definitions } from '@/lib/features/feature-list';
 
 /**
  * GET /api/features
- * 
  * Check if a feature flag is enabled
  * 
  * Query parameters:
- * - feature: The name of the feature flag to check
- * - userId: Optional user ID for user-specific targeting
- * 
- * @returns { enabled: boolean } JSON response
+ * - feature: Feature flag name to check
+ * - userId: Optional user ID for user targeting
  */
-export async function GET(request: NextRequest) {
-  return await measurePerformance('api-feature-flag-check', async () => {
-    try {
-      const { searchParams } = new URL(request.url);
-      const featureName = searchParams.get('feature');
-      const userId = searchParams.get('userId') || undefined;
-      
-      if (!featureName) {
-        return NextResponse.json(
-          { error: 'Missing feature parameter' },
-          { status: 400 }
-        );
-      }
-      
-      // Find the feature configuration
-      const featureConfig = Object.values(FEATURES).find(
-        (f) => f.name === featureName
-      );
-      
-      if (!featureConfig) {
-        apiLogger.warn(`Unknown feature flag requested: ${featureName}`, {
-          metadata: { userId }
-        });
-        
-        return NextResponse.json(
-          { enabled: false, error: 'Unknown feature' },
-          { status: 404 }
-        );
-      }
-      
-      // Check if the feature is enabled
-      const enabled = await isFeatureEnabled(featureConfig, { userId });
-      
-      apiLogger.debug(`Feature flag check: ${featureName}`, {
-        metadata: { userId, enabled }
-      });
-      
-      return NextResponse.json({ enabled });
-    } catch (error) {
-      errorMonitor.captureError(error as Error, {
-        context: 'feature-flag-api'
-      });
-      
-      apiLogger.error('Error checking feature flag', {
-        metadata: { error: (error as Error).message }
-      });
-      
+export async function GET(req: NextRequest) {
+  // Extract query params
+  const url = new URL(req.url);
+  const feature = url.searchParams.get('feature');
+  const userId = url.searchParams.get('userId');
+
+  // Log request
+  apiLogger.info('Feature flag check request', {
+    metadata: { feature, userId }
+  });
+
+  // Validate feature param
+  if (!feature) {
+    return NextResponse.json(
+      { error: 'Missing feature parameter' },
+      { status: 400 }
+    );
+  }
+
+  try {
+    // Find the feature definition
+    const featureDefinition = Feature_definitions.find(f => f.name === feature);
+    
+    if (!featureDefinition) {
       return NextResponse.json(
-        { error: 'Internal server error' },
-        { status: 500 }
+        { error: 'Unknown feature flag' },
+        { status: 404 }
       );
     }
-  });
+
+    // Check if feature is enabled
+    const isEnabled = await isFeatureEnabled(featureDefinition, {
+      userId: userId || undefined,
+    });
+
+    // Return result
+    return NextResponse.json({ enabled: isEnabled });
+  } catch (error) {
+    // Log error
+    apiLogger.error('Error checking feature flag', {
+      metadata: { 
+        feature, 
+        userId,
+        error: error instanceof Error ? error.message : String(error)
+      }
+    });
+
+    // Return error response
+    return NextResponse.json(
+      { error: 'Could not check feature flag' },
+      { status: 500 }
+    );
+  }
 }

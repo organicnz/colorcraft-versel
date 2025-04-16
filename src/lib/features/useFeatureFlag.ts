@@ -1,124 +1,68 @@
+"use client";
+
 import { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { FeatureConfig } from './index';
 
-// Flag cache to avoid unnecessary API calls within a session
-const clientFlagCache = new Map<string, boolean>();
+// Remove unused cache and fetch function
+
+type UseFeatureFlagResult = {
+  enabled: boolean;
+  loading: boolean;
+};
 
 /**
- * API route to check feature flag status
- * This allows us to check feature flags on the client side
- */
-async function fetchFeatureFlag(feature: FeatureConfig, userId?: string): Promise<boolean> {
-  // First check the in-memory cache for immediate results
-  const cacheKey = `${feature.name}:${userId || 'anonymous'}`;
-  if (clientFlagCache.has(cacheKey)) {
-    return clientFlagCache.get(cacheKey) as boolean;
-  }
-  
-  try {
-    const params = new URLSearchParams({
-      feature: feature.name,
-    });
-    
-    if (userId) {
-      params.append('userId', userId);
-    }
-    
-    const response = await fetch(`/api/features?${params.toString()}`);
-    
-    if (!response.ok) {
-      throw new Error('Failed to fetch feature flag');
-    }
-    
-    const data = await response.json();
-    
-    // Cache the result
-    clientFlagCache.set(cacheKey, data.enabled);
-    return data.enabled;
-  } catch (error) {
-    console.error('Error fetching feature flag:', error);
-    // Return default value on error
-    return feature.defaultValue;
-  }
-}
-
-/**
- * Hook for checking if a feature flag is enabled in client components
+ * React hook for checking if a feature flag is enabled in client components
+ * 
+ * @param feature The feature flag configuration object
+ * @returns Object containing the enabled status and loading state
  * 
  * @example
  * ```tsx
- * import { FEATURES } from '@/lib/features/schema';
+ * const { enabled } = useFeatureFlag(FEATURE_FLAGS.DARK_MODE);
  * 
- * function MyComponent() {
- *   const isNewUIEnabled = useFeatureFlag(FEATURES.NEW_DASHBOARD_UI);
- *   
- *   return (
- *     <div>
- *       {isNewUIEnabled ? (
- *         <NewDashboard />
- *       ) : (
- *         <LegacyDashboard />
- *       )}
- *     </div>
- *   );
- * }
+ * return (
+ *   <div className={enabled ? "dark-theme" : "light-theme"}>
+ *     {/* Component content */}
+ *   </div>
+ * );
  * ```
  */
-export function useFeatureFlag(
-  feature: FeatureConfig,
-  options?: {
-    userId?: string;
-    initialValue?: boolean;
-    queryOptions?: {
-      enabled?: boolean;
-      refetchInterval?: number;
-      refetchOnWindowFocus?: boolean;
-    };
-  }
-) {
-  // Use the provided initial value or fall back to the feature's default value
-  const [enabled, setEnabled] = useState(options?.initialValue ?? feature.defaultValue);
-  
-  const { data, isLoading } = useQuery({
-    queryKey: ['featureFlag', feature.name, options?.userId],
-    queryFn: () => fetchFeatureFlag(feature, options?.userId),
-    // Default options with reasonable defaults
-    ...{
-      // Refetch every 5 minutes by default
-      refetchInterval: 5 * 60 * 1000,
-      // Don't refetch on window focus by default to reduce API calls
-      refetchOnWindowFocus: false,
-      // Query is enabled by default
-      enabled: true,
-      // Use cached data first
-      staleTime: 2 * 60 * 1000,
-      ...options?.queryOptions,
-    },
+export function useFeatureFlag(feature: FeatureConfig): UseFeatureFlagResult {
+  const [result, setResult] = useState<UseFeatureFlagResult>({
+    enabled: feature.defaultValue,
+    loading: true,
   });
 
   useEffect(() => {
-    if (data !== undefined) {
-      setEnabled(data);
-    }
-  }, [data]);
+    const checkFeatureStatus = async () => {
+      try {
+        // Determine current environment
+        const environment = process.env.NODE_ENV === "production" 
+          ? "production"
+          : process.env.NEXT_PUBLIC_VERCEL_ENV === "preview" 
+            ? "staging" 
+            : "development";
 
-  return {
-    /** Whether the feature is enabled */
-    enabled,
-    /** Whether the feature flag is still loading */
-    isLoading,
-    /** Force-clear the client cache for this flag */
-    clearCache: () => {
-      const cacheKey = `${feature.name}:${options?.userId || 'anonymous'}`;
-      clientFlagCache.delete(cacheKey);
-    },
-  };
-}
+        // Check if feature is enabled for current environment
+        const isEnabled = feature.environments.includes(environment as any) 
+          ? feature.defaultValue 
+          : false;
 
-/**
- * Clear all cached feature flags on the client
- */
-export function clearFeatureFlagClientCache(): void {
-  clientFlagCache.clear();
+        setResult({
+          enabled: isEnabled,
+          loading: false,
+        });
+      } catch (error) {
+        console.error(`Error checking feature flag status for ${feature.name}:`, error);
+        setResult({
+          enabled: feature.defaultValue, // Fall back to default value
+          loading: false,
+        });
+      }
+    };
+
+    checkFeatureStatus();
+  }, [feature]);
+
+  return result;
 }

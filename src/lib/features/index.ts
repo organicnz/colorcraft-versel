@@ -265,3 +265,74 @@ function hashString(str: string): number {
   
   return Math.abs(hash);
 }
+
+/**
+ * Type definition for a feature flag configuration
+ */
+export type FeatureConfig = {
+  /** Unique name of the feature */
+  name: string;
+  /** Short description of what the feature does */
+  description: string;
+  /** Default value when the feature flag cannot be determined */
+  defaultValue: boolean;
+  /** The environments where this feature is available */
+  environments: Array<"development" | "staging" | "production">;
+};
+
+/**
+ * Feature flags configuration
+ */
+export const FEATURE_FLAGS = {
+  /**
+   * Dark mode feature for the UI
+   */
+  DARK_MODE: {
+    name: "dark_mode",
+    description: "Enables dark mode theme for the website",
+    defaultValue: true,
+    environments: ["development", "staging", "production"],
+  } as FeatureConfig,
+
+  /**
+   * Enhanced contact form with additional fields and scheduling options
+   */
+  ENHANCED_CONTACT_FORM: {
+    name: "enhanced_contact_form",
+    description: "Enables advanced contact form features including scheduling",
+    defaultValue: false,
+    environments: ["development", "staging"],
+  } as FeatureConfig,
+
+  /**
+   * Dashboard analytics feature
+   */
+  DASHBOARD_ANALYTICS: {
+    name: "dashboard_analytics",
+    description: "Displays analytics dashboard for admin users",
+    defaultValue: true,
+    environments: ["development", "staging", "production"],
+  } as FeatureConfig,
+};
+
+/**
+ * Checks if a feature flag is enabled based on environment only
+ * A simplified version for quick checks without database lookup
+ * For use in server components or API routes
+ * 
+ * @param feature The feature flag to check
+ * @returns boolean indicating if the feature is enabled based on environment
+ */
+export function isFeatureEnabledByEnvironment(feature: FeatureConfig): boolean {
+  // Determine current environment
+  const environment = process.env.NODE_ENV === "production" 
+    ? "production"
+    : process.env.VERCEL_ENV === "preview" 
+      ? "staging" 
+      : "development";
+  
+  // Check if feature is enabled for current environment
+  return feature.environments.includes(environment as any) 
+    ? feature.defaultValue 
+    : false;
+}
