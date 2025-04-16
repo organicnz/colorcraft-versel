@@ -37,7 +37,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 
 // Define a type for the service props
 type Service = {
@@ -72,23 +72,12 @@ export default function ServicesTable({ services }: ServicesTableProps) {
       const result = { success: false, error: "Deletion not implemented yet." };
       
       if (!result.success) {
-        toast({
-          title: "Error",
-          description: result.error || "Failed to delete service.",
-          variant: "destructive",
-        });
+        toast.error(result.error || "Failed to delete service.");
       } else {
-        toast({
-          title: "Success",
-          description: "Service deleted successfully.",
-        });
+        toast.success("Service deleted successfully.");
       }
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete service. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("Failed to delete service. Please try again.");
     } finally {
       setIsDeleting(false);
       setDeleteId(null);

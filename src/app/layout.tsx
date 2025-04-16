@@ -9,6 +9,7 @@ import { Providers } from "./providers";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -126,6 +127,7 @@ export default function RootLayout({
 
           <Footer />
           <Analytics />
+          <Toaster />
         </Providers>
       </body>
     </html>

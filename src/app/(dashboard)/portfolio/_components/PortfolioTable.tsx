@@ -39,7 +39,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 import { deletePortfolioProject } from '@/actions/portfolioActions';
 
 // Define a type for the project props
@@ -77,23 +77,12 @@ export default function PortfolioTable({ projects }: PortfolioTableProps) {
       const result = await deletePortfolioProject(id);
       
       if (result.error) {
-        toast({
-          title: "Error",
-          description: result.error,
-          variant: "destructive",
-        });
+        toast.error(result.error);
       } else {
-        toast({
-          title: "Success",
-          description: "Project deleted successfully.",
-        });
+        toast.success("Project deleted successfully.");
       }
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete project. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("Failed to delete project. Please try again.");
     } finally {
       setIsDeleting(false);
       setDeleteId(null);

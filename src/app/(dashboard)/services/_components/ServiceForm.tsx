@@ -19,7 +19,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 
 // Define form validation schema
 const formSchema = z.object({
@@ -72,26 +72,15 @@ export default function ServiceForm({ service }: ServiceFormProps = {}) {
       const success = true; // Simulate success
       
       if (success) {
-        toast({
-          title: "Success",
-          description: isEditing ? "Service updated successfully!" : "Service created successfully!",
-        });
+        toast.success(isEditing ? "Service updated successfully!" : "Service created successfully!");
         router.push("/dashboard/services");
         router.refresh();
       } else {
-        toast({
-          title: "Error",
-          description: "Failed to save service. Please try again.",
-          variant: "destructive",
-        });
+        toast.error("Failed to save service. Please try again.");
       }
     } catch (error) {
       console.error("Form submission error:", error);
-      toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setIsPending(false);
     }

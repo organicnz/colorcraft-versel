@@ -19,7 +19,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 import { createPortfolioProject, updatePortfolioProject } from '@/actions/portfolioActions';
 
 // Define form validation schema
@@ -100,26 +100,15 @@ export default function PortfolioForm({ project }: PortfolioFormProps = {}) {
         : await createPortfolioProject(formData);
 
       if (result.error) {
-        toast({
-          title: "Error",
-          description: result.error,
-          variant: "destructive",
-        });
+        toast.error(result.error);
       } else {
-        toast({
-          title: "Success",
-          description: isEditing ? "Project updated successfully!" : "Project created successfully!",
-        });
+        toast.success(isEditing ? "Project updated successfully!" : "Project created successfully!");
         router.push("/dashboard/portfolio");
         router.refresh();
       }
     } catch (error) {
       console.error("Form submission error:", error);
-      toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setIsPending(false);
     }
