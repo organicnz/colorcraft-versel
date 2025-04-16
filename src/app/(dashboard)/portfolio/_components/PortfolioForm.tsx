@@ -3,7 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import {
@@ -23,43 +23,25 @@ import { toast } from 'sonner';
 import { createPortfolioProject, updatePortfolioProject } from '@/actions/portfolioActions';
 
 // Define form validation schema
-// Note: We'll use a simplified schema for client-side validation
 const formSchema = z.object({
   id: z.string().uuid().optional(),
   title: z.string().min(1, "Title is required"),
   brief_description: z.string().min(1, "Brief description is required"),
   description: z.string().optional(),
-  // For demo purposes, we're using text fields for images
-  // In a real app, you would use a file upload component
   before_images: z.string().min(1, "At least one 'before' image URL is required"),
   after_images: z.string().min(1, "At least one 'after' image URL is required"),
   techniques: z.string().optional(),
   materials: z.string().optional(),
-  // completion_date: z.date().optional(),
   completion_date: z.string().optional(),
   client_name: z.string().optional(),
   client_testimonial: z.string().optional(),
   is_featured: z.boolean().default(false),
 });
 
-// Explicitly define our form values type to ensure is_featured is always boolean
-type FormValues = {
-  id?: string;
-  title: string;
-  brief_description: string;
-  description?: string;
-  before_images: string;
-  after_images: string;
-  techniques?: string;
-  materials?: string;
-  completion_date?: string;
-  client_name?: string;
-  client_testimonial?: string;
-  is_featured: boolean;
-};
+type FormValues = z.infer<typeof formSchema>;
 
 interface PortfolioFormProps {
-  project?: any; // Use the Project type from PortfolioTable or define it here
+  project?: any;
 }
 
 export default function PortfolioForm({ project }: PortfolioFormProps = {}) {
@@ -69,7 +51,6 @@ export default function PortfolioForm({ project }: PortfolioFormProps = {}) {
 
   // Define form with react-hook-form
   const form = useForm<FormValues>({
-    // @ts-ignore - We need to ignore this type error due to a mismatch between zod schema and our FormValues type
     resolver: zodResolver(formSchema),
     defaultValues: {
       id: project?.id || undefined,
@@ -87,18 +68,14 @@ export default function PortfolioForm({ project }: PortfolioFormProps = {}) {
     },
   });
 
-  // Use SubmitHandler generic type to match the form's expected type
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+  const onSubmit = async (data: FormValues) => {
     setIsPending(true);
 
     try {
-      // Convert comma-separated strings to arrays
       const formData = new FormData();
       
-      // Add all fields to FormData
       Object.entries(data).forEach(([key, value]) => {
         if (value !== undefined) {
-          // Handle arrays: convert comma-separated strings to array items
           if (['before_images', 'after_images', 'techniques', 'materials'].includes(key) && typeof value === 'string') {
             const items = value.split(',').map(item => item.trim()).filter(Boolean);
             items.forEach(item => {
@@ -110,7 +87,6 @@ export default function PortfolioForm({ project }: PortfolioFormProps = {}) {
         }
       });
 
-      // Call the appropriate server action based on whether we're editing or creating
       const result = isEditing 
         ? await updatePortfolioProject(formData)
         : await createPortfolioProject(formData);
@@ -132,6 +108,7 @@ export default function PortfolioForm({ project }: PortfolioFormProps = {}) {
 
   return (
     <Form {...form}>
+      {/* @ts-ignore - Ignore type errors with form submission */}
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         {/* Project ID - Hidden field for editing */}
         {isEditing && (
