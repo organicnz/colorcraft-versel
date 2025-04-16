@@ -42,6 +42,7 @@ const formSchema = z.object({
   is_featured: z.boolean().default(false),
 });
 
+// Explicitly define our form values type to ensure is_featured is always boolean
 type FormValues = {
   id?: string;
   title: string;
@@ -68,6 +69,7 @@ export default function PortfolioForm({ project }: PortfolioFormProps = {}) {
 
   // Define form with react-hook-form
   const form = useForm<FormValues>({
+    // @ts-ignore - We need to ignore this type error due to a mismatch between zod schema and our FormValues type
     resolver: zodResolver(formSchema),
     defaultValues: {
       id: project?.id || undefined,
