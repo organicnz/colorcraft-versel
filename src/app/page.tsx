@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { GlassPanel } from "@/components/ui/glass-card"; // Import from the correct file
 import { ArrowRight, Award, Palette, Send, Settings, Sparkles } from "lucide-react";
 import { AnimatePresence } from 'framer-motion';
 
@@ -135,12 +136,12 @@ export default function Home() {
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
   const heroRef = useRef(null);
   const { scrollY } = useScroll();
-  
+
   // Parallax effect values
   const parallaxY = useTransform(scrollY, [0, 500], [0, -100]);
   const parallaxScale = useTransform(scrollY, [0, 500], [1, 1.2]);
   const textOpacity = useTransform(scrollY, [0, 300], [1, 0]);
-  
+
   // Properties data for carousel
   const properties = [
     {
@@ -158,7 +159,7 @@ export default function Home() {
       location: "Oakland, CA",
       price: "$950",
       type: "Furniture Restoration",
-      return: "Completed 2023", 
+      return: "Completed 2023",
       image: "/images/hero-furniture.png"
     },
     {
@@ -196,112 +197,148 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative pt-24 pb-16 md:pt-32 md:pb-24 bg-neutral-50 dark:bg-neutral-900 overflow-hidden">
-          <div className="container px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <motion.div
-                 variants={fadeIn(0, 1)} initial="hidden" animate="visible"
-              className="max-w-2xl"
-            >
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-light text-foreground leading-tight mb-6">
-                  Transform your furniture with <span className="font-semibold text-primary">expert painting</span> services
-              </h1>
-                <p className="text-lg md:text-xl text-muted-foreground mb-8 font-light">
-                Breathe new life into your beloved furniture pieces with our professional painting and restoration services. From vintage revivals to modern makeovers.
-              </p>
-              
-                <Card className="mb-8">
-                  <CardContent className="p-6 space-y-4">
-                     <div className="space-y-2">
-                        <label htmlFor="hero-email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                          Request a free consultation
-                        </label>
-                        <Input
-                    type="email"
-                          id="hero-email"
-                    placeholder="you@example.com"
-                  />
-                </div>
-                    <Button className="w-full" size="lg" asChild>
-                      <Link href="/contact">Get Started</Link>
-                    </Button>
-                    <p className="text-xs text-muted-foreground text-center">
-                  Professional furniture painting services
-                </p>
-                  </CardContent>
-                </Card>
-            </motion.div>
-            
-            <motion.div
-                variants={fadeIn(0.3, 0.8)} initial="hidden" animate="visible"
-              className="relative"
-            >
-              <div className="relative h-[400px] md:h-[500px] w-full overflow-hidden rounded-lg shadow-2xl">
-                   {/* Carousel Image */}
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={currentProperty.id}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.5 }}
-                      className="absolute inset-0"
-                    >
-                <Image
-                  src={currentProperty.image}
-                        alt={currentProperty.title}
-                  fill
-                  className="object-cover"
-                        priority={currentProjectIndex === 0} // Only prioritize the first image
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 50vw"
-                />
-                    </motion.div>
-                  </AnimatePresence>
+        <section className="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-50 to-neutral-50 dark:from-neutral-900 dark:to-neutral-800 -z-10" />
 
-                {/* Property Info Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-6">
-                    <motion.div
-                      key={currentProperty.id + '-info'} // Key change triggers animation
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2, duration: 0.4 }}
-                      className="flex justify-between items-end"
-                    >
-                    <div>
-                         <Badge variant="secondary" className="mb-2">{currentProperty.type}</Badge>
-                      <h3 className="text-xl md:text-2xl font-light text-white mb-1">
-                        {currentProperty.title}
-                      </h3>
-                        <p className="text-neutral-300 text-sm mb-1">
-                        {currentProperty.location}
-                      </p>
-                      <div className="flex items-center mt-2">
-                        <span className="text-white font-bold mr-3">{currentProperty.price}</span>
-                        <span className="text-green-400 text-sm">{currentProperty.return}</span>
-                      </div>
-                    </div>
-                      <Button size="sm" asChild>
-                        <Link href="/portfolio">View Details</Link>
-                      </Button>
-                    </motion.div>
-                </div>
-              </div>
-              
-              {/* Property Indicators */}
-              <div className="flex justify-center mt-6 space-x-2">
-                  {properties.map((_, index) => (
-                  <button
-                      key={index}
-                    onClick={() => setCurrentProjectIndex(index)}
-                      className={`h-2 rounded-full transition-all duration-300 ${index === currentProjectIndex ? "bg-primary w-6" : "bg-muted-foreground/50 w-2"}`}
-                      aria-label={`View project ${index + 1}`}
+          {/* Background pattern */}
+          <div className="absolute inset-0 opacity-5 dark:opacity-10"
+            style={{
+              backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d3a273' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
+            }}
+          />
+
+          {/* Hero glow effect */}
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/2 h-1/2 rounded-full bg-primary-300 dark:bg-primary-500 opacity-20 dark:opacity-10 blur-[120px] -z-10" />
+
+          <div className="container px-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              {/* Left column - text content */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="order-2 lg:order-1"
+              >
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.1 }}
+                >
+                  <span className="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-secondary-100 text-secondary-700 dark:bg-secondary-900/30 dark:text-secondary-300 mb-6">
+                    <span className="flex h-2 w-2 rounded-full bg-secondary-500 animate-pulse"></span>
+                    <span>Furniture Painting Experts</span>
+                  </span>
+                </motion.div>
+
+                <motion.h1
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, delay: 0.3 }}
+                  className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-neutral-900 dark:text-white mb-6"
+                >
+                  Transform Your <span className="text-primary-500 dark:text-primary-400">Furniture</span> with Expert Craftsmanship
+                </motion.h1>
+
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, delay: 0.4 }}
+                  className="text-lg md:text-xl text-neutral-600 dark:text-neutral-300 mb-8 max-w-xl"
+                >
+                  Breathe new life into your cherished furniture pieces with our premium painting and restoration services. Crafted with passion, precision, and premium materials.
+                </motion.p>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, delay: 0.5 }}
+                  className="flex flex-col sm:flex-row gap-4"
+                >
+                  <Button
+                    className="bg-primary-500 hover:bg-primary-600 text-white"
+                    size="lg"
+                  >
+                    Get Started
+                  </Button>
+
+                  <Button variant="outline" size="lg" className="border-2 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors">
+                    View Portfolio
+                  </Button>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 1, delay: 0.7 }}
+                  className="mt-12"
+                >
+                  <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-3">Trusted by homeowners across:</p>
+                  <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
+                    <span className="text-neutral-400 dark:text-neutral-500 text-sm font-medium">San Francisco</span>
+                    <span className="text-neutral-400 dark:text-neutral-500 text-sm font-medium">Oakland</span>
+                    <span className="text-neutral-400 dark:text-neutral-500 text-sm font-medium">San Jose</span>
+                    <span className="text-neutral-400 dark:text-neutral-500 text-sm font-medium">Palo Alto</span>
+                  </div>
+                </motion.div>
+              </motion.div>
+
+              {/* Right column - image and property card */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="order-1 lg:order-2 relative"
+              >
+                <div className="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-2xl">
+                  <Image
+                    src={currentProperty.image}
+                    alt={currentProperty.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    priority
                   />
-                ))}
-              </div>
-            </motion.div>
+
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+
+                  {/* Property info card */}
+                  <GlassPanel className="absolute bottom-8 left-8 right-8 p-5">
+                    <h3 className="text-xl font-semibold mb-2">{currentProperty.title}</h3>
+                    <div className="flex flex-wrap gap-3 mb-3">
+                      <Badge variant="secondary" className="bg-secondary-100 text-secondary-700 dark:bg-secondary-900/30 dark:text-secondary-300 rounded-full">
+                        {currentProperty.type}
+                      </Badge>
+                      <Badge variant="outline" className="rounded-full">
+                        {currentProperty.location}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-primary-500">{currentProperty.price}</span>
+                      <span className="text-sm text-neutral-500 dark:text-neutral-400">{currentProperty.return}</span>
+                    </div>
+                  </GlassPanel>
+                </div>
+
+                {/* Image selector dots */}
+                <div className="flex justify-center gap-2 mt-6">
+                  {properties.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentProjectIndex(index)}
+                      className={`h-2.5 rounded-full transition-all ${
+                        currentProjectIndex === index
+                          ? "w-8 bg-primary-500"
+                          : "w-2.5 bg-neutral-300 dark:bg-neutral-600"
+                      }`}
+                      aria-label={`View project ${index + 1}`}
+                    />
+                  ))}
+                </div>
+              </motion.div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
         {/* How It Works Section */}
         <section className="py-16 md:py-24 bg-background">
@@ -311,7 +348,7 @@ export default function Home() {
               <h2 className="text-3xl md:text-4xl font-light mb-4 text-foreground">Transform your furniture <span className="font-semibold">in three simple steps</span></h2>
               <div className="w-20 h-1 bg-primary/30 mx-auto"></div>
           </div>
-          
+
             <motion.div
               variants={staggerContainer()} initial="hidden" whileInView="visible"
               viewport={{ once: true, amount: 0.3 }}
@@ -364,7 +401,7 @@ export default function Home() {
                     <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-secondary/20 rounded-br-2xl z-0"></div>
               </div>
             </motion.div>
-            
+
             <motion.div
                    variants={fadeIn(0.2, 0.8)} initial="hidden" whileInView="visible"
                    viewport={{ once: true, amount: 0.3 }}
@@ -401,7 +438,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              
+
                   <Button variant="link" asChild className="text-primary group self-start px-0">
                     <Link href="/about">
                 Learn more about our studio
@@ -422,14 +459,14 @@ export default function Home() {
               <h2 className="text-3xl md:text-4xl font-light mb-4 text-foreground">Featured Projects</h2>
               <div className="w-20 h-1 bg-primary/30 mx-auto"></div>
           </div>
-          
-          <motion.div 
+
+          <motion.div
               variants={staggerContainer(0.15)} initial="hidden" whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
             >
               {featuredProjects.map((project, index) => (
-            <motion.div 
+            <motion.div
                   key={project.id}
                   variants={fadeIn(0, 0.6)}
             >
@@ -456,7 +493,7 @@ export default function Home() {
             </motion.div>
               ))}
             </motion.div>
-            
+
             <div className="text-center mt-12">
                <Button variant="link" asChild className="text-primary group">
                 <Link href="/portfolio">
@@ -473,8 +510,8 @@ export default function Home() {
           <div className="container text-center">
             <h4 className="text-primary uppercase tracking-wider text-sm font-semibold mb-3">What We Offer</h4>
             <h2 className="text-3xl md:text-4xl font-light mb-12 text-foreground">Our Services</h2>
-          
-          <motion.div 
+
+          <motion.div
               variants={staggerContainer()} initial="hidden" whileInView="visible"
               viewport={{ once: true, amount: 0.3 }}
               className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto"

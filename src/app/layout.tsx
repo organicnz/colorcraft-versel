@@ -13,7 +13,7 @@ import { Menu } from "lucide-react";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://color-craft.vercel.app"),
+  metadataBase: new URL("https://colorcraft.live"),
   title: {
     template: "%s | Color & Craft Furniture Painting",
     default: "Color & Craft Furniture Painting",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     title: "Color & Craft Furniture Painting",
     description:
       "Transform your furniture with expert painting services",
-    url: "https://color-craft.vercel.app",
+    url: "https://colorcraft.live",
     siteName: "Color & Craft",
     locale: "en_US",
     type: "website",
