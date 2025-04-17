@@ -41,8 +41,6 @@ export async function middleware(request: NextRequest) {
     // or to dashboard version if logged in
     if (session) {
       return NextResponse.redirect(new URL('/dashboard/portfolio', request.url))
-    } else {
-      return NextResponse.redirect(new URL('/', request.url))
     }
   }
 
@@ -51,9 +49,7 @@ export async function middleware(request: NextRequest) {
     // or to dashboard version if logged in
     if (session) {
       return NextResponse.redirect(new URL('/dashboard/services', request.url))
-    } else {
-      return NextResponse.redirect(new URL('/', request.url))
-    }
+    } 
   }
 
   // Protect dashboard routes
