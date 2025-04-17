@@ -37,19 +37,42 @@ export async function middleware(request: NextRequest) {
 
   // Handle routing conflicts based on authentication state
   if (request.nextUrl.pathname === '/portfolio') {
-    // For portfolio, redirect to marketing version if not logged in,
-    // or to dashboard version if logged in
+    // For portfolio, redirect to dashboard version if logged in as admin
     if (session) {
-      return NextResponse.redirect(new URL('/dashboard/portfolio', request.url))
+      const { data: userData } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', session.user.id)
+        .single();
+      
+      if (userData?.role === 'admin') {
+        return NextResponse.redirect(new URL('/dashboard/portfolio', request.url))
+      }
     }
+    // Otherwise show the marketing version
+    return NextResponse.rewrite(new URL('/(marketing)/portfolio', request.url));
+  }
+
+  // Similar logic for individual portfolio items
+  if (request.nextUrl.pathname.startsWith('/portfolio/') && request.nextUrl.pathname !== '/portfolio') {
+    return NextResponse.rewrite(new URL(`/(marketing)${request.nextUrl.pathname}`, request.url));
   }
 
   if (request.nextUrl.pathname === '/services') {
-    // For services, redirect to marketing version if not logged in,
-    // or to dashboard version if logged in
+    // For services, redirect to dashboard version if logged in as admin
     if (session) {
-      return NextResponse.redirect(new URL('/dashboard/services', request.url))
-    } 
+      const { data: userData } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', session.user.id)
+        .single();
+      
+      if (userData?.role === 'admin') {
+        return NextResponse.redirect(new URL('/dashboard/services', request.url))
+      }
+    }
+    // Otherwise show the marketing version
+    return NextResponse.rewrite(new URL('/(marketing)/services', request.url));
   }
 
   // Protect dashboard routes
@@ -79,5 +102,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/account/:path*', '/portfolio', '/services'],
+  matcher: ['/dashboard/:path*', '/account/:path*', '/portfolio', '/portfolio/:path*', '/services'],
 }
