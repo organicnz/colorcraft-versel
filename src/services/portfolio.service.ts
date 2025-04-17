@@ -39,14 +39,14 @@ export async function getPortfolioProjects(options?: {
     const { data: projects, error } = await query;
     
     if (error) {
-      console.error('Error fetching portfolio projects:', error);
-      throw new Error(`Failed to fetch portfolio projects: ${error.message}`);
+      console.error('Supabase error fetching projects:', error);
+      return []; // Return empty array instead of throwing
     }
     
     return projects || [];
   } catch (error) {
-    console.error('Unexpected error in getPortfolioProjects:', error);
-    throw error;
+    console.error('Error fetching portfolio projects:', error);
+    return []; // Return empty array on any error
   }
 }
 
@@ -65,6 +65,7 @@ export async function getPortfolioProject(id: string, useAdmin = false) {
       .from('projects')
       .select('*')
       .eq('id', id)
+      .eq('status', 'published')
       .single();
     
     if (error) {
@@ -73,13 +74,53 @@ export async function getPortfolioProject(id: string, useAdmin = false) {
         return null;
       }
       
-      console.error('Error fetching portfolio project:', error);
+      console.error('Supabase error fetching project:', error);
       throw new Error(`Failed to fetch portfolio project: ${error.message}`);
     }
     
     return project;
   } catch (error) {
     console.error(`Unexpected error in getPortfolioProject(${id}):`, error);
-    throw error;
+    return null; // Return null instead of throwing
+  }
+}
+
+export async function getRelatedProjects(id: string, techniques: string[] = []) {
+  try {
+    const supabase = createClient();
+    
+    // If we have techniques, try to find projects with similar techniques
+    if (techniques && techniques.length > 0) {
+      const { data, error } = await supabase
+        .from("projects")
+        .select("*")
+        .eq("status", "published")
+        .neq("id", id) // Exclude current project
+        .filter('techniques', 'cs', `{${techniques[0]}}`) // Look for at least one matching technique
+        .limit(3);
+      
+      if (!error && data && data.length >= 3) {
+        return data;
+      }
+    }
+    
+    // Fallback: just get recent projects excluding current
+    const { data, error } = await supabase
+      .from("projects")
+      .select("*")
+      .eq("status", "published")
+      .neq("id", id)
+      .order("created_at", { ascending: false })
+      .limit(3);
+    
+    if (error) {
+      console.error("Supabase error fetching related projects:", error);
+      return []; // Return empty array instead of throwing
+    }
+    
+    return data || [];
+  } catch (error) {
+    console.error("Error fetching related projects:", error);
+    return []; // Return empty array on any error
   }
 } 

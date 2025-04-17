@@ -13,15 +13,7 @@ export const metadata = {
 };
 
 export default async function PortfolioPage() {
-  let projects = [];
-  let error = null;
-  
-  try {
-    projects = await getPortfolioProjects();
-  } catch (err) {
-    console.error('Error in portfolio page:', err);
-    error = 'Failed to load portfolio projects. Please try again.';
-  }
+  const projects = await getPortfolioProjects();
   
   return (
     <div className="container py-12">
@@ -32,16 +24,15 @@ export default async function PortfolioPage() {
         </p>
       </div>
       
-      {error ? (
-        <div className="bg-destructive/10 text-destructive p-4 rounded-md mb-6">
-          {error}
-        </div>
-      ) : projects.length === 0 ? (
+      {projects.length === 0 ? (
         <div className="text-center py-12 border rounded-md bg-muted/30">
-          <h2 className="text-xl font-medium mb-2">No portfolio projects yet</h2>
+          <h2 className="text-xl font-medium mb-2">Portfolio Currently Unavailable</h2>
           <p className="text-muted-foreground mb-4">
-            Check back soon for our latest furniture transformations.
+            We're updating our portfolio. Please check back soon to see our latest work.
           </p>
+          <Button asChild>
+            <Link href="/contact">Contact Us</Link>
+          </Button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -56,7 +47,7 @@ export default async function PortfolioPage() {
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
-                  {project.is_featured && (
+                  {project.featured && (
                     <div className="absolute top-2 right-2">
                       <Badge className="bg-primary text-primary-foreground">Featured</Badge>
                     </div>
