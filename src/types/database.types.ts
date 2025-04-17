@@ -25,20 +25,45 @@ export type Lead = {
   user_id?: string;
 }
 
-export type Project = {
+export interface User {
   id: string;
-  created_at: string;
-  updated_at: string;
+  email: string;
+  role: 'admin' | 'contributor' | 'customer';
+  created_at: string | null;
+  updated_at: string | null;
+  full_name?: string | null;
+  avatar_url?: string | null;
+}
+
+export interface Project {
+  id: string;
   title: string;
-  description?: string;
-  customer_id: string;
-  status: 'inquiry' | 'estimate' | 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
-  estimated_value?: number;
-  final_value?: number;
-  start_date?: string;
-  due_date?: string;
-  completion_date?: string;
-  notes?: string;
+  description: string;
+  brief_description?: string;
+  before_images?: string[];
+  after_images?: string[];
+  techniques?: string[];
+  materials?: string[];
+  duration_days?: number;
+  location?: string;
+  status: 'draft' | 'published';
+  created_at?: string;
+  updated_at?: string;
+  featured?: boolean;
+}
+
+export interface Service {
+  id: string;
+  title: string;
+  description: string;
+  brief_description?: string;
+  image_url?: string;
+  price_range?: string;
+  estimated_duration?: string;
+  is_available: boolean;
+  created_at?: string;
+  updated_at?: string;
+  featured?: boolean;
 }
 
 export type Communication = {

@@ -95,6 +95,25 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               </svg>
               Settings
             </NavItem>
+
+            <NavItem href="/admin/users">
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className="w-5 h-5 mr-3"
+              >
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="m22 10-2 2-2-2" />
+                <path d="M15 14H3" />
+              </svg>
+              Admin
+            </NavItem>
             
             <li className="mt-6 pt-4 border-t border-gray-200">
               <Link 
