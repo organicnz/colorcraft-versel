@@ -1,12 +1,13 @@
 import { createServerClient } from '@supabase/ssr'
+import { env } from '@/lib/config/env'
 
 // Create a version that works during build time
 export const createClient = () => {
   // During build, provide a dummy implementation that won't fail
   if (process.env.NODE_ENV === 'production' && typeof window === 'undefined') {
     return createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      env.NEXT_PUBLIC_SUPABASE_URL,
+      env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
       {
         cookies: {
           get(name) {
@@ -31,8 +32,8 @@ export const createClient = () => {
     const cookieStore = cookies()
     
     return createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      env.NEXT_PUBLIC_SUPABASE_URL,
+      env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
       {
         cookies: {
           get(name) {
@@ -43,6 +44,7 @@ export const createClient = () => {
               cookieStore.set(name, value, options)
             } catch (error) {
               // This will fail in middleware, but we can ignore it
+              console.debug('Cookie set error (expected in middleware):', error)
             }
           },
           remove(name, options) {
@@ -50,16 +52,19 @@ export const createClient = () => {
               cookieStore.set(name, '', { ...options, maxAge: 0 })
             } catch (error) {
               // This will fail in middleware, but we can ignore it
+              console.debug('Cookie remove error (expected in middleware):', error)
             }
           },
         },
       }
     )
-  } catch (e) {
+  } catch (error) {
+    console.debug('Cookie handler initialization error:', error)
+    
     // Fallback for any other context
     return createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      env.NEXT_PUBLIC_SUPABASE_URL,
+      env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
       {
         cookies: {
           get(name) {

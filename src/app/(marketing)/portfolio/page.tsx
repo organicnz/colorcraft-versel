@@ -1,41 +1,23 @@
 import React from 'react';
-import { createClient } from '@/lib/supabase/server';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
+import { getPortfolioProjects } from '@/services/portfolio.service';
 
 export const metadata = {
   title: 'Portfolio | Color & Craft',
   description: 'Explore our collection of furniture transformations and restorations',
 };
 
-async function getProjects() {
-  const supabase = createClient();
-  
-  const { data: projects, error } = await supabase
-    .from('projects')
-    .select('*')
-    .order('is_featured', { ascending: false })
-    .order('created_at', { ascending: false });
-  
-  if (error) {
-    console.error('Error fetching projects:', error);
-    throw new Error('Failed to fetch portfolio projects');
-  }
-  
-  return projects || [];
-}
-
 export default async function PortfolioPage() {
   let projects = [];
   let error = null;
   
   try {
-    projects = await getProjects();
+    projects = await getPortfolioProjects();
   } catch (err) {
     console.error('Error in portfolio page:', err);
     error = 'Failed to load portfolio projects. Please try again.';
