@@ -16,6 +16,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { format } from 'date-fns';
@@ -26,7 +27,10 @@ import {
   Trash2, 
   Eye, 
   Star,
-  StarOff 
+  ArrowUpDown,
+  Calendar,
+  CheckCircle,
+  Info
 } from 'lucide-react';
 import { 
   AlertDialog,
@@ -41,6 +45,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
 import { deletePortfolioProject } from '@/actions/portfolioActions';
+import { useRouter } from 'next/navigation';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 // Define a type for the project props
 type Project = {
@@ -57,6 +63,7 @@ type Project = {
   client_testimonial?: string;
   is_featured: boolean;
   created_at: string;
+  updated_at?: string;
 };
 
 interface PortfolioTableProps {
@@ -64,8 +71,45 @@ interface PortfolioTableProps {
 }
 
 export default function PortfolioTable({ projects }: PortfolioTableProps) {
+  const router = useRouter();
   const [isDeleting, setIsDeleting] = React.useState(false);
   const [deleteId, setDeleteId] = React.useState<string | null>(null);
+  const [sortField, setSortField] = React.useState<'title' | 'created_at' | 'is_featured'>('is_featured');
+  const [sortDirection, setSortDirection] = React.useState<'asc' | 'desc'>('desc');
+
+  // Sort projects based on current sort settings
+  const sortedProjects = React.useMemo(() => {
+    return [...projects].sort((a, b) => {
+      if (sortField === 'is_featured') {
+        // Sort by featured first, then by created_at
+        if (a.is_featured === b.is_featured) {
+          return sortDirection === 'desc'
+            ? new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            : new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        }
+        return sortDirection === 'desc'
+          ? (a.is_featured ? -1 : 1)
+          : (a.is_featured ? 1 : -1);
+      } else if (sortField === 'created_at') {
+        return sortDirection === 'desc'
+          ? new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          : new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+      } else {
+        return sortDirection === 'desc'
+          ? b.title.localeCompare(a.title)
+          : a.title.localeCompare(b.title);
+      }
+    });
+  }, [projects, sortField, sortDirection]);
+
+  const toggleSort = (field: 'title' | 'created_at' | 'is_featured') => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('desc');
+    }
+  };
 
   const handleDelete = async (id: string) => {
     if (!id) return;
@@ -79,7 +123,8 @@ export default function PortfolioTable({ projects }: PortfolioTableProps) {
       if (result.error) {
         toast.error(result.error);
       } else {
-        toast.success("Project deleted successfully.");
+        toast.success(result.message || "Project deleted successfully.");
+        router.refresh();
       }
     } catch (error) {
       toast.error("Failed to delete project. Please try again.");
@@ -89,23 +134,87 @@ export default function PortfolioTable({ projects }: PortfolioTableProps) {
     }
   };
 
+  const getSortIcon = (field: 'title' | 'created_at' | 'is_featured') => {
+    if (sortField !== field) return <ArrowUpDown className="h-4 w-4 ml-1 opacity-50" />;
+    return sortDirection === 'asc' 
+      ? <ArrowUpDown className="h-4 w-4 ml-1 rotate-180 text-primary" /> 
+      : <ArrowUpDown className="h-4 w-4 ml-1 text-primary" />;
+  };
+
   return (
     <div className="border rounded-md overflow-hidden">
+      <div className="p-2 bg-muted/50 flex justify-between items-center">
+        <div className="text-sm text-muted-foreground">
+          {projects.length} {projects.length === 1 ? 'project' : 'projects'} total • {projects.filter(p => p.is_featured).length} featured
+        </div>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => router.refresh()}
+                className="text-xs flex items-center"
+              >
+                <CheckCircle className="h-3 w-3 mr-1" />
+                Refresh
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Refresh the project list</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Project</TableHead>
-            <TableHead>Featured</TableHead>
-            <TableHead>Date Added</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead className="w-[40%]">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => toggleSort('title')}
+                className="font-semibold flex items-center -ml-3"
+              >
+                Project {getSortIcon('title')}
+              </Button>
+            </TableHead>
+            <TableHead className="w-[15%]">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => toggleSort('is_featured')}
+                className="font-semibold flex items-center -ml-3"
+              >
+                Featured {getSortIcon('is_featured')}
+              </Button>
+            </TableHead>
+            <TableHead className="w-[20%]">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => toggleSort('created_at')}
+                className="font-semibold flex items-center -ml-3"
+              >
+                Date Added {getSortIcon('created_at')}
+              </Button>
+            </TableHead>
+            <TableHead className="text-right w-[25%]">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {projects.map((project) => (
+          {sortedProjects.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={4} className="text-center py-6 text-muted-foreground">
+                No projects found. Add your first project to get started.
+              </TableCell>
+            </TableRow>
+          )}
+          {sortedProjects.map((project) => (
             <TableRow key={project.id}>
               <TableCell className="min-w-[300px]">
                 <div className="flex items-center gap-3">
-                  <div className="relative h-12 w-12 rounded-md overflow-hidden">
+                  <div className="relative h-12 w-12 rounded-md overflow-hidden border">
                     {project.after_images && project.after_images[0] ? (
                       <Image
                         src={project.after_images[0]}
@@ -115,7 +224,9 @@ export default function PortfolioTable({ projects }: PortfolioTableProps) {
                         className="object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full bg-muted"></div>
+                      <div className="w-full h-full bg-muted flex items-center justify-center">
+                        <Info className="h-4 w-4 text-muted-foreground" />
+                      </div>
                     )}
                   </div>
                   <div>
@@ -123,22 +234,49 @@ export default function PortfolioTable({ projects }: PortfolioTableProps) {
                     <div className="text-sm text-muted-foreground truncate max-w-[400px]">
                       {project.brief_description}
                     </div>
+                    {project.techniques && project.techniques.length > 0 && (
+                      <div className="flex gap-1 mt-1 flex-wrap">
+                        {project.techniques.slice(0, 3).map((technique, i) => (
+                          <Badge key={i} variant="outline" className="text-xs">
+                            {technique}
+                          </Badge>
+                        ))}
+                        {project.techniques.length > 3 && (
+                          <Badge variant="outline" className="text-xs">
+                            +{project.techniques.length - 3} more
+                          </Badge>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </TableCell>
               <TableCell>
                 {project.is_featured ? (
-                  <Badge variant="default">Featured</Badge>
+                  <Badge variant="default" className="flex items-center gap-1">
+                    <Star className="h-3 w-3" />
+                    Featured
+                  </Badge>
                 ) : (
                   <Badge variant="outline">No</Badge>
                 )}
               </TableCell>
               <TableCell>
-                {project.created_at ? (
-                  format(new Date(project.created_at), 'MMM d, yyyy')
-                ) : (
-                  'N/A'
-                )}
+                <div className="flex flex-col">
+                  <span className="flex items-center gap-1">
+                    <Calendar className="h-3 w-3 text-muted-foreground" />
+                    {project.created_at ? (
+                      format(new Date(project.created_at), 'MMM d, yyyy')
+                    ) : (
+                      'N/A'
+                    )}
+                  </span>
+                  {project.completion_date && (
+                    <span className="text-xs text-muted-foreground mt-1">
+                      Completed: {format(new Date(project.completion_date), 'MMM d, yyyy')}
+                    </span>
+                  )}
+                </div>
               </TableCell>
               <TableCell className="text-right">
                 <DropdownMenu>
@@ -161,6 +299,7 @@ export default function PortfolioTable({ projects }: PortfolioTableProps) {
                         <span>Edit</span>
                       </Link>
                     </DropdownMenuItem>
+                    <DropdownMenuSeparator />
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <DropdownMenuItem

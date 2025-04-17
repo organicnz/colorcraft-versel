@@ -21,6 +21,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 import { createPortfolioProject, updatePortfolioProject } from '@/actions/portfolioActions';
+import { AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 // Define form validation schema
 const formSchema = z.object({
@@ -47,6 +49,8 @@ interface PortfolioFormProps {
 export default function PortfolioForm({ project }: PortfolioFormProps = {}) {
   const router = useRouter();
   const [isPending, setIsPending] = React.useState(false);
+  const [generalError, setGeneralError] = React.useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({});
   const isEditing = !!project?.id;
 
   // Define form with react-hook-form
@@ -70,12 +74,17 @@ export default function PortfolioForm({ project }: PortfolioFormProps = {}) {
 
   const onSubmit = async (data: FormValues) => {
     setIsPending(true);
+    setGeneralError(null);
+    setFieldErrors({});
 
     try {
+      // Create a FormData object to handle arrays properly
       const formData = new FormData();
       
+      // Add all form fields to FormData
       Object.entries(data).forEach(([key, value]) => {
         if (value !== undefined) {
+          // Handle arrays (comma-separated strings) by adding them with array notation in the name
           if (['before_images', 'after_images', 'techniques', 'materials'].includes(key) && typeof value === 'string') {
             const items = value.split(',').map(item => item.trim()).filter(Boolean);
             items.forEach(item => {
@@ -87,19 +96,40 @@ export default function PortfolioForm({ project }: PortfolioFormProps = {}) {
         }
       });
 
+      // Call the appropriate server action based on whether we're editing or creating
       const result = isEditing 
         ? await updatePortfolioProject(formData)
         : await createPortfolioProject(formData);
 
+      // Handle errors returned from the server action
       if (result.error) {
+        setGeneralError(result.error);
+        
+        // If there are field-specific errors, populate them
+        if (result.fieldErrors) {
+          setFieldErrors(result.fieldErrors);
+          
+          // For each field error, set the error in react-hook-form
+          Object.entries(result.fieldErrors).forEach(([field, message]) => {
+            form.setError(field as any, { 
+              type: 'server', 
+              message 
+            });
+          });
+        }
+        
         toast.error(result.error);
       } else {
-        toast.success(isEditing ? "Project updated successfully!" : "Project created successfully!");
+        // Success path
+        toast.success(result.message || (isEditing ? "Project updated successfully!" : "Project created successfully!"));
+        
+        // Redirect to the portfolio dashboard
         router.push("/dashboard/portfolio");
         router.refresh();
       }
     } catch (error) {
       console.error("Form submission error:", error);
+      setGeneralError("An unexpected error occurred. Please try again.");
       toast.error("Something went wrong. Please try again.");
     } finally {
       setIsPending(false);
@@ -108,6 +138,14 @@ export default function PortfolioForm({ project }: PortfolioFormProps = {}) {
 
   return (
     <Form {...form}>
+      {generalError && (
+        <Alert variant="destructive" className="mb-6">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{generalError}</AlertDescription>
+        </Alert>
+      )}
+      
       {/* @ts-ignore - Ignore type errors with form submission */}
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         {/* Project ID - Hidden field for editing */}
