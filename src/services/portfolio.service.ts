@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 /**
  * Fetches all portfolio projects
@@ -8,9 +9,11 @@ import { createClient } from '@/lib/supabase/server';
 export async function getPortfolioProjects(options?: {
   featuredOnly?: boolean;
   orderBy?: { column: string; ascending: boolean }[];
+  useAdmin?: boolean; // Option to use admin client for higher privileges
 }) {
   try {
-    const supabase = createClient();
+    // Use admin client if specified, otherwise use regular server client
+    const supabase = options?.useAdmin ? createAdminClient() : createClient();
     
     let query = supabase
       .from('projects')
@@ -50,11 +53,13 @@ export async function getPortfolioProjects(options?: {
 /**
  * Fetches a single portfolio project by ID
  * @param id The project ID to fetch
+ * @param useAdmin Whether to use admin client for higher privileges
  * @returns The portfolio project or null if not found
  */
-export async function getPortfolioProject(id: string) {
+export async function getPortfolioProject(id: string, useAdmin = false) {
   try {
-    const supabase = createClient();
+    // Use admin client if specified, otherwise use regular server client
+    const supabase = useAdmin ? createAdminClient() : createClient();
     
     const { data: project, error } = await supabase
       .from('projects')

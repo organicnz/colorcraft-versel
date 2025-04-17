@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import PortfolioForm from '../../_components/PortfolioForm';
-import { createClient } from '@/lib/supabase/server';
+import { getPortfolioProject } from '@/services/portfolio.service';
 
 export const metadata = {
   title: 'Edit Project | Dashboard',
@@ -17,25 +17,8 @@ interface EditProjectPageProps {
   };
 }
 
-async function getProject(id: string) {
-  const supabase = createClient();
-  
-  const { data: project, error } = await supabase
-    .from('projects')
-    .select('*')
-    .eq('id', id)
-    .single();
-  
-  if (error) {
-    console.error('Error fetching project:', error);
-    return null;
-  }
-  
-  return project;
-}
-
 export default async function EditProjectPage({ params }: EditProjectPageProps) {
-  const project = await getProject(params.id);
+  const project = await getPortfolioProject(params.id, true); // Use admin access
   
   if (!project) {
     notFound();

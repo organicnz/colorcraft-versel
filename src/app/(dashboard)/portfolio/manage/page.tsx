@@ -19,7 +19,8 @@ export default async function DashboardPortfolioManagePage() {
       orderBy: [
         { column: 'is_featured', ascending: false },
         { column: 'completion_date', ascending: false }
-      ]
+      ],
+      useAdmin: true // Use admin client for dashboard operations
     });
   } catch (err) {
     console.error('Error in dashboard portfolio page:', err);
