@@ -1,59 +1,44 @@
-import { createClient } from '@/utils/supabase/server';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    // Check environment variables
-    const envInfo = {
-      NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL ? 'exists' : 'missing',
-      NEXT_PUBLIC_SUPABASE_URL_length: process.env.NEXT_PUBLIC_SUPABASE_URL?.length || 0,
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'exists' : 'missing',
-      NEXT_PUBLIC_SUPABASE_ANON_KEY_length: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.length || 0,
-      SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY ? 'exists' : 'missing',
-      SUPABASE_SERVICE_ROLE_KEY_length: process.env.SUPABASE_SERVICE_ROLE_KEY?.length || 0,
-    };
-
-    console.log('Debug API called - checking environment variables:');
-    console.log(envInfo);
-
-    // Test Supabase connection
-    console.log('Testing database connection...');
-    const supabase = createClient();
+    // Gather environment variable info
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
     
-    try {
-      const { data, error } = await supabase.from('_schema_migrations').select('*').limit(1);
-      
-      if (error) {
-        console.log('Version query error:', error);
-        return NextResponse.json({ 
-          status: 'error', 
-          message: 'Database connection failed', 
-          error: error.message,
-          hint: error.hint,
-          envInfo 
-        }, { status: 500 });
-      }
-      
-      return NextResponse.json({ 
-        status: 'success', 
-        message: 'Database connection successful', 
-        envInfo 
-      });
-    } catch (error: any) {
-      console.error('Supabase connection error:', error);
-      return NextResponse.json({ 
-        status: 'error', 
-        message: 'Failed to connect to Supabase', 
-        error: error.message,
-        envInfo 
-      }, { status: 500 });
-    }
+    // Check the variables and report their status
+    const envInfo = {
+      NEXT_PUBLIC_SUPABASE_URL: supabaseUrl ? 'exists' : 'missing',
+      NEXT_PUBLIC_SUPABASE_URL_length: supabaseUrl?.length || 0,
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: supabaseAnonKey ? 'exists' : 'missing',
+      NEXT_PUBLIC_SUPABASE_ANON_KEY_length: supabaseAnonKey?.length || 0,
+      NEXT_PUBLIC_SUPABASE_ANON_KEY_preview: supabaseAnonKey ? 
+        `${supabaseAnonKey.substring(0, 5)}...${supabaseAnonKey.substring(supabaseAnonKey.length - 5)}` : 'n/a',
+      SUPABASE_SERVICE_ROLE_KEY: supabaseServiceRoleKey ? 'exists' : 'missing',
+      SUPABASE_SERVICE_ROLE_KEY_length: supabaseServiceRoleKey?.length || 0
+    };
+    
+    console.log('Debug API called - checking environment variables:', envInfo);
+    
+    // Return info to the client
+    return NextResponse.json({
+      status: 'success',
+      environment: process.env.NODE_ENV,
+      env_variables: envInfo,
+      instructions: `
+        If NEXT_PUBLIC_SUPABASE_ANON_KEY is missing:
+        1. Go to your .env.local file locally and find the value
+        2. Add it to your Vercel project's Environment Variables
+        3. Make sure it's enabled for Production, Preview and Development
+        4. Redeploy your application
+      `
+    });
   } catch (error: any) {
-    console.error('Environment check error:', error);
-    return NextResponse.json({ 
-      status: 'error', 
-      message: 'Environment check failed', 
-      error: error.message 
+    return NextResponse.json({
+      status: 'error',
+      message: 'Failed to check environment variables',
+      error: error.message
     }, { status: 500 });
   }
 } 
