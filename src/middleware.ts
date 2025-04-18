@@ -85,11 +85,6 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  // For portfolio, redirect to dashboard version if admin
-  if (pathname === "/portfolio" && userRole === "admin") {
-    return NextResponse.redirect(new URL("/dashboard/portfolio", request.url));
-  }
-
   // For services, redirect to dashboard version if admin
   if (pathname === "/services" && userRole === "admin") {
     return NextResponse.redirect(new URL("/dashboard/services", request.url));

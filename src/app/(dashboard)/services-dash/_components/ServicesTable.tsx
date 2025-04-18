@@ -28,10 +28,12 @@ import { toast } from "sonner";
 
 interface Service {
   id: string;
-  title: string;
+  name: string;
   description: string;
-  price: string;
+  brief_description: string;
+  price_range?: string | null;
   image_url?: string | null;
+  is_active: boolean;
   created_at: string;
 }
 
@@ -41,33 +43,32 @@ interface ServicesTableProps {
 
 export default function ServicesTable({ services }: ServicesTableProps) {
   const router = useRouter();
-  const [isDeleting, setIsDeleting] = useState<string | null>(null);
-
-  if (services.length === 0) {
-    return <p className="text-center py-6">No services found.</p>;
-  }
-
-  const handleEdit = (id: string) => {
-    router.push(`/services-dash/edit/${id}`);
-  };
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [serviceToDelete, setServiceToDelete] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async (id: string) => {
     try {
-      setIsDeleting(id);
+      setIsDeleting(true);
       const result = await deleteService(id);
       
       if (result.error) {
-        toast.error(result.error);
-      } else {
-        toast.success("Service deleted successfully");
-        router.refresh();
+        throw new Error(result.error);
       }
+      
+      toast.success("Service deleted successfully");
+      router.refresh();
     } catch (error) {
-      toast.error("An unexpected error occurred while deleting the service");
-      console.error("Delete service error:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to delete service");
     } finally {
-      setIsDeleting(null);
+      setIsDeleting(false);
+      setDeleteDialogOpen(false);
     }
+  };
+
+  const confirmDelete = (id: string) => {
+    setServiceToDelete(id);
+    setDeleteDialogOpen(true);
   };
 
   return (
@@ -75,9 +76,10 @@ export default function ServicesTable({ services }: ServicesTableProps) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Title</TableHead>
+            <TableHead>Name</TableHead>
             <TableHead>Description</TableHead>
-            <TableHead>Price</TableHead>
+            <TableHead>Price Range</TableHead>
+            <TableHead>Status</TableHead>
             <TableHead>Created</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -85,54 +87,65 @@ export default function ServicesTable({ services }: ServicesTableProps) {
         <TableBody>
           {services.map((service) => (
             <TableRow key={service.id}>
-              <TableCell className="font-medium">{service.title}</TableCell>
+              <TableCell className="font-medium">{service.name}</TableCell>
               <TableCell className="max-w-xs truncate">
-                {service.description}
+                {service.brief_description}
               </TableCell>
-              <TableCell>${service.price}</TableCell>
+              <TableCell>{service.price_range || 'N/A'}</TableCell>
+              <TableCell>
+                <span className={`px-2 py-1 rounded-full text-xs ${service.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                  {service.is_active ? 'Active' : 'Inactive'}
+                </span>
+              </TableCell>
               <TableCell>
                 {new Date(service.created_at).toLocaleDateString()}
               </TableCell>
               <TableCell className="text-right">
-                <div className="flex justify-end gap-2">
+                <div className="flex justify-end space-x-2">
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={() => handleEdit(service.id)}
+                    onClick={() => router.push(`/services-dash/${service.id}/edit`)}
                   >
                     <Pencil className="h-4 w-4" />
+                    <span className="sr-only">Edit</span>
                   </Button>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="outline" size="icon">
-                        <Trash className="h-4 w-4 text-red-500" />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Delete Service</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Are you sure you want to delete this service? This action cannot be undone.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={() => handleDelete(service.id)}
-                          disabled={isDeleting === service.id}
-                          className="bg-red-500 hover:bg-red-600"
-                        >
-                          {isDeleting === service.id ? "Deleting..." : "Delete"}
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => confirmDelete(service.id)}
+                    disabled={isDeleting && serviceToDelete === service.id}
+                  >
+                    <Trash className="h-4 w-4" />
+                    <span className="sr-only">Delete</span>
+                  </Button>
                 </div>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the service.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => serviceToDelete && handleDelete(serviceToDelete)}
+              disabled={isDeleting}
+              className="bg-red-500 hover:bg-red-600"
+            >
+              {isDeleting ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 } 

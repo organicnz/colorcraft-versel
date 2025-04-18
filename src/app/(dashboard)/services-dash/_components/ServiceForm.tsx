@@ -14,12 +14,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { createService, updateService } from "@/actions/servicesActions";
 import { serviceSchema } from "@/lib/schemas/service.schema";
 import { z } from "zod";
+import { Switch } from "@/components/ui/switch";
 
 type ServiceFormProps = {
   service?: z.infer<typeof serviceSchema>;
@@ -33,10 +35,12 @@ export default function ServiceForm({ service }: ServiceFormProps) {
   const form = useForm<z.infer<typeof serviceSchema>>({
     resolver: zodResolver(serviceSchema),
     defaultValues: service || {
-      title: "",
+      name: "",
       description: "",
-      price: 0,
-      image_url: ""
+      brief_description: "",
+      price_range: "",
+      image_url: "",
+      is_active: true
     }
   });
   
@@ -81,12 +85,29 @@ export default function ServiceForm({ service }: ServiceFormProps) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
-          name="title"
+          name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Title</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Enter service title" {...field} />
+                <Input placeholder="Enter service name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
+        <FormField
+          control={form.control}
+          name="brief_description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Brief Description</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Brief description for service listings"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -98,10 +119,10 @@ export default function ServiceForm({ service }: ServiceFormProps) {
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel>Full Description</FormLabel>
               <FormControl>
                 <Textarea 
-                  placeholder="Describe this service"
+                  placeholder="Describe this service in detail"
                   className="min-h-32"
                   {...field} 
                 />
@@ -113,16 +134,14 @@ export default function ServiceForm({ service }: ServiceFormProps) {
         
         <FormField
           control={form.control}
-          name="price"
+          name="price_range"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Price</FormLabel>
+              <FormLabel>Price Range</FormLabel>
               <FormControl>
                 <Input 
-                  type="number" 
-                  placeholder="0.00"
+                  placeholder="e.g. $250 - $500"
                   {...field}
-                  onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                 />
               </FormControl>
               <FormMessage />
@@ -140,6 +159,27 @@ export default function ServiceForm({ service }: ServiceFormProps) {
                 <Input placeholder="https://example.com/image.jpg" {...field} />
               </FormControl>
               <FormMessage />
+            </FormItem>
+          )}
+        />
+        
+        <FormField
+          control={form.control}
+          name="is_active"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+              <div className="space-y-0.5">
+                <FormLabel className="text-base">Active Status</FormLabel>
+                <FormDescription>
+                  Inactive services won't be displayed on the public site.
+                </FormDescription>
+              </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
             </FormItem>
           )}
         />

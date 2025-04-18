@@ -1,12 +1,13 @@
 import { createPublicClient } from "@/utils/supabase/public";
 import { Metadata } from "next";
+import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { Card, CardContent } from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Services | Color & Craft",
-  description: "Explore our furniture painting and restoration services",
+  description: "View our furniture painting and restoration services",
 };
 
 export default async function ServicesPage() {
@@ -20,7 +21,7 @@ export default async function ServicesPage() {
     const response = await supabase
       .from("services")
       .select("*")
-      .order("title");
+      .order("name");
     
     if (response.error) {
       error = response.error;
@@ -62,40 +63,42 @@ export default async function ServicesPage() {
         )}
         
         {servicesList.map((service) => (
-          <div key={service.id} className="grid md:grid-cols-2 gap-8 items-center p-6 border rounded-lg hover:shadow-md transition-shadow">
-            <div className="order-2 md:order-1">
-              <h2 className="text-2xl font-bold mb-3">{service.title}</h2>
-              <p className="text-muted-foreground mb-4">{service.description}</p>
-              
-              {service.price > 0 && (
-                <p className="font-medium mb-4">
-                  Price: <span className="text-primary">${service.price.toFixed(2)}</span>
-                </p>
-              )}
-              
-              <Button asChild>
-                <Link href={`/contact?service=${encodeURIComponent(service.title)}`}>
-                  Request a Quote
-                </Link>
-              </Button>
-            </div>
-            
-            <div className="order-1 md:order-2">
-              {service.image_url ? (
-                <Image
-                  src={service.image_url}
-                  alt={service.title}
-                  width={600}
-                  height={400}
-                  className="rounded-lg object-cover w-full h-[300px]"
-                />
-              ) : (
-                <div className="bg-muted rounded-lg w-full h-[300px] flex items-center justify-center">
-                  <p className="text-muted-foreground">Image coming soon</p>
+          <Card key={service.id} className="overflow-hidden">
+            <CardContent className="p-0">
+              <div className="grid md:grid-cols-2 gap-6">
+                {service.image_url && (
+                  <div className="relative aspect-video md:aspect-square">
+                    <Image
+                      src={service.image_url}
+                      alt={service.name}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                    />
+                  </div>
+                )}
+                <div className="p-6 flex flex-col justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold mb-2">{service.name}</h2>
+                    <p className="text-muted-foreground mb-4">{service.brief_description}</p>
+                    <div className="prose max-w-none">
+                      <p>{service.description}</p>
+                    </div>
+                  </div>
+                  {service.price_range && (
+                    <div className="mt-6">
+                      <p className="text-lg font-medium text-primary">{service.price_range}</p>
+                    </div>
+                  )}
+                  <div className="mt-4">
+                    <Button asChild className="w-full sm:w-auto">
+                      <Link href="/contact">Request a Quote</Link>
+                    </Button>
+                  </div>
                 </div>
-              )}
-            </div>
-          </div>
+              </div>
+            </CardContent>
+          </Card>
         ))}
       </section>
       

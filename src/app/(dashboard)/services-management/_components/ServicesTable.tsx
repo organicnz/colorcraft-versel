@@ -31,10 +31,12 @@ import { toast } from "@/hooks/use-toast";
 
 interface Service {
   id: string;
-  title: string;
+  name: string;
   description: string;
-  price: number;
+  brief_description: string;
+  price_range?: string;
   image_url?: string;
+  is_active: boolean;
   created_at: string;
 }
 
@@ -92,8 +94,8 @@ export function ServicesTable({ services, isAdmin }: ServicesTableProps) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Title</TableHead>
-            <TableHead>Price</TableHead>
+            <TableHead>Name</TableHead>
+            <TableHead>Price Range</TableHead>
             <TableHead className="hidden md:table-cell">Description</TableHead>
             <TableHead className="hidden md:table-cell">Date Added</TableHead>
             <TableHead className="text-right">Actions</TableHead>
@@ -102,10 +104,10 @@ export function ServicesTable({ services, isAdmin }: ServicesTableProps) {
         <TableBody>
           {services.map((service) => (
             <TableRow key={service.id}>
-              <TableCell className="font-medium">{service.title}</TableCell>
+              <TableCell className="font-medium">{service.name}</TableCell>
               <TableCell>
-                {service.price > 0 ? (
-                  formatPrice(service.price)
+                {service.price_range ? (
+                  formatPrice(Number(service.price_range))
                 ) : (
                   <Badge variant="outline">Contact for Pricing</Badge>
                 )}
@@ -159,7 +161,7 @@ export function ServicesTable({ services, isAdmin }: ServicesTableProps) {
                           <AlertDialogHeader>
                             <AlertDialogTitle>Delete Service</AlertDialogTitle>
                             <AlertDialogDescription>
-                              Are you sure you want to delete &quot;{service.title}&quot;? This action cannot be undone.
+                              Are you sure you want to delete &quot;{service.name}&quot;? This action cannot be undone.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
