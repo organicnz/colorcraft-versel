@@ -24,7 +24,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Pencil, Trash } from "lucide-react";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 
 interface Service {
   id: string;
@@ -57,24 +57,13 @@ export default function ServicesTable({ services }: ServicesTableProps) {
       const result = await deleteService(id);
       
       if (result.error) {
-        toast({
-          title: "Error",
-          description: result.error,
-          variant: "destructive",
-        });
+        toast.error(result.error);
       } else {
-        toast({
-          title: "Success",
-          description: "Service deleted successfully",
-        });
+        toast.success("Service deleted successfully");
         router.refresh();
       }
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "An unexpected error occurred while deleting the service",
-        variant: "destructive",
-      });
+      toast.error("An unexpected error occurred while deleting the service");
       console.error("Delete service error:", error);
     } finally {
       setIsDeleting(null);
