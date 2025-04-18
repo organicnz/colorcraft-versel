@@ -38,16 +38,15 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
+import { deleteService } from "@/actions/servicesActions";
 
 // Define a type for the service props
 type Service = {
   id: string;
-  name: string;
+  title: string;
   description: string;
-  short_description?: string;
-  price_range?: string;
+  price: number;
   image_url?: string;
-  is_active: boolean;
   created_at: string;
 };
 
@@ -55,140 +54,82 @@ interface ServicesTableProps {
   services: Service[];
 }
 
-export default function ServicesTable({ services }: ServicesTableProps) {
+export function ServicesTable({ services }: ServicesTableProps) {
   const [isDeleting, setIsDeleting] = React.useState(false);
   const [deleteId, setDeleteId] = React.useState<string | null>(null);
 
   const handleDelete = async (id: string) => {
-    if (!id) return;
+    if (!confirm("Are you sure you want to delete this service?")) return;
     
     setIsDeleting(true);
     setDeleteId(id);
     
     try {
-      // TODO: Implement service deletion action
-      // const result = await deleteService(id);
-      
-      const result = { success: false, error: "Deletion not implemented yet." };
-      
-      if (!result.success) {
-        toast.error(result.error || "Failed to delete service.");
-      } else {
-        toast.success("Service deleted successfully.");
-      }
+      await deleteService(id);
+      toast.success("Service deleted successfully");
     } catch (error) {
-      toast.error("Failed to delete service. Please try again.");
+      console.error("Error deleting service:", error);
+      toast.error("Failed to delete service");
     } finally {
       setIsDeleting(false);
       setDeleteId(null);
     }
   };
 
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(price);
+  };
+
   return (
-    <div className="border rounded-md overflow-hidden">
+    <div className="rounded-md border">
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead>Service</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Price Range</TableHead>
-            <TableHead>Date Added</TableHead>
+            <TableHead>Description</TableHead>
+            <TableHead>Price</TableHead>
+            <TableHead>Created</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {services.map((service) => (
             <TableRow key={service.id}>
-              <TableCell className="min-w-[300px]">
+              <TableCell>
                 <div className="flex items-center gap-3">
                   {service.image_url && (
-                    <div className="relative h-12 w-12 rounded-md overflow-hidden">
+                    <div className="relative h-10 w-10 rounded-md overflow-hidden">
                       <Image
                         src={service.image_url}
-                        alt={service.name}
+                        alt={service.title}
                         fill
-                        sizes="48px"
+                        sizes="40px"
                         className="object-cover"
                       />
                     </div>
                   )}
-                  <div>
-                    <div className="font-medium">{service.name}</div>
-                    <div className="text-sm text-muted-foreground truncate max-w-[400px]">
-                      {service.short_description || service.description.substring(0, 100)}
-                    </div>
-                  </div>
+                  <span className="font-medium">{service.title}</span>
                 </div>
               </TableCell>
-              <TableCell>
-                {service.is_active ? (
-                  <Badge variant="default">Active</Badge>
-                ) : (
-                  <Badge variant="outline">Inactive</Badge>
-                )}
-              </TableCell>
-              <TableCell>
-                {service.price_range || 'Contact for pricing'}
-              </TableCell>
-              <TableCell>
-                {service.created_at ? (
-                  format(new Date(service.created_at), 'MMM d, yyyy')
-                ) : (
-                  'N/A'
-                )}
-              </TableCell>
-              <TableCell className="text-right">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                      <span className="sr-only">Open menu</span>
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem asChild>
-                      <Link href={`/services#${service.id}`} className="flex items-center">
-                        <Eye className="mr-2 h-4 w-4" />
-                        <span>View</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href={`/dashboard/services/${service.id}/edit`} className="flex items-center">
-                        <Pencil className="mr-2 h-4 w-4" />
-                        <span>Edit</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <DropdownMenuItem
-                          onSelect={(e) => e.preventDefault()}
-                          className="flex items-center text-destructive focus:text-destructive"
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          <span>Delete</span>
-                        </DropdownMenuItem>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            This will permanently delete the service &quot;{service.name}&quot;. 
-                            This action cannot be undone.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction 
-                            onClick={() => handleDelete(service.id)}
-                            disabled={isDeleting && deleteId === service.id}
-                          >
-                            {isDeleting && deleteId === service.id ? 'Deleting...' : 'Delete'}
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+              <TableCell className="max-w-[300px] truncate">{service.description}</TableCell>
+              <TableCell>{formatPrice(service.price)}</TableCell>
+              <TableCell>{new Date(service.created_at).toLocaleDateString()}</TableCell>
+              <TableCell className="text-right space-x-2">
+                <Link href={`/dashboard/services-dash/${service.id}/edit`}>
+                  <Button variant="outline" size="sm">
+                    Edit
+                  </Button>
+                </Link>
+                <Button 
+                  variant="destructive" 
+                  size="sm"
+                  onClick={() => handleDelete(service.id)}
+                >
+                  Delete
+                </Button>
               </TableCell>
             </TableRow>
           ))}

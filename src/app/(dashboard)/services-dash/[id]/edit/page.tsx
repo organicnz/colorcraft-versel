@@ -1,13 +1,17 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { ServiceForm } from "../_components/ServiceForm";
+import { notFound, redirect } from "next/navigation";
+import { ServiceForm } from "../../_components/ServiceForm";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export const dynamic = "force-dynamic";
 
-export default async function NewServicePage() {
+export default async function EditServicePage({
+  params
+}: {
+  params: { id: string }
+}) {
   const supabase = createServerComponentClient({ cookies });
   
   // Check if user is authenticated
@@ -38,16 +42,27 @@ export default async function NewServicePage() {
     );
   }
   
+  // Fetch the service
+  const { data: service, error: serviceError } = await supabase
+    .from("services")
+    .select("*")
+    .eq("id", params.id)
+    .single();
+  
+  if (serviceError || !service) {
+    notFound();
+  }
+  
   return (
     <div className="max-w-3xl mx-auto py-8 px-4">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">Add New Service</h1>
+        <h1 className="text-2xl font-bold">Edit Service</h1>
         <p className="text-muted-foreground mt-1">
-          Create a new service to offer to your clients
+          Update the details of your service
         </p>
       </div>
       
-      <ServiceForm />
+      <ServiceForm initialData={service} />
     </div>
   );
 } 

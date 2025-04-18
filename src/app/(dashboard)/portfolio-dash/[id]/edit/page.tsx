@@ -1,43 +1,68 @@
-import React from 'react';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
-import PortfolioForm from '../../_components/PortfolioForm';
-import { getPortfolioProject } from '@/services/portfolio.service';
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import { notFound, redirect } from "next/navigation";
+import { PortfolioForm } from "../../_components/PortfolioForm";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-export const metadata = {
-  title: 'Edit Project | Dashboard',
-  description: 'Edit an existing portfolio project',
-};
+export const dynamic = "force-dynamic";
 
-interface EditProjectPageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default async function EditProjectPage({ params }: EditProjectPageProps) {
-  const project = await getPortfolioProject(params.id, true); // Use admin access
+export default async function EditProjectPage({
+  params
+}: {
+  params: { id: string }
+}) {
+  const supabase = createServerComponentClient({ cookies });
   
-  if (!project) {
+  // Check if user is authenticated
+  const { data: { session } } = await supabase.auth.getSession();
+  
+  if (!session) {
+    redirect("/auth/signin");
+  }
+  
+  // Check if user is admin
+  const { data: userData, error: userError } = await supabase
+    .from("users")
+    .select("role")
+    .eq("id", session.user.id)
+    .single();
+  
+  if (userError || !userData || userData.role !== "admin") {
+    return (
+      <div className="max-w-3xl mx-auto py-8 px-4">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Access Denied</AlertTitle>
+          <AlertDescription>
+            You don't have permission to access this page.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+  
+  // Fetch the project
+  const { data: project, error: projectError } = await supabase
+    .from("projects")
+    .select("*")
+    .eq("id", params.id)
+    .single();
+  
+  if (projectError || !project) {
     notFound();
   }
   
   return (
-    <div className="container py-6">
-      <div className="flex items-center gap-4 mb-8">
-        <Button variant="outline" size="icon" asChild>
-          <Link href="/dashboard/portfolio/manage">
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
-        </Button>
-        <h1 className="text-3xl font-bold">Edit Project</h1>
+    <div className="max-w-3xl mx-auto py-8 px-4">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold">Edit Project</h1>
+        <p className="text-muted-foreground mt-1">
+          Update the details of your portfolio project
+        </p>
       </div>
       
-      <div className="max-w-3xl mx-auto">
-        <PortfolioForm project={project} />
-      </div>
+      <PortfolioForm initialData={project} />
     </div>
   );
 } 

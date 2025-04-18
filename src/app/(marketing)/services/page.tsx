@@ -1,6 +1,5 @@
-import { createClient } from "@/utils/supabase/server";
+import { createPublicClient } from "@/utils/supabase/public";
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -11,21 +10,27 @@ export const metadata: Metadata = {
 };
 
 export default async function ServicesPage() {
-  const supabase = createClient();
+  let servicesList = [];
+  let error = null;
   
-  // Fetch services with error handling
-  const { data: services, error } = await supabase
-    .from("services")
-    .select("*")
-    .order("featured", { ascending: false })
-    .order("created_at", { ascending: false });
-  
-  // Handle errors gracefully - this will at least show the page structure
-  // instead of a complete failure
-  const servicesList = error ? [] : services || [];
-  
-  if (error) {
-    console.error("Error fetching services:", error);
+  try {
+    const supabase = createPublicClient();
+    
+    // Fetch services with error handling
+    const response = await supabase
+      .from("services")
+      .select("*")
+      .order("title");
+    
+    if (response.error) {
+      error = response.error;
+      console.error("Error fetching services:", error);
+    } else {
+      servicesList = response.data || [];
+    }
+  } catch (err) {
+    console.error("Failed to fetch services:", err);
+    error = err;
   }
   
   return (
@@ -60,17 +65,11 @@ export default async function ServicesPage() {
           <div key={service.id} className="grid md:grid-cols-2 gap-8 items-center p-6 border rounded-lg hover:shadow-md transition-shadow">
             <div className="order-2 md:order-1">
               <h2 className="text-2xl font-bold mb-3">{service.title}</h2>
-              <p className="text-muted-foreground mb-4">{service.brief_description || service.description}</p>
+              <p className="text-muted-foreground mb-4">{service.description}</p>
               
-              {service.price_range && (
+              {service.price > 0 && (
                 <p className="font-medium mb-4">
-                  Price Range: <span className="text-primary">{service.price_range}</span>
-                </p>
-              )}
-              
-              {service.estimated_duration && (
-                <p className="font-medium mb-4">
-                  Estimated Duration: <span>{service.estimated_duration}</span>
+                  Price: <span className="text-primary">${service.price.toFixed(2)}</span>
                 </p>
               )}
               

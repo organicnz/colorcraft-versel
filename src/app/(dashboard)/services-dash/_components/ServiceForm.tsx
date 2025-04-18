@@ -1,11 +1,12 @@
 "use client";
 
-import React from 'react';
-import { useRouter } from 'next/navigation';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -14,225 +15,161 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Separator } from '@/components/ui/separator';
-import { toast } from 'sonner';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { createService, updateService } from "@/actions/servicesActions";
 
-// Define form validation schema
 const formSchema = z.object({
-  id: z.string().uuid().optional(),
-  name: z.string().min(1, "Service name is required"),
-  short_description: z.string().min(1, "Short description is required"),
-  description: z.string().min(1, "Full description is required"),
-  price_range: z.string().optional(),
-  image_url: z.string().url("Please enter a valid URL").optional().or(z.literal('')),
-  is_active: z.boolean().default(true),
+  id: z.string().optional(),
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(10, "Description is required"),
+  price: z.coerce.number().min(0, "Price must be a non-negative number"),
+  image_url: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-interface ServiceFormProps {
-  service?: any; // Use a proper Service type in a real application
+interface ServiceData {
+  id?: string;
+  title?: string;
+  description?: string;
+  price?: number;
+  image_url?: string;
 }
 
-export default function ServiceForm({ service }: ServiceFormProps = {}) {
-  const router = useRouter();
-  const [isPending, setIsPending] = React.useState(false);
-  const isEditing = !!service?.id;
+interface ServiceFormProps {
+  initialData?: ServiceData;
+}
 
-  // Define form with react-hook-form
+export function ServiceForm({ initialData }: ServiceFormProps = {}) {
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Prepare the form data
+  const defaultValues: FormValues = {
+    id: initialData?.id || undefined,
+    title: initialData?.title || "",
+    description: initialData?.description || "",
+    price: initialData?.price || 0,
+    image_url: initialData?.image_url || "",
+  };
+  
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      id: service?.id || undefined,
-      name: service?.name || "",
-      short_description: service?.short_description || "",
-      description: service?.description || "",
-      price_range: service?.price_range || "",
-      image_url: service?.image_url || "",
-      is_active: service?.is_active ?? true,
-    },
+    defaultValues,
   });
-
+  
   const onSubmit = async (data: FormValues) => {
-    setIsPending(true);
-
+    setIsSubmitting(true);
+    
     try {
-      // TODO: Implement service creation/updating server actions
-      // For now, we'll just simulate a successful submission
-      
-      console.log("Service data to submit:", data);
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const success = true; // Simulate success
-      
-      if (success) {
-        toast.success(isEditing ? "Service updated successfully!" : "Service created successfully!");
-        router.push("/dashboard/services");
-        router.refresh();
+      // Determine if this is a create or update operation
+      if (data.id) {
+        await updateService(data);
+        toast.success("Service updated successfully");
       } else {
-        toast.error("Failed to save service. Please try again.");
+        await createService(data);
+        toast.success("Service created successfully");
       }
+      
+      // Redirect back to the services management page
+      router.push("/dashboard/services-dash");
+      router.refresh();
     } catch (error) {
-      console.error("Form submission error:", error);
-      toast.error("Something went wrong. Please try again.");
+      console.error("Error saving service:", error);
+      toast.error("Failed to save service. Please try again.");
     } finally {
-      setIsPending(false);
+      setIsSubmitting(false);
     }
   };
-
+  
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {/* Service ID - Hidden field for editing */}
-        {isEditing && (
-          <input type="hidden" name="id" value={service.id} />
-        )}
-
-        {/* Basic Service Info */}
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Service Information</h2>
-          <Separator />
-
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Service Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Furniture Restoration" {...field} />
-                </FormControl>
-                <FormDescription>The name of your service offering</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="short_description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Short Description</FormLabel>
-                <FormControl>
-                  <Input 
-                    placeholder="A brief one-line description" 
-                    {...field} 
-                  />
-                </FormControl>
-                <FormDescription>A short summary that appears in service lists</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Full Description</FormLabel>
-                <FormControl>
-                  <Textarea 
-                    placeholder="A detailed description of the service, what's included, and what clients can expect." 
-                    rows={5}
-                    {...field} 
-                  />
-                </FormControl>
-                <FormDescription>Detailed information about the service</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        {/* Service Details */}
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Service Details</h2>
-          <Separator />
-
-          <FormField
-            control={form.control}
-            name="price_range"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Price Range</FormLabel>
-                <FormControl>
-                  <Input 
-                    placeholder="$100-$500 depending on size" 
-                    {...field} 
-                  />
-                </FormControl>
-                <FormDescription>Optional price range or starting price information</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="image_url"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Image URL</FormLabel>
-                <FormControl>
-                  <Input 
-                    placeholder="https://example.com/service-image.jpg" 
-                    {...field} 
-                  />
-                </FormControl>
-                <FormDescription>URL for an image representing this service</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        {/* Display Settings */}
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Display Settings</h2>
-          <Separator />
-
-          <FormField
-            control={form.control}
-            name="is_active"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>Active</FormLabel>
-                  <FormDescription>
-                    Inactive services won't be shown on your website
-                  </FormDescription>
-                </div>
-              </FormItem>
-            )}
-          />
-        </div>
-
-        {/* Form Actions */}
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Service Title</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter service title" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea 
+                  placeholder="Provide a detailed description of the service" 
+                  className="min-h-[150px]" 
+                  {...field} 
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
+        <FormField
+          control={form.control}
+          name="price"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Price (USD)</FormLabel>
+              <FormControl>
+                <Input 
+                  type="number" 
+                  min="0" 
+                  step="0.01" 
+                  placeholder="0.00" 
+                  {...field} 
+                />
+              </FormControl>
+              <FormDescription>
+                Enter 0 for "Contact for pricing"
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
+        <FormField
+          control={form.control}
+          name="image_url"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Image URL</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter image URL" {...field} />
+              </FormControl>
+              <FormDescription>
+                Enter a URL for an image that represents this service
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
         <div className="flex justify-end space-x-4">
-          <Button 
-            type="button" 
-            variant="outline" 
-            onClick={() => router.push("/dashboard/services")}
-            disabled={isPending}
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => router.push("/dashboard/services-dash")}
+            disabled={isSubmitting}
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={isPending}>
-            {isPending ? "Saving..." : isEditing ? "Update Service" : "Add Service"}
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Saving...' : (initialData?.id ? 'Update Service' : 'Create Service')}
           </Button>
         </div>
       </form>

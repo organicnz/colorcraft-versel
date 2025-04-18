@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { getProjectById, getRelatedProjects } from '@/services/portfolio.service';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
+import { createPublicClient } from "@/utils/supabase/public";
+import { ArrowLeft, Calendar } from "lucide-react";
 
 type Props = {
   params: { id: string };
@@ -14,29 +16,50 @@ type Props = {
 
 // Dynamic metadata
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const project = await getProjectById(params.id);
+  const supabase = createPublicClient();
+  
+  const { data: project } = await supabase
+    .from("projects")
+    .select("*")
+    .eq("id", params.id)
+    .single();
   
   if (!project) {
     return {
-      title: 'Project Not Found',
-      description: 'The requested project could not be found.',
+      title: "Project Not Found | Color & Craft",
+      description: "The requested project could not be found",
     };
   }
   
   return {
-    title: `${project.title} | Portfolio`,
-    description: project.brief_description || project.description.substring(0, 155),
+    title: `${project.title} | Color & Craft Portfolio`,
+    description: project.brief_description || "View this furniture restoration project by Color & Craft",
   };
 }
 
 export default async function ProjectDetailsPage({ params }: Props) {
-  const project = await getProjectById(params.id);
+  const supabase = createPublicClient();
   
-  // Handle 404 case
-  if (!project) {
+  const { data: project, error } = await supabase
+    .from("projects")
+    .select("*")
+    .eq("id", params.id)
+    .single();
+  
+  if (error || !project) {
+    console.error("Error fetching project:", error);
     notFound();
   }
   
+  // Format the completion date if available
+  const formattedDate = project.completion_date 
+    ? new Date(project.completion_date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })
+    : null;
+
   // Get related projects (using techniques for better relevance)
   const relatedProjects = await getRelatedProjects(params.id, project.techniques);
   
@@ -89,20 +112,24 @@ export default async function ProjectDetailsPage({ params }: Props) {
             {project.before_images && project.before_images.length > 0 ? (
               <div>
                 <h3 className="text-lg font-medium mb-3">Before</h3>
-                <div className="aspect-square relative rounded-lg overflow-hidden">
-                  <Image
-                    src={project.before_images[0]}
-                    alt={`${project.title} - Before`}
-                    fill
-                    className="object-cover"
-                  />
+                <div className="grid gap-4">
+                  {project.before_images.map((image, index) => (
+                    <div key={`before-${index}`} className="relative aspect-video overflow-hidden rounded-lg">
+                      <Image
+                        src={image}
+                        alt={`${project.title} before ${index + 1}`}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  ))}
                 </div>
               </div>
             ) : (
               <div>
                 <h3 className="text-lg font-medium mb-3">Before</h3>
-                <div className="aspect-square bg-muted rounded-lg flex items-center justify-center">
-                  <p className="text-muted-foreground">No before image available</p>
+                <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
+                  <p className="text-muted-foreground">No before images available</p>
                 </div>
               </div>
             )}
@@ -111,20 +138,24 @@ export default async function ProjectDetailsPage({ params }: Props) {
             {project.after_images && project.after_images.length > 0 ? (
               <div>
                 <h3 className="text-lg font-medium mb-3">After</h3>
-                <div className="aspect-square relative rounded-lg overflow-hidden">
-                  <Image
-                    src={project.after_images[0]}
-                    alt={`${project.title} - After`}
-                    fill
-                    className="object-cover"
-                  />
+                <div className="grid gap-4">
+                  {project.after_images.map((image, index) => (
+                    <div key={`after-${index}`} className="relative aspect-video overflow-hidden rounded-lg">
+                      <Image
+                        src={image}
+                        alt={`${project.title} after ${index + 1}`}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  ))}
                 </div>
               </div>
             ) : (
               <div>
                 <h3 className="text-lg font-medium mb-3">After</h3>
-                <div className="aspect-square bg-muted rounded-lg flex items-center justify-center">
-                  <p className="text-muted-foreground">No after image available</p>
+                <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
+                  <p className="text-muted-foreground">No after images available</p>
                 </div>
               </div>
             )}
@@ -136,29 +167,74 @@ export default async function ProjectDetailsPage({ params }: Props) {
       <div className="mb-12">
         <h2 className="text-2xl font-bold mb-6">Project Details</h2>
         
-        <div className="prose max-w-none">
-          <p>{project.description}</p>
+        <div className="grid md:grid-cols-2 gap-x-12 gap-y-6">
+          {/* Left Column */}
+          <div>
+            {project.description && (
+              <div className="mb-6">
+                <h3 className="text-lg font-medium mb-2">Description</h3>
+                <div className="prose max-w-none">
+                  <p>{project.description}</p>
+                </div>
+              </div>
+            )}
+            
+            {project.process_description && (
+              <div className="mb-6">
+                <h3 className="text-lg font-medium mb-2">Process</h3>
+                <div className="prose max-w-none">
+                  <p>{project.process_description}</p>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* Right Column */}
+          <div>
+            {formattedDate && (
+              <div className="mb-4">
+                <h3 className="text-lg font-medium mb-2">Completed</h3>
+                <div className="flex items-center text-muted-foreground">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  {formattedDate}
+                </div>
+              </div>
+            )}
+            
+            {project.techniques && project.techniques.length > 0 && (
+              <div className="mb-4">
+                <h3 className="text-lg font-medium mb-2">Techniques Used</h3>
+                <div className="flex flex-wrap gap-2">
+                  {project.techniques.map((technique) => (
+                    <Badge key={technique} variant="secondary">
+                      {technique}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {project.materials && project.materials.length > 0 && (
+              <div className="mb-4">
+                <h3 className="text-lg font-medium mb-2">Materials</h3>
+                <div className="flex flex-wrap gap-2">
+                  {project.materials.map((material) => (
+                    <Badge key={material} variant="outline">
+                      {material}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {project.timeline && (
+              <div className="mb-4">
+                <h3 className="text-lg font-medium mb-2">Timeline</h3>
+                <p className="text-muted-foreground">{project.timeline}</p>
+              </div>
+            )}
+          </div>
         </div>
-        
-        {/* Materials used */}
-        {project.materials && project.materials.length > 0 && (
-          <div className="mt-8">
-            <h3 className="text-xl font-bold mb-3">Materials Used</h3>
-            <ul className="list-disc pl-5 space-y-1">
-              {project.materials.map((material) => (
-                <li key={material}>{material}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-        
-        {/* Duration */}
-        {project.duration_days && (
-          <div className="mt-8">
-            <h3 className="text-xl font-bold mb-3">Project Timeline</h3>
-            <p>This project was completed in {project.duration_days} days.</p>
-          </div>
-        )}
       </div>
       
       {/* CTA */}
@@ -167,9 +243,14 @@ export default async function ProjectDetailsPage({ params }: Props) {
         <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
           We'd love to help you transform your furniture pieces. Get in touch for a consultation.
         </p>
-        <Button asChild size="lg">
-          <Link href="/contact">Request a Quote</Link>
-        </Button>
+        <div className="flex flex-col sm:flex-row justify-center gap-4">
+          <Button asChild size="lg">
+            <Link href="/contact">Request a Quote</Link>
+          </Button>
+          <Button asChild variant="outline" size="lg">
+            <Link href="/services">View Our Services</Link>
+          </Button>
+        </div>
       </div>
       
       {/* Related Projects */}

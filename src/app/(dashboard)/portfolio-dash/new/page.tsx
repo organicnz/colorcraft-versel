@@ -1,29 +1,53 @@
-import React from 'react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
-import PortfolioForm from '../_components/PortfolioForm';
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { PortfolioForm } from "../_components/PortfolioForm";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-export const metadata = {
-  title: 'Add New Project | Dashboard',
-  description: 'Add a new project to your portfolio',
-};
+export const dynamic = "force-dynamic";
 
-export default function NewProjectPage() {
+export default async function NewProjectPage() {
+  const supabase = createServerComponentClient({ cookies });
+  
+  // Check if user is authenticated
+  const { data: { session } } = await supabase.auth.getSession();
+  
+  if (!session) {
+    redirect("/auth/signin");
+  }
+  
+  // Check if user is admin
+  const { data: userData, error: userError } = await supabase
+    .from("users")
+    .select("role")
+    .eq("id", session.user.id)
+    .single();
+  
+  if (userError || !userData || userData.role !== "admin") {
+    return (
+      <div className="max-w-3xl mx-auto py-8 px-4">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Access Denied</AlertTitle>
+          <AlertDescription>
+            You don't have permission to access this page.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+  
   return (
-    <div className="container py-6">
-      <div className="flex items-center gap-4 mb-8">
-        <Button variant="outline" size="icon" asChild>
-          <Link href="/dashboard/portfolio/manage">
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
-        </Button>
-        <h1 className="text-3xl font-bold">Add New Project</h1>
+    <div className="max-w-3xl mx-auto py-8 px-4">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold">Add New Project</h1>
+        <p className="text-muted-foreground mt-1">
+          Create a new portfolio project to showcase your work
+        </p>
       </div>
       
-      <div className="max-w-3xl mx-auto">
-        <PortfolioForm />
-      </div>
+      <PortfolioForm />
     </div>
   );
 } 
