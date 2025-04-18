@@ -3,18 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
-import { z } from "zod";
-
-// Export the schema directly to fix the import issue
-export const serviceSchema = z.object({
-  id: z.string().optional(),
-  title: z.string().min(1, "Title is required"),
-  description: z.string().min(1, "Description is required"),
-  price: z.coerce.number().min(0, "Price must be a positive number"),
-  image_url: z.string().optional(),
-});
-
-export type ServiceFormData = z.infer<typeof serviceSchema>;
+import { serviceSchema, type ServiceFormData } from "@/lib/schemas/service.schema";
 
 export async function createService(formData: ServiceFormData) {
   try {

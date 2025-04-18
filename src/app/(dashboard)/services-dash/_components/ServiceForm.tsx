@@ -17,7 +17,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { createService, updateService, serviceSchema } from "@/actions/servicesActions";
+import { createService, updateService } from "@/actions/servicesActions";
+import { serviceSchema } from "@/lib/schemas/service.schema";
 import { z } from "zod";
 
 type ServiceFormProps = {
