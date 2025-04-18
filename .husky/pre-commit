@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Fix simple linter errors before running full lint
+bash ./scripts/fix-linter-errors.sh
+
+# Check for linting errors
+npm run lint
+
+# Run type check
+npm run type-check
+
+# Check for Vercel deployment issues
+echo "Checking for recent Vercel deployment issues..."
+if [ -f "logs/vercel_errors_$(date +%Y%m%d).txt" ]; then
+  ERROR_COUNT=$(grep -c "ERRORS DETECTED" "logs/vercel_errors_$(date +%Y%m%d).txt")
+  if [ "$ERROR_COUNT" -gt 0 ]; then
+    echo "⚠️ Warning: Vercel deployment errors detected today!"
+    echo "Please run 'npm run logs:analyze' to check deployment issues before pushing."
+    # Not blocking the commit, but warning the developer
+  fi
+fi 

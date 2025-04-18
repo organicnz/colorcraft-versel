@@ -54,4 +54,27 @@ vercel env ls
 vercel logs [deployment-url] --scope=build
 ```
 
+### Automated Log Monitoring
+
+The project includes a comprehensive log monitoring system:
+
+```bash
+# Start real-time log monitoring
+npm run logs:monitor
+
+# Run detailed log analysis
+npm run logs:analyze
+
+# Set up automated monitoring with cron
+npm run logs:setup-cron
+```
+
+The monitoring system:
+- Checks for errors every 5 minutes
+- Performs weekly detailed analysis
+- Alerts on critical issues via email (when configured)
+- Integrates with git workflow to prevent problematic deployments
+
+For full documentation, see `VERCEL_LOG_MONITORING.md`.
+
 Use these commands to monitor your application regularly for errors, performance issues, and abnormal behavior. Set up periodic checks as part of your maintenance routine. 

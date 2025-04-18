@@ -1,9 +1,10 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-import { createServerClient } from '@supabase/ssr'
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { createServerClient } from "@supabase/ssr";
 
 export async function middleware(request: NextRequest) {
-  const response = NextResponse.next()
+  const response = NextResponse.next();
+  const pathname = request.nextUrl.pathname;
 
   // Create a Supabase client
   const supabase = createServerClient(
@@ -17,90 +18,97 @@ export async function middleware(request: NextRequest) {
             name,
             value,
             ...options,
-          })
+          });
         },
         remove: (name, options) => {
           response.cookies.set({
             name,
-            value: '',
+            value: "",
             ...options,
             maxAge: 0,
-          })
+          });
         },
       },
     }
-  )
+  );
 
+  // Get session once
   const {
     data: { session },
-  } = await supabase.auth.getSession()
+  } = await supabase.auth.getSession();
 
-  // Handle routing conflicts based on authentication state
-  if (request.nextUrl.pathname === '/portfolio') {
-    // For portfolio, redirect to dashboard version if logged in as admin
-    if (session) {
-      const { data: userData } = await supabase
-        .from('users')
-        .select('role')
-        .eq('id', session.user.id)
-        .single();
-      
-      if (userData?.role === 'admin') {
-        return NextResponse.redirect(new URL('/dashboard/portfolio', request.url))
-      }
+  // For non-authenticated users, handle public routes and protected routes
+  if (!session) {
+    // Protect dashboard routes
+    if (pathname.startsWith("/dashboard")) {
+      return NextResponse.redirect(new URL("/signin", request.url));
     }
-    // Otherwise show the marketing version
-    return NextResponse.rewrite(new URL('/(marketing)/portfolio', request.url));
-  }
 
-  // Similar logic for individual portfolio items
-  if (request.nextUrl.pathname.startsWith('/portfolio/') && request.nextUrl.pathname !== '/portfolio') {
-    return NextResponse.rewrite(new URL(`/(marketing)${request.nextUrl.pathname}`, request.url));
-  }
-
-  if (request.nextUrl.pathname === '/services') {
-    // For services, redirect to dashboard version if logged in as admin
-    if (session) {
-      const { data: userData } = await supabase
-        .from('users')
-        .select('role')
-        .eq('id', session.user.id)
-        .single();
-      
-      if (userData?.role === 'admin') {
-        return NextResponse.redirect(new URL('/dashboard/services', request.url))
-      }
+    // Protect account routes
+    if (pathname.startsWith("/account")) {
+      return NextResponse.redirect(new URL("/signin", request.url));
     }
-    // Otherwise show the marketing version
-    return NextResponse.rewrite(new URL('/(marketing)/services', request.url));
+
+    // Handle public portfolio and services routes
+    if (pathname === "/portfolio" || pathname.startsWith("/portfolio/")) {
+      const targetPath =
+        pathname === "/portfolio" ? "/(marketing)/portfolio" : `/(marketing)${pathname}`;
+      return NextResponse.rewrite(new URL(targetPath, request.url));
+    }
+
+    if (pathname === "/services") {
+      return NextResponse.rewrite(new URL("/(marketing)/services", request.url));
+    }
+
+    return response;
   }
 
-  // Protect dashboard routes
-  if (!session && request.nextUrl.pathname.startsWith('/dashboard')) {
-    return NextResponse.redirect(new URL('/signin', request.url))
-  }
+  // For authenticated users, fetch role information once
+  let userRole: string | null = null;
 
-  // If user is logged in, check if they're an admin for dashboard access
-  if (session && request.nextUrl.pathname.startsWith('/dashboard')) {
+  // Only query user role if necessary (for dashboard/portfolio/services routes)
+  const needsRoleCheck =
+    pathname.startsWith("/dashboard") || pathname === "/portfolio" || pathname === "/services";
+
+  if (needsRoleCheck) {
     const { data: userData } = await supabase
-      .from('users')
-      .select('role')
-      .eq('id', session.user.id)
-      .single()
+      .from("users")
+      .select("role")
+      .eq("id", session.user.id)
+      .single();
 
-    if (!userData || userData.role !== 'admin') {
-      return NextResponse.redirect(new URL('/', request.url))
-    }
+    userRole = userData?.role || null;
   }
 
-  // Protect account routes
-  if (!session && request.nextUrl.pathname.startsWith('/account')) {
-    return NextResponse.redirect(new URL('/signin', request.url))
+  // Handle admin-specific routes and redirects
+  if (pathname.startsWith("/dashboard") && userRole !== "admin") {
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
-  return response
+  // For portfolio, redirect to dashboard version if admin
+  if (pathname === "/portfolio" && userRole === "admin") {
+    return NextResponse.redirect(new URL("/dashboard/portfolio", request.url));
+  }
+
+  // For services, redirect to dashboard version if admin
+  if (pathname === "/services" && userRole === "admin") {
+    return NextResponse.redirect(new URL("/dashboard/services", request.url));
+  }
+
+  // For authenticated users who aren't admins, use marketing routes
+  if ((pathname === "/portfolio" || pathname.startsWith("/portfolio/")) && userRole !== "admin") {
+    const targetPath =
+      pathname === "/portfolio" ? "/(marketing)/portfolio" : `/(marketing)${pathname}`;
+    return NextResponse.rewrite(new URL(targetPath, request.url));
+  }
+
+  if (pathname === "/services" && userRole !== "admin") {
+    return NextResponse.rewrite(new URL("/(marketing)/services", request.url));
+  }
+
+  return response;
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/account/:path*', '/portfolio', '/portfolio/:path*', '/services'],
-}
+  matcher: ["/dashboard/:path*", "/account/:path*", "/portfolio", "/portfolio/:path*", "/services"],
+};
