@@ -99,4 +99,32 @@ export const FEATURE_FLAGS: Record<string, FeatureConfig> = {
     environments: ['development', 'staging'],
     description: 'Enable enhanced contact form with service selection and scheduling',
   },
-}; 
+};
+
+export interface FeatureDefinition {
+  name: string;
+  description: string;
+  defaultValue: boolean;
+  category?: string;
+}
+
+export const Feature_definitions: FeatureDefinition[] = [
+  {
+    name: 'enable_portfolio_management',
+    description: 'Enable the portfolio management features',
+    defaultValue: true,
+    category: 'dashboard',
+  },
+  {
+    name: 'enable_services_management',
+    description: 'Enable the services management features',
+    defaultValue: true,
+    category: 'dashboard',
+  },
+  {
+    name: 'enable_user_management',
+    description: 'Enable the user management features',
+    defaultValue: true,
+    category: 'admin',
+  },
+]; 

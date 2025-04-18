@@ -1,125 +1,44 @@
 /**
- * Logger utility for consistent logging across the application
- * Provides structured logging with severity levels and contextual information
+ * Simple logger implementation for the application
  */
 
-type LogLevel = 'debug' | 'info' | 'warn' | 'error';
-
 interface LogOptions {
-  context?: string;
-  timestamp?: boolean;
   metadata?: Record<string, any>;
 }
 
-/**
- * Default options for logging
- */
-const defaultOptions: LogOptions = {
-  timestamp: true,
-};
+class Logger {
+  private prefix: string;
 
-/**
- * Formats a log message with timestamp and context
- */
-function formatMessage(message: string, options: LogOptions = {}): string {
-  const opts = { ...defaultOptions, ...options };
-  const parts: string[] = [];
-  
-  if (opts.timestamp) {
-    parts.push(`[${new Date().toISOString()}]`);
+  constructor(prefix: string = '') {
+    this.prefix = prefix;
   }
-  
-  if (opts.context) {
-    parts.push(`[${opts.context}]`);
-  }
-  
-  parts.push(message);
-  
-  if (opts.metadata) {
-    try {
-      parts.push(JSON.stringify(opts.metadata));
-    } catch (e) {
-      parts.push(`[Metadata serialization failed: ${e}]`);
+
+  info(message: string, options?: LogOptions) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`[INFO]${this.prefix ? ` [${this.prefix}]` : ''} ${message}`, options?.metadata || '');
     }
   }
-  
-  return parts.join(' ');
-}
 
-/**
- * Log with debug level
- */
-function debug(message: string, options: LogOptions = {}): void {
-  if (process.env.NODE_ENV === 'production') return; // Skip in production
-  console.debug(formatMessage(message, { ...options, context: options.context || 'DEBUG' }));
-}
-
-/**
- * Log with info level
- */
-function info(message: string, options: LogOptions = {}): void {
-  console.info(formatMessage(message, { ...options, context: options.context || 'INFO' }));
-}
-
-/**
- * Log with warning level
- */
-function warn(message: string, options: LogOptions = {}): void {
-  console.warn(formatMessage(message, { ...options, context: options.context || 'WARN' }));
-}
-
-/**
- * Log with error level
- */
-function error(message: string, error?: any, options: LogOptions = {}): void {
-  const metadata = { ...(options.metadata || {}) };
-  
-  // Add error details if present
-  if (error) {
-    metadata.error = {
-      message: error.message,
-      name: error.name,
-      stack: error.stack,
-      ...(error.code ? { code: error.code } : {}),
-    };
+  warn(message: string, options?: LogOptions) {
+    console.warn(`[WARN]${this.prefix ? ` [${this.prefix}]` : ''} ${message}`, options?.metadata || '');
   }
-  
-  console.error(
-    formatMessage(message, { 
-      ...options, 
-      context: options.context || 'ERROR',
-      metadata
-    })
-  );
+
+  error(message: string, options?: LogOptions) {
+    console.error(`[ERROR]${this.prefix ? ` [${this.prefix}]` : ''} ${message}`, options?.metadata || '');
+  }
+
+  debug(message: string, options?: LogOptions) {
+    if (process.env.NODE_ENV === 'development') {
+      console.debug(`[DEBUG]${this.prefix ? ` [${this.prefix}]` : ''} ${message}`, options?.metadata || '');
+    }
+  }
 }
 
-/**
- * Create a logger with a specific context
- */
-function createContextLogger(context: string) {
-  return {
-    debug: (message: string, options: LogOptions = {}) => debug(message, { ...options, context }),
-    info: (message: string, options: LogOptions = {}) => info(message, { ...options, context }),
-    warn: (message: string, options: LogOptions = {}) => warn(message, { ...options, context }),
-    error: (message: string, error?: any, options: LogOptions = {}) => error(message, error, { ...options, context }),
-  };
-}
-
-/**
- * Logger instance with methods for different severity levels
- */
-export const logger = {
-  debug,
-  info,
-  warn,
-  error,
-  createContext: createContextLogger,
-};
-
-// Create specialized loggers for different areas of the application
-export const dbLogger = logger.createContext('DB');
-export const authLogger = logger.createContext('AUTH');
-export const apiLogger = logger.createContext('API');
+// Create instances for different parts of the application
+export const logger = new Logger();
+export const apiLogger = new Logger('API');
+export const authLogger = new Logger('Auth');
+export const dbLogger = new Logger('DB');
 
 /**
  * Track performance of operations

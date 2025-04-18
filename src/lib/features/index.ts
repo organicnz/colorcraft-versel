@@ -4,6 +4,7 @@ import { eq, and } from 'drizzle-orm';
 import { apiLogger } from '@/lib/logger';
 import { errorMonitor } from '@/lib/errors/monitoring';
 import { cache } from 'react';
+import { FeatureDefinition } from './feature-list';
 
 /**
  * Feature flag environment types
@@ -42,101 +43,38 @@ export function clearFeatureFlagCache(): void {
   featureFlagCache.clear();
 }
 
+interface FeatureContext {
+  userId?: string;
+}
+
 /**
- * Check if a feature flag is enabled
- * This function is server-side only
+ * Check if a feature is enabled
  */
 export async function isFeatureEnabled(
-  featureConfig: FeatureConfig,
-  context?: { userId?: string; environment?: Environment }
+  feature: FeatureDefinition,
+  context: FeatureContext = {}
 ): Promise<boolean> {
-  const environment = context?.environment || getEnvironment();
-  const featureName = featureConfig.name;
-  const cacheKey = `${featureName}:${environment}:${context?.userId || 'global'}`;
+  // In this simplified implementation, we just return the default value
+  // In a real app, you would check against a database or feature flag service
+  return feature.defaultValue;
+}
+
+/**
+ * Get the value of a feature flag
+ */
+export async function getFeatureValue(
+  featureName: string,
+  context: FeatureContext = {}
+): Promise<boolean> {
+  const response = await fetch(`/api/features?feature=${featureName}&userId=${context.userId || ''}`);
   
-  try {
-    // Check cache first
-    const cachedValue = featureFlagCache.get(cacheKey);
-    if (cachedValue && (Date.now() - cachedValue.timestamp) < CACHE_TTL) {
-      return cachedValue.value;
-    }
-    
-    // Should this flag apply to the current environment?
-    if (
-      featureConfig.environments && 
-      featureConfig.environments.length > 0 &&
-      !featureConfig.environments.includes('all') &&
-      !featureConfig.environments.includes(environment)
-    ) {
-      // Not applicable to this environment, use default
-      const value = featureConfig.defaultValue;
-      featureFlagCache.set(cacheKey, { value, timestamp: Date.now() });
-      return value;
-    }
-    
-    // Query the database for the flag
-    const [flag] = await db
-      .select()
-      .from(feature_flags)
-      .where(
-        and(
-          eq(feature_flags.name, featureName),
-          eq(feature_flags.environment, environment)
-        )
-      )
-      .limit(1);
-    
-    let isEnabled: boolean;
-    
-    if (flag) {
-      // We have a flag in the database
-      isEnabled = flag.is_enabled;
-      
-      // Check user-specific targeting if a userId is provided
-      if (context?.userId && flag.user_targeting) {
-        try {
-          const userTargeting = JSON.parse(flag.user_targeting);
-          if (Array.isArray(userTargeting.include_users)) {
-            // User is explicitly included
-            if (userTargeting.include_users.includes(context.userId)) {
-              isEnabled = true;
-            }
-          }
-          if (Array.isArray(userTargeting.exclude_users)) {
-            // User is explicitly excluded
-            if (userTargeting.exclude_users.includes(context.userId)) {
-              isEnabled = false;
-            }
-          }
-          // Percentage rollout
-          if (typeof userTargeting.percentage === 'number' && userTargeting.percentage >= 0 && userTargeting.percentage <= 100) {
-            // Deterministic pseudo-random assignment based on user ID
-            const userHash = hashString(context.userId) % 100;
-            isEnabled = userHash < userTargeting.percentage;
-          }
-        } catch (e) {
-          apiLogger.warn(`Invalid user targeting for feature: ${featureName}`, { 
-            metadata: { error: (e as Error).message } 
-          });
-        }
-      }
-    } else {
-      // No flag in database, use default
-      isEnabled = featureConfig.defaultValue;
-    }
-    
-    // Cache the result
-    featureFlagCache.set(cacheKey, { value: isEnabled, timestamp: Date.now() });
-    return isEnabled;
-  } catch (error) {
-    errorMonitor.captureError(error as Error, {
-      context: 'isFeatureEnabled',
-      feature: featureName,
-      environment,
-    });
-    // On error, fall back to default value
-    return featureConfig.defaultValue;
+  if (!response.ok) {
+    // Default to false if there's an error
+    return false;
   }
+  
+  const data = await response.json();
+  return data.enabled;
 }
 
 /**

@@ -1,68 +1,66 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { notFound, redirect } from "next/navigation";
-import { PortfolioForm } from "../../_components/PortfolioForm";
-import { AlertCircle } from "lucide-react";
+import PortfolioForm from "../../_components/PortfolioForm";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertTriangle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
-export default async function EditProjectPage({
-  params
-}: {
-  params: { id: string }
-}) {
+interface EditProjectPageProps {
+  params: {
+    id: string;
+  };
+}
+
+export default async function EditProjectPage({ params }: EditProjectPageProps) {
+  const { id } = params;
   const supabase = createServerComponentClient({ cookies });
   
-  // Check if user is authenticated
+  // Check if user is logged in
   const { data: { session } } = await supabase.auth.getSession();
   
   if (!session) {
     redirect("/auth/signin");
   }
   
-  // Check if user is admin
-  const { data: userData, error: userError } = await supabase
+  // Get user role
+  const { data: userWithRole } = await supabase
     .from("users")
     .select("role")
     .eq("id", session.user.id)
     .single();
+    
+  // Ensure only admins can access
+  if (!userWithRole || userWithRole.role !== "admin") {
+    notFound();
+  }
   
-  if (userError || !userData || userData.role !== "admin") {
+  // Fetch project data
+  const { data: project, error } = await supabase
+    .from("projects")
+    .select("*")
+    .eq("id", id)
+    .single();
+    
+  if (error || !project) {
     return (
-      <div className="max-w-3xl mx-auto py-8 px-4">
+      <div className="max-w-3xl mx-auto px-4 py-8">
         <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Access Denied</AlertTitle>
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
           <AlertDescription>
-            You don't have permission to access this page.
+            {error?.message || "Project not found"}
           </AlertDescription>
         </Alert>
       </div>
     );
   }
   
-  // Fetch the project
-  const { data: project, error: projectError } = await supabase
-    .from("projects")
-    .select("*")
-    .eq("id", params.id)
-    .single();
-  
-  if (projectError || !project) {
-    notFound();
-  }
-  
   return (
-    <div className="max-w-3xl mx-auto py-8 px-4">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">Edit Project</h1>
-        <p className="text-muted-foreground mt-1">
-          Update the details of your portfolio project
-        </p>
-      </div>
-      
-      <PortfolioForm initialData={project} />
+    <div className="max-w-3xl mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">Edit Project: {project.title}</h1>
+      <PortfolioForm initialData={project} isEditing={true} />
     </div>
   );
 } 
