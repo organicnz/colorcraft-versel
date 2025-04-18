@@ -46,12 +46,7 @@ import {
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-
-// Temporary function as the import is failing
-const deleteProject = async (id: string) => {
-  toast.error("Delete functionality is not yet implemented");
-  return Promise.reject("Not implemented");
-};
+import { deletePortfolioProject } from '@/actions/portfolioActions';
 
 // Define a type for the project props
 type Project = {
@@ -119,12 +114,24 @@ export default function PortfolioTable({ projects }: PortfolioTableProps) {
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this project?")) return;
     
+    setIsDeleting(true);
+    setDeleteId(id);
+    
     try {
-      await deleteProject(id);
-      toast.success("Project deleted successfully");
-    } catch (error) {
+      const result = await deletePortfolioProject(id);
+      
+      if (result.error) {
+        toast.error(result.error);
+      } else {
+        toast.success(result.message || "Project deleted successfully");
+        router.refresh(); // Refresh the page to reflect the deletion
+      }
+    } catch (error: any) {
       console.error("Error deleting project:", error);
-      toast.error("Failed to delete project");
+      toast.error(error.message || "Failed to delete project");
+    } finally {
+      setIsDeleting(false);
+      setDeleteId(null);
     }
   };
 
@@ -147,7 +154,7 @@ export default function PortfolioTable({ projects }: PortfolioTableProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {projects.map((project) => (
+          {sortedProjects.map((project) => (
             <TableRow key={project.id}>
               <TableCell className="font-medium">{project.title}</TableCell>
               <TableCell>{project.brief_description}</TableCell>
@@ -162,8 +169,9 @@ export default function PortfolioTable({ projects }: PortfolioTableProps) {
                   variant="destructive" 
                   size="sm" 
                   onClick={() => handleDelete(project.id)}
+                  disabled={isDeleting && deleteId === project.id}
                 >
-                  Delete
+                  {isDeleting && deleteId === project.id ? "Deleting..." : "Delete"}
                 </Button>
               </TableCell>
             </TableRow>

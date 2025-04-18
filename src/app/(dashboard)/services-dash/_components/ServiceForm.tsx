@@ -27,6 +27,7 @@ type ServiceFormProps = {
 export default function ServiceForm({ service }: ServiceFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const isEditing = !!service?.id;
   
   const form = useForm<z.infer<typeof serviceSchema>>({
     resolver: zodResolver(serviceSchema),
@@ -42,7 +43,7 @@ export default function ServiceForm({ service }: ServiceFormProps) {
     try {
       setIsSubmitting(true);
       
-      if (service?.id) {
+      if (isEditing) {
         // Update existing service
         const { error } = await updateService({
           ...values,
@@ -151,7 +152,7 @@ export default function ServiceForm({ service }: ServiceFormProps) {
             Cancel
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Saving..." : service?.id ? "Update Service" : "Create Service"}
+            {isSubmitting ? "Saving..." : isEditing ? "Update Service" : "Create Service"}
           </Button>
         </div>
       </form>

@@ -45,10 +45,20 @@ export default async function EditServicePage({
   }
 
   // Fetch the service
-  const service = await getServiceById(params.id);
+  const { data: service, error } = await getServiceById(params.id);
   
-  if (!service) {
-    notFound();
+  if (error || !service) {
+    return (
+      <div className="container py-10">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
+            {error || "Service not found"}
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
   }
 
   return (
@@ -60,7 +70,7 @@ export default async function EditServicePage({
         </p>
       </div>
       <div className="bg-card p-6 rounded-lg shadow-sm">
-        <ServiceForm initialData={service} isEditing />
+        <ServiceForm service={service} />
       </div>
     </div>
   );

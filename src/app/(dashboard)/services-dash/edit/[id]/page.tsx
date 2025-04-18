@@ -45,7 +45,7 @@ export default async function EditServicePage({ params }: EditServicePageProps) 
   }
 
   // Fetch the service data
-  const { service, error } = await getServiceById(id);
+  const { data: service, error } = await getServiceById(id);
 
   if (error || !service) {
     return (
@@ -69,7 +69,7 @@ export default async function EditServicePage({ params }: EditServicePageProps) 
       </div>
       
       <div className="max-w-2xl mx-auto bg-card p-6 rounded-lg shadow">
-        <ServiceForm initialData={service} />
+        <ServiceForm service={service} />
       </div>
     </div>
   );

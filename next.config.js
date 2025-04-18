@@ -32,12 +32,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Configure dynamic routes to ensure proper handling of server components
-  dynamicParams: true, // Always revalidate dynamic route segments
-  // Set all dashboard pages to force dynamic rendering 
-  unstable_includeFiles: [
-    'node_modules/next/dist/compiled/@edge-runtime/primitives/**/*.+(js|json)',
-  ],
   experimental: {
     serverActions: {
       allowedOrigins: [process.env.NEXT_PUBLIC_SITE_URL || ""],

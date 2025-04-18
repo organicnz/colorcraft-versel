@@ -2,7 +2,7 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { PortfolioTable } from "./_components/PortfolioTable";
+import PortfolioTable from "./_components/PortfolioTable";
 
 export const dynamic = "force-dynamic";
 
