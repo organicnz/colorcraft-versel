@@ -55,7 +55,7 @@ export default async function ServicesManagementPage() {
         text="Manage and organize your service offerings"
       >
         <Button asChild>
-          <Link href="/dashboard/services/new" className="flex items-center">
+          <Link href="/services-dash/new" className="flex items-center">
             <PlusCircle className="mr-2 h-4 w-4" />
             Add New Service
           </Link>
@@ -70,7 +70,7 @@ export default async function ServicesManagementPage() {
               Add your first service to display on your website.
             </p>
             <Button asChild>
-              <Link href="/dashboard/services/new">
+              <Link href="/services-dash/new">
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Add Your First Service
               </Link>

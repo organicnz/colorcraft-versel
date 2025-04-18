@@ -32,7 +32,7 @@ export default async function DashboardPortfolioManagePage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Portfolio Projects</h1>
         <Button asChild>
-          <Link href="/dashboard/portfolio/new">
+          <Link href="/portfolio-dash/new">
             <PlusIcon className="mr-2 h-4 w-4" />
             Add New Project
           </Link>
@@ -50,7 +50,7 @@ export default async function DashboardPortfolioManagePage() {
             Add your first project to showcase in your portfolio.
           </p>
           <Button asChild>
-            <Link href="/dashboard/portfolio/new">
+            <Link href="/portfolio-dash/new">
               <PlusIcon className="mr-2 h-4 w-4" />
               Add Your First Project
             </Link>

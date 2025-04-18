@@ -61,7 +61,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               CRM
             </NavItem>
             
-            <NavItem href="/dashboard/portfolio-management">
+            <NavItem href="/portfolio-dash">
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
                 viewBox="0 0 24 24" 
@@ -79,7 +79,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               Portfolio
             </NavItem>
             
-            <NavItem href="/dashboard/services-management">
+            <NavItem href="/services-dash">
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
                 viewBox="0 0 24 24" 

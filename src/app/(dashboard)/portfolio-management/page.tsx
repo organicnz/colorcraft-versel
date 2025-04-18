@@ -50,7 +50,7 @@ export default async function PortfolioManagementPage() {
         text="Manage and organize your portfolio projects"
       >
         <Button asChild>
-          <Link href="/dashboard/portfolio/new" className="flex items-center">
+          <Link href="/portfolio-dash/new" className="flex items-center">
             <PlusCircle className="mr-2 h-4 w-4" />
             Add New Project
           </Link>

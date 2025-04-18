@@ -1,16 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -18,71 +17,62 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { createService, updateService } from "@/actions/servicesActions";
+import { createService, updateService, serviceSchema } from "@/actions/servicesActions";
+import { z } from "zod";
 
-const formSchema = z.object({
-  id: z.string().optional(),
-  title: z.string().min(1, "Title is required"),
-  description: z.string().min(10, "Description is required"),
-  price: z.coerce.number().min(0, "Price must be a non-negative number"),
-  image_url: z.string().optional(),
-});
+type ServiceFormProps = {
+  service?: z.infer<typeof serviceSchema>;
+};
 
-type FormValues = z.infer<typeof formSchema>;
-
-interface ServiceData {
-  id?: string;
-  title?: string;
-  description?: string;
-  price?: number;
-  image_url?: string;
-}
-
-interface ServiceFormProps {
-  initialData?: ServiceData;
-}
-
-export function ServiceForm({ initialData }: ServiceFormProps = {}) {
+export default function ServiceForm({ service }: ServiceFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // Prepare the form data
-  const defaultValues: FormValues = {
-    id: initialData?.id || undefined,
-    title: initialData?.title || "",
-    description: initialData?.description || "",
-    price: initialData?.price || 0,
-    image_url: initialData?.image_url || "",
-  };
-  
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues,
+  const form = useForm<z.infer<typeof serviceSchema>>({
+    resolver: zodResolver(serviceSchema),
+    defaultValues: service || {
+      title: "",
+      description: "",
+      price: 0,
+      image_url: ""
+    }
   });
   
-  const onSubmit = async (data: FormValues) => {
-    setIsSubmitting(true);
-    
+  async function onSubmit(values: z.infer<typeof serviceSchema>) {
     try {
-      // Determine if this is a create or update operation
-      if (data.id) {
-        await updateService(data);
+      setIsSubmitting(true);
+      
+      if (service?.id) {
+        // Update existing service
+        const { error } = await updateService({
+          ...values,
+          id: service.id
+        });
+        
+        if (error) {
+          throw new Error(error);
+        }
+        
         toast.success("Service updated successfully");
       } else {
-        await createService(data);
+        // Create new service
+        const { error } = await createService(values);
+        
+        if (error) {
+          throw new Error(error);
+        }
+        
         toast.success("Service created successfully");
       }
       
-      // Redirect back to the services management page
-      router.push("/dashboard/services-dash");
+      router.push("/services-dash");
       router.refresh();
     } catch (error) {
-      console.error("Error saving service:", error);
-      toast.error("Failed to save service. Please try again.");
+      toast.error(error instanceof Error ? error.message : "Failed to save service");
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }
   
   return (
     <Form {...form}>
@@ -92,7 +82,7 @@ export function ServiceForm({ initialData }: ServiceFormProps = {}) {
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Service Title</FormLabel>
+              <FormLabel>Title</FormLabel>
               <FormControl>
                 <Input placeholder="Enter service title" {...field} />
               </FormControl>
@@ -109,8 +99,8 @@ export function ServiceForm({ initialData }: ServiceFormProps = {}) {
               <FormLabel>Description</FormLabel>
               <FormControl>
                 <Textarea 
-                  placeholder="Provide a detailed description of the service" 
-                  className="min-h-[150px]" 
+                  placeholder="Describe this service"
+                  className="min-h-32"
                   {...field} 
                 />
               </FormControl>
@@ -124,19 +114,15 @@ export function ServiceForm({ initialData }: ServiceFormProps = {}) {
           name="price"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Price (USD)</FormLabel>
+              <FormLabel>Price</FormLabel>
               <FormControl>
                 <Input 
                   type="number" 
-                  min="0" 
-                  step="0.01" 
-                  placeholder="0.00" 
-                  {...field} 
+                  placeholder="0.00"
+                  {...field}
+                  onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                 />
               </FormControl>
-              <FormDescription>
-                Enter 0 for "Contact for pricing"
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -149,27 +135,23 @@ export function ServiceForm({ initialData }: ServiceFormProps = {}) {
             <FormItem>
               <FormLabel>Image URL</FormLabel>
               <FormControl>
-                <Input placeholder="Enter image URL" {...field} />
+                <Input placeholder="https://example.com/image.jpg" {...field} />
               </FormControl>
-              <FormDescription>
-                Enter a URL for an image that represents this service
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
         
-        <div className="flex justify-end space-x-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => router.push("/dashboard/services-dash")}
-            disabled={isSubmitting}
+        <div className="flex justify-end gap-4">
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={() => router.push("/services-dash")}
           >
             Cancel
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Saving...' : (initialData?.id ? 'Update Service' : 'Create Service')}
+            {isSubmitting ? "Saving..." : service?.id ? "Update Service" : "Create Service"}
           </Button>
         </div>
       </form>

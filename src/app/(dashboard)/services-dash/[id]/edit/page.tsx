@@ -1,16 +1,18 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import { notFound, redirect } from "next/navigation";
-import { ServiceForm } from "../../_components/ServiceForm";
-import { AlertCircle } from "lucide-react";
+import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
+import ServiceForm from "../../_components/ServiceForm";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
+import { getServiceById } from "@/actions/servicesActions";
 
 export const dynamic = "force-dynamic";
 
 export default async function EditServicePage({
-  params
+  params,
 }: {
-  params: { id: string }
+  params: { id: string };
 }) {
   const supabase = createServerComponentClient({ cookies });
   
@@ -30,7 +32,7 @@ export default async function EditServicePage({
   
   if (userError || !userData || userData.role !== "admin") {
     return (
-      <div className="max-w-3xl mx-auto py-8 px-4">
+      <div className="container py-10">
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Access Denied</AlertTitle>
@@ -41,28 +43,25 @@ export default async function EditServicePage({
       </div>
     );
   }
-  
+
   // Fetch the service
-  const { data: service, error: serviceError } = await supabase
-    .from("services")
-    .select("*")
-    .eq("id", params.id)
-    .single();
+  const service = await getServiceById(params.id);
   
-  if (serviceError || !service) {
+  if (!service) {
     notFound();
   }
-  
+
   return (
-    <div className="max-w-3xl mx-auto py-8 px-4">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">Edit Service</h1>
-        <p className="text-muted-foreground mt-1">
+    <div className="container py-10">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold">Edit Service</h1>
+        <p className="text-muted-foreground mt-2">
           Update the details of your service
         </p>
       </div>
-      
-      <ServiceForm initialData={service} />
+      <div className="bg-card p-6 rounded-lg shadow-sm">
+        <ServiceForm initialData={service} isEditing />
+      </div>
     </div>
   );
 } 

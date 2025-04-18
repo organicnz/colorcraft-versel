@@ -39,7 +39,7 @@ export default async function PortfolioDashboardPage() {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Portfolio Projects</h1>
-        <Link href="/dashboard/portfolio-dash/new">
+        <Link href="/portfolio-dash/new">
           <Button>Add New Project</Button>
         </Link>
       </div>
