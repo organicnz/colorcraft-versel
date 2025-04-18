@@ -22,7 +22,7 @@ type UseFeatureFlagResult = {
  * 
  * return (
  *   <div className={enabled ? "dark-theme" : "light-theme"}>
- *     {/* Component content */}
+ *     Content goes here
  *   </div>
  * );
  * ```
