@@ -79,7 +79,7 @@ export default function SignInForm() {
                 Password
               </label>
               <Link
-                href="/auth/reset-password"
+                href="/auth/forgot-password"
                 className="text-sm text-muted-foreground underline-offset-4 hover:underline"
               >
                 Forgot password?
