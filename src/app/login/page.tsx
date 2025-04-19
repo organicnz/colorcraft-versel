@@ -56,7 +56,7 @@ export default function LoginPage() {
             </div>
           </div>
           <h2 className="text-center text-2xl font-medium text-white">
-            Sign in to your accoun
+            Sign in to your account
           </h2>
         </div>
 
@@ -73,7 +73,7 @@ export default function LoginPage() {
                 Email address
               </label>
               <div className="mt-1">
-                <inpu
+                <input
                   id="email"
                   name="email"
                   type="email"
@@ -92,7 +92,7 @@ export default function LoginPage() {
                 Password
               </label>
               <div className="mt-1">
-                <inpu
+                <input
                   id="password"
                   name="password"
                   type="password"
@@ -107,7 +107,7 @@ export default function LoginPage() {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <inpu
+                <input
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
@@ -143,7 +143,7 @@ export default function LoginPage() {
                 href="/auth/signup"
                 className="font-medium text-primary hover:text-primary-dark transition-colors"
               >
-                Sign up for Color & Craf
+                Sign up for Color & Craft
               </Link>
             </p>
           </div>

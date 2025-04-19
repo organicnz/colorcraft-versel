@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,7 +25,8 @@ const resetPasswordSchema = z
 
 type ResetPasswordValues = z.infer<typeof resetPasswordSchema>;
 
-export default function ResetPasswordPage() {
+// Component that uses the search params hook
+function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
@@ -54,7 +55,7 @@ export default function ResetPasswordPage() {
 
       setIsSuccess(true);
       toast.success("Password updated successfully");
-      
+
       // Redirect to login page after 3 seconds
       setTimeout(() => {
         router.push("/login");
@@ -91,99 +92,127 @@ export default function ResetPasswordPage() {
   }, [searchParams, router]);
 
   return (
-    <div className="flex min-h-[70vh] flex-col items-center justify-center px-6 py-12">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-light text-gray-900 dark:text-white">
-            Reset your <span className="font-medium text-primary">password</span>
-          </h1>
-          <p className="mt-3 text-gray-600 dark:text-gray-300">
-            Please enter your new password below.
-          </p>
-        </div>
+    <div className="w-full max-w-md">
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-light text-gray-900 dark:text-white">
+          Reset your <span className="font-medium text-primary">password</span>
+        </h1>
+        <p className="mt-3 text-gray-600 dark:text-gray-300">
+          Please enter your new password below.
+        </p>
+      </div>
 
-        {isSuccess ? (
-          <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
-            <div className="text-center">
-              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 dark:bg-green-900">
-                <svg className="h-6 w-6 text-green-600 dark:text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Password Reset Successful</h3>
-              <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                Your password has been reset successfully.
-                <br />You will be redirected to the login page.
-              </p>
-              <div className="mt-6">
-                <Link href="/login" className="text-primary hover:text-primary-dark font-medium">
-                  Return to login
-                </Link>
-              </div>
+      {isSuccess ? (
+        <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+          <div className="text-center">
+            <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 dark:bg-green-900">
+              <svg className="h-6 w-6 text-green-600 dark:text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
             </div>
-          </div>
-        ) : (
-          <form onSubmit={form.handleSubmit(onSubmit)} className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
-            {error && (
-              <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md text-sm text-red-600 dark:text-red-300">
-                {error}
-              </div>
-            )}
-            
-            <div className="mb-4">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                New Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                className="w-full p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/50 focus:border-primary"
-                {...form.register("password")}
-                disabled={isLoading}
-              />
-              {form.formState.errors.password && (
-                <p className="mt-1 text-sm text-red-500">
-                  {form.formState.errors.password.message}
-                </p>
-              )}
-            </div>
-            
-            <div className="mb-6">
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Confirm Password
-              </label>
-              <input
-                id="confirmPassword"
-                type="password"
-                className="w-full p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/50 focus:border-primary"
-                {...form.register("confirmPassword")}
-                disabled={isLoading}
-              />
-              {form.formState.errors.confirmPassword && (
-                <p className="mt-1 text-sm text-red-500">
-                  {form.formState.errors.confirmPassword.message}
-                </p>
-              )}
-            </div>
-            
-            <button
-              type="submit"
-              disabled={isLoading}
-              className={`w-full py-3 px-4 rounded-md font-medium text-white bg-primary hover:bg-primary-dark transition-colors ${
-                isLoading ? "opacity-70 cursor-not-allowed" : ""
-              }`}
-            >
-              {isLoading ? "Resetting..." : "Reset Password"}
-            </button>
-            
-            <div className="mt-4 text-center">
-              <Link href="/login" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary">
+            <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Password Reset Successful</h3>
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+              Your password has been reset successfully.
+              <br />You will be redirected to the login page.
+            </p>
+            <div className="mt-6">
+              <Link href="/login" className="text-primary hover:text-primary-dark font-medium">
                 Return to login
               </Link>
             </div>
-          </form>
-        )}
+          </div>
+        </div>
+      ) : (
+        <form onSubmit={form.handleSubmit(onSubmit)} className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md text-sm text-red-600 dark:text-red-300">
+              {error}
+            </div>
+          )}
+
+          <div className="mb-4">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              New Password
+            </label>
+            <inpu
+              id="password"
+              type="password"
+              className="w-full p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/50 focus:border-primary"
+              {...form.register("password")}
+              disabled={isLoading}
+            />
+            {form.formState.errors.password && (
+              <p className="mt-1 text-sm text-red-500">
+                {form.formState.errors.password.message}
+              </p>
+            )}
+          </div>
+
+          <div className="mb-6">
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Confirm Password
+            </label>
+            <inpu
+              id="confirmPassword"
+              type="password"
+              className="w-full p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/50 focus:border-primary"
+              {...form.register("confirmPassword")}
+              disabled={isLoading}
+            />
+            {form.formState.errors.confirmPassword && (
+              <p className="mt-1 text-sm text-red-500">
+                {form.formState.errors.confirmPassword.message}
+              </p>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className={`w-full py-3 px-4 rounded-md font-medium text-white bg-primary hover:bg-primary-dark transition-colors ${
+              isLoading ? "opacity-70 cursor-not-allowed" : ""
+            }`}
+          >
+            {isLoading ? "Resetting..." : "Reset Password"}
+          </button>
+
+          <div className="mt-4 text-center">
+            <Link href="/login" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary">
+              Return to login
+            </Link>
+          </div>
+        </form>
+      )}
+    </div>
+  );
+}
+
+// Loading fallback for Suspense
+function ResetPasswordLoading() {
+  return (
+    <div className="w-full max-w-md text-center">
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-light text-gray-900 dark:text-white">
+          Reset your <span className="font-medium text-primary">password</span>
+        </h1>
+      </div>
+      <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-center h-20">
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
+        </div>
+        <p className="mt-4 text-gray-600 dark:text-gray-300">Loading reset form...</p>
       </div>
     </div>
   );
-} 
+}
+
+// Main component that wraps the form with Suspense
+export default function ResetPasswordPage() {
+  return (
+    <div className="flex min-h-[70vh] flex-col items-center justify-center px-6 py-12">
+      <Suspense fallback={<ResetPasswordLoading />}>
+        <ResetPasswordForm />
+      </Suspense>
+    </div>
+  );
+}

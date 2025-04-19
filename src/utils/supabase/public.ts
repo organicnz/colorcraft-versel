@@ -5,10 +5,10 @@ export function createPublicClient() {
   // Get values from environment variables
   const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  
+
   // Check if the API key looks valid
   const isValidKey = supabaseKey && supabaseKey.length > 100 && !supabaseKey.includes('\n');
-  
+
   if (!supabaseUrl || !isValidKey) {
     console.error('Missing or invalid Supabase environment variables:', {
       url: supabaseUrl ? 'defined' : 'undefined',
@@ -17,13 +17,13 @@ export function createPublicClient() {
       key_length: supabaseKey?.length || 0,
       node_env: process.env.NODE_ENV
     });
-    
+
     // During production builds or deployment, return a dummy client that gracefully handles operations
     if (process.env.NODE_ENV === 'production') {
       console.warn('Creating a fallback Supabase client for production build');
       return createFallbackClient();
     }
-    
+
     throw new Error(
       'Missing or invalid Supabase credentials. Check that the API URL and key are correctly formatted.'
     );
@@ -48,13 +48,13 @@ export function createPublicClient() {
     });
   } catch (error) {
     console.error('Error creating Supabase client:', error);
-    
+
     // In production, use fallback client instead of failing
     if (process.env.NODE_ENV === 'production') {
       console.warn('Using fallback Supabase client due to initialization error');
       return createFallbackClient();
     }
-    
+
     throw error;
   }
 }
