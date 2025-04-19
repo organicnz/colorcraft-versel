@@ -1,30 +1,30 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import Footer from "@/components/shared/Footer";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Inter } from "next/font/google";
 import Link from "next/link";
+import "./globals.css";
+import { cn } from "@/lib/utils";
 import ThemeSwitcher from "@/components/shared/ThemeSwitcher";
-import { Providers } from "./providers";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import Footer from "@/components/shared/Footer";
+import { Providers } from "./providers";
 import { Menu } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://colorcraft.live"),
-  title: {
-    template: "%s | Color & Craft Furniture Painting",
-    default: "Color & Craft Furniture Painting",
-  },
+export const metadata = {
+  title: "Color & Craft Furniture Painting",
   description:
     "Professional furniture painting and restoration services. Transform your beloved furniture with expert craftsmanship and premium finishes.",
   openGraph: {
     title: "Color & Craft Furniture Painting",
-    description:
-      "Transform your furniture with expert painting services",
+    description: "Transform your furniture with expert painting services",
     url: "https://colorcraft.live",
     siteName: "Color & Craft",
     locale: "en_US",
@@ -33,8 +33,10 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Color & Craft Furniture Painting",
-    description:
-      "Transform your furniture with expert painting services",
+    description: "Transform your furniture with expert painting services",
+  },
+  icons: {
+    icon: "/favicon.ico",
   },
 };
 
@@ -45,9 +47,9 @@ export default function RootLayout({
 }>) {
   const navLinks = [
     { href: "/", label: "Home" },
+    { href: "/about", label: "About" },
     { href: "/services", label: "Services" },
     { href: "/portfolio", label: "Portfolio" },
-    { href: "/about", label: "About" },
     { href: "/contact", label: "Contact" },
   ];
 
