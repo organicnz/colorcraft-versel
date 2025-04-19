@@ -27,7 +27,19 @@ export function createPublicClient() {
 
   try {
     // Create a direct client without cookies for public pages
-    return createClientBase(supabaseUrl, supabaseKey);
+    // Include both the apikey and Authorization headers with the key
+    return createClientBase(supabaseUrl, supabaseKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      },
+      global: {
+        headers: {
+          apikey: supabaseKey,
+          Authorization: `Bearer ${supabaseKey}`
+        }
+      }
+    });
   } catch (error) {
     console.error('Error creating Supabase client:', error);
     
