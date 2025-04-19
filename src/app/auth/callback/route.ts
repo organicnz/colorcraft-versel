@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { NextResponse, type NextRequest } from 'next/server'
+import { createUserProfile } from '@/lib/hooks/useCreateUserProfile'
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url)
@@ -40,16 +41,12 @@ export async function GET(request: NextRequest) {
       
       // If the user doesn't exist in the users table, create a profile
       if (!user) {
-        const { error } = await supabase.from('users').insert({
-          id: userId,
-          full_name: session.user.user_metadata.full_name || session.user.email?.split('@')[0],
-          email: session.user.email,
-          role: 'customer',
-        })
-        
-        if (error) {
-          console.error('Error creating user profile:', error)
-        }
+        await createUserProfile(
+          userId,
+          session.user.user_metadata.full_name || session.user.email?.split('@')[0] || 'User',
+          session.user.email || '',
+          'customer'
+        )
       }
     }
   }

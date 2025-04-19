@@ -1,14 +1,18 @@
 import { createClient as createClientBase } from '@supabase/supabase-js';
+import { env } from '@/lib/config/env';
 
 export function createPublicClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  // Add fallback values for build-time and deployment scenarios
-  if (!supabaseUrl || !supabaseKey) {
-    console.error('Missing Supabase environment variables:', {
+  // Get values from environment variables
+  const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  
+  // Check if the API key looks valid
+  const isValidKey = supabaseKey && supabaseKey.length > 100 && !supabaseKey.includes('\n');
+  
+  if (!supabaseUrl || !isValidKey) {
+    console.error('Missing or invalid Supabase environment variables:', {
       url: supabaseUrl ? 'defined' : 'undefined',
-      key: supabaseKey ? 'defined' : 'undefined',
+      key_valid: isValidKey ? 'valid' : 'invalid',
       url_length: supabaseUrl?.length || 0,
       key_length: supabaseKey?.length || 0,
       node_env: process.env.NODE_ENV
@@ -21,11 +25,13 @@ export function createPublicClient() {
     }
     
     throw new Error(
-      'Missing Supabase environment variables. Check that NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set in your .env.local file.'
+      'Missing or invalid Supabase credentials. Check that the API URL and key are correctly formatted.'
     );
   }
 
   try {
+    console.log('Creating Supabase client with valid credentials');
+
     // Create a direct client without cookies for public pages
     // Include both the apikey and Authorization headers with the key
     return createClientBase(supabaseUrl, supabaseKey, {

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-export default function ForgotPassword() {
+export default function ResendVerification() {
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -14,8 +14,8 @@ export default function ForgotPassword() {
     setIsLoading(true);
     
     try {
-      // Use our custom API endpoint for password reset
-      const response = await fetch('/api/auth/reset-password', {
+      // Use our custom API endpoint for email verification
+      const response = await fetch('/api/auth/verify-email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -26,14 +26,14 @@ export default function ForgotPassword() {
       const data = await response.json();
       
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to send reset email');
+        throw new Error(data.error || 'Failed to send verification email');
       }
       
       // If successful, show the success message
       setIsSubmitted(true);
     } catch (error: any) {
-      console.error('Error resetting password:', error);
-      toast.error(error.message || 'Failed to send reset email. Please try again.');
+      console.error('Error sending verification email:', error);
+      toast.error(error.message || 'Failed to send verification email. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -44,10 +44,10 @@ export default function ForgotPassword() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-light text-gray-900 dark:text-white">
-            Forgot your <span className="font-medium text-primary">password?</span>
+            Resend <span className="font-medium text-primary">verification email</span>
           </h1>
           <p className="mt-3 text-gray-600 dark:text-gray-300">
-            Enter your email address and we'll send you a link to reset your password.
+            Enter your email address and we'll send you another verification link.
           </p>
         </div>
 
@@ -61,7 +61,7 @@ export default function ForgotPassword() {
               </div>
               <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Check your email</h3>
               <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                We've sent a password reset link to <strong>{email}</strong>.
+                We've sent a new verification link to <strong>{email}</strong>.
                 <br />Check your inbox and follow the instructions.
               </p>
               <div className="mt-6">
@@ -94,7 +94,7 @@ export default function ForgotPassword() {
                 isLoading ? 'opacity-70 cursor-not-allowed' : ''
               }`}
             >
-              {isLoading ? 'Sending...' : 'Send Reset Link'}
+              {isLoading ? 'Sending...' : 'Resend Verification Email'}
             </button>
             <div className="mt-4 text-center">
               <Link href="/login" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary">

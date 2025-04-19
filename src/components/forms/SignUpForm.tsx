@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/client";
+import { createUserProfile } from "@/lib/hooks/useCreateUserProfile";
 
 const signUpSchema = z.object({
   name: z.string().min(2, {
@@ -44,7 +45,8 @@ export default function SignUpForm() {
     setError(null);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      // Sign up the user with Supabase auth
+      const { data: authData, error } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
         options: {
@@ -55,21 +57,45 @@ export default function SignUpForm() {
       });
 
       if (error) throw error;
+      
+      // If we have a user ID, create the profile
+      if (authData?.user?.id) {
+        const { success, error: profileError } = await createUserProfile(
+          authData.user.id,
+          data.name,
+          data.email
+        );
+        
+        if (!success && profileError) {
+          throw new Error(profileError.message || "Failed to create user profile");
+        }
+      } else {
+        // Wait briefly for auth to complete
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Try to get the user again
+        const { data: userData } = await supabase.auth.getUser();
+        
+        if (userData?.user?.id) {
+          const { success, error: profileError } = await createUserProfile(
+            userData.user.id,
+            data.name,
+            data.email
+          );
+          
+          if (!success && profileError) {
+            throw new Error(profileError.message || "Failed to create user profile");
+          }
+        } else {
+          // If still no user, throw error but continue (it might be created via trigger)
+          console.warn("Unable to find user ID after signup");
+        }
+      }
 
-      // Create a user profile in the database
-      const { error: profileError } = await supabase
-        .from('users')
-        .insert({
-          id: (await supabase.auth.getUser()).data.user?.id,
-          full_name: data.name,
-          email: data.email,
-          role: 'customer',
-        });
-
-      if (profileError) throw profileError;
-
+      // Redirect to verification page
       router.push("/auth/verify");
     } catch (error: any) {
+      console.error("Signup error:", error);
       setError(error?.message || "Failed to sign up");
     } finally {
       setIsLoading(false);

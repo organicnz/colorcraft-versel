@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { createClient } from '@/lib/supabase/client';
+import { toast } from 'sonner';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -11,6 +13,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+  const supabase = createClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,18 +21,20 @@ export default function LoginPage() {
     setError('');
 
     try {
-      // This would be a real authentication API call in a production environment
-      // For now, we'll just simulate a delay and redirect
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Simple validation for demo purposes
-      if (email === 'demo@example.com' && password === 'password') {
-        router.push('/dashboard');
-      } else {
-        setError('Invalid email or password');
-      }
-    } catch (err) {
-      setError('An error occurred. Please try again.');
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      // Successful login
+      toast.success('Logged in successfully');
+      router.push('/dashboard');
+      router.refresh();
+    } catch (err: any) {
+      setError(err.message || 'Invalid email or password');
+      toast.error(err.message || 'Login failed');
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -51,24 +56,24 @@ export default function LoginPage() {
             </div>
           </div>
           <h2 className="text-center text-2xl font-medium text-white">
-            Sign in to your account
+            Sign in to your accoun
           </h2>
         </div>
-        
+
         <div className="p-8">
           {error && (
             <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
               <p className="text-red-700 text-sm">{error}</p>
             </div>
           )}
-          
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email address
               </label>
               <div className="mt-1">
-                <input
+                <inpu
                   id="email"
                   name="email"
                   type="email"
@@ -87,7 +92,7 @@ export default function LoginPage() {
                 Password
               </label>
               <div className="mt-1">
-                <input
+                <inpu
                   id="password"
                   name="password"
                   type="password"
@@ -102,7 +107,7 @@ export default function LoginPage() {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <input
+                <inpu
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
@@ -130,7 +135,7 @@ export default function LoginPage() {
               </button>
             </div>
           </form>
-          
+
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Don't have an account?{" "}
@@ -138,11 +143,11 @@ export default function LoginPage() {
                 href="/auth/signup"
                 className="font-medium text-primary hover:text-primary-dark transition-colors"
               >
-                Sign up for Color & Craft
+                Sign up for Color & Craf
               </Link>
             </p>
           </div>
-          
+
           <div className="mt-8">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -156,12 +161,32 @@ export default function LoginPage() {
             <div className="mt-6 grid grid-cols-2 gap-3">
               <button
                 type="button"
+                onClick={() => {
+                  setIsLoading(true);
+                  supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                      redirectTo: `${window.location.origin}/auth/callback`
+                    }
+                  });
+                }}
+                disabled={isLoading}
                 className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
               >
                 Google
               </button>
               <button
                 type="button"
+                onClick={() => {
+                  setIsLoading(true);
+                  supabase.auth.signInWithOAuth({
+                    provider: 'facebook',
+                    options: {
+                      redirectTo: `${window.location.origin}/auth/callback`
+                    }
+                  });
+                }}
+                disabled={isLoading}
                 className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
               >
                 Facebook
@@ -170,10 +195,10 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
-      
+
       <p className="mt-8 text-center text-sm text-gray-600">
         &copy; {new Date().getFullYear()} Color & Craft Furniture Painter. All rights reserved.
       </p>
     </div>
   );
-} 
+}
