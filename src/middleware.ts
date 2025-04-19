@@ -49,17 +49,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/signin", request.url));
     }
 
-    // Handle public portfolio and services routes
-    if (pathname === "/portfolio" || pathname.startsWith("/portfolio/")) {
-      const targetPath =
-        pathname === "/portfolio" ? "/(marketing)/portfolio" : `/(marketing)${pathname}`;
-      return NextResponse.rewrite(new URL(targetPath, request.url));
-    }
-
-    if (pathname === "/services") {
-      return NextResponse.rewrite(new URL("/(marketing)/services", request.url));
-    }
-
+    // For public users, just let Next.js handle the routing
     return response;
   }
 
@@ -90,17 +80,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard/services", request.url));
   }
 
-  // For authenticated users who aren't admins, use marketing routes
-  if ((pathname === "/portfolio" || pathname.startsWith("/portfolio/")) && userRole !== "admin") {
-    const targetPath =
-      pathname === "/portfolio" ? "/(marketing)/portfolio" : `/(marketing)${pathname}`;
-    return NextResponse.rewrite(new URL(targetPath, request.url));
-  }
-
-  if (pathname === "/services" && userRole !== "admin") {
-    return NextResponse.rewrite(new URL("/(marketing)/services", request.url));
-  }
-
+  // For authenticated users, just let Next.js handle the routing
   return response;
 }
 
