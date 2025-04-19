@@ -12,6 +12,9 @@ import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { PlusCircle } from "lucide-react";
 
+// Force dynamic rendering for this route to allow use of cookies
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: "Services Management",
   description: "Manage your service offerings",

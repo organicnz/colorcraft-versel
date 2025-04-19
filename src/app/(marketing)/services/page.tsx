@@ -4,6 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { PostgrestError } from "@supabase/supabase-js";
+
+// Force dynamic rendering for this route to allow proper data fetching
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: "Services | Color & Craft",
@@ -12,7 +16,7 @@ export const metadata: Metadata = {
 
 export default async function ServicesPage() {
   let servicesList = [];
-  let error = null;
+  let fetchError: PostgrestError | Error | null = null;
   
   try {
     const supabase = createPublicClient();
@@ -24,14 +28,14 @@ export default async function ServicesPage() {
       .order("name");
     
     if (response.error) {
-      error = response.error;
-      console.error("Error fetching services:", error);
+      fetchError = response.error;
+      console.error("Error fetching services:", fetchError);
     } else {
       servicesList = response.data || [];
     }
   } catch (err) {
     console.error("Failed to fetch services:", err);
-    error = err;
+    fetchError = err instanceof Error ? err : new Error("Unknown error occurred");
   }
   
   return (
@@ -44,13 +48,13 @@ export default async function ServicesPage() {
       </section>
       
       <section className="grid gap-8 md:gap-12">
-        {servicesList.length === 0 && !error && (
+        {servicesList.length === 0 && !fetchError && (
           <div className="text-center py-12">
             <p className="text-lg text-muted-foreground">No services available at the moment.</p>
           </div>
         )}
         
-        {error && (
+        {fetchError && (
           <div className="text-center py-12 bg-muted/30 rounded-lg p-8">
             <h3 className="text-xl font-medium mb-2">Temporarily Unavailable</h3>
             <p className="text-muted-foreground mb-4">

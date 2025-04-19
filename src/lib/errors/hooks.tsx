@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { errorMonitor, AppError, ErrorCode } from './monitoring';
 
 /**
@@ -136,4 +136,4 @@ export function withErrorHandling<T extends Record<string, unknown>>(
   WithErrorHandling.displayName = `withErrorHandling(${displayName})`;
 
   return WithErrorHandling;
-}
+} 

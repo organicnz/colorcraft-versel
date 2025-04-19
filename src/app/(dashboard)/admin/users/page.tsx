@@ -4,6 +4,9 @@ import UserRoleManagement from "./_components/UserRoleManagement";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 
+// Force dynamic rendering for this route to allow use of cookies
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: "User Management",
   description: "Manage user roles and permissions",

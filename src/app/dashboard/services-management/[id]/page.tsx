@@ -4,6 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
 
+// Force dynamic rendering for this route to allow use of cookies
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: "Edit Service",
   description: "Update an existing service offering",

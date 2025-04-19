@@ -10,6 +10,9 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { createPublicClient } from "@/utils/supabase/public";
 import { ArrowLeft, Calendar } from "lucide-react";
 
+// Force dynamic rendering for this route to allow proper data fetching
+export const dynamic = 'force-dynamic';
+
 type Props = {
   params: { id: string };
 };

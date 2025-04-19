@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { env } from '@/lib/config/env';
 
+// Force dynamic handling for this API route
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   console.log('Debug API called - checking environment variables:');
   console.log({

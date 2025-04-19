@@ -7,6 +7,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 
+// Force dynamic rendering for this route to allow use of cookies
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: "Portfolio Management",
   description: "Manage your portfolio projects",
