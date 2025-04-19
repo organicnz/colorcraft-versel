@@ -145,15 +145,8 @@ function useAsyncErrorHandler(asyncFn, options) {
 function withErrorHandling(Component, fallback) {
     var WithErrorHandling = function (props) {
         var _a = useErrorHandler(), error = _a.error, handleError = _a.handleError, clearError = _a.clearError;
-        if (error.hasError && fallback) {
-            var Fallback = fallback;
-            return error;
-            {
-                error;
-            }
-            reset = { clearError: clearError } /  > ;
-        }
-        // Create error boundary effect
+
+        // Create error boundary effect - moved up before the conditional rendering
         (0, react_1.useEffect)(function () {
             var errorHandler = function (event) {
                 handleError(event.error || event.message);
@@ -164,8 +157,15 @@ function withErrorHandling(Component, fallback) {
                 window.removeEventListener('error', errorHandler);
             };
         }, [handleError]);
-        return __assign({}, props) /  > ;
+
+        if (error.hasError && fallback) {
+            var Fallback = fallback;
+            return React.createElement(Fallback, { error: error, reset: clearError });
+        }
+
+        return React.createElement(Component, __assign({}, props));
     };
+
     var displayName = Component.displayName || Component.name || 'Component';
     WithErrorHandling.displayName = "withErrorHandling(".concat(displayName, ")");
     return WithErrorHandling;

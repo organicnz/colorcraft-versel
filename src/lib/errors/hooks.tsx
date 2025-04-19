@@ -110,12 +110,7 @@ export function withErrorHandling<T extends Record<string, unknown>>(
   const WithErrorHandling: React.FC<T> = (props) => {
     const { error, handleError, clearError } = useErrorHandler();
 
-    if (error.hasError && fallback) {
-      const Fallback = fallback;
-      return <Fallback error={error} reset={clearError} />;
-    }
-
-    // Create error boundary effect
+    // Create error boundary effect - moved up before the conditional return
     useEffect(() => {
       const errorHandler = (event: ErrorEvent) => {
         handleError(event.error || event.message);
@@ -128,6 +123,11 @@ export function withErrorHandling<T extends Record<string, unknown>>(
         window.removeEventListener('error', errorHandler);
       };
     }, [handleError]);
+
+    if (error.hasError && fallback) {
+      const Fallback = fallback;
+      return <Fallback error={error} reset={clearError} />;
+    }
 
     return <Component {...props} />;
   };
