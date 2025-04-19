@@ -46,15 +46,23 @@ function createFallbackClient() {
   return {
     from: () => ({
       select: () => ({
-        order: () => ({
-          then: () => Promise.resolve({ data: [], error: null }),
-          eq: () => ({ data: [], error: null }),
-          single: () => ({ data: null, error: null }),
-        }),
-        eq: () => ({
-          order: () => ({ data: [], error: null }),
-          single: () => ({ data: null, error: null }),
-        }),
+        order: () => {
+          return Promise.resolve({ data: [], error: null });
+        },
+        eq: () => {
+          return Promise.resolve({ data: [], error: null });
+        },
+        single: () => {
+          return Promise.resolve({ data: null, error: null });
+        },
+      }),
+      eq: () => ({
+        order: () => {
+          return Promise.resolve({ data: [], error: null });
+        },
+        single: () => {
+          return Promise.resolve({ data: null, error: null });
+        },
       }),
     }),
     auth: {

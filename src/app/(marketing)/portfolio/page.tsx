@@ -81,9 +81,10 @@ export default async function PortfolioPage() {
                 {project.after_images && project.after_images[0] ? (
                   <Image
                     src={project.after_images[0]}
-                    alt={project.title}
+                    alt={project.title || "Project image"}
                     fill
                     className="object-cover transition-transform hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                 ) : (
                   <div className="w-full h-full bg-muted flex items-center justify-center">
@@ -92,9 +93,9 @@ export default async function PortfolioPage() {
                 )}
               </div>
               <CardContent className="p-4">
-                <h2 className="text-xl font-bold mb-2 line-clamp-1">{project.title}</h2>
+                <h2 className="text-xl font-bold mb-2 line-clamp-1">{project.title || "Untitled Project"}</h2>
                 <p className="text-muted-foreground line-clamp-2 mb-4">
-                  {project.brief_description || project.description}
+                  {project.brief_description || project.description || "No description available"}
                 </p>
                 <Button asChild variant="outline" className="w-full">
                   <Link href={`/portfolio/${project.id}`}>View Project</Link>

@@ -19,19 +19,27 @@ export default async function ServicesPage() {
   let fetchError: PostgrestError | Error | null = null;
   
   try {
-    const supabase = createPublicClient();
-    
-    // Fetch services with error handling
-    const response = await supabase
-      .from("services")
-      .select("*")
-      .order("name");
-    
-    if (response.error) {
-      fetchError = response.error;
-      console.error("Error fetching services:", fetchError);
-    } else {
-      servicesList = response.data || [];
+    // Wrap the createPublicClient call in a try-catch to handle initialization errors
+    try {
+      const supabase = createPublicClient();
+      
+      // Fetch services with error handling
+      const { data, error: supabaseError } = await supabase
+        .from("services")
+        .select("*")
+        .order("name");
+      
+      if (supabaseError) {
+        fetchError = supabaseError;
+        console.error("Error fetching services:", supabaseError);
+      } else {
+        servicesList = data || [];
+      }
+    } catch (clientError) {
+      console.error("Failed to initialize Supabase client:", clientError);
+      fetchError = clientError instanceof Error
+        ? clientError
+        : new Error("Failed to initialize Supabase client");
     }
   } catch (err) {
     console.error("Failed to fetch services:", err);
@@ -66,7 +74,7 @@ export default async function ServicesPage() {
           </div>
         )}
         
-        {servicesList.map((service) => (
+        {servicesList.length > 0 && servicesList.map((service) => (
           <Card key={service.id} className="overflow-hidden">
             <CardContent className="p-0">
               <div className="grid md:grid-cols-2 gap-6">
@@ -74,7 +82,7 @@ export default async function ServicesPage() {
                   <div className="relative aspect-video md:aspect-square">
                     <Image
                       src={service.image_url}
-                      alt={service.name}
+                      alt={service.name || "Service image"}
                       fill
                       className="object-cover"
                       sizes="(max-width: 768px) 100vw, 50vw"
@@ -84,9 +92,9 @@ export default async function ServicesPage() {
                 <div className="p-6 flex flex-col justify-between">
                   <div>
                     <h2 className="text-2xl font-bold mb-2">{service.name}</h2>
-                    <p className="text-muted-foreground mb-4">{service.brief_description}</p>
+                    <p className="text-muted-foreground mb-4">{service.brief_description || ""}</p>
                     <div className="prose max-w-none">
-                      <p>{service.description}</p>
+                      <p>{service.description || ""}</p>
                     </div>
                   </div>
                   {service.price_range && (
