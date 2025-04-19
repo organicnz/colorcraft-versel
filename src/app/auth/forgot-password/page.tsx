@@ -2,28 +2,37 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
+import { toast } from 'sonner';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const supabase = createClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate a form submission
-    setTimeout(() => {
+    try {
+      // Use Supabase's built-in password reset functionality
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/reset-password`,
+      });
+      
+      if (error) {
+        throw error;
+      }
+      
+      // If successful, show the success message
       setIsSubmitted(true);
+    } catch (error: any) {
+      console.error('Error resetting password:', error);
+      toast.error(error.message || 'Failed to send reset email. Please try again.');
+    } finally {
       setIsLoading(false);
-    }, 1500);
-    
-    // Here you would normally send a request to your API to send a password reset email
-    // const response = await fetch('/api/auth/forgot-password', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ email }),
-    // });
+    }
   };
 
   return (
