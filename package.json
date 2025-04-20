@@ -6,7 +6,7 @@
     "dev": "next dev",
     "dev:turbo": "next dev --turbopack",
     "build": "next build",
-    "vercel-build": "bash scripts/simplified-build.sh",
+    "vercel-build": "node scripts/verify-env.js || true && next build",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
