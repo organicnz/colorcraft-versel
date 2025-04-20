@@ -10,6 +10,8 @@ const createDummyCookieHandlers = () => ({
 
 // Memoize client to prevent repeated initialization
 let cachedClient: ReturnType<typeof createServerClient> | null = null;
+let initializationAttempts = 0;
+const MAX_INIT_ATTEMPTS = 3;
 
 // Create a version that works during build time and runtime
 export const createClient = () => {
@@ -19,6 +21,18 @@ export const createClient = () => {
   }
 
   try {
+    // Increment initialization attempts
+    initializationAttempts++;
+
+    // Check for missing environment variables - fail gracefully in production
+    if (!env.NEXT_PUBLIC_SUPABASE_URL || !env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      console.error("Missing Supabase environment variables");
+      if (process.env.NODE_ENV === "production") {
+        console.warn("Creating dummy Supabase client to prevent deployment failure");
+        return createDummyClient();
+      }
+    }
+
     // During build, provide a dummy implementation that won't fail
     if (process.env.NODE_ENV === "production" && typeof window === "undefined") {
       cachedClient = createServerClient(
@@ -40,7 +54,12 @@ export const createClient = () => {
       {
         cookies: {
           get(name) {
-            return cookieStore.get(name)?.value;
+            try {
+              return cookieStore.get(name)?.value;
+            } catch (error) {
+              console.debug("Cookie get error (expected in some contexts)");
+              return undefined;
+            }
           },
           set(name, value, options) {
             try {
@@ -64,26 +83,54 @@ export const createClient = () => {
 
     return cachedClient;
   } catch (error) {
-    console.debug("Cookie handler initialization error");
+    console.error("Supabase client initialization error:", error);
 
-    // Fallback for any other context
-    cachedClient = createServerClient(
-      env.NEXT_PUBLIC_SUPABASE_URL,
-      env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-      { cookies: createDummyCookieHandlers() }
-    );
+    // Log additional information to help debugging
+    if (initializationAttempts >= MAX_INIT_ATTEMPTS) {
+      console.error(
+        `Failed to initialize Supabase client after ${initializationAttempts} attempts`
+      );
+      console.error(`NEXT_PUBLIC_SUPABASE_URL defined: ${Boolean(env.NEXT_PUBLIC_SUPABASE_URL)}`);
+      console.error(
+        `NEXT_PUBLIC_SUPABASE_ANON_KEY defined: ${Boolean(env.NEXT_PUBLIC_SUPABASE_ANON_KEY)}`
+      );
+    }
 
-    return cachedClient;
+    // Fallback to dummy client to prevent app crash
+    return createDummyClient();
   }
 };
+
+// Create a dummy client that won't crash but won't work either
+function createDummyClient() {
+  // If we already have a cached dummy client, return it
+  if (cachedClient) {
+    return cachedClient;
+  }
+
+  // Create a new dummy client
+  cachedClient = createServerClient(
+    env.NEXT_PUBLIC_SUPABASE_URL || "https://example.supabase.co",
+    env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "dummy-key",
+    { cookies: createDummyCookieHandlers() }
+  );
+
+  return cachedClient;
+}
 
 // Reset cache when needed (useful for testing)
 export function clearClientCache() {
   cachedClient = null;
+  initializationAttempts = 0;
 }
 
 // Simplified auth helper for server actions and server components
 export async function auth() {
   const supabase = createClient();
-  return supabase.auth.getSession();
+  try {
+    return await supabase.auth.getSession();
+  } catch (error) {
+    console.error("Error getting auth session:", error);
+    return { data: { session: null } };
+  }
 }
