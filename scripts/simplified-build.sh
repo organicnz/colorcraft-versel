@@ -46,7 +46,7 @@ export NODE_OPTIONS="--max-old-space-size=4096"
 
 # Run the Next.js build with a fallback if it fails
 echo "Starting Next.js build..."
-next build || (echo "Retrying build with reduced features..." && NEXT_MINIMAL=1 next build)
+npm run build || (echo "Retrying build with reduced features..." && NEXT_MINIMAL=1 npm run build)
 
 echo "Build completed successfully!"
 exit 0
