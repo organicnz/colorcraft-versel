@@ -1,32 +1,32 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/middleware';
+import { NextRequest, NextResponse } from "next/server";
 
 export async function middleware(request: NextRequest) {
   // Handle the portfolio-cards redirect
-  if (request.nextUrl.pathname === '/portfolio-cards') {
-    return NextResponse.redirect(new URL('/portfolio', request.url));
+  if (request.nextUrl.pathname === "/portfolio-cards") {
+    return NextResponse.redirect(new URL("/portfolio", request.url));
   }
-  
+
   // Handle the CRM redirect if needed
-  if (request.nextUrl.pathname === '/crm') {
-    return NextResponse.redirect(new URL('/dashboard/crm', request.url));
+  if (request.nextUrl.pathname === "/crm") {
+    return NextResponse.redirect(new URL("/dashboard/crm", request.url));
   }
-  
-  // Default Supabase auth handling
-  const { supabase, response } = createClient(request);
-  
-  await supabase.auth.getSession();
-  
-  return response;
+
+  // Handle the admin redirect
+  if (request.nextUrl.pathname === "/admin") {
+    return NextResponse.redirect(new URL("/dashboard/admin", request.url));
+  }
+
+  // Default response
+  return NextResponse.next();
 }
 
-// See "Matching Paths" below to learn more
+// Define which paths this middleware will run on
 export const config = {
   matcher: [
-    '/portfolio-cards',
-    '/crm',
-    '/dashboard/:path*',
-    '/account/:path*',
-    '/api/private/:path*'
+    "/portfolio-cards",
+    "/crm",
+    "/admin",
+    "/dashboard/:path*",
+    "/account/:path*",
   ],
 };
