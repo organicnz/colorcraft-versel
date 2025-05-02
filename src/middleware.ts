@@ -22,11 +22,5 @@ export async function middleware(request: NextRequest) {
 
 // Define which paths this middleware will run on
 export const config = {
-  matcher: [
-    "/portfolio-cards",
-    "/crm",
-    "/admin",
-    "/dashboard/:path*",
-    "/account/:path*",
-  ],
+  matcher: ["/portfolio-cards", "/crm", "/admin", "/dashboard/:path*", "/account/:path*"],
 };

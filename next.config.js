@@ -1,10 +1,19 @@
 /** @type {import('next').NextConfig} */
+const path = require('path');
+
 const nextConfig = {
   reactStrictMode: true,
   eslint: {
     // Disable ESLint during builds to avoid deployment failures
     ignoreDuringBuilds: true,
   },
+  // Explicitly define path aliases to ensure proper resolution in Vercel
+  webpack: (config) => {
+    config.resolve.alias['@'] = path.join(__dirname, 'src');
+    return config;
+  },
+  // Use standalone output mode to fix deployment issues
+  output: 'standalone',
   images: {
     domains: [],
     formats: ['image/avif', 'image/webp'],

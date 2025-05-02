@@ -1,8 +1,9 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useState, type ReactNode } from 'react';
+// Don't import ReactQueryDevtools directly
+// Instead use dynamic import
 
 export function ReactQueryProvider({
   children,
@@ -25,7 +26,21 @@ export function ReactQueryProvider({
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
+      {/* Only include React Query Devtools in development */}
+      {process.env.NODE_ENV === 'development' &&
+        // Import dynamically to avoid including in production bundle
+        typeof window !== 'undefined' &&
+        (() => {
+          try {
+            // This will be caught if the module doesn't exist
+            // which is expected in production builds
+            const { ReactQueryDevtools } = require('@tanstack/react-query-devtools');
+            return <ReactQueryDevtools initialIsOpen={false} />;
+          } catch (e) {
+            return null;
+          }
+        })()
+      }
     </QueryClientProvider>
   );
 } 

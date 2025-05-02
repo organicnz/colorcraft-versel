@@ -1,12 +1,9 @@
+"use client";
+
 import Link from "next/link";
-import { Code, Palette, Settings, Tool, LayoutDashboard } from "lucide-react";
+import { Code, Palette, Settings, Wrench, LayoutDashboard } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-
-export const metadata = {
-  title: "Developer Tools - Color & Craft",
-  description: "Developer tools and utilities for Color & Craft website",
-};
 
 interface DevTool {
   href: string;
@@ -30,16 +27,16 @@ export default function DevToolsIndex() {
       icon: <Code className="w-8 h-8 text-secondary-500" />,
     },
     {
-      href: "/dev/env-check",
+      href: "/env-check",
       label: "Environment Check",
       description: "Verify environment variables and configuration settings.",
       icon: <Settings className="w-8 h-8 text-accent-500" />,
     },
     {
-      href: "/dev/debug",
+      href: "/debug",
       label: "Debug Tools",
       description: "Tools for debugging and testing application features.",
-      icon: <Tool className="w-8 h-8 text-neutral-600" />,
+      icon: <Wrench className="w-8 h-8 text-neutral-600" />,
     },
     {
       href: "/dashboard",

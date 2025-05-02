@@ -1,10 +1,7 @@
-import Link from "next/link";
-import { Code, Palette, Settings, Tool, LayoutDashboard } from "lucide-react";
+"use client";
 
-export const metadata = {
-  title: "Developer Tools - Color & Craft",
-  description: "Developer tools and utilities for Color & Craft website",
-};
+import Link from "next/link";
+import { Code, Palette, Settings, Wrench, LayoutDashboard } from "lucide-react";
 
 interface DevToolLink {
   href: string;
@@ -29,14 +26,14 @@ export default function DevLayout({
       icon: <Code className="w-4 h-4 mr-2" />,
     },
     {
-      href: "/dev/env-check",
+      href: "/env-check",
       label: "Environment Check",
       icon: <Settings className="w-4 h-4 mr-2" />,
     },
     {
-      href: "/dev/debug",
+      href: "/debug",
       label: "Debug Tools",
-      icon: <Tool className="w-4 h-4 mr-2" />,
+      icon: <Wrench className="w-4 h-4 mr-2" />,
     },
     {
       href: "/dashboard",
