@@ -14,6 +14,14 @@ const nextConfig = {
   },
   // Use standalone output mode to fix deployment issues
   output: 'standalone',
+  // Turbopack configuration (moved from experimental.turbo)
+  turbopack: {
+    resolveAlias: {
+      '@': './src',
+    },
+  },
+  // Server external packages (moved from experimental.serverComponentsExternalPackages)
+  serverExternalPackages: ["postgres"],
   images: {
     domains: [],
     formats: ['image/avif', 'image/webp'],
@@ -46,17 +54,11 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   experimental: {
-    // Next.js 15 optimizations
-    turbo: {
-      resolveAlias: {
-        '@': './src',
-      },
-    },
-    ppr: 'incremental', // Partial Pre-rendering (Next.js 15 feature)
+    // Note: PPR is only available in canary, commented out for stable version
+    // ppr: 'incremental', // Partial Pre-rendering (Next.js canary feature)
     serverActions: {
       allowedOrigins: [process.env.NEXT_PUBLIC_SITE_URL || ""],
     },
-    serverComponentsExternalPackages: ["postgres"],
     optimizeCss: true, // Enable CSS optimization
     optimizePackageImports: [
       '@radix-ui/react-dialog',
