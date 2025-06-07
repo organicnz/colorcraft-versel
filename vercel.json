@@ -1,7 +1,7 @@
 {
   "framework": "nextjs",
-  "buildCommand": "npm run vercel-build",
-  "installCommand": "npm install",
+  "buildCommand": "yarn vercel-build",
+  "installCommand": "yarn install",
   "devCommand": "next dev --turbopack",
   "regions": ["iad1"],
   "headers": [
