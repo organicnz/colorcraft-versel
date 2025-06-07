@@ -65,7 +65,6 @@ export async function getPortfolioProject(id: string, useAdmin = false) {
       .from('projects')
       .select('*')
       .eq('id', id)
-      .eq('status', 'published')
       .single();
     
     if (error) {
@@ -94,7 +93,6 @@ export async function getRelatedProjects(id: string, techniques: string[] = []) 
       const { data, error } = await supabase
         .from("projects")
         .select("*")
-        .eq("status", "published")
         .neq("id", id) // Exclude current project
         .filter('techniques', 'cs', `{${techniques[0]}}`) // Look for at least one matching technique
         .limit(3);
@@ -108,7 +106,6 @@ export async function getRelatedProjects(id: string, techniques: string[] = []) 
     const { data, error } = await supabase
       .from("projects")
       .select("*")
-      .eq("status", "published")
       .neq("id", id)
       .order("created_at", { ascending: false })
       .limit(3);
