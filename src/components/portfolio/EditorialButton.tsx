@@ -135,7 +135,10 @@ export default function EditorialButton({
                 <Button 
                   variant="ghost" 
                   className="w-full justify-start h-9 text-sm"
-                  onClick={() => window.location.href = 'https://colorcraft-git-main-organicnz-projects.vercel.app/portfolio-dash/manage'}
+                  onClick={() => {
+                    const baseUrl = window.location.origin;
+                    window.location.href = `${baseUrl}/portfolio-dash/manage`;
+                  }}
                 >
                   <Eye className="h-4 w-4 mr-2" />
                   View Admin Dashboard
@@ -219,7 +222,10 @@ export default function EditorialButton({
         <DropdownMenuSeparator />
         
         <DropdownMenuItem 
-          onClick={() => window.location.href = 'https://colorcraft-git-main-organicnz-projects.vercel.app/portfolio-dash/manage'}
+          onClick={() => {
+            const baseUrl = window.location.origin;
+            window.location.href = `${baseUrl}/portfolio-dash/manage`;
+          }}
           className="cursor-pointer"
         >
           <Eye className="h-4 w-4 mr-2" />
