@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import Image from 'next/image';
+import EditorialButton from '@/components/portfolio/EditorialButton';
 
 // Sample data for portfolio projects
 const SAMPLE_PROJECTS = [
@@ -99,10 +100,17 @@ export default function PortfolioPage() {
   return (
     <div className="container py-12">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Portfolio</h1>
-        <p className="text-muted-foreground text-lg">
-          Our recent furniture restoration and transformation projects
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold mb-2">Portfolio</h1>
+            <p className="text-muted-foreground text-lg">
+              Our recent furniture restoration and transformation projects
+            </p>
+          </div>
+
+          {/* Inline Editorial Button for header */}
+          <EditorialButton variant="inline" className="hidden md:flex" />
+        </div>
       </div>
 
       {/* Featured Projects */}
@@ -124,6 +132,9 @@ export default function PortfolioPage() {
           ))}
         </div>
       </div>
+
+      {/* Floating Editorial Button */}
+      <EditorialButton variant="floating" />
     </div>
   );
 }
