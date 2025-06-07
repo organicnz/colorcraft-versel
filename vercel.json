@@ -1,9 +1,17 @@
 {
   "framework": "nextjs",
   "buildCommand": "npm run vercel-build",
-  "installCommand": "yarn install --frozen-lockfile",
-  "devCommand": "next dev",
+  "installCommand": "npm install",
+  "devCommand": "next dev --turbopack",
   "regions": ["iad1"],
+  "functions": {
+    "app/**/*.js": {
+      "runtime": "nodejs22.x"
+    },
+    "app/**/*.ts": {
+      "runtime": "nodejs22.x"
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",

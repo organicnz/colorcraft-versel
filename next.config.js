@@ -46,6 +46,13 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   experimental: {
+    // Next.js 15 optimizations
+    turbo: {
+      resolveAlias: {
+        '@': './src',
+      },
+    },
+    ppr: 'incremental', // Partial Pre-rendering (Next.js 15 feature)
     serverActions: {
       allowedOrigins: [process.env.NEXT_PUBLIC_SITE_URL || ""],
     },
@@ -58,6 +65,8 @@ const nextConfig = {
       'lucide-react',
       'date-fns',
     ],
+    // React 19 compatibility for Next.js 15
+    reactCompiler: false, // Disable until React 19 is stable
   },
 };
 
