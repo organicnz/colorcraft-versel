@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { env } from "@/lib/config/env";
+import { cookies } from "next/headers";
 
 // Create cookie handlers for different contexts
 const createDummyCookieHandlers = () => ({
@@ -14,7 +15,7 @@ let initializationAttempts = 0;
 const MAX_INIT_ATTEMPTS = 3;
 
 // Create a version that works during build time and runtime
-export const createClient = () => {
+export const createClient = async () => {
   // Return cached client if available (improves performance in server components)
   if (cachedClient) {
     return cachedClient;
@@ -45,37 +46,21 @@ export const createClient = () => {
 
     // In actual server runtime, dynamically import cookies
     // This prevents build-time errors with next/headers
-    const { cookies } = require("next/headers");
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
 
     cachedClient = createServerClient(
       env.NEXT_PUBLIC_SUPABASE_URL,
       env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
       {
         cookies: {
-          get(name) {
-            try {
-              return cookieStore.get(name)?.value;
-            } catch (error) {
-              console.debug("Cookie get error (expected in some contexts)");
-              return undefined;
-            }
+          get(name: string) {
+            return cookieStore.get(name)?.value;
           },
-          set(name, value, options) {
-            try {
-              cookieStore.set(name, value, options);
-            } catch (error) {
-              // This will fail in middleware, but we can ignore it
-              console.debug("Cookie set error (expected in middleware)");
-            }
+          set(name: string, value: string, options: any) {
+            cookieStore.set(name, value, options);
           },
-          remove(name, options) {
-            try {
-              cookieStore.set(name, "", { ...options, maxAge: 0 });
-            } catch (error) {
-              // This will fail in middleware, but we can ignore it
-              console.debug("Cookie remove error (expected in middleware)");
-            }
+          remove(name: string, options: any) {
+            cookieStore.set(name, "", { ...options, maxAge: 0 });
           },
         },
       }
@@ -126,7 +111,7 @@ export function clearClientCache() {
 
 // Simplified auth helper for server actions and server components
 export async function auth() {
-  const supabase = createClient();
+  const supabase = await createClient();
   try {
     return await supabase.auth.getSession();
   } catch (error) {

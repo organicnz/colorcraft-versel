@@ -13,40 +13,40 @@ export async function getPortfolioProjects(options?: {
 }) {
   try {
     // Use admin client if specified, otherwise use regular server client
-    const supabase = options?.useAdmin ? createAdminClient() : createClient();
-    
+    const supabase = options?.useAdmin ? createAdminClient() : await createClient();
+
     let query = supabase
-      .from('portfolio')
+      .from('projects')
       .select('*');
-    
+
     // Apply featured filter if requested
     if (options?.featuredOnly) {
       query = query.eq('is_featured', true);
     }
-    
-    // Apply custom ordering if provided
+
+    // Apply ordering if specified
     if (options?.orderBy && options.orderBy.length > 0) {
-      options.orderBy.forEach(order => {
+      for (const order of options.orderBy) {
         query = query.order(order.column, { ascending: order.ascending });
-      });
+      }
     } else {
-      // Default ordering: featured first, then by created_at
-      query = query
-        .order('is_featured', { ascending: false })
-        .order('created_at', { ascending: false });
+      // Default ordering: featured first, then by created_at desc
+      query = query.order('is_featured', { ascending: false })
+                   .order('created_at', { ascending: false });
     }
-    
+
     const { data: projects, error } = await query;
-    
+
     if (error) {
-      console.error('Supabase error fetching projects:', error);
-      return []; // Return empty array instead of throwing
+      console.error('Portfolio fetch error:', error);
+      return [];
     }
-    
+
     return projects || [];
-  } catch (error) {
-    console.error('Error fetching portfolio projects:', error);
-    return []; // Return empty array on any error
+
+  } catch (error: any) {
+    console.error('Portfolio service error:', error);
+    return [];
   }
 }
 
@@ -59,65 +59,58 @@ export async function getPortfolioProjects(options?: {
 export async function getPortfolioProject(id: string, useAdmin = false) {
   try {
     // Use admin client if specified, otherwise use regular server client
-    const supabase = useAdmin ? createAdminClient() : createClient();
-    
+    const supabase = useAdmin ? createAdminClient() : await createClient();
+
     const { data: project, error } = await supabase
-      .from('portfolio')
+      .from('projects')
       .select('*')
       .eq('id', id)
       .single();
-    
+
     if (error) {
       if (error.code === 'PGRST116') {
         // PGRST116 means no rows returned, which is expected when record is not found
         return null;
       }
-      
-      console.error('Supabase error fetching project:', error);
-      throw new Error(`Failed to fetch portfolio project: ${error.message}`);
+
+      console.error('Portfolio project fetch error:', error);
+      return null;
     }
-    
+
     return project;
-  } catch (error) {
-    console.error(`Unexpected error in getPortfolioProject(${id}):`, error);
-    return null; // Return null instead of throwing
+
+  } catch (error: any) {
+    console.error('Portfolio project service error:', error);
+    return null;
   }
 }
 
-export async function getRelatedProjects(id: string, techniques: string[] = []) {
+/**
+ * Fetches related portfolio projects (excluding the current one)
+ * @param currentProjectId ID of current project to exclude
+ * @param limit Maximum number of related projects to return
+ * @returns Array of related portfolio projects
+ */
+export async function getRelatedProjects(currentProjectId: string, limit = 3) {
   try {
-    const supabase = createClient();
-    
-    // If we have techniques, try to find projects with similar techniques
-    if (techniques && techniques.length > 0) {
-      const { data, error } = await supabase
-        .from("portfolio")
-        .select("*")
-        .neq("id", id) // Exclude current project
-        .filter('techniques', 'cs', `{${techniques[0]}}`) // Look for at least one matching technique
-        .limit(3);
-      
-      if (!error && data && data.length >= 3) {
-        return data;
-      }
-    }
-    
-    // Fallback: just get recent projects excluding current
-    const { data, error } = await supabase
-      .from("portfolio")
-      .select("*")
-      .neq("id", id)
-      .order("created_at", { ascending: false })
-      .limit(3);
-    
+    const supabase = await createClient();
+
+    const { data: projects, error } = await supabase
+      .from('projects')
+      .select('*')
+      .neq('id', currentProjectId)
+      .order('created_at', { ascending: false })
+      .limit(limit);
+
     if (error) {
-      console.error("Supabase error fetching related projects:", error);
-      return []; // Return empty array instead of throwing
+      console.error('Related projects fetch error:', error);
+      return [];
     }
-    
-    return data || [];
-  } catch (error) {
-    console.error("Error fetching related projects:", error);
-    return []; // Return empty array on any error
+
+    return projects || [];
+
+  } catch (error: any) {
+    console.error('Related projects service error:', error);
+    return [];
   }
 } 

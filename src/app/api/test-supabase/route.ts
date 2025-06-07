@@ -1,52 +1,59 @@
 import { NextResponse } from 'next/server';
-import { createClient as createClientBase } from '@supabase/supabase-js';
+import { createClient } from '@/lib/supabase/server';
 
 export async function GET() {
   try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    
-    if (!supabaseUrl || !supabaseKey) {
+    const supabase = await createClient();
+
+    // Test basic connection with simple query
+    const { data: healthData, error: healthError } = await supabase
+      .from('information_schema.tables')
+      .select('table_name')
+      .eq('table_schema', 'public')
+      .limit(5);
+
+    if (healthError) {
       return NextResponse.json({
-        status: 'error',
-        message: 'Missing Supabase credentials',
-        env: {
-          url: Boolean(supabaseUrl),
-          key: Boolean(supabaseKey),
-          url_length: supabaseUrl?.length || 0,
-          key_length: supabaseKey?.length || 0
-        }
-      }, { status: 500 });
+        success: false,
+        error: 'Connection failed',
+        details: healthError.message,
+        hint: healthError.hint
+      });
     }
-    
-    // Create a direct client without cookies
-    const supabase = createClientBase(supabaseUrl, supabaseKey);
-    
-    // Try a simple query
-    const { data, error } = await supabase.from('services').select('count').limit(1);
-    
-    if (error) {
-      return NextResponse.json({
-        status: 'error',
-        message: 'Database query failed',
-        error: error.message,
-        hint: error.hint,
-        code: error.code,
-        details: error.details
-      }, { status: 500 });
-    }
-    
+
+    // Try to fetch from projects table
+    const { data: projectsData, error: projectsError } = await supabase
+      .from('projects')
+      .select('id, title')
+      .limit(1);
+
+    // Try to fetch from portfolio table
+    const { data: portfolioData, error: portfolioError } = await supabase
+      .from('portfolio')
+      .select('id, title')
+      .limit(1);
+
     return NextResponse.json({
-      status: 'success',
-      message: 'Successfully connected to Supabase',
-      data
+      success: true,
+      connection: 'OK',
+      tables: healthData,
+      projects: {
+        error: projectsError?.message || null,
+        data: projectsData,
+        count: projectsData?.length || 0
+      },
+      portfolio: {
+        error: portfolioError?.message || null,
+        data: portfolioData,
+        count: portfolioData?.length || 0
+      }
     });
+
   } catch (error: any) {
     return NextResponse.json({
-      status: 'error',
-      message: 'Test failed',
-      error: error.message,
-      stack: error.stack
-    }, { status: 500 });
+      success: false,
+      error: 'Server error',
+      message: error.message
+    });
   }
 } 

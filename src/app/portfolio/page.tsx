@@ -1,8 +1,8 @@
-import React from 'react';
+import { Suspense } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
 import EditorialButton from '@/components/portfolio/EditorialButton';
 import { getPortfolioProjects } from '@/services/portfolio.service';
 
@@ -11,22 +11,91 @@ export const metadata = {
   description: 'Explore our furniture restoration and transformation projects',
 };
 
+// Temporary sample data for testing
+const SAMPLE_PROJECTS = [
+  {
+    id: '1',
+    title: 'Victorian Dresser Restoration',
+    description: 'Complete restoration of a 1920s Victorian dresser with custom chalk paint finish',
+    image_url: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800',
+    category: 'restoration',
+    featured: true,
+    status: 'completed',
+    created_at: '2024-01-15',
+    updated_at: '2024-01-15'
+  },
+  {
+    id: '2',
+    title: 'Modern Coffee Table Makeover',
+    description: 'Transformed a dated coffee table with geometric patterns and bold colors',
+    image_url: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800',
+    category: 'upcycling',
+    featured: true,
+    status: 'completed',
+    created_at: '2024-01-10',
+    updated_at: '2024-01-10'
+  },
+  {
+    id: '3',
+    title: 'Antique Chair Revival',
+    description: 'Breathing new life into a classic antique chair with period-appropriate techniques',
+    image_url: 'https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=800',
+    category: 'restoration',
+    featured: false,
+    status: 'completed',
+    created_at: '2024-01-05',
+    updated_at: '2024-01-05'
+  }
+];
+
+function ProjectCard({ project }: { project: any }) {
+  return (
+    <Link href={`/portfolio/${project.id}`}>
+      <Card className="overflow-hidden group hover:shadow-lg transition-shadow cursor-pointer">
+        <div className="aspect-square relative overflow-hidden">
+          <Image
+            src={project.image_url || project.after_images?.[0] || '/images/placeholder.jpg'}
+            alt={project.title}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+          {project.featured && (
+            <Badge className="absolute top-3 left-3" variant="secondary">
+              Featured
+            </Badge>
+          )}
+        </div>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <Badge variant="outline" className="text-xs">
+              {project.category || 'restoration'}
+            </Badge>
+          </div>
+          <CardTitle className="text-lg">{project.title}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground text-sm">
+            {project.description || project.brief_description}
+          </p>
+        </CardContent>
+      </Card>
+    </Link>
+  );
+}
+
 export default async function PortfolioPage() {
-  // Fetch real portfolio projects from the database
   let projects = [];
   let error = null;
+
   try {
-    // Fetch all published projects, ordered by featured first, then by completion date
-    projects = await getPortfolioProjects({
-      orderBy: [
-        { column: 'is_featured', ascending: false },
-        { column: 'completion_date', ascending: false },
-        { column: 'created_at', ascending: false }
-      ]
-    });
-  } catch (err) {
-    console.error('Error fetching portfolio projects:', err);
-    error = 'Unable to load portfolio projects. Please try again later.';
+    // Try to fetch real data first
+    projects = await getPortfolioProjects();
+    console.log('Portfolio fetch successful:', projects?.length || 0);
+  } catch (e: any) {
+    console.error('Portfolio fetch error:', e.message);
+    error = e.message;
+    // Fallback to sample data for now
+    projects = SAMPLE_PROJECTS;
   }
 
   return (
@@ -40,175 +109,44 @@ export default async function PortfolioPage() {
             </p>
           </div>
 
-          {/* Inline Editorial Button for header */}
+          {/* Editorial Button - Inline variant for larger screens */}
           <EditorialButton variant="inline" className="hidden md:flex" />
         </div>
       </div>
 
-      {error ? (
-        <div className="bg-destructive/10 text-destructive p-6 rounded-md mb-8">
-          <h3 className="font-semibold mb-2">Error Loading Portfolio</h3>
-          <p>{error}</p>
-        </div>
-      ) : projects.length === 0 ? (
-        <div className="text-center py-16 border rounded-md bg-muted/30">
-          <h2 className="text-2xl font-medium mb-2">No portfolio projects yet</h2>
-          <p className="text-muted-foreground">
-            Check back soon for our latest furniture restoration projects.
+      {error && (
+        <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
+          <p className="text-yellow-800 text-sm">
+            <strong>Note:</strong> Using sample data due to database connection issue: {error}
           </p>
         </div>
-      ) : (
-        <>
-          {/* Featured Projects */}
-          <div className="mb-12">
-            <h2 className="text-2xl font-semibold mb-6">Featured Projects</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {projects.filter(project => project.is_featured).map((project) => (
-                <FeaturedProjectCard key={project.id} project={project} />
-              ))}
-            </div>
-
-            {projects.filter(project => project.is_featured).length === 0 && (
-              <p className="text-muted-foreground text-center py-8">
-                No featured projects available yet.
-              </p>
-            )}
-          </div>
-
-          {/* All Projects */}
-          <div>
-            <h2 className="text-2xl font-semibold mb-6">All Projects</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {projects.map((project) => (
-                <ProjectCard key={project.id} project={project} />
-              ))}
-            </div>
-          </div>
-        </>
       )}
 
-      {/* Floating Editorial Button */}
+      <Suspense fallback={
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="aspect-square bg-muted rounded-lg animate-pulse" />
+          ))}
+        </div>
+      }>
+        {projects && projects.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {projects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-16 border rounded-md bg-muted/30">
+            <h2 className="text-2xl font-medium mb-2">No portfolio projects yet</h2>
+            <p className="text-muted-foreground">
+              Check back soon for our latest furniture restoration projects.
+            </p>
+          </div>
+        )}
+      </Suspense>
+
+      {/* Editorial Button - Floating variant for all screens */}
       <EditorialButton variant="floating" />
     </div>
-  );
-}
-
-// Update the component props to match the real database structure
-type ProjectType = {
-  id: string;
-  title: string;
-  brief_description: string;
-  description?: string;
-  before_images: string[];
-  after_images: string[];
-  techniques?: string[];
-  materials?: string[];
-  completion_date?: string;
-  client_name?: string;
-  client_testimonial?: string;
-  is_featured: boolean;
-  created_at: string;
-  updated_at?: string;
-};
-
-function FeaturedProjectCard({ project }: { project: ProjectType }) {
-  return (
-    <Card className="overflow-hidden transition-all hover:shadow-md h-full flex flex-col">
-      <div className="relative h-64 bg-muted w-full">
-        {project.after_images?.[0] && (
-          <Image
-            src={project.after_images[0]}
-            alt={project.title}
-            fill
-            priority={true}
-            className="object-cover"
-          />
-        )}
-        <div className="absolute top-2 right-2 bg-primary text-primary-foreground px-2 py-1 text-xs rounded">
-          Featured
-        </div>
-      </div>
-      <CardHeader>
-        <CardTitle className="line-clamp-1">{project.title}</CardTitle>
-      </CardHeader>
-      <CardContent className="flex-grow">
-        <p className="text-muted-foreground mb-4 line-clamp-2">{project.brief_description}</p>
-        
-        {project.techniques && project.techniques.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-4">
-            {project.techniques.map((technique, i) => (
-              <Badge key={i} variant="outline" className="text-xs">
-                {technique}
-              </Badge>
-            ))}
-          </div>
-        )}
-        
-        <div className="flex justify-end mt-auto pt-4">
-          <Link 
-            href={`/portfolio/${project.id}`}
-            className="text-sm font-medium text-primary hover:text-primary/80"
-          >
-            View Project →
-          </Link>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-function ProjectCard({ project }: { project: ProjectType }) {
-  return (
-    <Card className="overflow-hidden transition-all hover:shadow-md">
-      <div className="relative aspect-[4/3] bg-muted w-full">
-        {project.after_images?.[0] && (
-          <Image
-            src={project.after_images[0]}
-            alt={project.title}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover"
-          />
-        )}
-      </div>
-      <CardHeader>
-        <CardTitle className="line-clamp-1">{project.title}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="text-muted-foreground mb-4 line-clamp-2">{project.brief_description}</p>
-        
-        {project.techniques && project.techniques.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-4">
-            {project.techniques.slice(0, 3).map((technique, i) => (
-              <Badge key={i} variant="outline" className="text-xs">
-                {technique}
-              </Badge>
-            ))}
-            {project.techniques.length > 3 && (
-              <Badge variant="outline" className="text-xs">
-                +{project.techniques.length - 3} more
-              </Badge>
-            )}
-          </div>
-        )}
-        
-        <div className="flex justify-between items-center">
-          {project.completion_date && (
-            <span className="text-xs text-muted-foreground">
-              {new Date(project.completion_date).toLocaleDateString('en-US', {
-                month: 'short',
-                year: 'numeric'
-              })}
-            </span>
-          )}
-          <Link 
-            href={`/portfolio/${project.id}`}
-            className="text-sm font-medium text-primary hover:text-primary/80"
-          >
-            View →
-          </Link>
-        </div>
-      </CardContent>
-    </Card>
   );
 } 
