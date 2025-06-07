@@ -44,7 +44,7 @@ export default function SignInForm() {
       if (error) throw error;
 
       router.refresh();
-      router.push("/dashboard");
+      window.location.href = 'https://colorcraft.live/';
     } catch (error: any) {
       setError(error?.message || "Failed to sign in");
     } finally {

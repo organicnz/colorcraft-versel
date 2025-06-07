@@ -30,8 +30,7 @@ export default function LoginPage() {
 
       // Successful login
       toast.success('Logged in successfully');
-      router.push('/dashboard');
-      router.refresh();
+      window.location.href = 'https://colorcraft.live/';
     } catch (err: any) {
       setError(err.message || 'Invalid email or password');
       toast.error(err.message || 'Login failed');
