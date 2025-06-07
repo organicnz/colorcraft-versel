@@ -23,22 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { createService, updateService } from "@/actions/servicesActions";
-import { serviceSchema, type ServiceFormData } from "@/lib/schemas/serviceSchema";
-
-const formSchema = z.object({
-  title: z.string().min(2, {
-    message: "Title must be at least 2 characters.",
-  }),
-  description: z.string().min(10, {
-    message: "Description must be at least 10 characters.",
-  }),
-  price: z.coerce.number().positive({
-    message: "Price must be a positive number.",
-  }),
-  image_url: z.string().optional(),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import { serviceSchema, type ServiceFormData } from "@/lib/schemas/service.schema";
 
 interface ServiceFormProps {
   initialData?: ServiceFormData;
@@ -50,52 +35,37 @@ export function ServiceForm({ initialData, isEditing = false }: ServiceFormProps
   const supabase = createClientComponentClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const form = useForm<ServiceFormData>({
+  const form = useForm({
     resolver: zodResolver(serviceSchema),
     defaultValues: initialData || {
-      title: "",
+      name: "",
       description: "",
-      price: 0,
+      brief_description: "",
+      price_range: "",
       image_url: "",
+      is_active: true,
     },
   });
 
-  async function onSubmit(data: ServiceFormData) {
+  async function onSubmit(data: any) {
     setIsSubmitting(true);
     try {
-      const formData = {
-        ...data,
-        // Convert price to number if it's a string
-        price: typeof data.price === "string" ? parseFloat(data.price) : data.price,
-      };
-
       const result = isEditing
-        ? await updateService(formData)
-        : await createService(formData);
+        ? await updateService(data)
+        : await createService(data);
 
       if (result.error) {
-        toast({
-          title: "Error",
-          description: result.error,
-          variant: "destructive",
-        });
+        toast.error(result.error);
         return;
       }
 
-      toast({
-        title: "Success",
-        description: result.success,
-      });
+      toast.success(result.success || "Service saved successfully");
 
       // Navigate back to services management
       router.push("/dashboard/services-management");
       router.refresh();
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "An unexpected error occurred",
-        variant: "destructive",
-      });
+      toast.error("An unexpected error occurred");
     } finally {
       setIsSubmitting(false);
     }
@@ -116,15 +86,32 @@ export function ServiceForm({ initialData, isEditing = false }: ServiceFormProps
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
-              name="title"
+              name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title</FormLabel>
+                  <FormLabel>Service Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Service title" {...field} />
+                    <Input placeholder="Service name" {...field} />
                   </FormControl>
                   <FormDescription>
-                    Enter a clear, descriptive title for this service
+                    Enter a clear, descriptive name for this service
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="brief_description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Brief Description</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Brief description" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    A short description for service listings
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -136,7 +123,7 @@ export function ServiceForm({ initialData, isEditing = false }: ServiceFormProps
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>Full Description</FormLabel>
                   <FormControl>
                     <Textarea 
                       placeholder="Describe the service in detail" 
@@ -154,21 +141,18 @@ export function ServiceForm({ initialData, isEditing = false }: ServiceFormProps
 
             <FormField
               control={form.control}
-              name="price"
+              name="price_range"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Price ($)</FormLabel>
+                  <FormLabel>Price Range</FormLabel>
                   <FormControl>
                     <Input 
-                      type="number" 
-                      min="0" 
-                      step="0.01" 
-                      placeholder="0.00" 
+                      placeholder="e.g. $250 - $500" 
                       {...field}
                     />
                   </FormControl>
                   <FormDescription>
-                    Set the price for this service (in USD)
+                    Set the price range for this service
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -193,8 +177,8 @@ export function ServiceForm({ initialData, isEditing = false }: ServiceFormProps
             />
 
             {/* Hidden field for ID when editing */}
-            {isEditing && (
-              <input type="hidden" {...form.register("id")} />
+            {isEditing && initialData?.id && (
+              <input type="hidden" value={initialData.id} {...form.register("id")} />
             )}
 
             <div className="flex justify-end space-x-4">

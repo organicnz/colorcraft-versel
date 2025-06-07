@@ -49,10 +49,10 @@ export function SidebarNav({
           return (
             <Button
               key={item.href}
-              variant={pathname.startsWith(item.href) ? "secondary" : "ghost"}
+              variant={pathname?.startsWith(item.href) ? "secondary" : "ghost"}
               className={cn(
                 "justify-start",
-                pathname.startsWith(item.href) ? "bg-muted shadow-none" : "hover:bg-muted/50"
+                pathname?.startsWith(item.href) ? "bg-muted shadow-none" : "hover:bg-muted/50"
               )}
               asChild
             >

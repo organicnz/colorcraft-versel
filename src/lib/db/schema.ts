@@ -125,6 +125,6 @@ export async function registerAutoUpdateTrigger(db: any) {
     
     dbLogger.info('Auto-update timestamp triggers configured successfully');
   } catch (error) {
-    dbLogger.error('Failed to set up auto-update timestamp triggers', error);
+    dbLogger.error('Failed to set up auto-update timestamp triggers: ' + String(error));
   }
 }

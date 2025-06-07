@@ -25,7 +25,7 @@ function initializeDatabase() {
     
     logger.info('Database connection initialized successfully');
   } catch (error) {
-    logger.error('Failed to initialize database client:', error);
+    logger.error('Failed to initialize database client: ' + String(error));
     
     // Create a minimal fallback that will throw errors when methods are called
     // This prevents startup errors but will fail gracefully when accessed
@@ -64,7 +64,7 @@ export async function closeDb() {
       isConnected = false;
       logger.info('Database connection closed successfully');
     } catch (error) {
-      logger.error('Error closing database connection:', error);
+      logger.error('Error closing database connection: ' + String(error));
     }
   }
 }

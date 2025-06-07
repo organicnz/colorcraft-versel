@@ -88,7 +88,7 @@ async function createProjectBase(formData: FormData): Promise<ActionResponse<Pro
         throw validationError; // Re-throw unexpected validation errors
       }
     } catch (error) {
-      apiLogger.error("Failed to create project:", error);
+      apiLogger.error("Failed to create project: " + String(error));
       return {
         success: false,
         error: "An unexpected error occurred",
@@ -177,7 +177,7 @@ async function updateProjectBase(id: string, formData: FormData): Promise<Action
         throw validationError; // Re-throw unexpected validation errors
       }
     } catch (error) {
-      apiLogger.error(`Failed to update project ${id}:`, error);
+      apiLogger.error(`Failed to update project ${id}: ` + String(error));
       return {
         success: false,
         error: "An unexpected error occurred",
@@ -235,7 +235,7 @@ async function deleteProjectBase(id: string): Promise<ActionResponse<{ id: strin
 
       return { success: true, data: { id } };
     } catch (error) {
-      apiLogger.error(`Failed to delete project ${id}:`, error);
+      apiLogger.error(`Failed to delete project ${id}: ` + String(error));
       return {
         success: false,
         error: "An unexpected error occurred",

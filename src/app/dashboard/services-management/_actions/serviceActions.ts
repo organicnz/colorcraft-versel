@@ -4,7 +4,6 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { cookies } from "next/headers";
 
 // Service schema for validation
 export const serviceSchema = z.object({
@@ -19,8 +18,7 @@ export type ServiceFormValues = z.infer<typeof serviceSchema>;
 // Create a new service
 export async function createService(formData: ServiceFormValues) {
   try {
-    const cookieStore = cookies();
-    const supabase = createClient(cookieStore);
+    const supabase = createClient();
     
     // Verify user is authenticated
     const { data: { session } } = await supabase.auth.getSession();
@@ -65,8 +63,7 @@ export async function createService(formData: ServiceFormValues) {
 // Update an existing service
 export async function updateService(id: string, formData: ServiceFormValues) {
   try {
-    const cookieStore = cookies();
-    const supabase = createClient(cookieStore);
+    const supabase = createClient();
     
     // Verify user is authenticated
     const { data: { session } } = await supabase.auth.getSession();
@@ -113,8 +110,7 @@ export async function updateService(id: string, formData: ServiceFormValues) {
 // Delete a service
 export async function deleteService(id: string) {
   try {
-    const cookieStore = cookies();
-    const supabase = createClient(cookieStore);
+    const supabase = createClient();
     
     // Verify user is authenticated
     const { data: { session } } = await supabase.auth.getSession();

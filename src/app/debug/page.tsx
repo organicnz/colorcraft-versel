@@ -16,7 +16,7 @@ export default function DebugPage() {
           This page helps you diagnose issues with your Supabase connection.
         </p>
         
-        <Alert variant="warning" className="mb-6">
+        <Alert variant="destructive" className="mb-6">
           <ExclamationTriangleIcon className="h-4 w-4" />
           <AlertTitle>Production Warning</AlertTitle>
           <AlertDescription>

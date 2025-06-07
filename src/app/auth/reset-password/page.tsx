@@ -81,11 +81,11 @@ function ResetPasswordForm() {
       supabase.auth.setSession({
         access_token: accessToken,
         refresh_token: refreshToken,
-      }).catch((error) => {
+      }).catch((error: any) => {
         console.error("Error setting session:", error);
         setError("Invalid or expired reset link. Please try again.");
       });
-    } else if (!searchParams.get("code") && !hashParams.get("access_token")) {
+    } else if (!searchParams?.get("code") && !hashParams.get("access_token")) {
       // If no code or access token is present, redirect to forgot password
       setError("Invalid or expired reset link. Please try again.");
     }

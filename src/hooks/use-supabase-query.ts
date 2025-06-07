@@ -51,15 +51,7 @@ export function useSupabaseQuery<T>(
     staleTime: options.staleTime || 1000 * 60, // 1 minute by default
     retry: options.retry,
     retryDelay: options.retryDelay,
-    onSuccess: options.onSuccess,
-    onError: (error) => {
-      // Default error handling
-      if (options.onError) {
-        options.onError(error as Error);
-      } else {
-        toast.error("Failed to load data");
-      }
-    },
+    // onError callback removed as it's deprecated in newer versions of React Query
   });
 }
 

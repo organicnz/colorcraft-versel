@@ -37,8 +37,11 @@ export function getEnv() {
     // Log a warning if we're in production and using default values
     if (process.env.NODE_ENV === 'production') {
       const usingDefaults = Object.entries(env).filter(([key, value]) => {
-        const defaultValue = envSchema.shape[key as keyof typeof envSchema.shape]._def.defaultValue;
-        return value === defaultValue && defaultValue !== undefined;
+        const schemaField = envSchema.shape[key as keyof typeof envSchema.shape];
+        const defaultValue = schemaField?._def?.defaultValue;
+        return typeof defaultValue === 'function'
+          ? value === defaultValue()
+          : value === defaultValue && defaultValue !== undefined;
       });
       
       if (usingDefaults.length > 0) {

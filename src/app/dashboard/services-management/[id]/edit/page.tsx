@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getServiceById } from "@/actions/servicesActions";
-import { ServiceForm } from "../../_components/ServiceForm";
+import { ServiceForm } from "@/app/(dashboard)/services-management/_components/ServiceForm";
 
 export const metadata: Metadata = {
   title: "Edit Service",

@@ -32,7 +32,7 @@ export default function ServiceForm({ service }: ServiceFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isEditing = !!service?.id;
   
-  const form = useForm<z.infer<typeof serviceSchema>>({
+  const form = useForm({
     resolver: zodResolver(serviceSchema),
     defaultValues: service || {
       name: "",
@@ -44,7 +44,7 @@ export default function ServiceForm({ service }: ServiceFormProps) {
     }
   });
   
-  async function onSubmit(values: z.infer<typeof serviceSchema>) {
+  async function onSubmit(values: any) {
     try {
       setIsSubmitting(true);
       

@@ -19,7 +19,7 @@ export default function SupabaseProvider({
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      (event: any, session: any) => {
         if (session?.access_token !== undefined) {
           // Handle auth state changes, like refreshing the page or updating UI
         }

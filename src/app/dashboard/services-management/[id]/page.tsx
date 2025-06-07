@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { ServiceForm } from "../_components/ServiceForm";
+import { ServiceForm } from "@/app/(dashboard)/services-management/_components/ServiceForm";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";

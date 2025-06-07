@@ -55,7 +55,7 @@ export async function measurePerformance<T>(label: string, fn: () => Promise<T>)
     return result;
   } catch (error) {
     const duration = Math.round(performance.now() - start);
-    logger.error(`${label} failed after ${duration}ms`, error);
+    logger.error(`${label} failed after ${duration}ms: ` + String(error));
     throw error;
   }
 }

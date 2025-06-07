@@ -104,7 +104,7 @@ export default async function CrmDashboard() {
         <div className="bg-white rounded-lg shadow overflow-hidden">
           {stats.recentActivity.length > 0 ? (
             <div className="divide-y">
-              {stats.recentActivity.map((activity) => (
+              {stats.recentActivity.map((activity: any) => (
                 <ActivityItem key={activity.id} activity={activity} />
               ))}
             </div>

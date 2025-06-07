@@ -80,7 +80,7 @@ export default async function ServicesManagementPage() {
             </Button>
           </div>
         ) : (
-          <ServicesTable services={services} />
+          <ServicesTable services={services} isAdmin={true} />
         )}
       </div>
     </DashboardShell>

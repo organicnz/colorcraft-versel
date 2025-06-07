@@ -56,7 +56,7 @@ function prepareFormData(formData: FormData) {
     techniques: techniques,
     materials: materials,
     completion_date: completionDate || undefined,
-    is_featured: rawData.is_featured === 'on' || rawData.is_featured === 'true' || rawData.is_featured === true,
+    is_featured: rawData.is_featured === 'on' || rawData.is_featured === 'true' || String(rawData.is_featured) === 'true',
   };
 }
 

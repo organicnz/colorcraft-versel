@@ -45,7 +45,7 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const form = useForm<PortfolioFormData>({
+  const form = useForm({
     resolver: zodResolver(portfolioSchema),
     defaultValues: initialData || {
       title: "",
@@ -59,7 +59,7 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
     },
   });
 
-  async function onSubmit(values: PortfolioFormData) {
+  async function onSubmit(values: any) {
     setIsSubmitting(true);
     try {
       // This is a temporary placeholder since we don't have the actual actions yet
