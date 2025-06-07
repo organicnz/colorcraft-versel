@@ -38,7 +38,7 @@ export default async function PortfolioManagementPage() {
   
   // Fetch projects
   const { data: projects, error: projectsError } = await supabase
-    .from("projects")
+    .from("portfolio")
     .select("*")
     .order("created_at", { ascending: false });
   

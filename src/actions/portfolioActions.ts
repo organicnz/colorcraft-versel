@@ -117,7 +117,7 @@ export async function createPortfolioProject(formData: FormData) {
 
   try {
     const { error, data } = await supabase
-      .from("projects")
+      .from("portfolio")
       .insert(dataForSupabase)
       .select('id')
       .single();
@@ -191,7 +191,7 @@ export async function updatePortfolioProject(formData: FormData) {
 
   try {
     const { error } = await supabase
-      .from("projects")
+      .from("portfolio")
       .update(dataForSupabase)
       .eq("id", id);
 
@@ -238,7 +238,7 @@ export async function deletePortfolioProject(projectId: string) {
   try {
     // First check if the project exists
     const { data: project, error: fetchError } = await supabase
-      .from("projects")
+      .from("portfolio")
       .select("id, title")
       .eq("id", projectId)
       .single();
@@ -252,7 +252,7 @@ export async function deletePortfolioProject(projectId: string) {
 
     // Delete the project
     const { error } = await supabase
-      .from("projects")
+      .from("portfolio")
       .delete()
       .eq("id", projectId);
 

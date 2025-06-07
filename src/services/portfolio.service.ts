@@ -16,7 +16,7 @@ export async function getPortfolioProjects(options?: {
     const supabase = options?.useAdmin ? createAdminClient() : createClient();
     
     let query = supabase
-      .from('projects')
+      .from('portfolio')
       .select('*');
     
     // Apply featured filter if requested
@@ -62,7 +62,7 @@ export async function getPortfolioProject(id: string, useAdmin = false) {
     const supabase = useAdmin ? createAdminClient() : createClient();
     
     const { data: project, error } = await supabase
-      .from('projects')
+      .from('portfolio')
       .select('*')
       .eq('id', id)
       .single();
@@ -91,7 +91,7 @@ export async function getRelatedProjects(id: string, techniques: string[] = []) 
     // If we have techniques, try to find projects with similar techniques
     if (techniques && techniques.length > 0) {
       const { data, error } = await supabase
-        .from("projects")
+        .from("portfolio")
         .select("*")
         .neq("id", id) // Exclude current project
         .filter('techniques', 'cs', `{${techniques[0]}}`) // Look for at least one matching technique
@@ -104,7 +104,7 @@ export async function getRelatedProjects(id: string, techniques: string[] = []) 
     
     // Fallback: just get recent projects excluding current
     const { data, error } = await supabase
-      .from("projects")
+      .from("portfolio")
       .select("*")
       .neq("id", id)
       .order("created_at", { ascending: false })

@@ -38,7 +38,7 @@ export default async function EditProjectPage({ params }: EditProjectPageProps) 
   
   // Fetch project data
   const { data: project, error } = await supabase
-    .from("projects")
+    .from("portfolio")
     .select("*")
     .eq("id", id)
     .single();
