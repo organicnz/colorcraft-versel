@@ -1,14 +1,35 @@
 import { createClient } from "@/lib/supabase/server";
 import PortfolioItem from "@/components/portfolio/PortfolioItem";
+import PortfolioTabs from "@/components/portfolio/PortfolioTabs";
 
 export default async function PortfolioPage() {
   const supabase = createClient();
 
-  // Fetch only published portfolio projects
+  // Check if user is admin
+  const { data: { session } } = await supabase.auth.getSession();
+  let isAdmin = false;
+
+  if (session) {
+    const { data: userData } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", session.user.id)
+      .single();
+
+    isAdmin = userData?.role === "admin";
+  }
+
+  // If admin, show tabs with different views
+  if (isAdmin) {
+    return <PortfolioTabs />;
+  }
+
+  // For public users, get only published, non-archived portfolio items
   const { data: projects } = await supabase
     .from("portfolio")
     .select("*")
-    .eq("is_published", true) // Only show published projects
+    .eq("is_published", true)
+    .eq("is_archived", false) // Only show non-archived projects
     .order("created_at", { ascending: false });
 
   return (

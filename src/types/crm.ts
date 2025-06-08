@@ -87,6 +87,11 @@ export type PortfolioProject = {
   client_name: string | null
   client_testimonial: string | null
   is_featured: boolean
+  is_published?: boolean
+  is_draft?: boolean
+  is_archived?: boolean
+  created_by?: string
+  updated_by?: string
   created_at: string
   updated_at: string
 }

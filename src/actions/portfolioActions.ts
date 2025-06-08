@@ -312,7 +312,116 @@ export async function unpublishPortfolioProject(id: string) {
   }
 }
 
-// --- Delete Portfolio Project Action ---
+// --- Archive Portfolio Project Action (Soft Delete - Admin only) ---
+export async function archivePortfolioProject(id: string) {
+  try {
+    const supabase = createClient();
+
+    // Verify user authentication and admin role
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) {
+      return { error: "You must be logged in to archive portfolio projects" };
+    }
+
+    const { data: userData, error: userError } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", session.user.id)
+      .single();
+
+    if (userError || !userData || userData.role !== "admin") {
+      return { error: "You do not have permission to archive portfolio projects" };
+    }
+
+    // Archive the portfolio record (soft delete)
+    const { error, data } = await supabase
+      .from("portfolio")
+      .update({
+        is_archived: true,
+        is_published: false,
+        is_draft: false,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Portfolio archive error:", error);
+      return { error: "Failed to archive portfolio project: " + error.message };
+    }
+
+    revalidatePath("/portfolio-dash");
+    revalidatePath("/portfolio");
+
+    return {
+      success: true,
+      data,
+      message: `Portfolio "${data.title}" archived successfully`,
+    };
+  } catch (error: any) {
+    console.error("Archive portfolio error:", error);
+    return { error: "Failed to archive portfolio project. Please try again." };
+  }
+}
+
+// --- Restore Portfolio Project Action (Unarchive - Admin only) ---
+export async function restorePortfolioProject(id: string) {
+  try {
+    const supabase = createClient();
+
+    // Verify user authentication and admin role
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) {
+      return { error: "You must be logged in to restore portfolio projects" };
+    }
+
+    const { data: userData, error: userError } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", session.user.id)
+      .single();
+
+    if (userError || !userData || userData.role !== "admin") {
+      return { error: "You do not have permission to restore portfolio projects" };
+    }
+
+    // Restore the portfolio record
+    const { error, data } = await supabase
+      .from("portfolio")
+      .update({
+        is_archived: false,
+        is_draft: true, // Restore as draft by default
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Portfolio restore error:", error);
+      return { error: "Failed to restore portfolio project: " + error.message };
+    }
+
+    revalidatePath("/portfolio-dash");
+    revalidatePath("/portfolio");
+
+    return {
+      success: true,
+      data,
+      message: `Portfolio "${data.title}" restored successfully`,
+    };
+  } catch (error: any) {
+    console.error("Restore portfolio error:", error);
+    return { error: "Failed to restore portfolio project. Please try again." };
+  }
+}
+
+// --- Permanently Delete Portfolio Project Action (Admin only) ---
 export async function deletePortfolioProject(id: string) {
   try {
     const supabase = createClient();
@@ -370,7 +479,7 @@ export async function deletePortfolioProject(id: string) {
       }
     }
 
-    // Delete the portfolio record
+    // Permanently delete the portfolio record
     const { error } = await supabase.from("portfolio").delete().eq("id", id);
 
     if (error) {
@@ -383,7 +492,7 @@ export async function deletePortfolioProject(id: string) {
 
     return {
       success: true,
-      message: `Portfolio "${portfolioData.title}" deleted successfully`,
+      message: `Portfolio "${portfolioData.title}" permanently deleted`,
     };
   } catch (error: any) {
     console.error("Unexpected error deleting portfolio:", error);
@@ -392,14 +501,30 @@ export async function deletePortfolioProject(id: string) {
 }
 
 // --- Fetch Portfolio Projects Action ---
-export async function fetchPortfolioProjects() {
+export async function fetchPortfolioProjects(filter: "active" | "archived" | "all" = "active") {
   try {
-    const supabase = await createClient();
+    const supabase = createClient();
 
-    const { data: projects, error } = await supabase
+    let query = supabase
       .from("portfolio")
-      .select("*")
+      .select(
+        `
+        *,
+        created_by_user:users!portfolio_created_by_fkey(full_name, email),
+        updated_by_user:users!portfolio_updated_by_fkey(full_name, email)
+      `
+      )
       .order("created_at", { ascending: false });
+
+    // Apply filtering based on the requested filter
+    if (filter === "active") {
+      query = query.eq("is_archived", false);
+    } else if (filter === "archived") {
+      query = query.eq("is_archived", true);
+    }
+    // 'all' filter doesn't add any conditions
+
+    const { data: projects, error } = await query;
 
     if (error) {
       console.error("Error fetching portfolio projects:", error);
