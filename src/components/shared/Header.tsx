@@ -31,12 +31,12 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <Image 
-              src="/images/logo.png" 
-              alt="Color&Craft Logo" 
-              width={48} 
-              height={48} 
-              className="mr-3"
+            <Image
+              src="/images/logo-abstract-small.jpg"
+              alt="Color&Craft Logo"
+              width={48}
+              height={48}
+              className="mr-3 rounded object-cover"
             />
             <span className="text-xl font-semibold text-primary">Color & Craft</span>
           </Link>

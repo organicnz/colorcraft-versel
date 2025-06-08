@@ -64,7 +64,7 @@ export async function POST(request: Request) {
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
         <div style="text-align: center; margin-bottom: 20px;">
-          <img src="${env.NEXT_PUBLIC_SITE_URL}/logo.png" alt="Color & Craft Logo" style="height: 60px;" />
+                      <img src="${env.NEXT_PUBLIC_SITE_URL}/images/logo-abstract-small.jpg" alt="Color & Craft Logo" style="height: 60px; border-radius: 4px;" />
         </div>
         
         <h2 style="color: #0F72C1; margin-bottom: 15px;">Welcome to Color & Craft!</h2>

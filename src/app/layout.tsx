@@ -36,7 +36,9 @@ export const metadata = {
     description: "Transform your furniture with expert painting services",
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: "/favicon/favicon.ico",
+    shortcut: "/favicon/favicon.ico",
+    apple: "/favicon/apple-touch-icon.png",
   },
 };
 
