@@ -9,6 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import { CalendarDays, ArrowLeft, Quote, User, Palette, Wrench } from 'lucide-react';
 import { getPortfolioProject, getRelatedProjects } from '@/services/portfolio.service';
 import EditorialButton from '@/components/portfolio/EditorialButton';
+import AdminProjectEditButton from '@/components/portfolio/AdminProjectEditButton';
 
 interface PortfolioProjectPageProps {
   params: {
@@ -79,8 +80,11 @@ export default async function PortfolioProjectPage({ params }: PortfolioProjectP
             </p>
           </div>
           
-          {/* Editorial Button for admins */}
-          <EditorialButton variant="inline" className="ml-4" />
+          {/* Admin Controls */}
+          <div className="flex items-center gap-3 ml-4">
+            <AdminProjectEditButton projectId={project.id} variant="button" />
+            <EditorialButton variant="inline" />
+          </div>
         </div>
 
         {/* Project Meta */}
