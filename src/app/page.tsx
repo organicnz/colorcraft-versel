@@ -9,6 +9,9 @@ import { ArrowRight, Award, Palette, Send, Settings, Sparkles } from "lucide-rea
 import { getPortfolioProjects } from "@/services/portfolio.service";
 import ClientHomePage from "./client-home-page";
 
+// Force dynamic rendering for each request to enable randomization
+export const dynamic = 'force-dynamic';
+
 const services = [
   {
     icon: "Palette",
@@ -96,7 +99,11 @@ export default async function Home() {
   }
 
   // Shuffle the featured projects to show a random selection of 4 on each page load
-  const shuffledProjects = [...featuredProjects].sort(() => Math.random() - 0.5);
+  // Using crypto.randomUUID() for better randomization on server-side
+  const shuffledProjects = [...featuredProjects]
+    .map((project) => ({ project, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ project }) => project);
   // Transform database projects to match the expected format for the UI
   const transformedProjects = shuffledProjects.slice(0, 4).map((project) => ({
     id: project.id,
