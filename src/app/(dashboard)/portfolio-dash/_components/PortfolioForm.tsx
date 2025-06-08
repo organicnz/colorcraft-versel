@@ -51,9 +51,37 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Helper function to ensure arrays are properly formatted
+  const ensureArray = (value: any): string[] => {
+    if (!value) return [];
+    if (Array.isArray(value)) return value;
+    if (typeof value === 'string') {
+      try {
+        // Try to parse as JSON first
+        const parsed = JSON.parse(value);
+        if (Array.isArray(parsed)) return parsed;
+        // If not JSON, split by comma
+        return value.split(',').map(item => item.trim()).filter(Boolean);
+      } catch {
+        // If JSON parsing fails, split by comma
+        return value.split(',').map(item => item.trim()).filter(Boolean);
+      }
+    }
+    return [];
+  };
+
+  // Process initial data to ensure arrays are properly formatted
+  const processedInitialData = initialData ? {
+    ...initialData,
+    before_images: ensureArray(initialData.before_images),
+    after_images: ensureArray(initialData.after_images),
+    techniques: ensureArray(initialData.techniques),
+    materials: ensureArray(initialData.materials),
+  } : undefined;
+
   const form = useForm({
     resolver: zodResolver(portfolioSchema),
-    defaultValues: initialData || {
+    defaultValues: processedInitialData || {
       title: "",
       brief_description: "",
       description: "",
@@ -70,7 +98,7 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
 
   // Helper function to convert array strings to actual arrays
   const parseArrayField = (value: string): string[] => {
-    if (!value.trim()) return [];
+    if (!value || !value.trim()) return [];
     return value.split(',').map(item => item.trim()).filter(Boolean);
   };
 
@@ -202,7 +230,7 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                       <Textarea
                         placeholder="Enter image URLs, one per line or comma-separated"
                         className="min-h-20"
-                        value={Array.isArray(field.value) ? field.value.join('\n') : ''}
+                        value={Array.isArray(field.value) ? field.value.join('\n') : field.value || ''}
                         onChange={(e) => {
                           const urls = e.target.value.split(/[\n,]+/).map(url => url.trim()).filter(Boolean);
                           field.onChange(urls);
@@ -211,6 +239,11 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                     </FormControl>
                     <FormDescription>
                       Add URLs of before images. Enter one URL per line or separate with commas.
+                      {field.value && Array.isArray(field.value) && field.value.length > 0 && (
+                        <span className="block mt-1 text-sm text-green-600">
+                          ✓ {field.value.length} image{field.value.length > 1 ? 's' : ''} added
+                        </span>
+                      )}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -227,7 +260,7 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                       <Textarea
                         placeholder="Enter image URLs, one per line or comma-separated"
                         className="min-h-20"
-                        value={Array.isArray(field.value) ? field.value.join('\n') : ''}
+                        value={Array.isArray(field.value) ? field.value.join('\n') : field.value || ''}
                         onChange={(e) => {
                           const urls = e.target.value.split(/[\n,]+/).map(url => url.trim()).filter(Boolean);
                           field.onChange(urls);
@@ -236,6 +269,11 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                     </FormControl>
                     <FormDescription>
                       Add URLs of after/completed images. Enter one URL per line or separate with commas.
+                      {field.value && Array.isArray(field.value) && field.value.length > 0 && (
+                        <span className="block mt-1 text-sm text-green-600">
+                          ✓ {field.value.length} image{field.value.length > 1 ? 's' : ''} added
+                        </span>
+                      )}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -262,7 +300,7 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                     <FormControl>
                       <Input
                         placeholder="e.g., Sanding, Priming, Chalk Paint, Distressing"
-                        value={Array.isArray(field.value) ? field.value.join(', ') : ''}
+                        value={Array.isArray(field.value) ? field.value.join(', ') : field.value || ''}
                         onChange={(e) => {
                           const techniques = parseArrayField(e.target.value);
                           field.onChange(techniques);
@@ -293,7 +331,7 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                     <FormControl>
                       <Input
                         placeholder="e.g., Chalk Paint, Wood Stain, New Hardware, Fabric"
-                        value={Array.isArray(field.value) ? field.value.join(', ') : ''}
+                        value={Array.isArray(field.value) ? field.value.join(', ') : field.value || ''}
                         onChange={(e) => {
                           const materials = parseArrayField(e.target.value);
                           field.onChange(materials);

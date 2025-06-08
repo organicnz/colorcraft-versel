@@ -14,10 +14,24 @@ function parseToPostgresArray(input: string | string[] | null | undefined): stri
     return input.filter(Boolean);
   }
 
-  // If it's a string, parse it as comma-separated
-  return input.split(',')
-    .map(item => item.trim())
-    .filter(Boolean);
+  if (typeof input === 'string') {
+    // Try to parse as JSON first (handles cases where form sends JSON strings)
+    try {
+      const parsed = JSON.parse(input);
+      if (Array.isArray(parsed)) {
+        return parsed.filter(Boolean);
+      }
+    } catch {
+      // If JSON parsing fails, continue with comma-separated parsing
+    }
+
+    // Parse as comma-separated string
+    return input.split(',')
+      .map(item => item.trim())
+      .filter(Boolean);
+  }
+
+  return [];
 }
 
 // Enhanced validation schema for portfolio projects - matches database schema
