@@ -98,14 +98,8 @@ export default async function Home() {
     // Use fallback data if database fetch fails
   }
 
-  // Shuffle the featured projects to show a random selection of 4 on each page load
-  // Using crypto.randomUUID() for better randomization on server-side
-  const shuffledProjects = [...featuredProjects]
-    .map((project) => ({ project, sort: Math.random() }))
-    .sort((a, b) => a.sort - b.sort)
-    .map(({ project }) => project);
-  // Transform database projects to match the expected format for the UI
-  const transformedProjects = shuffledProjects.slice(0, 4).map((project) => ({
+  // Transform all featured projects to send to client for randomization
+  const transformedProjects = featuredProjects.map((project) => ({
     id: project.id,
     title: project.title,
     description: project.brief_description || project.description,

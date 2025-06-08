@@ -41,34 +41,20 @@ const iconMap = {
 };
 
 interface ClientHomePageProps {
-  featuredProjects: Array<{
-    id: string;
-    title: string;
-    description: string;
-    material: string;
-    image: string;
-    price: string;
-  }>;
-  services: Array<{
-    icon: string;
-    title: string;
-    description: string;
-    features: string[];
-  }>;
-  testimonials: Array<{
-    name: string;
-    text: string;
-    rating: number;
-    image: string;
-  }>;
-  properties: Array<{
-    title: string;
-    type: string;
-    location: string;
-    price: string;
-    return: string;
-    image: string;
-  }>;
+  featuredProjects: any[];
+  services: any[];
+  testimonials: any[];
+  properties: any[];
+}
+
+// Function to shuffle array
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
 }
 
 export default function ClientHomePage({ featuredProjects, services, testimonials, properties }: ClientHomePageProps) {
@@ -84,14 +70,25 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
 
+  // State for randomized projects
+  const [displayProjects, setDisplayProjects] = useState(featuredProjects.slice(0, 4));
+
+  // Randomize projects on client-side mount
   useEffect(() => {
     if (featuredProjects.length > 0) {
+      const shuffled = shuffleArray(featuredProjects);
+      setDisplayProjects(shuffled.slice(0, 4));
+    }
+  }, [featuredProjects]);
+
+  useEffect(() => {
+    if (displayProjects.length > 0) {
       const interval = setInterval(() => {
-        setCurrentProjectIndex((prev) => (prev + 1) % featuredProjects.length);
+        setCurrentProjectIndex((prev) => (prev + 1) % displayProjects.length);
       }, 5000);
       return () => clearInterval(interval);
     }
-  }, [featuredProjects.length]);
+  }, [displayProjects.length]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -325,7 +322,7 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
             variants={staggerContainer}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
           >
-            {featuredProjects.map((project, index) => (
+            {displayProjects.map((project, index) => (
               <motion.div
                 key={project.id}
                 variants={fadeIn(index * 0.1)}
