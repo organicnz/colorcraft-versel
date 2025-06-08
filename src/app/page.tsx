@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { GlassPanel } from "@/components/ui/glass-card"; // Import from the correct file
+import { GlassPanel, GlassCard } from "@/components/ui/glass-card";
 import { ArrowRight, Award, Palette, Send, Settings, Sparkles } from "lucide-react";
 import { AnimatePresence } from 'framer-motion';
 
@@ -18,599 +18,527 @@ const fadeIn = (delay = 0, duration = 0.8) => ({
   visible: { opacity: 1, y: 0, transition: { duration, delay, ease: "easeOut" } }
 });
 
-const staggerContainer = (staggerChildren = 0.2, delayChildren = 0) => ({
+const slideIn = (direction = "left", delay = 0) => ({
+  hidden: { opacity: 0, x: direction === "left" ? -50 : 50 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.8, delay, ease: "easeOut" } }
+});
+
+const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren,
-      delayChildren,
-    }
-  }
-});
+      staggerChildren: 0.1,
+      delayChildren: 0.3,
+    },
+  },
+};
 
-// Dummy data (replace with actual data fetching if needed)
+// Sample data
 const featuredProjects = [
   {
-    id: "vintage-dresser",
-    title: "Vintage Dresser",
-    description: "Custom Hand-Painted",
-    material: "Solid Mahogany",
-    price: "$1,450",
-    image: "/images/portfolio/dresser.png",
+    id: 1,
+    title: "Victorian Dresser Revival",
+    description: "Antique restoration with modern flair",
+    material: "Oak with chalk paint finish",
+    image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800",
+    price: "From $450",
   },
   {
-    id: "farmhouse-table",
-    title: "Farmhouse Dining Table",
-    description: "Traditional Finish",
-    material: "Reclaimed Oak",
-    price: "$2,250",
-    image: "/images/portfolio/farmhouse-dining-table.png",
+    id: 2,
+    title: "Modern Coffee Table",
+    description: "Contemporary geometric design",
+    material: "Reclaimed wood and steel",
+    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800",
+    price: "From $320",
   },
   {
-    id: "modern-bookcase",
-    title: "Modern Bookcase",
-    description: "Contemporary Design",
-    material: "Walnut & Steel",
-    price: "$1,850",
-    image: "/images/portfolio/bookcase.png",
+    id: 3,
+    title: "Vintage Chair Makeover",
+    description: "Classic comfort meets bold color",
+    material: "Upholstered with premium fabric",
+    image: "https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=800",
+    price: "From $280",
   },
   {
-    id: "antique-cabinet",
-    title: "Antique Cabinet",
-    description: "Victorian Restoration",
-    material: "Cherry Wood",
-    price: "$3,150",
-    image: "/images/portfolio/cabinet.png",
-  },
+    id: 4,
+    title: "Rustic Dining Set",
+    description: "Farmhouse style transformation",
+    material: "Pine with distressed finish",
+    image: "https://images.unsplash.com/photo-1449247709967-d4461a6a6103?w=800",
+    price: "From $650",
+  }
 ];
 
 const services = [
   {
-    title: "Custom Furniture Painting",
-    description: "Transform your furniture with premium, professional painting services.",
     icon: Palette,
-    link: "/services/custom-painting",
+    title: "Custom Painting",
+    description: "Transform your furniture with our expert painting techniques and premium finishes.",
+    features: ["Chalk Paint", "Milk Paint", "Custom Colors", "Distressing"]
   },
   {
-    title: "Furniture Restoration",
-    description: "Bring cherished pieces back to life while preserving their unique character.",
-    icon: Sparkles,
-    link: "/services/restoration",
-  },
-  {
-    title: "Upcycling & Repurposing",
-    description: "Give old furniture new purpose with creative, sustainable upcycling.",
     icon: Settings,
-    link: "/services/upcycling",
+    title: "Restoration",
+    description: "Bring antique and vintage pieces back to their former glory with careful restoration.",
+    features: ["Wood Repair", "Hardware Restoration", "Period-Accurate Finishes", "Structural Repairs"]
   },
+  {
+    icon: Sparkles,
+    title: "Upcycling",
+    description: "Give new life to old furniture with creative upcycling and modern design touches.",
+    features: ["Design Consultation", "Modern Updates", "Eco-Friendly Materials", "Custom Hardware"]
+  }
 ];
 
-const howItWorksSteps = [
+const testimonials = [
   {
-    title: "Initial Consultation",
-    description: "Discuss your piece, desired finish, and timeline. Get expert advice and a custom quote.",
-    icon: Send, // Example icon
-    link: "/contact",
+    name: "Sarah Johnson",
+    text: "Color & Craft transformed my grandmother's old dresser into a stunning centerpiece. The attention to detail is incredible!",
+    rating: 5,
+    image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150"
   },
   {
-    title: "Preparation & Painting",
-    description: "We carefully prep, repair, and apply premium paints for a flawless result.",
-    icon: Palette, // Example icon
-    link: "/services",
+    name: "Michael Chen",
+    text: "Professional service and amazing results. They turned our dated dining set into something we absolutely love.",
+    rating: 5,
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150"
   },
   {
-    title: "Delivery & Care Guide",
-    description: "Receive your transformed furniture with a personalized care guide.",
-    icon: Award, // Example icon
-    link: "/about", // Link could go to FAQ or care guide page
-  },
+    name: "Emily Rodriguez",
+    text: "The team's creativity and skill exceeded our expectations. Highly recommend for any furniture restoration project.",
+    rating: 5,
+    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150"
+  }
 ];
 
-// ADDED: Testimonials Data
-const testimonialsData = [
+const properties = [
   {
-    id: 1,
-    quote: "Color & Craft transformed my grandmother's old dresser into a stunning centerpiece. The attention to detail and craftsmanship exceeded all expectations!",
-    name: "Rustam Avanesian",
-    location: "Los Angeles, CA",
-    image: "/images/testimonials/rustam-testimonial.png", // Example path
+    title: "Vintage Armoire Restoration",
+    type: "Antique",
+    location: "Victorian Era",
+    price: "$850",
+    return: "Heirloom Quality",
+    image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800"
   },
   {
-    id: 2,
-    quote: "Absolutely thrilled with the kitchen cabinet refresh. The team was professional, clean, and the finish is flawless. It feels like a brand new kitchen.",
-    name: "Jessica Miller",
-    location: "San Francisco, CA",
-    image: "/images/testimonials/jessica-testimonial.png", // Example path
+    title: "Modern Bookshelf Design",
+    type: "Contemporary",
+    location: "Custom Built",
+    price: "$420",
+    return: "Lifetime Warranty",
+    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800"
   },
   {
-    id: 3,
-    quote: "They brought my vintage armchair back to life! The restoration work is incredible, preserving the character while making it look fantastic. Highly recommend.",
-    name: "David Chen",
-    location: "Oakland, CA",
-    image: "/images/testimonials/david-testimonial.png", // Example path
-  },
+    title: "Rustic Coffee Table",
+    type: "Farmhouse",
+    location: "Reclaimed Wood",
+    price: "$380",
+    return: "Eco-Friendly",
+    image: "https://images.unsplash.com/photo-1449247709967-d4461a6a6103?w=800"
+  }
 ];
 
 export default function Home() {
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
+  const [currentProperty, setCurrentProperty] = useState(properties[0]);
+  const [email, setEmail] = useState('');
   const heroRef = useRef(null);
-  const { scrollY } = useScroll();
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"]
+  });
 
-  // Parallax effect values
-  const parallaxY = useTransform(scrollY, [0, 500], [0, -100]);
-  const parallaxScale = useTransform(scrollY, [0, 500], [1, 1.2]);
-  const textOpacity = useTransform(scrollY, [0, 300], [1, 0]);
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
 
-  // Properties data for carousel
-  const properties = [
-    {
-      id: 1,
-      title: "Kitchen Cabinet Refresh",
-      location: "San Francisco, CA",
-      price: "$1,800",
-      type: "Cabinet Painting",
-      return: "Completed 2023",
-      image: "/images/hero-kitchen.png"
-    },
-    {
-      id: 2,
-      title: "Antique Furniture Revival",
-      location: "Oakland, CA",
-      price: "$950",
-      type: "Furniture Restoration",
-      return: "Completed 2023",
-      image: "/images/hero-furniture.png"
-    },
-    {
-      id: 3,
-      title: "Vintage Dresser Makeover",
-      location: "San Jose, CA",
-      price: "$750",
-      type: "Custom Painting",
-      return: "Completed 2023",
-      image: "/images/portfolio/dresser.png"
-    },
-    {
-      id: 4,
-      title: "Modern Dining Set",
-      location: "Palo Alto, CA",
-      price: "$1,200",
-      type: "Furniture Painting",
-      return: "Completed 2023",
-      image: "/images/hero-kitchen.png"
-    }
-  ];
-
-  // Auto-rotate projects every 5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentProjectIndex((prevIndex) => (prevIndex + 1) % properties.length);
+      setCurrentProjectIndex((prev) => (prev + 1) % featuredProjects.length);
     }, 5000);
-
     return () => clearInterval(interval);
-  }, [properties.length]);
+  }, []);
 
-  const currentProperty = properties[currentProjectIndex];
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentProperty(prev => {
+        const currentIndex = properties.indexOf(prev);
+        return properties[(currentIndex + 1) % properties.length];
+      });
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Newsletter signup:', email);
+    setEmail('');
+  };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <main className="flex-1">
-        {/* Hero Section */}
-        <section className="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary-50 to-neutral-50 dark:from-neutral-900 dark:to-neutral-800 -z-10" />
+    <div className="min-h-screen">
+      {/* Hero Section with Enhanced Glassmorphism */}
+      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Background with glass effects */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900" />
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary-200/30 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-accent-200/30 rounded-full blur-3xl" />
 
-          {/* Background pattern */}
-          <div className="absolute inset-0 opacity-5 dark:opacity-10"
-            style={{
-              backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d3a273' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
-            }}
-          />
-
-          {/* Hero glow effect */}
-          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/2 h-1/2 rounded-full bg-primary-300 dark:bg-primary-500 opacity-20 dark:opacity-10 blur-[120px] -z-10" />
-
-          <div className="container px-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              {/* Left column - text content */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="order-2 lg:order-1"
-              >
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 0.1 }}
-                >
-                  <span className="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-secondary-100 text-secondary-700 dark:bg-secondary-900/30 dark:text-secondary-300 mb-6">
-                    <span className="flex h-2 w-2 rounded-full bg-secondary-500 animate-pulse"></span>
-                    <span>Furniture Painting Experts</span>
-                  </span>
-                </motion.div>
-
-                <motion.h1
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, delay: 0.3 }}
-                  className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-neutral-900 dark:text-white mb-6"
-                >
-                  Transform Your <span className="text-primary-500 dark:text-primary-400">Furniture</span> with Expert Craftsmanship
-                </motion.h1>
-
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, delay: 0.4 }}
-                  className="text-lg md:text-xl text-neutral-600 dark:text-neutral-300 mb-8 max-w-xl"
-                >
-                  Breathe new life into your cherished furniture pieces with our premium painting and restoration services. Crafted with passion, precision, and premium materials.
-                </motion.p>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, delay: 0.5 }}
-                  className="flex flex-col sm:flex-row gap-4"
-                >
-                  <Button
-                    className="bg-primary-500 hover:bg-primary-600 text-white"
-                    size="lg"
-                  >
-                    Get Started
-                  </Button>
-
-                  <Button variant="outline" size="lg" className="border-2 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors">
-                    View Portfolio
-                  </Button>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 1, delay: 0.7 }}
-                  className="mt-12"
-                >
-                  <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-3">Trusted by homeowners across:</p>
-                  <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
-                    <span className="text-neutral-400 dark:text-neutral-500 text-sm font-medium">San Francisco</span>
-                    <span className="text-neutral-400 dark:text-neutral-500 text-sm font-medium">Oakland</span>
-                    <span className="text-neutral-400 dark:text-neutral-500 text-sm font-medium">San Jose</span>
-                    <span className="text-neutral-400 dark:text-neutral-500 text-sm font-medium">Palo Alto</span>
-                  </div>
-                </motion.div>
+        <motion.div style={{ y, opacity }} className="relative z-10 container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Hero Content */}
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={staggerContainer}
+              className="order-2 lg:order-1"
+            >
+              <motion.div variants={fadeIn(0)}>
+                <Badge variant="outline" className="mb-6 bg-white/50 backdrop-blur-sm border-white/30">
+                  ✨ Premium Furniture Restoration
+                </Badge>
               </motion.div>
 
-              {/* Right column - image and property card */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="order-1 lg:order-2 relative"
+              <motion.h1
+                variants={fadeIn(0.1)}
+                className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6"
               >
-                <div className="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-2xl">
-                  <Image
-                    src={currentProperty.image}
-                    alt={currentProperty.title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    priority
-                  />
+                Transform Your
+                <span className="block bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
+                  Furniture Dreams
+                </span>
+              </motion.h1>
 
-                  {/* Gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+              <motion.p
+                variants={fadeIn(0.2)}
+                className="text-xl text-muted-foreground mb-8 leading-relaxed"
+              >
+                Expert craftsmanship meets creative vision. We breathe new life into your beloved furniture
+                with premium finishes and meticulous attention to detail.
+              </motion.p>
 
-                  {/* Property info card */}
-                  <GlassPanel className="absolute bottom-8 left-8 right-8 p-5">
-                    <h3 className="text-xl font-semibold mb-2">{currentProperty.title}</h3>
-                    <div className="flex flex-wrap gap-3 mb-3">
-                      <Badge variant="secondary" className="bg-secondary-100 text-secondary-700 dark:bg-secondary-900/30 dark:text-secondary-300 rounded-full">
-                        {currentProperty.type}
-                      </Badge>
-                      <Badge variant="outline" className="rounded-full">
-                        {currentProperty.location}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-primary-500">{currentProperty.price}</span>
-                      <span className="text-sm text-neutral-500 dark:text-neutral-400">{currentProperty.return}</span>
-                    </div>
-                  </GlassPanel>
-                </div>
-
-                {/* Image selector dots */}
-                <div className="flex justify-center gap-2 mt-6">
-                  {properties.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentProjectIndex(index)}
-                      className={`h-2.5 rounded-full transition-all ${
-                        currentProjectIndex === index
-                          ? "w-8 bg-primary-500"
-                          : "w-2.5 bg-neutral-300 dark:bg-neutral-600"
-                      }`}
-                      aria-label={`View project ${index + 1}`}
-                    />
-                  ))}
-                </div>
+              <motion.div
+                variants={fadeIn(0.3)}
+                className="flex flex-col sm:flex-row gap-4"
+              >
+                <Button size="lg" asChild className="bg-primary hover:bg-primary/90 text-white px-8 py-4 text-lg">
+                  <Link href="/contact">
+                    Get Free Quote
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+                <Button variant="outline" size="lg" asChild className="px-8 py-4 text-lg bg-white/50 backdrop-blur-sm border-white/30 hover:bg-white/70">
+                  <Link href="/portfolio">View Portfolio</Link>
+                </Button>
               </motion.div>
-            </div>
-          </div>
-        </section>
+            </motion.div>
 
-        {/* How It Works Section */}
-        <section className="py-16 md:py-24 bg-background">
-          <div className="container px-6">
-          <div className="text-center mb-16">
-              <h4 className="text-primary uppercase tracking-wider text-sm font-semibold mb-3">How It Works</h4>
-              <h2 className="text-3xl md:text-4xl font-light mb-4 text-foreground">Transform your furniture <span className="font-semibold">in three simple steps</span></h2>
-              <div className="w-20 h-1 bg-primary/30 mx-auto"></div>
-          </div>
-
+            {/* Featured Project Showcase with Glass Effect */}
             <motion.div
-              variants={staggerContainer()} initial="hidden" whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-8"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="order-1 lg:order-2 relative"
             >
-              {howItWorksSteps.map((step, index) => (
-            <motion.div
-                  key={index}
-                  variants={fadeIn(0, 0.6)}
-                  className="text-center p-8 bg-card rounded-lg shadow-sm border border-border/50 hover:shadow-md transition-shadow"
-                >
-                  <div className="bg-primary/10 text-primary p-4 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
-                    <step.icon className="h-8 w-8" strokeWidth={1.5} />
-              </div>
-                  <h3 className="text-xl font-medium mb-3 text-card-foreground">{step.title}</h3>
-                  <p className="text-muted-foreground font-light mb-6">
-                    {step.description}
-                  </p>
-                  <Button variant="link" asChild className="text-primary group">
-                    <Link href={step.link}>
-                Learn more
-                      <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
-              </Link>
-                  </Button>
-            </motion.div>
-              ))}
-            </motion.div>
-        </div>
-      </section>
+              <div className="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-2xl">
+                <Image
+                  src={currentProperty.image}
+                  alt={currentProperty.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  priority
+                />
 
-        {/* About Section */}
-        <section className="py-16 md:py-24 px-4 bg-neutral-50 dark:bg-neutral-900">
-           <div className="container">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-            <motion.div
-                   variants={fadeIn(0, 0.8)} initial="hidden" whileInView="visible"
-                   viewport={{ once: true, amount: 0.3 }}
-                 >
-                  <div className="relative aspect-[4/3]">
-                <div className="absolute -top-4 -left-4 w-24 h-24 bg-primary/10 rounded-tl-2xl z-0"></div>
-                    <div className="relative h-full w-full overflow-hidden rounded-lg shadow-xl z-10">
-                  <Image
-                        src="/images/about-us-workshop.png" // Replace with relevant image
-                        alt="Color & Craft Workshop"
-                    fill
-                    className="object-cover"
-                        sizes="(max-width: 768px) 100vw, 50vw"
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+
+                {/* Property info card with enhanced glass effect */}
+                <GlassPanel className="absolute bottom-8 left-8 right-8 p-5">
+                  <h3 className="text-xl font-semibold mb-2 text-white">{currentProperty.title}</h3>
+                  <div className="flex flex-wrap gap-3 mb-3">
+                    <Badge variant="secondary" className="bg-secondary-100/50 text-secondary-700 dark:bg-secondary-900/30 dark:text-secondary-300 rounded-full backdrop-blur-sm">
+                      {currentProperty.type}
+                    </Badge>
+                    <Badge variant="outline" className="rounded-full bg-white/20 text-white border-white/30">
+                      {currentProperty.location}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-primary-300">{currentProperty.price}</span>
+                    <span className="text-sm text-neutral-300">{currentProperty.return}</span>
+                  </div>
+                </GlassPanel>
+              </div>
+
+              {/* Image selector dots */}
+              <div className="flex justify-center mt-6 space-x-2">
+                {properties.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentProperty(properties[index])}
+                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                      properties.indexOf(currentProperty) === index
+                        ? 'bg-primary-500 scale-125'
+                        : 'bg-white/50 hover:bg-white/70'
+                    }`}
                   />
-                </div>
-                    <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-secondary/20 rounded-br-2xl z-0"></div>
+                ))}
               </div>
-            </motion.div>
-
-            <motion.div
-                   variants={fadeIn(0.2, 0.8)} initial="hidden" whileInView="visible"
-                   viewport={{ once: true, amount: 0.3 }}
-              className="flex flex-col justify-center"
-            >
-                  <h4 className="text-primary uppercase tracking-wider text-sm font-semibold mb-3">About Color & Craft</h4>
-                  <h2 className="text-3xl md:text-4xl font-light mb-6 leading-tight text-foreground">Passionate artisans dedicated to <span className="font-semibold">quality craftsmanship</span></h2>
-
-                  <Card className="mb-8 border-border/50">
-                    <CardContent className="p-6">
-                      <p className="text-muted-foreground leading-relaxed font-light">
-                         At Color & Craft, we transform treasured furniture into stunning works of art. Our skilled artisans blend traditional techniques with modern finishes, breathing new life into family heirlooms and unique finds. We bring your vision to life with meticulous care.
-                       </p>
-                    </CardContent>
-                  </Card>
-
-                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-                     <div className="flex items-start space-x-3">
-                        <div className="bg-primary/10 text-primary flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full">
-                           <Award className="h-5 w-5" />
-                  </div>
-                  <div>
-                         <h3 className="font-medium text-foreground mb-1">Premium Materials</h3>
-                         <p className="text-sm text-muted-foreground font-light">Highest quality, eco-friendly paints and finishes.</p>
-                  </div>
-                </div>
-                     <div className="flex items-start space-x-3">
-                       <div className="bg-secondary/10 text-secondary flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full">
-                         <Palette className="h-5 w-5" />
-                  </div>
-                  <div>
-                         <h3 className="font-medium text-foreground mb-1">Skilled Craftspeople</h3>
-                         <p className="text-sm text-muted-foreground font-light">Years of professional experience and artistry.</p>
-                  </div>
-                </div>
-              </div>
-
-                  <Button variant="link" asChild className="text-primary group self-start px-0">
-                    <Link href="/about">
-                Learn more about our studio
-                      <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
-              </Link>
-                  </Button>
             </motion.div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
+      {/* Services Section with Glass Cards */}
+      <section className="py-24 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary-50/30 to-transparent" />
 
-      {/* Featured Projects Section */}
-        <section className="py-16 md:py-24 bg-background">
-          <div className="container px-6">
-          <div className="text-center mb-16">
-              <h4 className="text-primary uppercase tracking-wider text-sm font-semibold mb-3">Our Latest Work</h4>
-              <h2 className="text-3xl md:text-4xl font-light mb-4 text-foreground">Featured Projects</h2>
-              <div className="w-20 h-1 bg-primary/30 mx-auto"></div>
-          </div>
+        <div className="container relative z-10">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="text-center mb-16"
+          >
+            <motion.div variants={fadeIn()}>
+              <Badge variant="outline" className="mb-4 bg-white/50 backdrop-blur-sm border-white/30">
+                Our Services
+              </Badge>
+            </motion.div>
+            <motion.h2 variants={fadeIn(0.1)} className="text-4xl md:text-5xl font-bold mb-6">
+              Craftsmanship That
+              <span className="block bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
+                Tells Your Story
+              </span>
+            </motion.h2>
+            <motion.p variants={fadeIn(0.2)} className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              From vintage restoration to modern makeovers, we offer comprehensive furniture transformation services
+            </motion.p>
+          </motion.div>
 
           <motion.div
-              variants={staggerContainer(0.15)} initial="hidden" whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
-            >
-              {featuredProjects.map((project, index) => (
-            <motion.div
-                  key={project.id}
-                  variants={fadeIn(0, 0.6)}
-            >
-                  <Card className="group overflow-hidden h-full flex flex-col border-border/50 hover:shadow-lg transition-shadow duration-300">
-                    <CardHeader className="p-0 relative aspect-[4/3]">
-              <Image
-                        src={project.image}
-                        alt={project.title}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      />
-                    </CardHeader>
-                    <CardContent className="p-4 flex-grow flex flex-col">
-                      <h3 className="text-lg font-medium text-card-foreground mb-1 line-clamp-1">{project.title}</h3>
-                      <p className="text-sm text-muted-foreground mb-1 line-clamp-1">{project.description}</p>
-                      <p className="text-xs text-muted-foreground/80 mb-3 line-clamp-1">{project.material}</p>
-                       <p className="text-base font-semibold text-primary mt-auto mb-3">{project.price}</p>
-                      <Button variant="outline" size="sm" asChild className="mt-auto w-full">
-                        <Link href={`/portfolio/${project.id}`}>View Details</Link>
-                      </Button>
-                    </CardContent>
-                  </Card>
-            </motion.div>
-              ))}
-            </motion.div>
-
-            <div className="text-center mt-12">
-               <Button variant="link" asChild className="text-primary group">
-                <Link href="/portfolio">
-                  View All Portfolio Pieces
-                  <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Services Section */}
-        <section className="py-16 md:py-24 px-4 bg-neutral-50 dark:bg-neutral-900">
-          <div className="container text-center">
-            <h4 className="text-primary uppercase tracking-wider text-sm font-semibold mb-3">What We Offer</h4>
-            <h2 className="text-3xl md:text-4xl font-light mb-12 text-foreground">Our Services</h2>
-
-          <motion.div
-              variants={staggerContainer()} initial="hidden" whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto"
-            >
-              {services.map((service, index) => (
-                <motion.div key={index} variants={fadeIn(0, 0.6)}>
-                  <Card className="text-center p-6 h-full border-border/50 hover:shadow-md transition-shadow">
-                    <CardHeader className="p-0 mb-5">
-                      <div className="bg-primary/10 text-primary p-4 rounded-full mx-auto w-16 h-16 flex items-center justify-center">
-                        <service.icon className="h-8 w-8" strokeWidth={1.5}/>
-              </div>
-                    </CardHeader>
-                    <CardContent className="p-0 flex-grow flex flex-col">
-                      <h3 className="text-xl font-medium mb-3 text-card-foreground">{service.title}</h3>
-                      <p className="text-muted-foreground font-light text-sm mb-4 flex-grow">{service.description}</p>
-                      <Button variant="link" asChild className="text-primary group mt-auto">
-                         <Link href={service.link}>
-                           Learn More
-                           <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
-                         </Link>
-                       </Button>
-                    </CardContent>
-                  </Card>
-            </motion.div>
-              ))}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          >
+            {services.map((service, index) => (
+              <motion.div key={index} variants={fadeIn(index * 0.1)}>
+                <GlassCard
+                  variant="light"
+                  intensity="medium"
+                  className="h-full hover:scale-[1.02] transition-all duration-300 group"
+                >
+                  <div className="text-center">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-100/50 rounded-2xl mb-6 group-hover:bg-primary-200/50 transition-colors">
+                      <service.icon className="h-8 w-8 text-primary-600" />
+                    </div>
+                    <h3 className="text-2xl font-semibold mb-4">{service.title}</h3>
+                    <p className="text-muted-foreground mb-6 leading-relaxed">{service.description}</p>
+                    <div className="space-y-2">
+                      {service.features.map((feature, featureIndex) => (
+                        <div key={featureIndex} className="flex items-center justify-center">
+                          <Badge variant="secondary" className="bg-primary-50/50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">
+                            {feature}
+                          </Badge>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </GlassCard>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>
 
-         {/* Testimonials Section - Updated */}
-        <section className="py-16 md:py-24 bg-background">
-          <div className="container px-6">
-            <div className="text-center mb-12 md:mb-16">
-              <h4 className="text-primary uppercase tracking-wider text-sm font-semibold mb-3">Client Love</h4>
-              <h2 className="text-3xl md:text-4xl font-light text-foreground">What Our Clients Say</h2>
-            </div>
+      {/* Featured Projects Section */}
+      <section className="py-24 bg-gradient-to-b from-transparent via-accent-50/30 to-transparent">
+        <div className="container">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="text-center mb-16"
+          >
+            <motion.div variants={fadeIn()}>
+              <Badge variant="outline" className="mb-4 bg-white/50 backdrop-blur-sm border-white/30">
+                Featured Work
+              </Badge>
+            </motion.div>
+            <motion.h2 variants={fadeIn(0.1)} className="text-4xl md:text-5xl font-bold mb-6">
+              Recent
+              <span className="block bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
+                Transformations
+              </span>
+            </motion.h2>
+            <motion.p variants={fadeIn(0.2)} className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              See how we've transformed ordinary furniture into extraordinary pieces
+            </motion.p>
+          </motion.div>
 
-            <motion.div
-              variants={staggerContainer(0.15)} initial="hidden" whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-            >
-              {testimonialsData.map((testimonial) => (
-                <motion.div
-                  key={testimonial.id}
-                  variants={fadeIn(0, 0.6)}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          >
+            {featuredProjects.map((project, index) => (
+              <motion.div
+                key={project.id}
+                variants={fadeIn(index * 0.1)}
+              >
+                <Card
+                  glass={true}
+                  glassVariant="light"
+                  glassIntensity="medium"
+                  className="group overflow-hidden h-full flex flex-col border-border/50 hover:shadow-glass-heavy transition-all duration-300 hover:scale-[1.02]"
                 >
-                  <Card className="h-full flex flex-col p-6 md:p-8 border-border/50 shadow-sm hover:shadow-md transition-shadow duration-300">
-                    <CardContent className="p-0 flex-grow flex flex-col">
-                      <svg className="w-8 h-8 text-primary/40 mb-4 flex-shrink-0" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-              <path d="M464 256h-80v-64c0-35.3 28.7-64 64-64h8c13.3 0 24-10.7 24-24V56c0-13.3-10.7-24-24-24h-8c-88.4 0-160 71.6-160 160v240c0 26.5 21.5 48 48 48h128c26.5 0 48-21.5 48-48V304c0-26.5-21.5-48-48-48zm-288 0H96v-64c0-35.3 28.7-64 64-64h8c13.3 0 24-10.7 24-24V56c0-13.3-10.7-24-24-24h-8C71.6 32 0 103.6 0 192v240c0 26.5 21.5 48 48 48h128c26.5 0 48-21.5 48-48V304c0-26.5-21.5-48-48-48z"></path>
-            </svg>
-                      <p className="text-base md:text-lg text-foreground font-light italic mb-6 leading-relaxed flex-grow">
-                        "{testimonial.quote}"
-            </p>
-                      <div className="flex items-center mt-auto pt-4 border-t border-border/50">
-                        <div className="w-12 h-12 rounded-full bg-muted mr-4 overflow-hidden flex-shrink-0">
-                          {/* Basic Image Placeholder - Consider using Shadcn Avatar if needed */}
-                <Image
-                            src={testimonial.image || "/images/testimonials/placeholder.png"} // Fallback image
-                  width={48}
-                  height={48}
-                            alt={testimonial.name}
-                  className="object-cover"
-                />
-              </div>
-              <div className="text-left">
-                          <h4 className="font-medium text-foreground">{testimonial.name}</h4>
-                          <p className="text-muted-foreground text-sm">{testimonial.location}</p>
-              </div>
-            </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </motion.div>
+                  <CardHeader className="p-0 relative aspect-[4/3]">
+                    <Image
+                      src={project.image}
+                      alt={project.title}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </CardHeader>
+                  <CardContent className="p-4 flex-grow flex flex-col relative z-10">
+                    <h3 className="text-lg font-medium text-card-foreground mb-1 line-clamp-1">{project.title}</h3>
+                    <p className="text-sm text-muted-foreground mb-1 line-clamp-1">{project.description}</p>
+                    <p className="text-xs text-muted-foreground/80 mb-3 line-clamp-1">{project.material}</p>
+                    <p className="text-base font-semibold text-primary mt-auto mb-3">{project.price}</p>
+                    <Button variant="outline" size="sm" asChild className="mt-auto w-full bg-white/50 backdrop-blur-sm border-white/30 hover:bg-white/70">
+                      <Link href={`/portfolio/${project.id}`}>View Details</Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          <div className="text-center mt-12">
+            <Button variant="link" asChild className="text-primary group">
+              <Link href="/portfolio">
+                View All Portfolio Pieces
+                <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </Button>
+          </div>
         </div>
       </section>
 
-      {/* Call to Action Section */}
-        <section className="py-16 md:py-24 bg-gradient-to-r from-primary via-primary/90 to-accent">
-          <div className="container px-6 text-center max-w-3xl mx-auto">
-            <motion.div
-              variants={fadeIn(0, 0.8)} initial="hidden" whileInView="visible"
-              viewport={{ once: true, amount: 0.5 }}
-            >
-              <h2 className="text-3xl md:text-4xl font-semibold mb-6 text-primary-foreground">
-            Ready to Transform Your Furniture?
-          </h2>
-              <p className="text-lg text-primary-foreground/80 mb-10 font-light">
-                Contact us today for a free consultation. Let our expert team bring your vision to life with beautiful, lasting results.
-              </p>
-              <Button size="lg" variant="secondary" asChild>
-                <Link href="/contact">Get Your Free Quote</Link>
-              </Button>
+      {/* Testimonials Section */}
+      <section className="py-24 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary-50/20 to-transparent" />
+
+        <div className="container relative z-10">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="text-center mb-16"
+          >
+            <motion.div variants={fadeIn()}>
+              <Badge variant="outline" className="mb-4 bg-white/50 backdrop-blur-sm border-white/30">
+                Client Stories
+              </Badge>
             </motion.div>
+            <motion.h2 variants={fadeIn(0.1)} className="text-4xl md:text-5xl font-bold mb-6">
+              What Our
+              <span className="block bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
+                Clients Say
+              </span>
+            </motion.h2>
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          >
+            {testimonials.map((testimonial, index) => (
+              <motion.div key={index} variants={fadeIn(index * 0.1)}>
+                <GlassCard
+                  variant="light"
+                  intensity="medium"
+                  className="h-full hover:scale-[1.02] transition-all duration-300"
+                >
+                  <div className="text-center">
+                    <div className="flex justify-center mb-4">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <span key={i} className="text-yellow-400 text-xl">★</span>
+                      ))}
+                    </div>
+                    <p className="text-muted-foreground mb-6 italic leading-relaxed">
+                      "{testimonial.text}"
+                    </p>
+                    <div className="flex items-center justify-center space-x-3">
+                      <Image
+                        src={testimonial.image}
+                        alt={testimonial.name}
+                        width={48}
+                        height={48}
+                        className="rounded-full"
+                      />
+                      <div>
+                        <p className="font-semibold">{testimonial.name}</p>
+                      </div>
+                    </div>
+                  </div>
+                </GlassCard>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
-      </main>
+
+      {/* Newsletter Section */}
+      <section className="py-24 relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-100/30 via-transparent to-accent-100/30" />
+
+        <div className="container relative z-10">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeIn()}
+            className="max-w-2xl mx-auto text-center"
+          >
+            <GlassCard variant="light" intensity="strong" className="p-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Stay Updated
+              </h2>
+              <p className="text-muted-foreground mb-8 text-lg">
+                Get the latest furniture transformation tips and project showcases delivered to your inbox.
+              </p>
+              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="flex-1 bg-white/50 backdrop-blur-sm border-white/30"
+                  required
+                />
+                <Button type="submit" className="bg-primary hover:bg-primary/90 text-white px-8">
+                  Subscribe
+                  <Send className="ml-2 h-4 w-4" />
+                </Button>
+              </form>
+            </GlassCard>
+          </motion.div>
+        </div>
+      </section>
     </div>
   );
 }

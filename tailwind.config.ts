@@ -85,6 +85,30 @@ const config: Config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      // Enhanced glassmorphism utilities
+      backdropBlur: {
+        xs: '2px',
+        sm: '4px',
+        DEFAULT: '8px',
+        md: '12px',
+        lg: '16px',
+        xl: '24px',
+        '2xl': '40px',
+        '3xl': '64px',
+      },
+      backgroundImage: {
+        'glass-gradient': 'linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))',
+        'glass-gradient-dark': 'linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))',
+        'glass-border': 'linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1))',
+        'glass-border-dark': 'linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))',
+      },
+      boxShadow: {
+        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+        'glass-light': '0 4px 16px 0 rgba(31, 38, 135, 0.25)',
+        'glass-heavy': '0 12px 48px 0 rgba(31, 38, 135, 0.5)',
+        'glass-inset': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.1)',
+        'glass-border': '0 0 0 1px rgba(255, 255, 255, 0.1)',
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -94,10 +118,15 @@ const config: Config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "glass-shimmer": {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "glass-shimmer": "glass-shimmer 2s ease-in-out infinite",
       },
     },
   },
