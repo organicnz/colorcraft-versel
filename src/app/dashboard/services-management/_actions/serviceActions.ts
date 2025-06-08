@@ -18,7 +18,7 @@ export type ServiceFormValues = z.infer<typeof serviceSchema>;
 // Create a new service
 export async function createService(formData: ServiceFormValues) {
   try {
-    const supabase = await createClient();
+    const supabase = createClient();
     
     // Verify user is authenticated
     const { data: { session } } = await supabase.auth.getSession();

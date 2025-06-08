@@ -6,7 +6,7 @@ import PortfolioTable from "./_components/PortfolioTable";
 export const dynamic = "force-dynamic";
 
 export default async function PortfolioDashboardPage() {
-  const supabase = await createClient();
+  const supabase = createClient();
 
   const { data: { session } } = await supabase.auth.getSession();
 

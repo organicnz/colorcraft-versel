@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { createPortfolioProject, updatePortfolioProject } from "@/actions/portfolioActions";
 
 // Define portfolio schema
 export const portfolioSchema = z.object({
@@ -59,13 +60,34 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
     },
   });
 
-  async function onSubmit(values: any) {
+  async function onSubmit(values: PortfolioFormData) {
     setIsSubmitting(true);
     try {
-      // This is a temporary placeholder since we don't have the actual actions yet
-      toast.success(isEditing ? "Project updated successfully" : "Project created successfully");
-      router.push("/portfolio-dash");
-      router.refresh();
+            // Convert to FormData for server action
+      const formData = new FormData();
+
+      Object.entries(values).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          formData.append(key, JSON.stringify(value));
+        } else if (value !== undefined && value !== null) {
+          formData.append(key, String(value));
+        }
+      });
+
+      let result;
+      if (isEditing && initialData?.id) {
+        result = await updatePortfolioProject(initialData.id, formData);
+      } else {
+        result = await createPortfolioProject(formData);
+      }
+
+      if (result.error) {
+        toast.error(result.error);
+      } else {
+        toast.success(isEditing ? "Project updated successfully" : "Project created successfully");
+        router.push("/portfolio-dash");
+        router.refresh();
+      }
     } catch (error) {
       toast.error("An error occurred. Please try again.");
       console.error(error);

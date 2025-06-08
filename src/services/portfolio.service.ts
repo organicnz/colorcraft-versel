@@ -49,7 +49,7 @@ export async function getPortfolioProjects(options?: {
 }) {
   try {
     // Use admin client if specified, otherwise use regular server client
-    const supabase = options?.useAdmin ? createAdminClient() : await createClient();
+    const supabase = options?.useAdmin ? createAdminClient() : createClient();
 
     let query = supabase
       .from('portfolio')
@@ -97,7 +97,7 @@ export async function getPortfolioProjects(options?: {
 export async function getPortfolioProject(id: string, useAdmin = false) {
   try {
     // Use admin client if specified, otherwise use regular server client
-    const supabase = useAdmin ? createAdminClient() : await createClient();
+    const supabase = useAdmin ? createAdminClient() : createClient();
 
     const { data: project, error } = await supabase
       .from('portfolio')
@@ -132,7 +132,7 @@ export async function getPortfolioProject(id: string, useAdmin = false) {
  */
 export async function getRelatedProjects(currentProjectId: string, limit = 3) {
   try {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     const { data: projects, error } = await supabase
       .from('portfolio')

@@ -42,7 +42,7 @@ export type PortfolioFormData = z.infer<typeof portfolioSchema>;
 // --- Create Portfolio Project Action ---
 export async function createPortfolioProject(formData: FormData) {
   try {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     // Basic validation: Check if user is admin
     const { data: { session } } = await supabase.auth.getSession();
@@ -101,7 +101,7 @@ export async function createPortfolioProject(formData: FormData) {
 // --- Update Portfolio Project Action ---
 export async function updatePortfolioProject(id: string, formData: FormData) {
   try {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     // Verify user authentication and admin role
     const { data: { session } } = await supabase.auth.getSession();
@@ -160,7 +160,7 @@ export async function updatePortfolioProject(id: string, formData: FormData) {
 // --- Delete Portfolio Project Action ---
 export async function deletePortfolioProject(id: string) {
   try {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     // Verify user authentication and admin role
     const { data: { session } } = await supabase.auth.getSession();

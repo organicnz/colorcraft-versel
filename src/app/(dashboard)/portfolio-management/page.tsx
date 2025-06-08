@@ -1,4 +1,4 @@
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
@@ -16,7 +16,7 @@ export const metadata = {
 };
 
 export default async function PortfolioManagementPage() {
-  const supabase = await createClient();
+  const supabase = createClient();
   
   // Get the current user
   const { data: { user } } = await supabase.auth.getUser();
