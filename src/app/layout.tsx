@@ -46,24 +46,43 @@ export const metadata = {
 
 // AuthButton component to handle login/logout state
 async function AuthButton() {
-  const supabase = await createClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  try {
+    const supabase = await createClient();
+    const { data: { session }, error } = await supabase.auth.getSession();
 
-  if (session) {
-    return (
-      <form action="/auth/signout" method="post">
-        <Button variant="ghost" size="sm" type="submit">
-          Log out
+    // If there's an error getting the session, show login button
+    if (error) {
+      console.error('Error getting session:', error);
+      return (
+        <Button variant="ghost" size="sm" asChild>
+          <Link href="/auth/signin">Log in</Link>
         </Button>
-      </form>
+      );
+    }
+
+    if (session?.user) {
+      return (
+        <form action="/auth/signout" method="post">
+          <Button variant="ghost" size="sm" type="submit">
+            Log out
+          </Button>
+        </form>
+      );
+    }
+
+    return (
+      <Button variant="ghost" size="sm" asChild>
+        <Link href="/auth/signin">Log in</Link>
+      </Button>
+    );
+  } catch (error) {
+    console.error('Unexpected error in AuthButton:', error);
+    return (
+      <Button variant="ghost" size="sm" asChild>
+        <Link href="/auth/signin">Log in</Link>
+      </Button>
     );
   }
-
-  return (
-    <Button variant="ghost" size="sm" asChild>
-      <Link href="/login">Log in</Link>
-    </Button>
-  );
 }
 
 export default function RootLayout({

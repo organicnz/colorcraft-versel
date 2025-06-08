@@ -36,15 +36,21 @@ export default function SignInForm() {
     setError(null);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error: signInError, data: signInData } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
       });
 
-      if (error) throw error;
+      if (signInError) throw signInError;
 
+      // Wait a moment for the session to be established
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Refresh the page to update the session state
       router.refresh();
-      window.location.href = 'https://colorcraft.live/';
+
+      // Navigate to home page using Next.js router
+      router.push('/');
     } catch (error: any) {
       setError(error?.message || "Failed to sign in");
     } finally {
