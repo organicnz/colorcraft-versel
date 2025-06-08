@@ -4,7 +4,7 @@ export async function fetchProjects() {
   const supabase = createClient();
   
   const { data: projects, error } = await supabase
-    .from('projects')
+    .from('portfolio')
     .select('*')
     .order('is_featured', { ascending: false })
     .order('created_at', { ascending: false });

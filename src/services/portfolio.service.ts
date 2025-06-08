@@ -16,7 +16,7 @@ export async function getPortfolioProjects(options?: {
     const supabase = options?.useAdmin ? createAdminClient() : await createClient();
 
     let query = supabase
-      .from('projects')
+      .from('portfolio')
       .select('*');
 
     // Apply featured filter if requested
@@ -62,7 +62,7 @@ export async function getPortfolioProject(id: string, useAdmin = false) {
     const supabase = useAdmin ? createAdminClient() : await createClient();
 
     const { data: project, error } = await supabase
-      .from('projects')
+      .from('portfolio')
       .select('*')
       .eq('id', id)
       .single();
@@ -96,7 +96,7 @@ export async function getRelatedProjects(currentProjectId: string, limit = 3) {
     const supabase = await createClient();
 
     const { data: projects, error } = await supabase
-      .from('projects')
+      .from('portfolio')
       .select('*')
       .neq('id', currentProjectId)
       .order('created_at', { ascending: false })

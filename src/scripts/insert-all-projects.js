@@ -97,7 +97,7 @@ async function insertProjects() {
     
     try {
       const { data, error } = await supabase
-        .from('projects')
+        .from('portfolio')
         .insert(project)
         .select();
 

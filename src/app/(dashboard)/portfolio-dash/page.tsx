@@ -25,7 +25,7 @@ export default async function PortfolioDashboardPage() {
   }
 
   const { data: projects, error } = await supabase
-    .from("projects")
+    .from("portfolio")
     .select("*")
     .order("created_at", { ascending: false });
 
