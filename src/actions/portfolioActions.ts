@@ -5,269 +5,215 @@ import { createClient } from "@/lib/supabase/server"; // Use server client for a
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-// Helper function to parse comma-separated strings into arrays
-function parseStringToArray(input: string | null | undefined): string[] {
+// Helper function to parse comma-separated strings OR arrays into PostgreSQL text[] format
+function parseToPostgresArray(input: string | string[] | null | undefined): string[] {
   if (!input) return [];
+
+  // If it's already an array, return it
+  if (Array.isArray(input)) {
+    return input.filter(Boolean);
+  }
+
+  // If it's a string, parse it as comma-separated
   return input.split(',')
     .map(item => item.trim())
     .filter(Boolean);
 }
 
-// Helper function to prepare form data
-function prepareFormData(formData: FormData) {
-  const rawData = Object.fromEntries(formData.entries());
-  
-  // Handle arrays that might come directly from FormData
-  const beforeImages = formData.getAll('before_images[]').length > 0 
-    ? formData.getAll('before_images[]') 
-    : parseStringToArray(rawData.before_images as string);
-    
-  const afterImages = formData.getAll('after_images[]').length > 0 
-    ? formData.getAll('after_images[]') 
-    : parseStringToArray(rawData.after_images as string);
-    
-  const techniques = formData.getAll('techniques[]').length > 0 
-    ? formData.getAll('techniques[]') 
-    : parseStringToArray(rawData.techniques as string);
-    
-  const materials = formData.getAll('materials[]').length > 0 
-    ? formData.getAll('materials[]') 
-    : parseStringToArray(rawData.materials as string);
-
-  // Format the date if present
-  let completionDate = rawData.completion_date as string;
-  if (completionDate && completionDate.trim() !== '') {
-    // Ensure the date is in ISO format for validation
-    try {
-      const parsedDate = new Date(completionDate);
-      if (!isNaN(parsedDate.getTime())) {
-        completionDate = parsedDate.toISOString().split('T')[0];
-      }
-    } catch (e) {
-      console.error("Date parsing error:", e);
-    }
-  }
-
-  return {
-    ...rawData,
-    id: rawData.id as string,
-    before_images: beforeImages,
-    after_images: afterImages,
-    techniques: techniques,
-    materials: materials,
-    completion_date: completionDate || undefined,
-    is_featured: rawData.is_featured === 'on' || rawData.is_featured === 'true' || String(rawData.is_featured) === 'true',
-  };
-}
-
-// Re-use or define the schema here for validation within the action
-// Note: File uploads need specific handling not included in this basic schema yet
-const portfolioProjectSchema = z.object({
-  id: z.string().uuid().optional(), // ID is needed for updates
+// Enhanced validation schema for portfolio projects
+const portfolioSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  brief_description: z.string().min(1, "Brief description is required"),
-  description: z.string().optional(),
-  before_images: z.array(z.string()).min(1, "At least one 'before' image URL is required"),
-  after_images: z.array(z.string()).min(1, "At least one 'after' image URL is required"),
-  techniques: z.array(z.string()).optional(),
-  materials: z.array(z.string()).optional(),
+  description: z.string().min(1, "Description is required"),
+  brief_description: z.string().optional(),
+  before_images: z.array(z.string()).default([]),
+  after_images: z.array(z.string()).default([]),
+  techniques: z.array(z.string()).default([]),
+  materials: z.array(z.string()).default([]),
+  project_duration: z.string().optional(),
+  challenges_faced: z.string().optional(),
+  client_satisfaction: z.string().optional(),
+  is_featured: z.boolean().default(false),
+  is_published: z.boolean().default(true),
   completion_date: z.string().optional(),
-  client_name: z.string().optional(),
-  client_testimonial: z.string().optional(),
-  is_featured: z.boolean().default(false).optional(),
 });
+
+export type PortfolioFormData = z.infer<typeof portfolioSchema>;
 
 // --- Create Portfolio Project Action ---
 export async function createPortfolioProject(formData: FormData) {
-  const supabase = createClient();
-
-  // Basic validation: Check if user is admin
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { error: "Authentication required. Please sign in." };
-  
-  const { data: profile } = await supabase.from('users').select('role').eq('id', user.id).single();
-  if (profile?.role !== 'admin') return { error: "Admin privileges required to create portfolio projects." };
-
-  // Prepare data for validation
-  const dataToValidate = prepareFormData(formData);
-
-  // Validate the data
-  const validatedFields = portfolioProjectSchema.omit({ id: true }).safeParse(dataToValidate);
-
-  if (!validatedFields.success) {
-    // Transform Zod errors into a more user-friendly format
-    const fieldErrors = validatedFields.error.flatten().fieldErrors;
-    const formattedErrors = Object.entries(fieldErrors).reduce((acc, [key, messages]) => {
-      acc[key] = messages.join(", ");
-      return acc;
-    }, {} as Record<string, string>);
-    
-    return {
-      error: "Please fix the following errors:",
-      fieldErrors: formattedErrors,
-    };
-  }
-
-  // Prepare data for Supabase (handle nulls for optional arrays)
-  const dataForSupabase = {
-    ...validatedFields.data,
-    techniques: validatedFields.data.techniques?.length ? validatedFields.data.techniques : null,
-    materials: validatedFields.data.materials?.length ? validatedFields.data.materials : null,
-  };
-
   try {
-    const { error, data } = await supabase
-      .from("portfolio")
-      .insert(dataForSupabase)
-      .select('id')
+    const supabase = await createClient();
+
+    // Basic validation: Check if user is admin
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      return { error: "You must be logged in to create portfolio projects" };
+    }
+
+    // Get user data and verify admin role
+    const { data: userData, error: userError } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", session.user.id)
       .single();
 
-    if (error) throw error;
+    if (userError || !userData || userData.role !== "admin") {
+      return { error: "You do not have permission to create portfolio projects" };
+    }
 
-    revalidatePath("/dashboard/portfolio"); // Revalidate the list page
-    revalidatePath("/portfolio"); // Also revalidate the public portfolio page
-    
-    return { 
-      success: true, 
-      message: "Project created successfully!", 
-      projectId: data?.id 
+    // Extract and validate form data - handle PostgreSQL arrays properly
+    const portfolioData: Partial<PortfolioFormData> = {
+      title: formData.get("title") as string,
+      description: formData.get("description") as string,
+      brief_description: formData.get("brief_description") as string || undefined,
+      before_images: parseToPostgresArray(formData.get("before_images") as string),
+      after_images: parseToPostgresArray(formData.get("after_images") as string),
+      techniques: parseToPostgresArray(formData.get("techniques") as string),
+      materials: parseToPostgresArray(formData.get("materials") as string),
+      project_duration: formData.get("project_duration") as string || undefined,
+      challenges_faced: formData.get("challenges_faced") as string || undefined,
+      client_satisfaction: formData.get("client_satisfaction") as string || undefined,
+      is_featured: formData.get("is_featured") === "true",
+      is_published: formData.get("is_published") === "true",
+      completion_date: formData.get("completion_date") as string || undefined,
     };
 
-  } catch (error: any) {
-    console.error("DB Insert Error:", error);
-    
-    // Check for specific Supabase/Postgres errors
-    if (error.code === '23505') {
-      return { error: "A project with this title already exists." };
+    // Insert into PostgreSQL - arrays will be automatically converted to text[]
+    const { error, data } = await supabase
+      .from("portfolio")
+      .insert([portfolioData])
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Portfolio creation error:", error);
+      return { error: "Failed to create portfolio project: " + error.message };
     }
-    
-    return { error: `Database Error: ${error.message}` };
+
+    revalidatePath("/portfolio-dash");
+    return { success: "Portfolio project created successfully", data };
+  } catch (error) {
+    console.error("Portfolio creation error:", error);
+    return { error: "An unexpected error occurred" };
   }
 }
 
 // --- Update Portfolio Project Action ---
-export async function updatePortfolioProject(formData: FormData) {
-  const supabase = createClient();
-
-  // Basic validation: Check if user is admin
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { error: "Authentication required. Please sign in." };
-  
-  const { data: profile } = await supabase.from('users').select('role').eq('id', user.id).single();
-  if (profile?.role !== 'admin') return { error: "Admin privileges required to update portfolio projects." };
-
-  // Prepare data for validation
-  const dataToValidate = prepareFormData(formData);
-  
-  // Validate the data
-  const validatedFields = portfolioProjectSchema.safeParse(dataToValidate);
-
-  if (!validatedFields.success) {
-    // Transform Zod errors into a more user-friendly format
-    const fieldErrors = validatedFields.error.flatten().fieldErrors;
-    const formattedErrors = Object.entries(fieldErrors).reduce((acc, [key, messages]) => {
-      acc[key] = messages.join(", ");
-      return acc;
-    }, {} as Record<string, string>);
-    
-    return {
-      error: "Please fix the following errors:",
-      fieldErrors: formattedErrors,
-    };
-  }
-
-  const { id, ...updateData } = validatedFields.data; // Separate ID from the rest
-
-  if (!id) {
-    return { error: "Project ID is missing for update." };
-  }
-
-  // Prepare data for Supabase (handle nulls for optional arrays)
-  const dataForSupabase = {
-    ...updateData,
-    techniques: updateData.techniques?.length ? updateData.techniques : null,
-    materials: updateData.materials?.length ? updateData.materials : null,
-  };
-
+export async function updatePortfolioProject(id: string, formData: FormData) {
   try {
-    const { error } = await supabase
-      .from("portfolio")
-      .update(dataForSupabase)
-      .eq("id", id);
+    const supabase = await createClient();
 
-    if (error) throw error;
+    // Verify user authentication and admin role
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      return { error: "You must be logged in to update portfolio projects" };
+    }
 
-    revalidatePath("/dashboard/portfolio");
-    revalidatePath(`/dashboard/portfolio/${id}/edit`);
-    revalidatePath("/portfolio"); // Also revalidate the public portfolio page
-    revalidatePath(`/portfolio/${id}`); // Revalidate the individual project page if it exists
-    
-    return { 
-      success: true, 
-      message: "Project updated successfully!",
-      projectId: id
+    const { data: userData, error: userError } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", session.user.id)
+      .single();
+
+    if (userError || !userData || userData.role !== "admin") {
+      return { error: "You do not have permission to update portfolio projects" };
+    }
+
+    // Extract and process form data - handle PostgreSQL arrays properly
+    const portfolioData: Partial<PortfolioFormData> = {
+      title: formData.get("title") as string,
+      description: formData.get("description") as string,
+      brief_description: formData.get("brief_description") as string || undefined,
+      before_images: parseToPostgresArray(formData.get("before_images") as string),
+      after_images: parseToPostgresArray(formData.get("after_images") as string),
+      techniques: parseToPostgresArray(formData.get("techniques") as string),
+      materials: parseToPostgresArray(formData.get("materials") as string),
+      project_duration: formData.get("project_duration") as string || undefined,
+      challenges_faced: formData.get("challenges_faced") as string || undefined,
+      client_satisfaction: formData.get("client_satisfaction") as string || undefined,
+      is_featured: formData.get("is_featured") === "true",
+      is_published: formData.get("is_published") === "true",
+      completion_date: formData.get("completion_date") as string || undefined,
     };
 
-  } catch (error: any) {
-    console.error("DB Update Error:", error);
-    
-    // Check for specific Supabase/Postgres errors
-    if (error.code === '23505') {
-      return { error: "A project with this title already exists." };
+    const { error, data } = await supabase
+      .from("portfolio")
+      .update(portfolioData)
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Portfolio update error:", error);
+      return { error: "Failed to update portfolio project: " + error.message };
     }
-    
-    return { error: `Database Error: ${error.message}` };
+
+    revalidatePath("/portfolio-dash");
+    revalidatePath(`/portfolio/${id}`);
+    return { success: "Portfolio project updated successfully", data };
+  } catch (error) {
+    console.error("Portfolio update error:", error);
+    return { error: "An unexpected error occurred" };
   }
 }
 
 // --- Delete Portfolio Project Action ---
-export async function deletePortfolioProject(projectId: string) {
-  const supabase = createClient();
-
-  // Basic validation: Check if user is admin
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { error: "Authentication required. Please sign in." };
-  
-  const { data: profile } = await supabase.from('users').select('role').eq('id', user.id).single();
-  if (profile?.role !== 'admin') return { error: "Admin privileges required to delete portfolio projects." };
-
-  if (!projectId) {
-    return { error: "Project ID is required for deletion." };
-  }
-
+export async function deletePortfolioProject(id: string) {
   try {
-    // First check if the project exists
-    const { data: project, error: fetchError } = await supabase
-      .from("portfolio")
-      .select("id, title")
-      .eq("id", projectId)
-      .single();
-    
-    if (fetchError) {
-      if (fetchError.code === 'PGRST116') {
-        return { error: "Project not found. It may have been already deleted." };
-      }
-      throw fetchError;
+    const supabase = await createClient();
+
+    // Verify user authentication and admin role
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      return { error: "You must be logged in to delete portfolio projects" };
     }
 
-    // Delete the project
+    const { data: userData, error: userError } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", session.user.id)
+      .single();
+
+    if (userError || !userData || userData.role !== "admin") {
+      return { error: "You do not have permission to delete portfolio projects" };
+    }
+
     const { error } = await supabase
       .from("portfolio")
       .delete()
-      .eq("id", projectId);
+      .eq("id", id);
 
-    if (error) throw error;
+    if (error) {
+      console.error("Portfolio deletion error:", error);
+      return { error: "Failed to delete portfolio project" };
+    }
 
-    revalidatePath("/dashboard/portfolio");
-    revalidatePath("/portfolio"); // Also revalidate the public portfolio page
-    
-    return { 
-      success: true, 
-      message: `Project "${project.title}" deleted successfully.` 
-    };
+    revalidatePath("/portfolio-dash");
+    return { success: "Portfolio project deleted successfully" };
+  } catch (error) {
+    console.error("Portfolio deletion error:", error);
+    return { error: "An unexpected error occurred" };
+  }
+}
 
-  } catch (error: any) {
-    console.error("DB Delete Error:", error);
-    return { error: `Database Error: ${error.message}` };
+// --- Fetch Portfolio Projects Action ---
+export async function fetchPortfolioProjects() {
+  try {
+    const supabase = await createClient();
+
+    const { data: projects, error } = await supabase
+      .from("portfolio")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching portfolio projects:", error);
+      return { error: "Failed to fetch portfolio projects" };
+    }
+
+    return { success: true, data: projects || [] };
+  } catch (error) {
+    console.error("Error fetching portfolio projects:", error);
+    return { error: "An unexpected error occurred" };
   }
 }

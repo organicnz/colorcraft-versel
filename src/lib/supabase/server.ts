@@ -10,7 +10,7 @@ const createDummyCookieHandlers = () => ({
 });
 
 // Create a version that works during build time and runtime
-export const createClient = () => {
+export const createClient = async () => {
   try {
     // Check for missing environment variables - fail gracefully in production
     if (!env.NEXT_PUBLIC_SUPABASE_URL || !env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
@@ -29,7 +29,7 @@ export const createClient = () => {
     }
 
     // In actual server runtime, use cookies
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
 
     return createServerClient(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_ANON_KEY, {
       cookies: {
@@ -62,7 +62,7 @@ function createDummyClient() {
 
 // Simplified auth helper for server actions and server components
 export async function auth() {
-  const supabase = createClient();
+  const supabase = await createClient();
   try {
     return await supabase.auth.getSession();
   } catch (error) {

@@ -1,30 +1,46 @@
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '../lib/supabase/server';
 
-export async function fetchProjects() {
-  const supabase = createClient();
-  
-  const { data: projects, error } = await supabase
-    .from('portfolio')
-    .select('*')
-    .order('is_featured', { ascending: false })
-    .order('created_at', { ascending: false });
-  
-  if (error) {
-    console.error('Error fetching projects:', error);
-    throw new Error('Failed to fetch portfolio projects');
+export async function fetchAllProjects() {
+  try {
+    console.log('🔍 Fetching all projects from Supabase...');
+
+    const supabase = await createClient();
+    const { data: projects, error } = await supabase
+      .from('projects')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('❌ Error fetching projects:', error.message);
+      throw error;
+    }
+
+    console.log(`✅ Successfully fetched ${projects?.length || 0} projects`);
+
+    // Log the first few projects for verification
+    if (projects && projects.length > 0) {
+      console.log('📋 Sample projects:');
+      projects.slice(0, 3).forEach((project, index) => {
+        console.log(`  ${index + 1}. ${project.title} (ID: ${project.id})`);
+      });
+    }
+
+    return projects || [];
+  } catch (error) {
+    console.error('💥 Failed to fetch projects:', error);
+    throw error;
   }
-  
-  console.log('Projects data:', JSON.stringify(projects, null, 2));
-  return projects || [];
 }
 
-// This will run if executed directly with ts-node
+// If running this script directly
 if (require.main === module) {
-  fetchProjects()
+  fetchAllProjects()
     .then(projects => {
-      console.log(`Found ${projects.length} projects.`);
+      console.log('\n📊 Total projects found:', projects.length);
+      process.exit(0);
     })
     .catch(error => {
-      console.error('Error:', error);
+      console.error('Script failed:', error);
+      process.exit(1);
     });
 } 

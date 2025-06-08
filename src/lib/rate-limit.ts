@@ -54,9 +54,9 @@ setInterval(cleanRateLimitStore, CLEANUP_INTERVAL);
 /**
  * Get a key for rate limiting based on IP and optional identifier
  */
-function getRateLimitKey(identifier?: string): string {
+async function getRateLimitKey(identifier?: string): Promise<string> {
   try {
-    const headersList = headers();
+    const headersList = await headers();
     // Get IP address or fallback to a placeholder
     const ip = headersList.get("x-forwarded-for") || headersList.get("x-real-ip") || "unknown-ip";
 
@@ -76,7 +76,7 @@ export async function checkRateLimit(options: RateLimitOptions = {}): Promise<{
   remaining: number;
   reset: number;
 }> {
-  const key = getRateLimitKey(options.identifier);
+  const key = await getRateLimitKey(options.identifier);
   const limit = options.limit || DEFAULT_LIMIT;
   const windowInSeconds = options.windowInSeconds || DEFAULT_WINDOW;
 

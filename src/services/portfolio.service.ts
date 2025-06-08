@@ -1,6 +1,42 @@
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
+// Helper function to parse PostgreSQL text[] arrays that come back as JSON strings
+function parsePostgresArray(value: any): string[] {
+  if (!value) return [];
+
+  // If it's already an array, return it
+  if (Array.isArray(value)) {
+    return value;
+  }
+
+  // If it's a string that looks like a JSON array, parse it
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      // If JSON parsing fails, treat as comma-separated string
+      return value.split(',').map(item => item.trim()).filter(Boolean);
+    }
+  }
+
+  return [];
+}
+
+// Helper function to normalize portfolio project data
+function normalizePortfolioProject(project: any) {
+  if (!project) return null;
+
+  return {
+    ...project,
+    before_images: parsePostgresArray(project.before_images),
+    after_images: parsePostgresArray(project.after_images),
+    techniques: parsePostgresArray(project.techniques),
+    materials: parsePostgresArray(project.materials),
+  };
+}
+
 /**
  * Fetches all portfolio projects
  * @param options Optional parameters for fetching projects
@@ -42,7 +78,9 @@ export async function getPortfolioProjects(options?: {
       return [];
     }
 
-    return projects || [];
+    // Normalize the projects to ensure arrays are properly parsed
+    const normalizedProjects = (projects || []).map(normalizePortfolioProject);
+    return normalizedProjects;
 
   } catch (error: any) {
     console.error('Portfolio service error:', error);
@@ -77,7 +115,8 @@ export async function getPortfolioProject(id: string, useAdmin = false) {
       return null;
     }
 
-    return project;
+    // Normalize the project to ensure arrays are properly parsed
+    return normalizePortfolioProject(project);
 
   } catch (error: any) {
     console.error('Portfolio project service error:', error);
@@ -107,7 +146,9 @@ export async function getRelatedProjects(currentProjectId: string, limit = 3) {
       return [];
     }
 
-    return projects || [];
+    // Normalize the projects to ensure arrays are properly parsed
+    const normalizedProjects = (projects || []).map(normalizePortfolioProject);
+    return normalizedProjects;
 
   } catch (error: any) {
     console.error('Related projects service error:', error);

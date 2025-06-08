@@ -119,7 +119,7 @@ export default async function PortfolioProjectPage({ params }: PortfolioProjectP
           <div>
             <h2 className="text-2xl font-semibold mb-4">Before</h2>
             <div className="grid gap-4">
-              {project.before_images.map((image, index) => (
+              {project.before_images.map((image: string, index: number) => (
                 <div key={index} className="relative aspect-[4/3] rounded-lg overflow-hidden">
                   <Image
                     src={image}
@@ -139,7 +139,7 @@ export default async function PortfolioProjectPage({ params }: PortfolioProjectP
           <div>
             <h2 className="text-2xl font-semibold mb-4">After</h2>
             <div className="grid gap-4">
-              {project.after_images.map((image, index) => (
+              {project.after_images.map((image: string, index: number) => (
                 <div key={index} className="relative aspect-[4/3] rounded-lg overflow-hidden">
                   <Image
                     src={image}

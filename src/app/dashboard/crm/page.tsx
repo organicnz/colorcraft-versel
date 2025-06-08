@@ -51,7 +51,7 @@ const SAMPLE_CUSTOMERS = [
 ];
 
 export default async function CRMDashboardPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: { session } } = await supabase.auth.getSession();
   
   if (!session) {
