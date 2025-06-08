@@ -67,7 +67,6 @@ type Project = {
   client_name?: string;
   client_testimonial?: string;
   is_featured: boolean;
-  is_published?: boolean;
   created_at: string;
   updated_at?: string;
 };
@@ -263,20 +262,6 @@ export default function PortfolioTable({ projects }: PortfolioTableProps) {
 
                   <TableCell>
                     <div className="flex flex-col gap-1">
-                      {project.is_published !== false ? (
-                        <Badge className="w-fit bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900 dark:text-green-300">
-                          <CheckCircle className="w-3 h-3 mr-1" />
-                          Published
-                        </Badge>
-                      ) : (
-                        <Badge
-                          variant="secondary"
-                          className="w-fit bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
-                        >
-                          <Clock className="w-3 h-3 mr-1" />
-                          Draft
-                        </Badge>
-                      )}
                       {project.is_featured && (
                         <Badge className="w-fit bg-yellow-100 text-yellow-700 hover:bg-yellow-200 dark:bg-yellow-900 dark:text-yellow-300">
                           <Star className="w-3 h-3 mr-1" />

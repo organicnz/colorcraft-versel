@@ -38,7 +38,6 @@ export const portfolioSchema = z.object({
   client_name: z.string().optional(),
   client_testimonial: z.string().optional(),
   is_featured: z.boolean().default(false),
-  is_published: z.boolean().default(true),
 });
 
 export type PortfolioFormData = z.infer<typeof portfolioSchema>;
@@ -66,7 +65,6 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
       client_name: "",
       client_testimonial: "",
       is_featured: false,
-      is_published: true,
     },
   });
 
@@ -418,27 +416,6 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                       <FormLabel>Featured Project</FormLabel>
                       <FormDescription>
                         Featured projects will be highlighted on the homepage and portfolio page
-                      </FormDescription>
-                    </div>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="is_published"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>Published</FormLabel>
-                      <FormDescription>
-                        Published projects are visible to website visitors. Uncheck to save as draft.
                       </FormDescription>
                     </div>
                   </FormItem>

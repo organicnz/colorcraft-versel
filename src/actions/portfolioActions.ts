@@ -20,21 +20,19 @@ function parseToPostgresArray(input: string | string[] | null | undefined): stri
     .filter(Boolean);
 }
 
-// Enhanced validation schema for portfolio projects
+// Enhanced validation schema for portfolio projects - matches database schema
 const portfolioSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  description: z.string().min(1, "Description is required"),
-  brief_description: z.string().optional(),
+  description: z.string().optional(),
+  brief_description: z.string().min(1, "Brief description is required"),
   before_images: z.array(z.string()).default([]),
   after_images: z.array(z.string()).default([]),
   techniques: z.array(z.string()).default([]),
   materials: z.array(z.string()).default([]),
-  project_duration: z.string().optional(),
-  challenges_faced: z.string().optional(),
-  client_satisfaction: z.string().optional(),
-  is_featured: z.boolean().default(false),
-  is_published: z.boolean().default(true),
   completion_date: z.string().optional(),
+  client_name: z.string().optional(),
+  client_testimonial: z.string().optional(),
+  is_featured: z.boolean().default(false),
 });
 
 export type PortfolioFormData = z.infer<typeof portfolioSchema>;
@@ -70,12 +68,10 @@ export async function createPortfolioProject(formData: FormData) {
       after_images: parseToPostgresArray(formData.get("after_images") as string),
       techniques: parseToPostgresArray(formData.get("techniques") as string),
       materials: parseToPostgresArray(formData.get("materials") as string),
-      project_duration: formData.get("project_duration") as string || undefined,
-      challenges_faced: formData.get("challenges_faced") as string || undefined,
-      client_satisfaction: formData.get("client_satisfaction") as string || undefined,
-      is_featured: formData.get("is_featured") === "true",
-      is_published: formData.get("is_published") === "true",
       completion_date: formData.get("completion_date") as string || undefined,
+      client_name: formData.get("client_name") as string || undefined,
+      client_testimonial: formData.get("client_testimonial") as string || undefined,
+      is_featured: formData.get("is_featured") === "true",
     };
 
     // Insert into PostgreSQL - arrays will be automatically converted to text[]
@@ -128,12 +124,10 @@ export async function updatePortfolioProject(id: string, formData: FormData) {
       after_images: parseToPostgresArray(formData.get("after_images") as string),
       techniques: parseToPostgresArray(formData.get("techniques") as string),
       materials: parseToPostgresArray(formData.get("materials") as string),
-      project_duration: formData.get("project_duration") as string || undefined,
-      challenges_faced: formData.get("challenges_faced") as string || undefined,
-      client_satisfaction: formData.get("client_satisfaction") as string || undefined,
-      is_featured: formData.get("is_featured") === "true",
-      is_published: formData.get("is_published") === "true",
       completion_date: formData.get("completion_date") as string || undefined,
+      client_name: formData.get("client_name") as string || undefined,
+      client_testimonial: formData.get("client_testimonial") as string || undefined,
+      is_featured: formData.get("is_featured") === "true",
     };
 
     const { error, data } = await supabase

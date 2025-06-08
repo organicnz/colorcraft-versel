@@ -101,13 +101,12 @@ export default async function PortfolioDashboardPage() {
   // Calculate stats
   const totalProjects = projects?.length || 0;
   const featuredProjects = projects?.filter((p) => p.is_featured)?.length || 0;
-  const publishedProjects = projects?.filter((p) => p.is_published)?.length || 0;
   const recentProjects =
     projects?.filter((p) => {
       const createdDate = new Date(p.created_at);
       const weekAgo = new Date();
       weekAgo.setDate(weekAgo.getDate() - 7);
-      return createdDate > weekAgo;
+      return createdDate >= weekAgo;
     })?.length || 0;
 
   return (
@@ -174,21 +173,6 @@ export default async function PortfolioDashboardPage() {
               <p className="text-xs text-yellow-600 dark:text-yellow-400">
                 Highlighted on homepage
               </p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 border-green-200 dark:border-green-800">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-green-700 dark:text-green-300">
-                Published Projects
-              </CardTitle>
-              <Eye className="h-4 w-4 text-green-600 dark:text-green-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-green-900 dark:text-green-100">
-                {publishedProjects}
-              </div>
-              <p className="text-xs text-green-600 dark:text-green-400">Visible to visitors</p>
             </CardContent>
           </Card>
 
