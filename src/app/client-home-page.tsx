@@ -14,12 +14,20 @@ import { ArrowRight, Award, Palette, Send, Settings, Sparkles } from "lucide-rea
 // Animation variants
 const fadeIn = (delay = 0, duration = 0.8) => ({
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration, delay, ease: "easeOut" } }
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { delay, duration, ease: "easeOut" }
+  },
 });
 
 const slideIn = (direction = "left", delay = 0) => ({
   hidden: { opacity: 0, x: direction === "left" ? -50 : 50 },
-  visible: { opacity: 1, x: 0, transition: { duration: 0.8, delay, ease: "easeOut" } }
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { delay, duration: 0.8, ease: "easeOut" }
+  },
 });
 
 const staggerContainer = {
@@ -28,16 +36,16 @@ const staggerContainer = {
     opacity: 1,
     transition: {
       staggerChildren: 0.1,
-      delayChildren: 0.3,
     },
   },
 };
 
 // Icon mapping
 const iconMap = {
-  Palette,
-  Settings,
-  Sparkles,
+  Palette: Palette,
+  Settings: Settings,
+  Sparkles: Sparkles,
+  Award: Award,
 };
 
 interface ClientHomePageProps {
@@ -47,57 +55,33 @@ interface ClientHomePageProps {
   properties: any[];
 }
 
-// Function to shuffle array
-function shuffleArray<T>(array: T[]): T[] {
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-}
-
 export default function ClientHomePage({ featuredProjects, services, testimonials, properties }: ClientHomePageProps) {
+  const heroRef = useRef<HTMLElement>(null);
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
-  const [currentProperty, setCurrentProperty] = useState(properties[0]);
   const [email, setEmail] = useState('');
-  const heroRef = useRef(null);
+
+  // Use first 4 projects for display (already randomized from server)
+  const displayProjects = featuredProjects.slice(0, 4);
+  const currentProject = displayProjects[currentProjectIndex] || displayProjects[0];
+
+  // Scroll animations
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"]
   });
-
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  
+  const y = useTransform(scrollYProgress, [0, 1], [0, -200]);
   const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
 
-  // State for randomized projects - use for both hero and portfolio sections
-  const [displayProjects, setDisplayProjects] = useState(featuredProjects.slice(0, 4));
-  const [heroProject, setHeroProject] = useState(featuredProjects[0] || null);
-
-  // Randomize projects on client-side mount
+  // Auto-rotate hero project
   useEffect(() => {
-    if (featuredProjects.length > 0) {
-      const shuffled = shuffleArray(featuredProjects);
-      setDisplayProjects(shuffled.slice(0, 4));
-      setHeroProject(shuffled[0]); // Use first randomized project for hero
-    }
-  }, [featuredProjects]);
-
-
-
-  // Sync hero project with the slider rotation
-  useEffect(() => {
-    if (displayProjects.length > 0) {
+    if (displayProjects.length > 1) {
       const interval = setInterval(() => {
-        setCurrentProjectIndex((prev) => {
-          const nextIndex = (prev + 1) % displayProjects.length;
-          setHeroProject(displayProjects[nextIndex]);
-          return nextIndex;
-        });
+        setCurrentProjectIndex((prev) => (prev + 1) % displayProjects.length);
       }, 5000);
       return () => clearInterval(interval);
     }
-  }, [displayProjects]);
+  }, [displayProjects.length]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -107,7 +91,7 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section with Enhanced Glassmorphism */}
+      {/* Hero Section with Featured Project */}
       <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Background with glass effects */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900" />
@@ -163,67 +147,68 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
               </motion.div>
             </motion.div>
 
-            {/* Featured Project Showcase with Glass Effect */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="order-1 lg:order-2 relative"
-            >
-              <div className="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-2xl">
-                <Image
-                  src={heroProject?.image || "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800"}
-                  alt={heroProject?.title || "Featured Project"}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  priority
-                />
-
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-
-                {/* Project info card with enhanced glass effect */}
-                <GlassPanel className="absolute bottom-8 left-8 right-8 p-5">
-                  <h3 className="text-xl font-semibold mb-2 text-white">{heroProject?.title || "Featured Project"}</h3>
-                  <div className="flex flex-wrap gap-3 mb-3">
-                    <Badge variant="secondary" className="bg-secondary-100/50 text-secondary-700 dark:bg-secondary-900/30 dark:text-secondary-300 rounded-full backdrop-blur-sm">
-                      Featured
-                    </Badge>
-                    <Badge variant="outline" className="rounded-full bg-white/20 text-white border-white/30">
-                      {heroProject?.material || "Premium Finish"}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-primary-300">{heroProject?.price || "Contact for pricing"}</span>
-                    <span className="text-sm text-neutral-300">Expert Craftsmanship</span>
-                  </div>
-                </GlassPanel>
-              </div>
-
-              {/* Project selector dots */}
-              <div className="flex justify-center mt-6 space-x-2">
-                {displayProjects.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      setCurrentProjectIndex(index);
-                      setHeroProject(displayProjects[index]);
-                    }}
-                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                      currentProjectIndex === index
-                        ? 'bg-primary-500 scale-125'
-                        : 'bg-white/50 hover:bg-white/70'
-                    }`}
+            {/* Featured Project Showcase */}
+            {currentProject && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="order-1 lg:order-2 relative"
+              >
+                <div className="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-2xl">
+                  <Image
+                    src={currentProject.image}
+                    alt={currentProject.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    priority
                   />
-                ))}
-              </div>
-            </motion.div>
+
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+
+                  {/* Project info card */}
+                  <GlassPanel className="absolute bottom-8 left-8 right-8 p-5">
+                    <h3 className="text-xl font-semibold mb-2 text-white">{currentProject.title}</h3>
+                    <div className="flex flex-wrap gap-3 mb-3">
+                      <Badge variant="secondary" className="bg-secondary-100/50 text-secondary-700 dark:bg-secondary-900/30 dark:text-secondary-300 rounded-full backdrop-blur-sm">
+                        Featured
+                      </Badge>
+                      <Badge variant="outline" className="rounded-full bg-white/20 text-white border-white/30">
+                        {currentProject.material}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-primary-300">{currentProject.price}</span>
+                      <span className="text-sm text-neutral-300">Expert Craftsmanship</span>
+                    </div>
+                  </GlassPanel>
+                </div>
+
+                {/* Project selector dots */}
+                {displayProjects.length > 1 && (
+                  <div className="flex justify-center mt-6 space-x-2">
+                    {displayProjects.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentProjectIndex(index)}
+                        className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                          currentProjectIndex === index
+                            ? 'bg-primary-500 scale-125'
+                            : 'bg-white/50 hover:bg-white/70'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
+              </motion.div>
+            )}
           </div>
         </motion.div>
       </section>
 
-      {/* Services Section with Glass Cards */}
+      {/* Services Section */}
       <section className="py-24 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary-50/30 to-transparent" />
 
@@ -274,7 +259,7 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
                       <h3 className="text-2xl font-semibold mb-4">{service.title}</h3>
                       <p className="text-muted-foreground mb-6 leading-relaxed">{service.description}</p>
                       <div className="space-y-2">
-                        {service.features.map((feature, featureIndex) => (
+                        {service.features.map((feature: string, featureIndex: number) => (
                           <div key={featureIndex} className="flex items-center justify-center">
                             <Badge variant="secondary" className="bg-primary-50/50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">
                               {feature}
@@ -372,7 +357,7 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
 
       {/* Testimonials Section */}
       <section className="py-24 relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary-50/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary-50/20 to-transparent"></div>
 
         <div className="container relative z-10">
           <motion.div
@@ -404,11 +389,7 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
           >
             {testimonials.map((testimonial, index) => (
               <motion.div key={index} variants={fadeIn(index * 0.1)}>
-                <GlassCard
-                  variant="light"
-                  intensity="medium"
-                  className="h-full hover:scale-[1.02] transition-all duration-300"
-                >
+                <GlassCard variant="light" intensity="medium" className="h-full hover:scale-[1.02] transition-all duration-300">
                   <div className="text-center">
                     <div className="flex justify-center mb-4">
                       {[...Array(testimonial.rating)].map((_, i) => (
@@ -440,20 +421,18 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
 
       {/* Newsletter Section */}
       <section className="py-24 relative">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-100/30 via-transparent to-accent-100/30" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-100/30 via-transparent to-accent-100/30"></div>
 
         <div className="container relative z-10">
           <motion.div
-            initial="hidden"
-            whileInView="visible"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            variants={fadeIn()}
+            transition={{ duration: 0.8 }}
             className="max-w-2xl mx-auto text-center"
           >
             <GlassCard variant="light" intensity="strong" className="p-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Stay Updated
-              </h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Stay Updated</h2>
               <p className="text-muted-foreground mb-8 text-lg">
                 Get the latest furniture transformation tips and project showcases delivered to your inbox.
               </p>
@@ -463,8 +442,8 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="flex-1 bg-white/50 backdrop-blur-sm border-white/30"
                   required
+                  className="flex-1 bg-white/50 backdrop-blur-sm border-white/30"
                 />
                 <Button type="submit" className="bg-primary hover:bg-primary/90 text-white px-8">
                   Subscribe

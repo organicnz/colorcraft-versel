@@ -11,6 +11,7 @@ import ClientHomePage from "./client-home-page";
 
 // Force dynamic rendering for each request to enable randomization
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 const services = [
   {
@@ -54,32 +55,15 @@ const testimonials = [
   }
 ];
 
-const properties = [
-  {
-    title: "Vintage Armoire Restoration",
-    type: "Antique",
-    location: "Victorian Era",
-    price: "$850",
-    return: "Heirloom Quality",
-    image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800"
-  },
-  {
-    title: "Modern Bookshelf Design",
-    type: "Contemporary",
-    location: "Custom Built",
-    price: "$420",
-    return: "Lifetime Warranty",
-    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800"
-  },
-  {
-    title: "Rustic Coffee Table",
-    type: "Farmhouse",
-    location: "Reclaimed Wood",
-    price: "$380",
-    return: "Eco-Friendly",
-    image: "https://images.unsplash.com/photo-1449247709967-d4461a6a6103?w=800"
+// Simple shuffle function
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
-];
+  return shuffled;
+}
 
 export default async function Home() {
   // Fetch featured projects from the database
@@ -95,11 +79,10 @@ export default async function Home() {
     });
   } catch (error) {
     console.error('Failed to fetch featured projects:', error);
-    // Use fallback data if database fetch fails
   }
 
-  // Transform all featured projects to send to client for randomization
-  const transformedProjects = featuredProjects.map((project) => ({
+  // Transform and randomize projects
+  let transformedProjects = featuredProjects.map((project) => ({
     id: project.id,
     title: project.title,
     description: project.brief_description || project.description,
@@ -107,6 +90,10 @@ export default async function Home() {
     image: project.after_images?.[0] || "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800",
     price: "Contact for pricing",
   }));
+
+  // Randomize server-side using current timestamp as seed
+  const seed = Date.now();
+  transformedProjects = shuffleArray(transformedProjects);
 
   // If no featured projects, use fallback data
   const projectsToShow = transformedProjects.length > 0 ? transformedProjects : [
@@ -118,22 +105,6 @@ export default async function Home() {
       image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800",
       price: "Contact for pricing",
     },
-    {
-      id: "sample-2",
-      title: "Modern Coffee Table",
-      description: "Contemporary geometric design",
-      material: "Reclaimed wood and steel",
-      image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800",
-      price: "Contact for pricing",
-    },
-    {
-      id: "sample-3",
-      title: "Vintage Chair Makeover",
-      description: "Classic comfort meets bold color",
-      material: "Upholstered with premium fabric",
-      image: "https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=800",
-      price: "Contact for pricing",
-    },
   ];
 
   return (
@@ -141,7 +112,7 @@ export default async function Home() {
       featuredProjects={projectsToShow}
       services={services}
       testimonials={testimonials}
-      properties={[]} // Not using hardcoded properties anymore
+      properties={[]}
     />
   );
 }
