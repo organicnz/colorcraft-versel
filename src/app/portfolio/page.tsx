@@ -1,7 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { PortfolioItem } from "@/components/portfolio/PortfolioItem";
-import HeroSection from "@/components/shared/HeroSection";
-import EditableContent from "@/components/shared/EditableContent";
+import PortfolioItem from "@/components/portfolio/PortfolioItem";
 
 export default async function PortfolioPage() {
   const supabase = createClient();
@@ -13,37 +11,13 @@ export default async function PortfolioPage() {
     .eq("is_published", true) // Only show published projects
     .order("created_at", { ascending: false });
 
-  // Fetch editable content
-  const { data: content } = await supabase
-    .from("site_content")
-    .select("*")
-    .eq("id", "portfolio_intro")
-    .single();
-
-  const portfolioContent = content || {
-    id: "portfolio_intro",
-    title: "Our Portfolio",
-    content: {
-      text: "<p>Browse through our collection of furniture transformation projects. Each piece tells a story of renewal and creativity.</p>",
-    },
-  };
-
   return (
     <div className="container py-12">
-      <HeroSection
-        title="Our Portfolio"
-        description="Browse our collection of completed furniture transformations"
-        imageSrc="/images/portfolio-hero.jpg"
-      />
-
-      <div className="my-12">
-        <EditableContent
-          id="portfolio_intro"
-          initialContent={{
-            title: portfolioContent.title,
-            content: portfolioContent.content.text,
-          }}
-        />
+      <div className="mb-12 text-center">
+        <h1 className="text-4xl font-bold mb-4">Our Portfolio</h1>
+        <p className="text-lg text-gray-600">
+          Browse our collection of completed furniture transformations
+        </p>
       </div>
 
       {projects && projects.length > 0 ? (
@@ -54,7 +28,9 @@ export default async function PortfolioPage() {
         </div>
       ) : (
         <div className="text-center py-12">
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">No Published Projects Yet</h3>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            No Published Projects Yet
+          </h3>
           <p className="text-gray-600">
             Check back soon to see our latest furniture transformations!
           </p>
