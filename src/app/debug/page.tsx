@@ -15,7 +15,7 @@ export default function DebugPage() {
         <p className="text-muted-foreground mb-6">
           This page helps you diagnose issues with your Supabase connection.
         </p>
-        
+
         <Alert variant="destructive" className="mb-6">
           <ExclamationTriangleIcon className="h-4 w-4" />
           <AlertTitle>Production Warning</AlertTitle>
@@ -23,19 +23,23 @@ export default function DebugPage() {
             This page should be disabled or protected in production environments.
           </AlertDescription>
         </Alert>
-        
+
         <div className="space-y-6">
           <div>
             <h2 className="text-xl font-semibold mb-2">Common Issues</h2>
             <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-              <li>Missing or invalid <code className="bg-muted px-1 rounded">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> in environment variables</li>
+              <li>
+                Missing or invalid{" "}
+                <code className="bg-muted px-1 rounded">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> in
+                environment variables
+              </li>
               <li>Using service role key instead of anon key for public operations</li>
               <li>Supabase project is paused due to billing or inactivity</li>
               <li>API key has been revoked or is incorrect</li>
               <li>Environment variables not being loaded properly</li>
             </ul>
           </div>
-          
+
           <div>
             <h2 className="text-xl font-semibold mb-2">Required Environment Variables</h2>
             <div className="bg-muted p-4 rounded-md font-mono text-sm">
@@ -47,8 +51,8 @@ export default function DebugPage() {
           </div>
         </div>
       </div>
-      
+
       <EnvChecker />
     </div>
   );
-} 
+}
