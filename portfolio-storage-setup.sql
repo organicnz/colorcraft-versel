@@ -1,4 +1,5 @@
--- Portfolio Storage Setup - Run this in Supabase Dashboard > SQL Editor
+-- Portfolio Storage Setup with Before/After Directory Structure
+-- Run this in Supabase Dashboard > SQL Editor
 -- This script sets up the portfolio storage bucket and all necessary policies
 
 -- 1. Create the portfolio bucket if it doesn't exist
@@ -61,7 +62,7 @@ USING (
   )
 );
 
--- 5. Create directories for existing portfolio items
+-- 5. Create directories for existing portfolio items with before/after structure
 DO $$
 DECLARE
   portfolio_record RECORD;
@@ -70,37 +71,58 @@ BEGIN
   FOR portfolio_record IN 
     SELECT id FROM portfolio
   LOOP
-    -- Insert .gitkeep file to create directory structure
+    -- Insert .gitkeep files to create before/ directory structure
     INSERT INTO storage.objects (bucket_id, name, owner_id, path_tokens)
     VALUES (
       'portfolio',
-      portfolio_record.id::TEXT || '/.gitkeep',
+      portfolio_record.id::TEXT || '/before/.gitkeep',
       (SELECT id FROM auth.users LIMIT 1), -- Use first admin user as owner
-      ARRAY[portfolio_record.id::TEXT, '.gitkeep']
+      ARRAY[portfolio_record.id::TEXT, 'before', '.gitkeep']
+    )
+    ON CONFLICT (bucket_id, name) DO NOTHING;
+    
+    -- Insert .gitkeep files to create after/ directory structure
+    INSERT INTO storage.objects (bucket_id, name, owner_id, path_tokens)
+    VALUES (
+      'portfolio',
+      portfolio_record.id::TEXT || '/after/.gitkeep',
+      (SELECT id FROM auth.users LIMIT 1), -- Use first admin user as owner
+      ARRAY[portfolio_record.id::TEXT, 'after', '.gitkeep']
     )
     ON CONFLICT (bucket_id, name) DO NOTHING;
   END LOOP;
   
-  RAISE NOTICE 'Created directories for existing portfolio items';
+  RAISE NOTICE 'Created before/ and after/ directories for existing portfolio items';
 END;
 $$;
 
--- 6. Create a function to automatically create portfolio directories
-CREATE OR REPLACE FUNCTION create_portfolio_directory(portfolio_uuid UUID)
+-- 6. Create a function to automatically create portfolio directories with before/after structure
+CREATE OR REPLACE FUNCTION create_portfolio_directories(portfolio_uuid UUID)
 RETURNS BOOLEAN AS $$
 DECLARE
-  directory_path TEXT;
+  before_path TEXT;
+  after_path TEXT;
 BEGIN
-  -- Create the directory path
-  directory_path := portfolio_uuid::TEXT || '/';
+  -- Create the directory paths
+  before_path := portfolio_uuid::TEXT || '/before/';
+  after_path := portfolio_uuid::TEXT || '/after/';
   
-  -- Insert a placeholder file to create the directory structure
+  -- Insert placeholder files to create the directory structure
   INSERT INTO storage.objects (bucket_id, name, owner_id, path_tokens)
   VALUES (
     'portfolio',
-    directory_path || '.gitkeep',
+    before_path || '.gitkeep',
     auth.uid(),
-    ARRAY[portfolio_uuid::TEXT, '.gitkeep']
+    ARRAY[portfolio_uuid::TEXT, 'before', '.gitkeep']
+  )
+  ON CONFLICT (bucket_id, name) DO NOTHING;
+  
+  INSERT INTO storage.objects (bucket_id, name, owner_id, path_tokens)
+  VALUES (
+    'portfolio',
+    after_path || '.gitkeep',
+    auth.uid(),
+    ARRAY[portfolio_uuid::TEXT, 'after', '.gitkeep']
   )
   ON CONFLICT (bucket_id, name) DO NOTHING;
   
@@ -108,7 +130,7 @@ BEGIN
 EXCEPTION
   WHEN OTHERS THEN
     -- Log the error but don't fail the portfolio creation
-    RAISE WARNING 'Failed to create portfolio directory for %: %', portfolio_uuid, SQLERRM;
+    RAISE WARNING 'Failed to create portfolio directories for %: %', portfolio_uuid, SQLERRM;
     RETURN FALSE;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -117,8 +139,8 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE OR REPLACE FUNCTION create_portfolio_directory_trigger()
 RETURNS TRIGGER AS $$
 BEGIN
-  -- Create directory for the new portfolio item
-  PERFORM create_portfolio_directory(NEW.id);
+  -- Create directories for the new portfolio item
+  PERFORM create_portfolio_directories(NEW.id);
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -131,7 +153,7 @@ CREATE TRIGGER create_portfolio_directory_on_insert
   EXECUTE FUNCTION create_portfolio_directory_trigger();
 
 -- 9. Verify the setup
-SELECT 'Storage setup completed successfully!' as status;
+SELECT 'Portfolio storage setup with before/after directory structure completed successfully!' as status;
 
 -- 10. Show created policies
 SELECT 
@@ -141,4 +163,17 @@ SELECT
   permissive
 FROM pg_policies 
 WHERE schemaname = 'storage' AND tablename = 'objects'
-AND policyname LIKE '%portfolio%'; 
+AND policyname LIKE '%portfolio%';
+
+-- 11. Example directory structure created:
+-- portfolio/
+--   ├── {portfolio-uuid-1}/
+--   │   ├── before/
+--   │   │   └── .gitkeep
+--   │   └── after/
+--   │       └── .gitkeep
+--   └── {portfolio-uuid-2}/
+--       ├── before/
+--       │   └── .gitkeep
+--       └── after/
+--           └── .gitkeep 

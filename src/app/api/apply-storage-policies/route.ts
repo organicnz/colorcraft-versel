@@ -184,7 +184,7 @@ export async function POST() {
       })
     }
 
-    // Step 3: Create directories for existing portfolio items
+    // Step 3: Create directories for existing portfolio items with before/after structure
     const { data: portfolioItems, error: portfolioError } = await serviceClient
       .from('portfolio')
       .select('id')
@@ -197,26 +197,57 @@ export async function POST() {
       }, { status: 500 })
     }
 
-    // Create directories using service client
+    // Create directories using service client with before/after structure
     const directoryResults = []
     for (const item of portfolioItems || []) {
+      const itemResult = {
+        id: item.id,
+        before: { success: false, error: '' },
+        after: { success: false, error: '' },
+        success: false
+      }
+
+      // Create before/ directory
       try {
-        const { error: uploadError } = await serviceClient.storage
+        const { error: beforeError } = await serviceClient.storage
           .from('portfolio')
-          .upload(`${item.id}/.gitkeep`, new Blob([''], { type: 'text/plain' }), {
+          .upload(`${item.id}/before/.gitkeep`, new Blob([''], { type: 'text/plain' }), {
             upsert: true
           })
 
-        if (uploadError && !uploadError.message.includes('already exists')) {
-          console.error(`Failed to create directory for ${item.id}:`, uploadError)
-          directoryResults.push({ id: item.id, success: false, error: uploadError.message })
+        if (beforeError && !beforeError.message.includes('already exists')) {
+          console.error(`Failed to create before directory for ${item.id}:`, beforeError)
+          itemResult.before = { success: false, error: beforeError.message }
         } else {
-          directoryResults.push({ id: item.id, success: true })
+          itemResult.before = { success: true, error: '' }
         }
       } catch (error) {
-        console.error(`Error creating directory for ${item.id}:`, error)
-        directoryResults.push({ id: item.id, success: false, error: String(error) })
+        console.error(`Error creating before directory for ${item.id}:`, error)
+        itemResult.before = { success: false, error: String(error) }
       }
+
+      // Create after/ directory
+      try {
+        const { error: afterError } = await serviceClient.storage
+          .from('portfolio')
+          .upload(`${item.id}/after/.gitkeep`, new Blob([''], { type: 'text/plain' }), {
+            upsert: true
+          })
+
+        if (afterError && !afterError.message.includes('already exists')) {
+          console.error(`Failed to create after directory for ${item.id}:`, afterError)
+          itemResult.after = { success: false, error: afterError.message }
+        } else {
+          itemResult.after = { success: true, error: '' }
+        }
+      } catch (error) {
+        console.error(`Error creating after directory for ${item.id}:`, error)
+        itemResult.after = { success: false, error: String(error) }
+      }
+
+      // Overall success if both directories were created
+      itemResult.success = itemResult.before.success && itemResult.after.success
+      directoryResults.push(itemResult)
     }
 
     const allPoliciesSuccessful = policyResults.every(p => p.success)
@@ -224,11 +255,12 @@ export async function POST() {
     if (allPoliciesSuccessful) {
       return NextResponse.json({
         success: true,
-        message: 'Storage bucket and policies created successfully!',
+        message: 'Storage bucket and policies created successfully with before/after directory structure!',
         directoryResults,
         portfolioItemsProcessed: portfolioItems?.length || 0,
         bucketStatus: portfolioBucketExists ? 'already existed' : 'created',
-        policyResults
+        policyResults,
+        directoryStructure: 'before/after subdirectories created'
       })
     } else {
       // Provide SQL for manual execution if programmatic approach fails
@@ -273,17 +305,74 @@ USING (
     WHERE users.id = auth.uid() AND users.role = 'admin'
   )
 );
+
+-- Create function to automatically create portfolio directories with before/after structure
+CREATE OR REPLACE FUNCTION create_portfolio_directories(portfolio_uuid UUID)
+RETURNS BOOLEAN AS $$
+DECLARE
+  before_path TEXT;
+  after_path TEXT;
+BEGIN
+  -- Create the directory paths
+  before_path := portfolio_uuid::TEXT || '/before/';
+  after_path := portfolio_uuid::TEXT || '/after/';
+  
+  -- Insert placeholder files to create the directory structure
+  INSERT INTO storage.objects (bucket_id, name, owner_id, path_tokens)
+  VALUES (
+    'portfolio',
+    before_path || '.gitkeep',
+    auth.uid(),
+    ARRAY[portfolio_uuid::TEXT, 'before', '.gitkeep']
+  )
+  ON CONFLICT (bucket_id, name) DO NOTHING;
+  
+  INSERT INTO storage.objects (bucket_id, name, owner_id, path_tokens)
+  VALUES (
+    'portfolio',
+    after_path || '.gitkeep',
+    auth.uid(),
+    ARRAY[portfolio_uuid::TEXT, 'after', '.gitkeep']
+  )
+  ON CONFLICT (bucket_id, name) DO NOTHING;
+  
+  RETURN TRUE;
+EXCEPTION
+  WHEN OTHERS THEN
+    -- Log the error but don't fail the portfolio creation
+    RAISE WARNING 'Failed to create portfolio directories for %: %', portfolio_uuid, SQLERRM;
+    RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Create a trigger function to automatically create directories when portfolio items are created
+CREATE OR REPLACE FUNCTION create_portfolio_directory_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Create directories for the new portfolio item
+  PERFORM create_portfolio_directories(NEW.id);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Create trigger to auto-create directories
+DROP TRIGGER IF EXISTS create_portfolio_directory_on_insert ON portfolio;
+CREATE TRIGGER create_portfolio_directory_on_insert
+  AFTER INSERT ON portfolio
+  FOR EACH ROW
+  EXECUTE FUNCTION create_portfolio_directory_trigger();
       `
 
       return NextResponse.json({
         success: false,
-        message: 'Storage bucket created, but policies need manual setup',
+        message: 'Storage bucket created with before/after directories, but policies need manual setup',
         note: 'Programmatic policy creation failed. Please run the SQL manually.',
         sqlToRun: manualSQL,
         directoryResults,
         portfolioItemsProcessed: portfolioItems?.length || 0,
         bucketStatus: portfolioBucketExists ? 'already existed' : 'created',
-        policyResults
+        policyResults,
+        directoryStructure: 'before/after subdirectories created'
       })
     }
 

@@ -15,8 +15,10 @@ interface ApiResponse {
   details?: string;
   directoryResults?: Array<{
     id: string;
+    before?: { success: boolean; error: string };
+    after?: { success: boolean; error: string };
     success: boolean;
-    error?: string;
+    error?: string; // For backward compatibility
   }>;
   portfolioItemsProcessed?: number;
   bucketStatus?: string;
@@ -25,6 +27,7 @@ interface ApiResponse {
     success: boolean;
     error?: string | null;
   }>;
+  directoryStructure?: string;
 }
 
 export default function StorageSetupClient() {
@@ -97,6 +100,11 @@ export default function StorageSetupClient() {
                     Bucket status: {result.bucketStatus}
                   </p>
                 )}
+                {result.directoryStructure && (
+                  <p className="text-sm text-green-600 mt-1">
+                    Directory structure: {result.directoryStructure}
+                  </p>
+                )}
                 {result.policyResults && result.policyResults.length > 0 && (
                   <div className="mt-2">
                     <p className="text-sm font-medium text-green-700">Policy Creation Results:</p>
@@ -119,17 +127,43 @@ export default function StorageSetupClient() {
                 {result.directoryResults && result.directoryResults.length > 0 && (
                   <div className="mt-2">
                     <p className="text-sm font-medium text-green-700">Directory Creation Results:</p>
-                    <ul className="text-xs text-green-600 mt-1 space-y-1">
+                    <ul className="text-xs text-green-600 mt-1 space-y-2">
                       {result.directoryResults.map((dir, index) => (
-                        <li key={index} className="flex items-center gap-1">
-                          {dir.success ? (
-                            <CheckCircle className="h-3 w-3" />
+                        <li key={index} className="border border-green-200 rounded p-2 bg-green-50">
+                          <div className="flex items-center gap-1 font-medium">
+                            {dir.success ? (
+                              <CheckCircle className="h-3 w-3" />
+                            ) : (
+                              <XCircle className="h-3 w-3 text-red-500" />
+                            )}
+                            <span>Portfolio {dir.id}</span>
+                          </div>
+                          {dir.before && dir.after ? (
+                            // New before/after structure
+                            <div className="ml-4 mt-1 space-y-1">
+                              <div className="flex items-center gap-1 text-xs">
+                                {dir.before.success ? (
+                                  <CheckCircle className="h-2 w-2" />
+                                ) : (
+                                  <XCircle className="h-2 w-2 text-red-500" />
+                                )}
+                                <span>before/: {dir.before.success ? 'Success' : `Failed - ${dir.before.error}`}</span>
+                              </div>
+                              <div className="flex items-center gap-1 text-xs">
+                                {dir.after.success ? (
+                                  <CheckCircle className="h-2 w-2" />
+                                ) : (
+                                  <XCircle className="h-2 w-2 text-red-500" />
+                                )}
+                                <span>after/: {dir.after.success ? 'Success' : `Failed - ${dir.after.error}`}</span>
+                              </div>
+                            </div>
                           ) : (
-                            <XCircle className="h-3 w-3 text-red-500" />
+                            // Backward compatibility for old structure
+                            <div className="ml-4 mt-1 text-xs">
+                              {dir.success ? 'Success' : `Failed - ${dir.error}`}
+                            </div>
                           )}
-                          <span>
-                            {dir.id}: {dir.success ? 'Success' : `Failed - ${dir.error}`}
-                          </span>
                         </li>
                       ))}
                     </ul>
@@ -186,7 +220,7 @@ export default function StorageSetupClient() {
       <div className="space-y-2">
         <h1 className="text-3xl font-bold">Storage Setup</h1>
         <p className="text-muted-foreground">
-          Set up Supabase storage bucket and policies for portfolio images
+          Set up Supabase storage bucket and policies for portfolio images with before/after organization
         </p>
       </div>
 
@@ -194,10 +228,22 @@ export default function StorageSetupClient() {
         <CardHeader>
           <CardTitle>Portfolio Storage Configuration</CardTitle>
           <CardDescription>
-            This will create the portfolio storage bucket and set up the necessary RLS policies for admin image uploads.
+            This will create the portfolio storage bucket with before/after directories and set up the necessary RLS policies for admin image uploads.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="bg-blue-50 border border-blue-200 rounded p-3">
+            <h4 className="font-medium text-blue-800 mb-2">Directory Structure</h4>
+            <div className="text-sm text-blue-700 font-mono">
+              <div>portfolio/</div>
+              <div className="ml-2">├── {'{portfolio-uuid}/'}</div>
+              <div className="ml-4">├── before/</div>
+              <div className="ml-6">└── before-images.jpg</div>
+              <div className="ml-4">└── after/</div>
+              <div className="ml-6">└── after-images.jpg</div>
+            </div>
+          </div>
+          
           <Button
             onClick={handleStorageSetup}
             disabled={isLoading}
@@ -206,10 +252,10 @@ export default function StorageSetupClient() {
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Setting up Storage...
+                Setting up Storage with Before/After Directories...
               </>
             ) : (
-              'Setup Storage & Get SQL'
+              'Setup Storage with Before/After Structure'
             )}
           </Button>
 
@@ -231,12 +277,13 @@ export default function StorageSetupClient() {
               <div className="space-y-2">
                 <p><strong>Complete Setup Steps:</strong></p>
                 <ol className="list-decimal list-inside space-y-1 text-sm">
-                  <li>Click "Setup Storage & Get SQL" above</li>
-                  <li>Copy the provided SQL code</li>
+                  <li>Click "Setup Storage with Before/After Structure" above</li>
+                  <li>Copy the provided SQL code if manual setup is needed</li>
                   <li>Go to your Supabase Dashboard</li>
                   <li>Navigate to <strong>SQL Editor</strong></li>
                   <li>Paste and run the SQL script</li>
                   <li>Verify the policies are created in <strong>Storage &gt; Policies</strong></li>
+                  <li>Check the directory structure in <strong>Storage &gt; portfolio bucket</strong></li>
                 </ol>
               </div>
             </AlertDescription>
