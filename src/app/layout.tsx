@@ -16,7 +16,7 @@ import { Providers } from "./providers";
 import { Menu } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { GlassNavbar } from "@/components/ui/glass-card";
-import { createClient } from "@/lib/supabase/server";
+import { AuthButton } from "@/components/shared/AuthButton";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -43,47 +43,6 @@ export const metadata = {
     apple: "/favicon/apple-touch-icon.png",
   },
 };
-
-// AuthButton component to handle login/logout state
-async function AuthButton() {
-  try {
-    const supabase = await createClient();
-    const { data: { session }, error } = await supabase.auth.getSession();
-
-    // If there's an error getting the session, show login button
-    if (error) {
-      console.error('Error getting session:', error);
-      return (
-        <Button variant="ghost" size="sm" asChild>
-          <Link href="/auth/signin">Log in</Link>
-        </Button>
-      );
-    }
-
-    if (session?.user) {
-      return (
-        <form action="/auth/signout" method="post">
-          <Button variant="ghost" size="sm" type="submit">
-            Log out
-          </Button>
-        </form>
-      );
-    }
-
-    return (
-      <Button variant="ghost" size="sm" asChild>
-        <Link href="/auth/signin">Log in</Link>
-      </Button>
-    );
-  } catch (error) {
-    console.error('Unexpected error in AuthButton:', error);
-    return (
-      <Button variant="ghost" size="sm" asChild>
-        <Link href="/auth/signin">Log in</Link>
-      </Button>
-    );
-  }
-}
 
 export default function RootLayout({
   children,
