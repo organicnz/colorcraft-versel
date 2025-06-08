@@ -20,6 +20,11 @@ interface ApiResponse {
   }>;
   portfolioItemsProcessed?: number;
   bucketStatus?: string;
+  policyResults?: Array<{
+    name: string;
+    success: boolean;
+    error?: string | null;
+  }>;
 }
 
 export default function StorageSetupClient() {
@@ -91,6 +96,25 @@ export default function StorageSetupClient() {
                   <p className="text-sm text-green-600 mt-1">
                     Bucket status: {result.bucketStatus}
                   </p>
+                )}
+                {result.policyResults && result.policyResults.length > 0 && (
+                  <div className="mt-2">
+                    <p className="text-sm font-medium text-green-700">Policy Creation Results:</p>
+                    <ul className="text-xs text-green-600 mt-1 space-y-1">
+                      {result.policyResults.map((policy, index) => (
+                        <li key={index} className="flex items-center gap-1">
+                          {policy.success ? (
+                            <CheckCircle className="h-3 w-3" />
+                          ) : (
+                            <XCircle className="h-3 w-3 text-red-500" />
+                          )}
+                          <span>
+                            {policy.name}: {policy.success ? 'Success' : `Failed - ${policy.error}`}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 )}
                 {result.directoryResults && result.directoryResults.length > 0 && (
                   <div className="mt-2">
