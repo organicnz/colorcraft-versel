@@ -26,6 +26,18 @@ const portfolioImageMappings = {
   'Antique Cabinet': {
     after_images: ['https://tydgehnkaszuvcaywwdm.supabase.co/storage/v1/object/public/portfolio/cabinet.png'],
     before_images: ['https://tydgehnkaszuvcaywwdm.supabase.co/storage/v1/object/public/portfolio/cabinet-before.png']
+  },
+  'Rustic Coffee Table': {
+    after_images: ['https://tydgehnkaszuvcaywwdm.supabase.co/storage/v1/object/public/portfolio/coffee-table.png'],
+    before_images: ['https://tydgehnkaszuvcaywwdm.supabase.co/storage/v1/object/public/portfolio/coffee-table-before.png']
+  },
+  'Mid-Century Console Revival': {
+    after_images: ['https://tydgehnkaszuvcaywwdm.supabase.co/storage/v1/object/public/portfolio/bookcase.png'],
+    before_images: ['https://tydgehnkaszuvcaywwdm.supabase.co/storage/v1/object/public/portfolio/bookcase-before.png']
+  },
+  'Vintage Dresser Restoration': {
+    after_images: ['https://tydgehnkaszuvcaywwdm.supabase.co/storage/v1/object/public/portfolio/dresser.png'],
+    before_images: ['https://tydgehnkaszuvcaywwdm.supabase.co/storage/v1/object/public/portfolio/dresser-before.png']
   }
 };
 

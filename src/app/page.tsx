@@ -95,8 +95,10 @@ export default async function Home() {
     // Use fallback data if database fetch fails
   }
 
+  // Shuffle the featured projects to show a random selection of 4 on each page load
+  const shuffledProjects = [...featuredProjects].sort(() => Math.random() - 0.5);
   // Transform database projects to match the expected format for the UI
-  const transformedProjects = featuredProjects.slice(0, 4).map((project) => ({
+  const transformedProjects = shuffledProjects.slice(0, 4).map((project) => ({
     id: project.id,
     title: project.title,
     description: project.brief_description || project.description,
