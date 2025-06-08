@@ -128,9 +128,33 @@ export default function StorageSetupPage() {
         </CardHeader>
         <CardContent className="space-y-2 text-yellow-700">
           <p>• This page fixes the "row-level security policy" errors when uploading images</p>
-          <p>• Run these steps in order to resolve storage permission issues</p>
+          <p>• The storage bucket setup may require manual SQL execution in Supabase Dashboard</p>
           <p>• You must be logged in as an admin to use these functions</p>
           <p>• These operations are safe to run multiple times</p>
+        </CardContent>
+      </Card>
+
+      <Card className="bg-orange-50 border-orange-200">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-orange-800">
+            <AlertCircle className="h-5 w-5" />
+            Manual Setup Required
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-orange-700">
+          <p className="font-medium">If the automatic setup fails, please follow these manual steps:</p>
+          <div className="bg-white p-3 rounded border">
+            <p className="font-medium text-gray-800 mb-2">1. Copy the SQL from the manual setup file:</p>
+            <code className="text-sm bg-gray-100 p-2 rounded block">manual-storage-setup.sql</code>
+          </div>
+          <div className="bg-white p-3 rounded border">
+            <p className="font-medium text-gray-800 mb-2">2. Go to your Supabase Dashboard:</p>
+            <p className="text-sm">Dashboard → SQL Editor → New Query</p>
+          </div>
+          <div className="bg-white p-3 rounded border">
+            <p className="font-medium text-gray-800 mb-2">3. Paste and run the SQL:</p>
+            <p className="text-sm">This will create the bucket, policies, and directory functions</p>
+          </div>
         </CardContent>
       </Card>
 
