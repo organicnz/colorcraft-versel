@@ -1,54 +1,30 @@
 import { Suspense } from 'react';
 import { Card } from '@/components/ui/card';
-import EditorialButton from '@/components/portfolio/EditorialButton';
-import PortfolioItem from '@/components/portfolio/PortfolioItem';
+import Image from 'next/image';
+import Link from 'next/link';
 
-// Static portfolio data to avoid SSR issues
+// Static portfolio data - no authentication needed
 const SAMPLE_PROJECTS = [
   {
     id: "1",
     title: "Vintage Dresser Transformation",
     brief_description: "A stunning makeover of a 1960s dresser using chalk paint and new hardware",
-    description: "This beautiful vintage dresser was given new life with a fresh coat of chalk paint and elegant gold hardware.",
-    after_images: ["/images/portfolio/dresser-after-1.jpg", "/images/portfolio/dresser-after-2.jpg"],
-    before_images: ["/images/portfolio/dresser-before.jpg"],
+    after_images: ["/images/portfolio/dresser-after-1.jpg"],
     techniques: ["Chalk Paint", "Sanding", "Hardware Replacement"],
-    materials: ["Annie Sloan Chalk Paint", "Gold Hardware", "Wax Finish"],
-    is_featured: true,
-    completion_date: "2024-01-15",
-    client_name: "Sarah Johnson",
-    client_testimonial: "Absolutely loved the transformation! The dresser looks brand new.",
-    created_at: "2024-01-15T00:00:00Z",
   },
   {
     id: "2",
     title: "Farmhouse Kitchen Table",
     brief_description: "Rustic farmhouse table restoration with distressed finish",
-    description: "A family heirloom table restored to its former glory with a rustic farmhouse aesthetic.",
     after_images: ["/images/portfolio/table-after-1.jpg"],
-    before_images: ["/images/portfolio/table-before.jpg"],
     techniques: ["Sanding", "Staining", "Distressing"],
-    materials: ["Wood Stain", "Polyurethane Finish"],
-    is_featured: false,
-    completion_date: "2024-02-01",
-    client_name: "Mike Thompson",
-    client_testimonial: "The table looks amazing and fits perfectly in our farmhouse kitchen!",
-    created_at: "2024-02-01T00:00:00Z",
   },
   {
     id: "3",
     title: "Modern Bookshelf Makeover",
     brief_description: "Contemporary styling with clean lines and bold colors",
-    description: "Transformed an old bookshelf into a modern statement piece with clean lines and vibrant color.",
     after_images: ["/images/portfolio/bookshelf-after.jpg"],
-    before_images: ["/images/portfolio/bookshelf-before.jpg"],
     techniques: ["Priming", "Spray Painting", "Modern Hardware"],
-    materials: ["Primer", "Acrylic Paint", "Chrome Hardware"],
-    is_featured: true,
-    completion_date: "2024-02-15",
-    client_name: "Lisa Chen",
-    client_testimonial: "Perfect for my modern apartment. Such great craftsmanship!",
-    created_at: "2024-02-15T00:00:00Z",
   },
 ];
 
@@ -57,11 +33,59 @@ export const metadata = {
   description: 'Explore our furniture restoration and transformation projects',
 };
 
+// Simple portfolio card with no authentication
+function SimplePortfolioCard({ project }: { project: any }) {
+  const mainImage = project.after_images?.[0] || "/placeholder-image.jpg";
+
+  return (
+    <div className="group relative overflow-hidden rounded-lg transition-all hover:shadow-xl">
+      <div className="aspect-square overflow-hidden">
+        <Image
+          src={mainImage}
+          alt={project.title || "Furniture transformation"}
+          width={500}
+          height={500}
+          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+        />
+      </div>
+
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+        <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+          <h3 className="text-xl font-bold">{project.title}</h3>
+          <p className="mt-1 line-clamp-2 text-sm text-gray-200">
+            {project.brief_description}
+          </p>
+
+          {project.techniques && project.techniques.length > 0 && (
+            <div className="mt-2 flex flex-wrap gap-1">
+              {project.techniques.slice(0, 3).map((technique: string) => (
+                <span
+                  key={technique}
+                  className="inline-block rounded-full bg-primary-600/40 px-2 py-0.5 text-xs"
+                >
+                  {technique}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <Link
+            href={`/portfolio/${project.id}`}
+            className="mt-3 inline-block rounded-lg border border-white px-4 py-1 text-sm font-medium text-white hover:bg-white hover:text-primary-700 transition-colors"
+          >
+            View Project
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function PortfolioGrid() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {SAMPLE_PROJECTS.map((project) => (
-        <PortfolioItem key={project.id} project={project} />
+        <SimplePortfolioCard key={project.id} project={project} />
       ))}
     </div>
   );

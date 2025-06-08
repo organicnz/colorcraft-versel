@@ -300,7 +300,7 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                     <FormControl>
                       <Input
                         placeholder="e.g., Sanding, Priming, Chalk Paint, Distressing"
-                        value={Array.isArray(field.value) ? field.value.join(', ') : field.value || ''}
+                        value={Array.isArray(field.value) ? field.value.join(', ') : (field.value ? String(field.value) : '')}
                         onChange={(e) => {
                           const techniques = parseArrayField(e.target.value);
                           field.onChange(techniques);
@@ -309,8 +309,13 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                     </FormControl>
                     <FormDescription>
                       List the techniques used in this project, separated by commas
+                      {field.value && Array.isArray(field.value) && field.value.length > 0 && (
+                        <span className="block mt-1 text-sm text-green-600">
+                          ✓ {field.value.length} technique{field.value.length > 1 ? 's' : ''} added
+                        </span>
+                      )}
                     </FormDescription>
-                    {field.value && field.value.length > 0 && (
+                    {field.value && Array.isArray(field.value) && field.value.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-2">
                         {field.value.map((technique, index) => (
                           <Badge key={index} variant="secondary">{technique}</Badge>
@@ -331,7 +336,7 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                     <FormControl>
                       <Input
                         placeholder="e.g., Chalk Paint, Wood Stain, New Hardware, Fabric"
-                        value={Array.isArray(field.value) ? field.value.join(', ') : field.value || ''}
+                        value={Array.isArray(field.value) ? field.value.join(', ') : (field.value ? String(field.value) : '')}
                         onChange={(e) => {
                           const materials = parseArrayField(e.target.value);
                           field.onChange(materials);
@@ -340,8 +345,13 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                     </FormControl>
                     <FormDescription>
                       List the materials used in this project, separated by commas
+                      {field.value && Array.isArray(field.value) && field.value.length > 0 && (
+                        <span className="block mt-1 text-sm text-green-600">
+                          ✓ {field.value.length} material{field.value.length > 1 ? 's' : ''} added
+                        </span>
+                      )}
                     </FormDescription>
-                    {field.value && field.value.length > 0 && (
+                    {field.value && Array.isArray(field.value) && field.value.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-2">
                         {field.value.map((material, index) => (
                           <Badge key={index} variant="outline">{material}</Badge>
