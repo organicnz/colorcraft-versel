@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { Button } from "@/components/ui/button";
@@ -32,7 +32,7 @@ interface ServiceFormProps {
 
 export function ServiceForm({ initialData, isEditing = false }: ServiceFormProps) {
   const router = useRouter();
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm({

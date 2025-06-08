@@ -1,4 +1,4 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/lib/supabase/server";
 import { cookies } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import PortfolioForm from "../_components/PortfolioForm";
@@ -8,7 +8,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 export const dynamic = "force-dynamic";
 
 export default async function NewProjectPage() {
-  const supabase = createServerComponentClient({ cookies });
+  const supabase = createClient();
   
   // Check if user is logged in
   const { data: { session } } = await supabase.auth.getSession();

@@ -1,39 +1,25 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
-import { notFound, redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import PortfolioForm from "../../_components/PortfolioForm";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
-interface EditProjectPageProps {
-  params: {
-    id: string;
-  };
-}
+type EditProjectPageProps = {
+  params: { id: string };
+};
 
 export default async function EditProjectPage({ params }: EditProjectPageProps) {
   const { id } = params;
-  const supabase = createServerComponentClient({ cookies });
+  const supabase = createClient();
   
-  // Check if user is logged in
+  // Get current session (middleware already checks auth, but we need user info)
   const { data: { session } } = await supabase.auth.getSession();
   
   if (!session) {
     redirect("/auth/signin");
-  }
-  
-  // Get user role
-  const { data: userWithRole } = await supabase
-    .from("users")
-    .select("role")
-    .eq("id", session.user.id)
-    .single();
-    
-  // Ensure only admins can access
-  if (!userWithRole || userWithRole.role !== "admin") {
-    notFound();
   }
   
   // Fetch project data

@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { cookies } from "next/headers";
-import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/lib/supabase/server";
 import { Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default async function ServicesManagementPage() {
   const cookieStore = cookies();
-  const supabase = createServerActionClient({ cookies: () => cookieStore });
+  const supabase = createClient();
   
   // Get the current user
   const {

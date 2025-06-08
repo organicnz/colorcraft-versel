@@ -1,15 +1,15 @@
-import { createClient } from '@/lib/supabase/server';
-import { Customer, Lead, Project, Communication } from '@/types/database.types';
+import { createClient } from "@/lib/supabase/client";
+import { Customer, Lead, Project, Communication } from "@/types/database.types";
 
 export class CrmApi {
   // Customers
   static async getCustomers() {
     const supabase = createClient();
     const { data, error } = await supabase
-      .from('customers')
-      .select('*')
-      .order('updated_at', { ascending: false });
-    
+      .from("customers")
+      .select("*")
+      .order("updated_at", { ascending: false });
+
     if (error) throw new Error(error.message);
     return data;
   }
@@ -17,36 +17,35 @@ export class CrmApi {
   static async getCustomer(id: string) {
     const supabase = createClient();
     const { data, error } = await supabase
-      .from('customers')
-      .select('*, projects(*), communications(*)')
-      .eq('id', id)
+      .from("customers")
+      .select("*, projects(*), communications(*)")
+      .eq("id", id)
       .single();
-    
+
     if (error) throw new Error(error.message);
     return data;
   }
 
-  static async createCustomer(customer: Omit<Customer, 'id' | 'created_at' | 'updated_at'>) {
+  static async createCustomer(customer: Omit<Customer, "id" | "created_at" | "updated_at">) {
     const supabase = createClient();
-    const { data, error } = await supabase
-      .from('customers')
-      .insert(customer)
-      .select()
-      .single();
-    
+    const { data, error } = await supabase.from("customers").insert(customer).select().single();
+
     if (error) throw new Error(error.message);
     return data;
   }
 
-  static async updateCustomer(id: string, customer: Partial<Omit<Customer, 'id' | 'created_at' | 'updated_at'>>) {
+  static async updateCustomer(
+    id: string,
+    customer: Partial<Omit<Customer, "id" | "created_at" | "updated_at">>
+  ) {
     const supabase = createClient();
     const { data, error } = await supabase
-      .from('customers')
+      .from("customers")
       .update({ ...customer, updated_at: new Date().toISOString() })
-      .eq('id', id)
+      .eq("id", id)
       .select()
       .single();
-    
+
     if (error) throw new Error(error.message);
     return data;
   }
@@ -55,10 +54,10 @@ export class CrmApi {
   static async getLeads() {
     const supabase = createClient();
     const { data, error } = await supabase
-      .from('leads')
-      .select('*')
-      .order('updated_at', { ascending: false });
-    
+      .from("leads")
+      .select("*")
+      .order("updated_at", { ascending: false });
+
     if (error) throw new Error(error.message);
     return data;
   }
@@ -66,80 +65,79 @@ export class CrmApi {
   static async getLead(id: string) {
     const supabase = createClient();
     const { data, error } = await supabase
-      .from('leads')
-      .select('*, communications(*)')
-      .eq('id', id)
+      .from("leads")
+      .select("*, communications(*)")
+      .eq("id", id)
       .single();
-    
+
     if (error) throw new Error(error.message);
     return data;
   }
 
-  static async createLead(lead: Omit<Lead, 'id' | 'created_at' | 'updated_at'>) {
+  static async createLead(lead: Omit<Lead, "id" | "created_at" | "updated_at">) {
     const supabase = createClient();
-    const { data, error } = await supabase
-      .from('leads')
-      .insert(lead)
-      .select()
-      .single();
-    
+    const { data, error } = await supabase.from("leads").insert(lead).select().single();
+
     if (error) throw new Error(error.message);
     return data;
   }
 
-  static async updateLead(id: string, lead: Partial<Omit<Lead, 'id' | 'created_at' | 'updated_at'>>) {
+  static async updateLead(
+    id: string,
+    lead: Partial<Omit<Lead, "id" | "created_at" | "updated_at">>
+  ) {
     const supabase = createClient();
     const { data, error } = await supabase
-      .from('leads')
+      .from("leads")
       .update({ ...lead, updated_at: new Date().toISOString() })
-      .eq('id', id)
+      .eq("id", id)
       .select()
       .single();
-    
+
     if (error) throw new Error(error.message);
     return data;
   }
 
   static async convertLeadToCustomer(leadId: string) {
     const supabase = createClient();
-    
+
     // Get the lead data
     const { data: lead, error: leadError } = await supabase
-      .from('leads')
-      .select('*')
-      .eq('id', leadId)
+      .from("leads")
+      .select("*")
+      .eq("id", leadId)
       .single();
-    
+
     if (leadError) throw new Error(leadError.message);
-    
+
     // Create a customer from the lead
     const { data: customer, error: customerError } = await supabase
-      .from('customers')
+      .from("customers")
       .insert({
         name: lead.name,
         email: lead.email,
         phone: lead.phone,
-        status: 'active',
+        status: "active",
         source: lead.source,
         notes: lead.notes,
-        user_id: lead.user_id
+        user_id: lead.user_id,
       })
       .select()
       .single();
-    
+
     if (customerError) throw new Error(customerError.message);
-    
+
     // Update the lead status
     const { error: updateError } = await supabase
-      .from('leads')
-      .update({ 
-        status: 'converted', 
-        updated_at: new Date().toISOString() 
+      .from("leads")
+      .update({
+        status: "converted",
+        updated_at: new Date().toISOString(),
       })
-      .eq('id', leadId);
-    
+      .eq("id", leadId);
+
     if (updateError) throw new Error(updateError.message);
-    
+
     return { lead, customer };
   }
 
@@ -147,10 +145,10 @@ export class CrmApi {
   static async getProjects() {
     const supabase = createClient();
     const { data, error } = await supabase
-      .from('projects')
-      .select('*, customers(name, email)')
-      .order('updated_at', { ascending: false });
-    
+      .from("projects")
+      .select("*, customers(name, email)")
+      .order("updated_at", { ascending: false });
+
     if (error) throw new Error(error.message);
     return data;
   }
@@ -158,93 +156,92 @@ export class CrmApi {
   static async getProject(id: string) {
     const supabase = createClient();
     const { data, error } = await supabase
-      .from('projects')
-      .select('*, customers(*), communications(*)')
-      .eq('id', id)
+      .from("projects")
+      .select("*, customers(*), communications(*)")
+      .eq("id", id)
       .single();
-    
+
     if (error) throw new Error(error.message);
     return data;
   }
 
-  static async createProject(project: Omit<Project, 'id' | 'created_at' | 'updated_at'>) {
+  static async createProject(project: Omit<Project, "id" | "created_at" | "updated_at">) {
     const supabase = createClient();
-    const { data, error } = await supabase
-      .from('projects')
-      .insert(project)
-      .select()
-      .single();
-    
+    const { data, error } = await supabase.from("projects").insert(project).select().single();
+
     if (error) throw new Error(error.message);
     return data;
   }
 
-  static async updateProject(id: string, project: Partial<Omit<Project, 'id' | 'created_at' | 'updated_at'>>) {
+  static async updateProject(
+    id: string,
+    project: Partial<Omit<Project, "id" | "created_at" | "updated_at">>
+  ) {
     const supabase = createClient();
     const { data, error } = await supabase
-      .from('projects')
+      .from("projects")
       .update({ ...project, updated_at: new Date().toISOString() })
-      .eq('id', id)
+      .eq("id", id)
       .select()
       .single();
-    
+
     if (error) throw new Error(error.message);
     return data;
   }
 
   // Communications
-  static async addCommunication(communication: Omit<Communication, 'id' | 'created_at'>) {
+  static async addCommunication(communication: Omit<Communication, "id" | "created_at">) {
     const supabase = createClient();
     const { data, error } = await supabase
-      .from('communications')
+      .from("communications")
       .insert(communication)
       .select()
       .single();
-    
+
     if (error) throw new Error(error.message);
     return data;
   }
 
-  // Dashboard data
+  static async getCommunications(customerId?: string, leadId?: string) {
+    const supabase = createClient();
+    let query = supabase
+      .from("communications")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (customerId) {
+      query = query.eq("customer_id", customerId);
+    }
+
+    if (leadId) {
+      query = query.eq("lead_id", leadId);
+    }
+
+    const { data, error } = await query;
+
+    if (error) throw new Error(error.message);
+    return data;
+  }
+
+  // Dashboard stats
   static async getDashboardStats() {
     const supabase = createClient();
-    
-    // Get counts for various metrics
-    const [
-      { count: customerCount, error: customerError },
-      { count: leadCount, error: leadError },
-      { count: projectCount, error: projectError },
-      { count: activeProjectCount, error: activeProjectError }
-    ] = await Promise.all([
-      supabase.from('customers').select('*', { count: 'exact', head: true }),
-      supabase.from('leads').select('*', { count: 'exact', head: true })
-        .not('status', 'eq', 'converted').not('status', 'eq', 'lost'),
-      supabase.from('projects').select('*', { count: 'exact', head: true }),
-      supabase.from('projects').select('*', { count: 'exact', head: true })
-        .in('status', ['scheduled', 'in_progress'])
+
+    // Get counts for different entities
+    const [customersResult, leadsResult, projectsResult] = await Promise.all([
+      supabase.from("customers").select("id", { count: "exact" }),
+      supabase.from("leads").select("id", { count: "exact" }),
+      supabase.from("projects").select("id", { count: "exact" }),
     ]);
-    
-    if (customerError || leadError || projectError || activeProjectError) {
-      throw new Error('Error fetching dashboard stats');
-    }
-    
-    // Get recent activities
-    const { data: recentActivity, error: activityError } = await supabase
-      .from('communications')
-      .select('*, customers(name), leads(name)')
-      .order('created_at', { ascending: false })
-      .limit(5);
-    
-    if (activityError) throw new Error(activityError.message);
-    
+
+    if (customersResult.error) throw new Error(customersResult.error.message);
+    if (leadsResult.error) throw new Error(leadsResult.error.message);
+    if (projectsResult.error) throw new Error(projectsResult.error.message);
+
     return {
-      counts: {
-        customers: customerCount,
-        leads: leadCount,
-        projects: projectCount,
-        activeProjects: activeProjectCount
-      },
-      recentActivity
+      totalCustomers: customersResult.count || 0,
+      totalLeads: leadsResult.count || 0,
+      totalProjects: projectsResult.count || 0,
     };
   }
-} 
+}

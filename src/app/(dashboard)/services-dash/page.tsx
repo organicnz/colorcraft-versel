@@ -1,5 +1,4 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -8,7 +7,7 @@ import ServicesTable from "./_components/ServicesTable";
 export const dynamic = "force-dynamic";
 
 export default async function ServicesDashboardPage() {
-  const supabase = createServerComponentClient({ cookies });
+  const supabase = createClient();
   
   // Check if user is logged in
   const { data: { session } } = await supabase.auth.getSession();

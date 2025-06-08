@@ -1,5 +1,4 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { SidebarNav, sidebarNavItems } from "./_components/sidebar-nav";
@@ -13,9 +12,9 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   let connectionError = null;
-  const supabase = createServerComponentClient({ cookies });
+  const supabase = createClient();
   
-  // Check if user is authenticated
+  // Get current session (middleware already checks auth, but we need user info)
   const { data: { session } } = await supabase.auth.getSession();
   
   if (!session) {

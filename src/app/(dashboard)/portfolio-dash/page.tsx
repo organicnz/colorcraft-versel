@@ -1,5 +1,4 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import PortfolioTable from "./_components/PortfolioTable";
@@ -7,7 +6,7 @@ import PortfolioTable from "./_components/PortfolioTable";
 export const dynamic = "force-dynamic";
 
 export default async function PortfolioDashboardPage() {
-  const supabase = createServerComponentClient({ cookies });
+  const supabase = createClient();
 
   const { data: { session } } = await supabase.auth.getSession();
 

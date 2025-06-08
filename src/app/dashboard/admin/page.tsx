@@ -17,8 +17,8 @@ export default async function AdminDashboardPage() {
     redirect("/signin");
   }
   
-  // Check if user has admin role (you would implement this based on your auth setup)
-  const { data: user } = await supabase.from("profiles").select("*").eq("id", session.user.id).single();
+  // Check if user has admin role
+  const { data: user } = await supabase.from("users").select("role").eq("id", session.user.id).single();
   const isAdmin = user?.role === "admin";
   
   if (!isAdmin) {

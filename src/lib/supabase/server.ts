@@ -9,22 +9,9 @@ const createDummyCookieHandlers = () => ({
   remove: () => {},
 });
 
-// Memoize client to prevent repeated initialization
-let cachedClient: ReturnType<typeof createServerClient> | null = null;
-let initializationAttempts = 0;
-const MAX_INIT_ATTEMPTS = 3;
-
 // Create a version that works during build time and runtime
-export const createClient = async () => {
-  // Return cached client if available (improves performance in server components)
-  if (cachedClient) {
-    return cachedClient;
-  }
-
+export const createClient = () => {
   try {
-    // Increment initialization attempts
-    initializationAttempts++;
-
     // Check for missing environment variables - fail gracefully in production
     if (!env.NEXT_PUBLIC_SUPABASE_URL || !env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
       console.error("Missing Supabase environment variables");
@@ -36,51 +23,29 @@ export const createClient = async () => {
 
     // During build, provide a dummy implementation that won't fail
     if (process.env.NODE_ENV === "production" && typeof window === "undefined") {
-      cachedClient = createServerClient(
-        env.NEXT_PUBLIC_SUPABASE_URL,
-        env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-        { cookies: createDummyCookieHandlers() }
-      );
-      return cachedClient;
+      return createServerClient(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_ANON_KEY, {
+        cookies: createDummyCookieHandlers(),
+      });
     }
 
-    // In actual server runtime, dynamically import cookies
-    // This prevents build-time errors with next/headers
-    const cookieStore = await cookies();
+    // In actual server runtime, use cookies
+    const cookieStore = cookies();
 
-    cachedClient = createServerClient(
-      env.NEXT_PUBLIC_SUPABASE_URL,
-      env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-      {
-        cookies: {
-          get(name: string) {
-            return cookieStore.get(name)?.value;
-          },
-          set(name: string, value: string, options: any) {
-            cookieStore.set(name, value, options);
-          },
-          remove(name: string, options: any) {
-            cookieStore.set(name, "", { ...options, maxAge: 0 });
-          },
+    return createServerClient(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_ANON_KEY, {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
         },
-      }
-    );
-
-    return cachedClient;
+        set(name: string, value: string, options: any) {
+          cookieStore.set(name, value, options);
+        },
+        remove(name: string, options: any) {
+          cookieStore.set(name, "", { ...options, maxAge: 0 });
+        },
+      },
+    });
   } catch (error) {
     console.error("Supabase client initialization error:", error);
-
-    // Log additional information to help debugging
-    if (initializationAttempts >= MAX_INIT_ATTEMPTS) {
-      console.error(
-        `Failed to initialize Supabase client after ${initializationAttempts} attempts`
-      );
-      console.error(`NEXT_PUBLIC_SUPABASE_URL defined: ${Boolean(env.NEXT_PUBLIC_SUPABASE_URL)}`);
-      console.error(
-        `NEXT_PUBLIC_SUPABASE_ANON_KEY defined: ${Boolean(env.NEXT_PUBLIC_SUPABASE_ANON_KEY)}`
-      );
-    }
-
     // Fallback to dummy client to prevent app crash
     return createDummyClient();
   }
@@ -88,30 +53,16 @@ export const createClient = async () => {
 
 // Create a dummy client that won't crash but won't work either
 function createDummyClient() {
-  // If we already have a cached dummy client, return it
-  if (cachedClient) {
-    return cachedClient;
-  }
-
-  // Create a new dummy client
-  cachedClient = createServerClient(
+  return createServerClient(
     env.NEXT_PUBLIC_SUPABASE_URL || "https://example.supabase.co",
     env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "dummy-key",
     { cookies: createDummyCookieHandlers() }
   );
-
-  return cachedClient;
-}
-
-// Reset cache when needed (useful for testing)
-export function clearClientCache() {
-  cachedClient = null;
-  initializationAttempts = 0;
 }
 
 // Simplified auth helper for server actions and server components
 export async function auth() {
-  const supabase = await createClient();
+  const supabase = createClient();
   try {
     return await supabase.auth.getSession();
   } catch (error) {

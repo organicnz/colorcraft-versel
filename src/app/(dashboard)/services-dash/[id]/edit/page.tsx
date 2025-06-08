@@ -1,5 +1,4 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { notFound } from "next/navigation";
 import ServiceForm from "../../_components/ServiceForm";
@@ -14,34 +13,13 @@ export default async function EditServicePage({
 }: {
   params: { id: string };
 }) {
-  const supabase = createServerComponentClient({ cookies });
+  const supabase = createClient();
   
-  // Check if user is authenticated
+  // Get current session (middleware already checks auth, but we need user info)
   const { data: { session } } = await supabase.auth.getSession();
   
   if (!session) {
     redirect("/auth/signin");
-  }
-  
-  // Check if user is admin
-  const { data: userData, error: userError } = await supabase
-    .from("users")
-    .select("role")
-    .eq("id", session.user.id)
-    .single();
-  
-  if (userError || !userData || userData.role !== "admin") {
-    return (
-      <div className="container py-10">
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Access Denied</AlertTitle>
-          <AlertDescription>
-            You don't have permission to access this page.
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
   }
 
   // Fetch the service

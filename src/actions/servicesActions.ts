@@ -1,15 +1,14 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
-import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/lib/supabase/server";
 import { serviceSchema, type ServiceFormData } from "@/lib/schemas/service.schema";
 
 export async function createService(formData: ServiceFormData) {
   try {
     // Validate form data
     const validatedFields = serviceSchema.safeParse(formData);
-    
+
     if (!validatedFields.success) {
       return {
         error: "Invalid form data. Please check your entries.",
@@ -20,11 +19,13 @@ export async function createService(formData: ServiceFormData) {
     const { id, ...serviceData } = validatedFields.data;
 
     // Initialize Supabase client
-    const supabase = createServerActionClient({ cookies });
-    
+    const supabase = createClient();
+
     // Get user session to verify permissions
-    const { data: { session } } = await supabase.auth.getSession();
-    
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
     if (!session) {
       return { error: "You must be logged in to create services" };
     }
@@ -46,11 +47,7 @@ export async function createService(formData: ServiceFormData) {
     }
 
     // Insert service
-    const { data, error } = await supabase
-      .from("services")
-      .insert([serviceData])
-      .select()
-      .single();
+    const { data, error } = await supabase.from("services").insert([serviceData]).select().single();
 
     if (error) {
       console.error("Database error:", error);
@@ -69,7 +66,7 @@ export async function updateService(formData: ServiceFormData) {
   try {
     // Validate form data
     const validatedFields = serviceSchema.safeParse(formData);
-    
+
     if (!validatedFields.success) {
       return {
         error: "Invalid form data. Please check your entries.",
@@ -78,17 +75,19 @@ export async function updateService(formData: ServiceFormData) {
     }
 
     const { id, ...serviceData } = validatedFields.data;
-    
+
     if (!id) {
       return { error: "Service ID is required for updates" };
     }
 
     // Initialize Supabase client
-    const supabase = createServerActionClient({ cookies });
-    
+    const supabase = createClient();
+
     // Get user session to verify permissions
-    const { data: { session } } = await supabase.auth.getSession();
-    
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
     if (!session) {
       return { error: "You must be logged in to update services" };
     }
@@ -138,11 +137,13 @@ export async function deleteService(id: string) {
     }
 
     // Initialize Supabase client
-    const supabase = createServerActionClient({ cookies });
-    
+    const supabase = createClient();
+
     // Get user session to verify permissions
-    const { data: { session } } = await supabase.auth.getSession();
-    
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
     if (!session) {
       return { error: "You must be logged in to delete services" };
     }
@@ -164,10 +165,7 @@ export async function deleteService(id: string) {
     }
 
     // Delete service
-    const { error } = await supabase
-      .from("services")
-      .delete()
-      .eq("id", id);
+    const { error } = await supabase.from("services").delete().eq("id", id);
 
     if (error) {
       console.error("Database error:", error);
@@ -189,23 +187,42 @@ export async function getServiceById(id: string) {
     }
 
     // Initialize Supabase client
-    const supabase = createServerActionClient({ cookies });
-    
+    const supabase = createClient();
+
     // Get service
-    const { data, error } = await supabase
-      .from("services")
-      .select("*")
-      .eq("id", id)
-      .single();
+    const { data, error } = await supabase.from("services").select("*").eq("id", id).single();
 
     if (error) {
       console.error("Database error:", error);
       return { error: "Failed to fetch service" };
     }
 
-    return { data };
+    return { data, error: null };
   } catch (error) {
     console.error("Service fetch error:", error);
     return { error: "An unexpected error occurred" };
   }
-} 
+}
+
+export async function getServices() {
+  try {
+    // Initialize Supabase client
+    const supabase = createClient();
+
+    // Get all services
+    const { data, error } = await supabase
+      .from("services")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Database error:", error);
+      return { error: "Failed to fetch services" };
+    }
+
+    return { data, error: null };
+  } catch (error) {
+    console.error("Services fetch error:", error);
+    return { error: "An unexpected error occurred" };
+  }
+}

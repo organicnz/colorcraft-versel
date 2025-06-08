@@ -1,13 +1,10 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { cookies } from "next/headers";
-import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
-import { Plus } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { ServicesTable } from "./_components/ServicesTable";
-import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { PlusCircle } from "lucide-react";

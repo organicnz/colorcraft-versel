@@ -1,4 +1,4 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/lib/supabase/server";
 import { cookies } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import ServiceForm from "../_components/ServiceForm";
@@ -8,7 +8,7 @@ import { AlertTriangle } from "lucide-react";
 export const dynamic = "force-dynamic";
 
 export default async function NewServicePage() {
-  const supabase = createServerComponentClient({ cookies });
+  const supabase = createClient();
   
   // Check if user is logged in
   const { data: { session } } = await supabase.auth.getSession();

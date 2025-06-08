@@ -1,4 +1,4 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/lib/supabase/server";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import ServiceForm from "../../_components/ServiceForm";
@@ -16,7 +16,7 @@ interface EditServicePageProps {
 
 export default async function EditServicePage({ params }: EditServicePageProps) {
   const { id } = params;
-  const supabase = createServerComponentClient({ cookies });
+  const supabase = createClient();
   const { data: { session } } = await supabase.auth.getSession();
 
   if (!session) {
