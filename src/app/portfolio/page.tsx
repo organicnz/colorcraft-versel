@@ -122,9 +122,6 @@ export default function PortfolioPage() {
         }>
           <PortfolioGrid />
         </Suspense>
-
-        {/* Editorial Button - Floating variant for all screens */}
-        <EditorialButton variant="floating" />
       </div>
     </div>
   );
