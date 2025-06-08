@@ -2,37 +2,72 @@ import { Suspense } from 'react';
 import { Card } from '@/components/ui/card';
 import EditorialButton from '@/components/portfolio/EditorialButton';
 import PortfolioItem from '@/components/portfolio/PortfolioItem';
-import { getPortfolioProjects } from '@/services/portfolio.service';
+
+// Static portfolio data to avoid SSR issues
+const SAMPLE_PROJECTS = [
+  {
+    id: "1",
+    title: "Vintage Dresser Transformation",
+    brief_description: "A stunning makeover of a 1960s dresser using chalk paint and new hardware",
+    description: "This beautiful vintage dresser was given new life with a fresh coat of chalk paint and elegant gold hardware.",
+    after_images: ["/images/portfolio/dresser-after-1.jpg", "/images/portfolio/dresser-after-2.jpg"],
+    before_images: ["/images/portfolio/dresser-before.jpg"],
+    techniques: ["Chalk Paint", "Sanding", "Hardware Replacement"],
+    materials: ["Annie Sloan Chalk Paint", "Gold Hardware", "Wax Finish"],
+    is_featured: true,
+    completion_date: "2024-01-15",
+    client_name: "Sarah Johnson",
+    client_testimonial: "Absolutely loved the transformation! The dresser looks brand new.",
+    created_at: "2024-01-15T00:00:00Z",
+  },
+  {
+    id: "2",
+    title: "Farmhouse Kitchen Table",
+    brief_description: "Rustic farmhouse table restoration with distressed finish",
+    description: "A family heirloom table restored to its former glory with a rustic farmhouse aesthetic.",
+    after_images: ["/images/portfolio/table-after-1.jpg"],
+    before_images: ["/images/portfolio/table-before.jpg"],
+    techniques: ["Sanding", "Staining", "Distressing"],
+    materials: ["Wood Stain", "Polyurethane Finish"],
+    is_featured: false,
+    completion_date: "2024-02-01",
+    client_name: "Mike Thompson",
+    client_testimonial: "The table looks amazing and fits perfectly in our farmhouse kitchen!",
+    created_at: "2024-02-01T00:00:00Z",
+  },
+  {
+    id: "3",
+    title: "Modern Bookshelf Makeover",
+    brief_description: "Contemporary styling with clean lines and bold colors",
+    description: "Transformed an old bookshelf into a modern statement piece with clean lines and vibrant color.",
+    after_images: ["/images/portfolio/bookshelf-after.jpg"],
+    before_images: ["/images/portfolio/bookshelf-before.jpg"],
+    techniques: ["Priming", "Spray Painting", "Modern Hardware"],
+    materials: ["Primer", "Acrylic Paint", "Chrome Hardware"],
+    is_featured: true,
+    completion_date: "2024-02-15",
+    client_name: "Lisa Chen",
+    client_testimonial: "Perfect for my modern apartment. Such great craftsmanship!",
+    created_at: "2024-02-15T00:00:00Z",
+  },
+];
 
 export const metadata = {
   title: 'Portfolio | Color & Craft',
   description: 'Explore our furniture restoration and transformation projects',
 };
 
-async function PortfolioGrid() {
-  const projects = await getPortfolioProjects();
-
-  if (!projects || projects.length === 0) {
-    return (
-      <div className="text-center py-16 border rounded-md bg-muted/30">
-        <h2 className="text-2xl font-medium mb-2">No portfolio projects yet</h2>
-        <p className="text-muted-foreground">
-          Check back soon for our latest furniture restoration projects.
-        </p>
-      </div>
-    );
-  }
-
+function PortfolioGrid() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {projects.map((project) => (
+      {SAMPLE_PROJECTS.map((project) => (
         <PortfolioItem key={project.id} project={project} />
       ))}
     </div>
   );
 }
 
-export default async function PortfolioPage() {
+export default function PortfolioPage() {
   return (
     <div className="container py-12 relative">
       {/* Background glass effects */}
