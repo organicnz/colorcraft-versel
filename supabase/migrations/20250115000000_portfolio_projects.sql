@@ -1,8 +1,8 @@
 -- Portfolio Projects Table Migration
--- This creates the portfolio projects table separate from the CRM projects table
+-- This creates the portfolio table for the application
 
--- Create portfolio_projects table
-CREATE TABLE IF NOT EXISTS portfolio_projects (
+-- Create portfolio table (matches application code expectations)
+CREATE TABLE IF NOT EXISTS portfolio (
   id uuid default uuid_generate_v4() primary key,
   title text not null,
   description text,
@@ -20,16 +20,16 @@ CREATE TABLE IF NOT EXISTS portfolio_projects (
 );
 
 -- Enable Row Level Security
-ALTER TABLE portfolio_projects ENABLE ROW LEVEL SECURITY;
+ALTER TABLE portfolio ENABLE ROW LEVEL SECURITY;
 
--- Portfolio projects policies - viewable by everyone
+-- Portfolio policies - viewable by everyone
 CREATE POLICY "Portfolio projects are viewable by everyone."
-  ON portfolio_projects FOR SELECT
+  ON portfolio FOR SELECT
   USING (true);
 
 -- Only admins can insert portfolio projects
 CREATE POLICY "Only admins can insert portfolio projects."
-  ON portfolio_projects FOR INSERT
+  ON portfolio FOR INSERT
   WITH CHECK (
     EXISTS (
       SELECT 1 FROM users
@@ -39,7 +39,7 @@ CREATE POLICY "Only admins can insert portfolio projects."
 
 -- Only admins can update portfolio projects
 CREATE POLICY "Only admins can update portfolio projects."
-  ON portfolio_projects FOR UPDATE
+  ON portfolio FOR UPDATE
   USING (
     EXISTS (
       SELECT 1 FROM users
@@ -49,7 +49,7 @@ CREATE POLICY "Only admins can update portfolio projects."
 
 -- Only admins can delete portfolio projects
 CREATE POLICY "Only admins can delete portfolio projects."
-  ON portfolio_projects FOR DELETE
+  ON portfolio FOR DELETE
   USING (
     EXISTS (
       SELECT 1 FROM users
@@ -58,12 +58,12 @@ CREATE POLICY "Only admins can delete portfolio projects."
   );
 
 -- Create indexes for better performance
-CREATE INDEX IF NOT EXISTS portfolio_projects_featured_idx ON portfolio_projects(is_featured);
-CREATE INDEX IF NOT EXISTS portfolio_projects_created_at_idx ON portfolio_projects(created_at);
-CREATE INDEX IF NOT EXISTS portfolio_projects_completion_date_idx ON portfolio_projects(completion_date);
+CREATE INDEX IF NOT EXISTS portfolio_featured_idx ON portfolio(is_featured);
+CREATE INDEX IF NOT EXISTS portfolio_created_at_idx ON portfolio(created_at);
+CREATE INDEX IF NOT EXISTS portfolio_completion_date_idx ON portfolio(completion_date);
 
 -- Create trigger for updated_at
-CREATE TRIGGER update_portfolio_projects_updated_at
-  BEFORE UPDATE ON portfolio_projects
+CREATE TRIGGER update_portfolio_updated_at
+  BEFORE UPDATE ON portfolio
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column(); 
