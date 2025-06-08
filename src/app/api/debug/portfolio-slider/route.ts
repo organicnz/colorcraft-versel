@@ -1,82 +1,38 @@
 import { NextResponse } from 'next/server';
-import { getPortfolioProjects } from '@/services/portfolio.service';
+import { getPortfolioProjects } from '@/lib/db/schema/portfolio';
 
 export async function GET() {
   try {
-    console.log('🔍 Debug: Testing portfolio slider data fetch...');
-    
-    // Test the exact same call that the home page makes
-    const featuredProjects = await getPortfolioProjects({
-      featuredOnly: true,
-      useAdmin: true, // Use admin client to bypass RLS for public portfolio display
-      orderBy: [
-        { column: 'completion_date', ascending: false }
-      ]
-    });
+    console.log('Debug: Fetching featured portfolio projects...');
+    const projects = await getPortfolioProjects({ featuredOnly: true });
 
-    console.log('📊 Debug: Featured projects result:', {
-      count: featuredProjects.length,
-      projects: featuredProjects.map(p => ({
-        id: p.id,
-        title: p.title,
-        is_featured: p.is_featured,
-        completion_date: p.completion_date
-      }))
-    });
-
-    // Transform database projects to match the expected format for the UI (same as home page)
-    const transformedProjects = featuredProjects.slice(0, 4).map((project) => ({
+    console.log('Debug: Raw projects from database:', JSON.stringify(projects, null, 2));
+    // Transform the data like the homepage does
+    const transformedData = projects.map(project => ({
       id: project.id,
       title: project.title,
-      description: project.brief_description || project.description,
-      material: project.materials?.join(', ') || 'Custom finish',
-      image: project.after_images?.[0] || "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800",
-      price: "Contact for pricing",
-      raw_data: {
-        brief_description: project.brief_description,
-        description: project.description,
-        materials: project.materials,
-        after_images: project.after_images,
-        is_featured: project.is_featured,
-        completion_date: project.completion_date
-      }
+      description: project.brief_description || project.description || "Beautiful furniture transformation",
+      beforeImage: project.before_images?.[0] || 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80',
+      afterImage: project.after_images?.[0] || 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80',
+      materials: project.materials ? project.materials.join(', ') : 'Premium paint and finishes',
+      rawProject: project
     }));
-
-    // Test without admin as well
-    const featuredProjectsNoAdmin = await getPortfolioProjects({
-      featuredOnly: true,
-      useAdmin: false, // Regular client
-      orderBy: [
-        { column: 'completion_date', ascending: false }
-      ]
-    });
-
     return NextResponse.json({
       success: true,
-      message: 'Portfolio slider debug complete',
-      results: {
-        with_admin: {
-          count: featuredProjects.length,
-          projects: transformedProjects
-        },
-        without_admin: {
-          count: featuredProjectsNoAdmin.length,
-          projects: featuredProjectsNoAdmin.map(p => ({
-            id: p.id,
-            title: p.title,
-            is_featured: p.is_featured
-          }))
-        },
-        fallback_data: transformedProjects.length > 0 ? "Using database data" : "Would use fallback samples"
+      count: projects.length,
+      rawProjects: projects,
+      transformedData,
+      debug: {
+        message: 'This shows exactly what data the homepage slider is working with',
+        timestamp: new Date().toISOString()
       }
     });
-
-  } catch (error: any) {
-    console.error('🚨 Debug: Portfolio slider error:', error);
+  } catch (error) {
+    console.error('Debug endpoint error:', error);
     return NextResponse.json({
       success: false,
-      error: error.message,
-      stack: error.stack
+      error: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
     }, { status: 500 });
   }
 } 
