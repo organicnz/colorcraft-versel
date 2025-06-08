@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -21,10 +21,28 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { createPortfolioProject, updatePortfolioProject } from "@/actions/portfolioActions";
-import { CalendarIcon, ImageIcon, Wrench, Palette, User, Star, Quote } from "lucide-react";
+import {
+  createPortfolioProject,
+  updatePortfolioProject,
+  publishPortfolioProject,
+  unpublishPortfolioProject,
+} from "@/actions/portfolioActions";
+import {
+  CalendarIcon,
+  ImageIcon,
+  Wrench,
+  Palette,
+  User,
+  Star,
+  Quote,
+  Save,
+  Eye,
+  EyeOff,
+  Upload,
+} from "lucide-react";
+import ImageUpload from "@/components/ui/image-upload";
 
-// Define portfolio schema matching the database structure
+// Define portfolio schema matching the database structure with draft/published states
 export const portfolioSchema = z.object({
   id: z.string().optional(),
   title: z.string().min(1, "Title is required"),
@@ -38,116 +56,268 @@ export const portfolioSchema = z.object({
   client_name: z.string().optional(),
   client_testimonial: z.string().optional(),
   is_featured: z.boolean().default(false),
+  is_published: z.boolean().default(false),
+  is_draft: z.boolean().default(true),
 });
 
 export type PortfolioFormData = z.infer<typeof portfolioSchema>;
 
 interface PortfolioFormProps {
-  initialData?: PortfolioFormData;
+  initialData?: Partial<PortfolioFormData>;
   isEditing?: boolean;
 }
 
-export default function PortfolioForm({ initialData, isEditing = false }: PortfolioFormProps) {
-  const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+// Helper function to ensure array parsing
+function ensureArray(value: any): string[] {
+  if (!value) return [];
 
-  // Helper function to ensure arrays are properly formatted
-  const ensureArray = (value: any): string[] => {
-    if (!value) return [];
-    if (Array.isArray(value)) return value;
-    if (typeof value === 'string') {
+  if (Array.isArray(value)) {
+    return value.filter((item) => item && typeof item === "string" && item.trim() !== "");
+  }
+
+  if (typeof value === "string") {
+    if (value.trim().startsWith("[") && value.trim().endsWith("]")) {
       try {
-        // Try to parse as JSON first
         const parsed = JSON.parse(value);
-        if (Array.isArray(parsed)) return parsed;
-        // If not JSON, split by comma
-        return value.split(',').map(item => item.trim()).filter(Boolean);
+        return Array.isArray(parsed)
+          ? parsed.filter((item) => item && typeof item === "string" && item.trim() !== "")
+          : [];
       } catch {
-        // If JSON parsing fails, split by comma
-        return value.split(',').map(item => item.trim()).filter(Boolean);
+        return value
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean);
       }
+    } else {
+      return value
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean);
     }
-    return [];
-  };
+  }
 
-  // Process initial data to ensure arrays are properly formatted
-  const processedInitialData = initialData ? {
-    ...initialData,
-    before_images: ensureArray(initialData.before_images),
-    after_images: ensureArray(initialData.after_images),
-    techniques: ensureArray(initialData.techniques),
-    materials: ensureArray(initialData.materials),
-  } : undefined;
+  return [];
+}
 
-  const form = useForm({
+// Helper function to parse comma-separated arrays
+function parseArrayField(value: string): string[] {
+  if (!value || value.trim() === "") return [];
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+export default function PortfolioForm({ initialData, isEditing = false }: PortfolioFormProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [portfolioId, setPortfolioId] = useState<string>(initialData?.id || "");
+  const [isDraft, setIsDraft] = useState(initialData?.is_draft ?? true);
+  const [isPublished, setIsPublished] = useState(initialData?.is_published ?? false);
+  const router = useRouter();
+
+  const form = useForm<PortfolioFormData>({
     resolver: zodResolver(portfolioSchema),
-    defaultValues: processedInitialData || {
-      title: "",
-      brief_description: "",
-      description: "",
-      before_images: [],
-      after_images: [],
-      techniques: [],
-      materials: [],
-      completion_date: "",
-      client_name: "",
-      client_testimonial: "",
-      is_featured: false,
+    defaultValues: {
+      id: initialData?.id || "",
+      title: initialData?.title || "",
+      brief_description: initialData?.brief_description || "",
+      description: initialData?.description || "",
+      before_images: ensureArray(initialData?.before_images) || [],
+      after_images: ensureArray(initialData?.after_images) || [],
+      techniques: ensureArray(initialData?.techniques) || [],
+      materials: ensureArray(initialData?.materials) || [],
+      completion_date: initialData?.completion_date || "",
+      client_name: initialData?.client_name || "",
+      client_testimonial: initialData?.client_testimonial || "",
+      is_featured: initialData?.is_featured || false,
+      is_published: initialData?.is_published || false,
+      is_draft: initialData?.is_draft ?? true,
     },
   });
 
-  // Helper function to convert array strings to actual arrays
-  const parseArrayField = (value: string): string[] => {
-    if (!value || !value.trim()) return [];
-    return value.split(',').map(item => item.trim()).filter(Boolean);
-  };
+  // Watch form values to sync with local state
+  const watchedIsPublished = form.watch("is_published");
+  const watchedIsDraft = form.watch("is_draft");
 
-  async function onSubmit(values: PortfolioFormData) {
+  useEffect(() => {
+    setIsPublished(watchedIsPublished);
+    setIsDraft(watchedIsDraft);
+  }, [watchedIsPublished, watchedIsDraft]);
+
+  const onSubmit = async (data: PortfolioFormData) => {
     setIsSubmitting(true);
+
     try {
-      // Convert to FormData for server action
       const formData = new FormData();
 
-      Object.entries(values).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
-          formData.append(key, JSON.stringify(value));
-        } else if (value !== undefined && value !== null) {
-          formData.append(key, String(value));
+      // Append all form fields
+      Object.entries(data).forEach(([key, value]) => {
+        if (
+          key === "before_images" ||
+          key === "after_images" ||
+          key === "techniques" ||
+          key === "materials"
+        ) {
+          // Convert arrays to comma-separated strings for FormData
+          const arrayValue = Array.isArray(value) ? value.join(", ") : String(value || "");
+          formData.append(key, arrayValue);
+        } else if (typeof value === "boolean") {
+          formData.append(key, value.toString());
+        } else {
+          formData.append(key, String(value || ""));
         }
       });
 
       let result;
-      if (isEditing && initialData?.id) {
-        result = await updatePortfolioProject(initialData.id, formData);
+      if (isEditing && portfolioId) {
+        result = await updatePortfolioProject(portfolioId, formData);
       } else {
         result = await createPortfolioProject(formData);
+        // For new projects, get the generated UUID
+        if (result.success && result.data?.id) {
+          setPortfolioId(result.data.id);
+        }
       }
 
       if (result.error) {
         toast.error(result.error);
       } else {
-        toast.success(isEditing ? "Project updated successfully" : "Project created successfully");
-        router.push("/portfolio-dash");
-        router.refresh();
+        toast.success(result.message || "Portfolio saved successfully!");
+        if (!isEditing) {
+          // Redirect to edit mode for new projects so they can upload images
+          router.push(`/portfolio-dash/${result.data.id}/edit`);
+        } else {
+          router.push("/portfolio-dash");
+        }
       }
     } catch (error) {
-      toast.error("An error occurred. Please try again.");
-      console.error(error);
+      console.error("Form submission error:", error);
+      toast.error("An unexpected error occurred");
     } finally {
       setIsSubmitting(false);
     }
-  }
+  };
+
+  const handlePublishToggle = async () => {
+    if (!portfolioId) {
+      toast.error("Please save the portfolio first before publishing");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      let result;
+      if (isPublished) {
+        result = await unpublishPortfolioProject(portfolioId);
+      } else {
+        result = await publishPortfolioProject(portfolioId);
+      }
+
+      if (result.error) {
+        toast.error(result.error);
+      } else {
+        toast.success(result.message);
+        setIsPublished(!isPublished);
+        setIsDraft(isPublished); // If unpublishing, becomes draft
+        form.setValue("is_published", !isPublished);
+        form.setValue("is_draft", isPublished);
+      }
+    } catch (error) {
+      console.error("Publish toggle error:", error);
+      toast.error("Failed to update publication status");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleImagesChange = (category: "before" | "after", images: string[]) => {
+    if (category === "before") {
+      form.setValue("before_images", images);
+    } else {
+      form.setValue("after_images", images);
+    }
+  };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+    <div className="max-w-4xl mx-auto p-6 space-y-8">
+      {/* Header with Status */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">
+            {isEditing ? "Edit Portfolio Project" : "Create Portfolio Project"}
+          </h1>
+          <p className="text-gray-600 mt-2">
+            {isEditing
+              ? "Update your portfolio project details and manage publication status"
+              : "Start creating a new portfolio project. It will be saved as a draft with a unique UUID."}
+          </p>
+        </div>
 
-            {/* Basic Information */}
+        {portfolioId && (
+          <div className="flex items-center gap-3">
+            <Badge variant={isPublished ? "default" : "secondary"} className="px-3 py-1">
+              {isPublished ? (
+                <>
+                  <Eye className="w-3 h-3 mr-1" />
+                  Published
+                </>
+              ) : (
+                <>
+                  <EyeOff className="w-3 h-3 mr-1" />
+                  Draft
+                </>
+              )}
+            </Badge>
+
+            {isEditing && (
+              <Button
+                type="button"
+                variant={isPublished ? "outline" : "default"}
+                onClick={handlePublishToggle}
+                disabled={isSubmitting}
+                className="gap-2"
+              >
+                {isPublished ? (
+                  <>
+                    <EyeOff className="w-4 h-4" />
+                    Unpublish
+                  </>
+                ) : (
+                  <>
+                    <Eye className="w-4 h-4" />
+                    Publish
+                  </>
+                )}
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Portfolio UUID Display */}
+      {portfolioId && (
+        <Card className="bg-blue-50 border-blue-200">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-blue-900">Portfolio UUID</p>
+                <p className="text-xs text-blue-700 font-mono">{portfolioId}</p>
+              </div>
+              <div className="text-xs text-blue-600">
+                <p>Storage Path: portfolio/{portfolioId}/</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          {/* Basic Information */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Palette className="w-5 h-5" />
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <ImageIcon className="h-5 w-5 text-blue-600" />
                 Basic Information
               </CardTitle>
             </CardHeader>
@@ -157,10 +327,17 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Project Title</FormLabel>
+                    <FormLabel className="text-base font-medium">Project Title</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., Vintage Dresser Restoration" {...field} />
+                      <Input
+                        placeholder="e.g., Vintage Dresser Restoration"
+                        {...field}
+                        className="text-base"
+                      />
                     </FormControl>
+                    <FormDescription>
+                      Give your project a descriptive and engaging title
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -171,16 +348,16 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                 name="brief_description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Brief Description</FormLabel>
+                    <FormLabel className="text-base font-medium">Brief Description</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Short, compelling summary of the project"
-                        className="min-h-20"
+                        placeholder="A short, compelling summary of this project..."
+                        className="min-h-[80px] text-base"
                         {...field}
                       />
                     </FormControl>
                     <FormDescription>
-                      This will be displayed in project cards and previews
+                      A concise overview that will appear in portfolio previews (1-2 sentences)
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -192,17 +369,16 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Full Description</FormLabel>
+                    <FormLabel className="text-base font-medium">Detailed Description</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Detailed project description, process, and results"
-                        className="min-h-32"
+                        placeholder="Provide a detailed description of the project, process, and results..."
+                        className="min-h-[120px] text-base"
                         {...field}
-                        value={field.value || ""}
                       />
                     </FormControl>
                     <FormDescription>
-                      Comprehensive details about the project, techniques used, and outcomes
+                      Full project details, techniques used, challenges overcome, etc.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -211,174 +387,155 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
             </CardContent>
           </Card>
 
-          {/* Images */}
+          {/* Image Upload Section */}
+          {portfolioId && (
+            <Card>
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Upload className="h-5 w-5 text-green-600" />
+                  Project Images
+                </CardTitle>
+                <p className="text-sm text-gray-600">
+                  Upload before and after images for your portfolio project. Images are organized
+                  automatically in your portfolio directory.
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-8">
+                {/* Before Images */}
+                <div>
+                  <h3 className="text-base font-medium mb-4 flex items-center gap-2">
+                    <ImageIcon className="h-4 w-4 text-orange-500" />
+                    Before Images
+                  </h3>
+                  <ImageUpload
+                    portfolioId={portfolioId}
+                    category="before"
+                    onImagesChange={(images) => handleImagesChange("before", images)}
+                    initialImages={form.watch("before_images")}
+                    maxImages={10}
+                  />
+                </div>
+
+                {/* After Images */}
+                <div>
+                  <h3 className="text-base font-medium mb-4 flex items-center gap-2">
+                    <ImageIcon className="h-4 w-4 text-green-500" />
+                    After Images
+                  </h3>
+                  <ImageUpload
+                    portfolioId={portfolioId}
+                    category="after"
+                    onImagesChange={(images) => handleImagesChange("after", images)}
+                    initialImages={form.watch("after_images")}
+                    maxImages={10}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Project Details */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ImageIcon className="w-5 h-5" />
-                Project Images
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Wrench className="h-5 w-5 text-orange-600" />
+                Project Details
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <FormField
-                control={form.control}
-                name="before_images"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Before Images</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Enter image URLs, one per line or comma-separated"
-                        className="min-h-20"
-                        value={Array.isArray(field.value) ? field.value.join('\n') : field.value || ''}
-                        onChange={(e) => {
-                          const urls = e.target.value.split(/[\n,]+/).map(url => url.trim()).filter(Boolean);
-                          field.onChange(urls);
-                        }}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Add URLs of before images. Enter one URL per line or separate with commas.
-                      {field.value && Array.isArray(field.value) && field.value.length > 0 && (
-                        <span className="block mt-1 text-sm text-green-600">
-                          ✓ {field.value.length} image{field.value.length > 1 ? 's' : ''} added
-                        </span>
-                      )}
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="techniques"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base font-medium flex items-center gap-2">
+                        <Palette className="h-4 w-4" />
+                        Techniques Used
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g., Chalk Paint, Distressing, Staining"
+                          value={
+                            Array.isArray(field.value)
+                              ? field.value.join(", ")
+                              : field.value
+                                ? String(field.value)
+                                : ""
+                          }
+                          onChange={(e) => {
+                            const parsed = parseArrayField(e.target.value);
+                            field.onChange(parsed);
+                          }}
+                          className="text-base"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Enter techniques separated by commas
+                        {field.value && Array.isArray(field.value) && field.value.length > 0 && (
+                          <Badge variant="secondary" className="ml-2">
+                            {field.value.length} technique{field.value.length !== 1 ? "s" : ""}
+                          </Badge>
+                        )}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="after_images"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>After Images</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Enter image URLs, one per line or comma-separated"
-                        className="min-h-20"
-                        value={Array.isArray(field.value) ? field.value.join('\n') : field.value || ''}
-                        onChange={(e) => {
-                          const urls = e.target.value.split(/[\n,]+/).map(url => url.trim()).filter(Boolean);
-                          field.onChange(urls);
-                        }}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Add URLs of after/completed images. Enter one URL per line or separate with commas.
-                      {field.value && Array.isArray(field.value) && field.value.length > 0 && (
-                        <span className="block mt-1 text-sm text-green-600">
-                          ✓ {field.value.length} image{field.value.length > 1 ? 's' : ''} added
-                        </span>
-                      )}
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
-
-          {/* Technical Details */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Wrench className="w-5 h-5" />
-                Technical Details
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <FormField
-                control={form.control}
-                name="techniques"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Techniques Used</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g., Sanding, Priming, Chalk Paint, Distressing"
-                        value={Array.isArray(field.value) ? field.value.join(', ') : (field.value ? String(field.value) : '')}
-                        onChange={(e) => {
-                          const techniques = parseArrayField(e.target.value);
-                          field.onChange(techniques);
-                        }}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      List the techniques used in this project, separated by commas
-                      {field.value && Array.isArray(field.value) && field.value.length > 0 && (
-                        <span className="block mt-1 text-sm text-green-600">
-                          ✓ {field.value.length} technique{field.value.length > 1 ? 's' : ''} added
-                        </span>
-                      )}
-                    </FormDescription>
-                    {field.value && Array.isArray(field.value) && field.value.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        {field.value.map((technique, index) => (
-                          <Badge key={index} variant="secondary">{technique}</Badge>
-                        ))}
-                      </div>
-                    )}
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="materials"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Materials Used</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g., Chalk Paint, Wood Stain, New Hardware, Fabric"
-                        value={Array.isArray(field.value) ? field.value.join(', ') : (field.value ? String(field.value) : '')}
-                        onChange={(e) => {
-                          const materials = parseArrayField(e.target.value);
-                          field.onChange(materials);
-                        }}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      List the materials used in this project, separated by commas
-                      {field.value && Array.isArray(field.value) && field.value.length > 0 && (
-                        <span className="block mt-1 text-sm text-green-600">
-                          ✓ {field.value.length} material{field.value.length > 1 ? 's' : ''} added
-                        </span>
-                      )}
-                    </FormDescription>
-                    {field.value && Array.isArray(field.value) && field.value.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        {field.value.map((material, index) => (
-                          <Badge key={index} variant="outline">{material}</Badge>
-                        ))}
-                      </div>
-                    )}
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="materials"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base font-medium flex items-center gap-2">
+                        <Wrench className="h-4 w-4" />
+                        Materials Used
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g., Sandpaper, Primer, Wood Stain"
+                          value={
+                            Array.isArray(field.value)
+                              ? field.value.join(", ")
+                              : field.value
+                                ? String(field.value)
+                                : ""
+                          }
+                          onChange={(e) => {
+                            const parsed = parseArrayField(e.target.value);
+                            field.onChange(parsed);
+                          }}
+                          className="text-base"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Enter materials separated by commas
+                        {field.value && Array.isArray(field.value) && field.value.length > 0 && (
+                          <Badge variant="secondary" className="ml-2">
+                            {field.value.length} material{field.value.length !== 1 ? "s" : ""}
+                          </Badge>
+                        )}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               <FormField
                 control={form.control}
                 name="completion_date"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Completion Date</FormLabel>
+                    <FormLabel className="text-base font-medium flex items-center gap-2">
+                      <CalendarIcon className="h-4 w-4" />
+                      Completion Date
+                    </FormLabel>
                     <FormControl>
-                      <Input
-                        type="date"
-                        {...field}
-                        value={field.value || ""}
-                      />
+                      <Input type="date" {...field} className="text-base" />
                     </FormControl>
-                    <FormDescription>
-                      When was this project completed?
-                    </FormDescription>
+                    <FormDescription>When was this project completed?</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -388,9 +545,9 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
 
           {/* Client Information */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <User className="w-5 h-5" />
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <User className="h-5 w-5 text-purple-600" />
                 Client Information
               </CardTitle>
             </CardHeader>
@@ -400,17 +557,11 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                 name="client_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Client Name</FormLabel>
+                    <FormLabel className="text-base font-medium">Client Name</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Client's name (optional)"
-                        {...field}
-                        value={field.value || ""}
-                      />
+                      <Input placeholder="e.g., Sarah Johnson" {...field} className="text-base" />
                     </FormControl>
-                    <FormDescription>
-                      The name of the client for this project (can be left blank for privacy)
-                    </FormDescription>
+                    <FormDescription>Client's name (optional)</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -421,17 +572,19 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                 name="client_testimonial"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Client Testimonial</FormLabel>
+                    <FormLabel className="text-base font-medium flex items-center gap-2">
+                      <Quote className="h-4 w-4" />
+                      Client Testimonial
+                    </FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="What did the client say about the project?"
-                        className="min-h-24"
+                        placeholder="Share what the client said about the project..."
+                        className="min-h-[100px] text-base"
                         {...field}
-                        value={field.value || ""}
                       />
                     </FormControl>
                     <FormDescription>
-                      A testimonial or review from the client about the completed project
+                      A quote or feedback from the client (optional)
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -440,30 +593,27 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
             </CardContent>
           </Card>
 
-          {/* Project Settings */}
+          {/* Settings */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Star className="w-5 h-5" />
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Star className="h-5 w-5 text-yellow-600" />
                 Project Settings
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent>
               <FormField
                 control={form.control}
                 name="is_featured"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                     <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
+                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel>Featured Project</FormLabel>
+                      <FormLabel className="text-base font-medium">Featured Project</FormLabel>
                       <FormDescription>
-                        Featured projects will be highlighted on the homepage and portfolio page
+                        Mark this project as featured to highlight it in your portfolio gallery
                       </FormDescription>
                     </div>
                   </FormItem>
@@ -472,26 +622,36 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
             </CardContent>
           </Card>
 
-          {/* Submit Buttons */}
-          <div className="flex justify-end gap-4 pt-6">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.push("/portfolio-dash")}
-              disabled={isSubmitting}
-            >
+          {/* Form Actions */}
+          <div className="flex items-center justify-between pt-6 border-t">
+            <Button type="button" variant="outline" onClick={() => router.push("/portfolio-dash")}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting
-                ? "Saving..."
-                : isEditing
-                ? "Update Project"
-                : "Create Project"}
-            </Button>
+
+            <div className="flex items-center gap-3">
+              <Button type="submit" disabled={isSubmitting} className="gap-2">
+                <Save className="w-4 h-4" />
+                {isSubmitting ? "Saving..." : isEditing ? "Update Portfolio" : "Create Draft"}
+              </Button>
+            </div>
           </div>
         </form>
       </Form>
+
+      {/* Save Notice for New Projects */}
+      {!isEditing && (
+        <Card className="bg-yellow-50 border-yellow-200">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2 text-yellow-800">
+              <Upload className="w-4 h-4" />
+              <p className="text-sm font-medium">
+                New projects are automatically saved as drafts with a unique UUID. After saving,
+                you'll be able to upload images.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
-} 
+}
