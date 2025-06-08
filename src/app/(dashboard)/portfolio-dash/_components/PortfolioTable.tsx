@@ -1,9 +1,9 @@
 "use client";
 
-import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { Button } from '@/components/ui/button';
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -11,28 +11,33 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { format } from 'date-fns';
-import { Badge } from '@/components/ui/badge';
-import { 
-  MoreHorizontal, 
-  Pencil, 
-  Trash2, 
-  Eye, 
+} from "@/components/ui/dropdown-menu";
+import { format } from "date-fns";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+  Eye,
   Star,
   ArrowUpDown,
   Calendar,
   CheckCircle,
-  Info
-} from 'lucide-react';
-import { 
+  Info,
+  ExternalLink,
+  Clock,
+  Camera,
+  Palette,
+} from "lucide-react";
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -42,11 +47,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { deletePortfolioProject } from '@/actions/portfolioActions';
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { deletePortfolioProject } from "@/actions/portfolioActions";
 
 // Define a type for the project props
 type Project = {
@@ -58,10 +63,11 @@ type Project = {
   after_images: string[];
   techniques?: string[];
   materials?: string[];
-  completion_date?: string; // Assuming ISO date format
+  completion_date?: string;
   client_name?: string;
   client_testimonial?: string;
   is_featured: boolean;
+  is_published?: boolean;
   created_at: string;
   updated_at?: string;
 };
@@ -74,57 +80,54 @@ export default function PortfolioTable({ projects }: PortfolioTableProps) {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = React.useState(false);
   const [deleteId, setDeleteId] = React.useState<string | null>(null);
-  const [sortField, setSortField] = React.useState<'title' | 'created_at' | 'is_featured'>('is_featured');
-  const [sortDirection, setSortDirection] = React.useState<'asc' | 'desc'>('desc');
+  const [sortField, setSortField] = React.useState<"title" | "created_at" | "is_featured">(
+    "is_featured"
+  );
+  const [sortDirection, setSortDirection] = React.useState<"asc" | "desc">("desc");
 
   // Sort projects based on current sort settings
   const sortedProjects = React.useMemo(() => {
     return [...projects].sort((a, b) => {
-      if (sortField === 'is_featured') {
-        // Sort by featured first, then by created_at
+      if (sortField === "is_featured") {
         if (a.is_featured === b.is_featured) {
-          return sortDirection === 'desc'
+          return sortDirection === "desc"
             ? new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
             : new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
         }
-        return sortDirection === 'desc'
-          ? (a.is_featured ? -1 : 1)
-          : (a.is_featured ? 1 : -1);
-      } else if (sortField === 'created_at') {
-        return sortDirection === 'desc'
+        return sortDirection === "desc" ? (a.is_featured ? -1 : 1) : a.is_featured ? 1 : -1;
+      } else if (sortField === "created_at") {
+        return sortDirection === "desc"
           ? new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
           : new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
       } else {
-        return sortDirection === 'desc'
+        return sortDirection === "desc"
           ? b.title.localeCompare(a.title)
           : a.title.localeCompare(b.title);
       }
     });
   }, [projects, sortField, sortDirection]);
 
-  const toggleSort = (field: 'title' | 'created_at' | 'is_featured') => {
+  const toggleSort = (field: "title" | "created_at" | "is_featured") => {
     if (sortField === field) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
       setSortField(field);
-      setSortDirection('desc');
+      setSortDirection("desc");
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this project?")) return;
-    
     setIsDeleting(true);
     setDeleteId(id);
-    
+
     try {
       const result = await deletePortfolioProject(id);
-      
+
       if (result.error) {
         toast.error(result.error);
       } else {
-        toast.success(result.message || "Project deleted successfully");
-        router.refresh(); // Refresh the page to reflect the deletion
+        toast.success(result.success || "Project deleted successfully");
+        router.refresh();
       }
     } catch (error: any) {
       console.error("Error deleting project:", error);
@@ -135,49 +138,252 @@ export default function PortfolioTable({ projects }: PortfolioTableProps) {
     }
   };
 
-  const getSortIcon = (field: 'title' | 'created_at' | 'is_featured') => {
+  const getSortIcon = (field: "title" | "created_at" | "is_featured") => {
     if (sortField !== field) return <ArrowUpDown className="h-4 w-4 ml-1 opacity-50" />;
-    return sortDirection === 'asc' 
-      ? <ArrowUpDown className="h-4 w-4 ml-1 rotate-180 text-primary" /> 
-      : <ArrowUpDown className="h-4 w-4 ml-1 text-primary" />;
+    return sortDirection === "asc" ? (
+      <ArrowUpDown className="h-4 w-4 ml-1 rotate-180 text-primary" />
+    ) : (
+      <ArrowUpDown className="h-4 w-4 ml-1 text-primary" />
+    );
+  };
+
+  const getProjectThumbnail = (project: Project) => {
+    const afterImage = project.after_images?.[0];
+    if (afterImage) {
+      return afterImage;
+    }
+    return null;
   };
 
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Title</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead>Created</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {sortedProjects.map((project) => (
-            <TableRow key={project.id}>
-              <TableCell className="font-medium">{project.title}</TableCell>
-              <TableCell>{project.brief_description}</TableCell>
-              <TableCell>{new Date(project.created_at).toLocaleDateString()}</TableCell>
-              <TableCell className="text-right space-x-2">
-                <Link href={`/portfolio-dash/${project.id}/edit`}>
-                  <Button variant="outline" size="sm">
-                    Edit
-                  </Button>
-                </Link>
-                <Button 
-                  variant="destructive" 
-                  size="sm" 
-                  onClick={() => handleDelete(project.id)}
-                  disabled={isDeleting && deleteId === project.id}
+    <TooltipProvider>
+      <div className="rounded-lg border-0 shadow-sm overflow-hidden bg-white dark:bg-slate-800">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-gradient-to-r from-slate-50 to-blue-50 dark:from-slate-800 dark:to-slate-700 hover:bg-gradient-to-r hover:from-slate-100 hover:to-blue-100 dark:hover:from-slate-700 dark:hover:to-slate-600">
+              <TableHead className="w-16"></TableHead>
+              <TableHead>
+                <Button
+                  variant="ghost"
+                  onClick={() => toggleSort("title")}
+                  className="h-auto p-0 font-semibold hover:bg-transparent"
                 >
-                  {isDeleting && deleteId === project.id ? "Deleting..." : "Delete"}
+                  Project
+                  {getSortIcon("title")}
                 </Button>
-              </TableCell>
+              </TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>
+                <Button
+                  variant="ghost"
+                  onClick={() => toggleSort("created_at")}
+                  className="h-auto p-0 font-semibold hover:bg-transparent"
+                >
+                  Created
+                  {getSortIcon("created_at")}
+                </Button>
+              </TableHead>
+              <TableHead>
+                <Button
+                  variant="ghost"
+                  onClick={() => toggleSort("is_featured")}
+                  className="h-auto p-0 font-semibold hover:bg-transparent"
+                >
+                  Featured
+                  {getSortIcon("is_featured")}
+                </Button>
+              </TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+          </TableHeader>
+          <TableBody>
+            {sortedProjects.map((project, index) => {
+              const thumbnail = getProjectThumbnail(project);
+              return (
+                <TableRow
+                  key={project.id}
+                  className="group hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-purple-50/50 dark:hover:from-blue-950/20 dark:hover:to-purple-950/20 transition-all duration-200"
+                >
+                  <TableCell className="w-16">
+                    <div className="relative">
+                      {thumbnail ? (
+                        <Avatar className="h-12 w-12 rounded-lg border-2 border-blue-200 dark:border-blue-800">
+                          <AvatarImage
+                            src={thumbnail}
+                            alt={project.title}
+                            className="object-cover"
+                          />
+                          <AvatarFallback className="rounded-lg bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900">
+                            <Palette className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                          </AvatarFallback>
+                        </Avatar>
+                      ) : (
+                        <Avatar className="h-12 w-12 rounded-lg border-2 border-gray-200 dark:border-gray-800">
+                          <AvatarFallback className="rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700">
+                            <Camera className="h-6 w-6 text-gray-500" />
+                          </AvatarFallback>
+                        </Avatar>
+                      )}
+                      {project.is_featured && (
+                        <div className="absolute -top-1 -right-1">
+                          <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                        </div>
+                      )}
+                    </div>
+                  </TableCell>
+
+                  <TableCell>
+                    <div className="space-y-1">
+                      <div className="font-semibold text-foreground group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
+                        {project.title}
+                      </div>
+                      <div className="text-sm text-muted-foreground line-clamp-2 max-w-sm">
+                        {project.brief_description}
+                      </div>
+                      {project.techniques && project.techniques.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-2">
+                          {project.techniques.slice(0, 3).map((technique, i) => (
+                            <Badge
+                              key={i}
+                              variant="secondary"
+                              className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                            >
+                              {technique}
+                            </Badge>
+                          ))}
+                          {project.techniques.length > 3 && (
+                            <Badge variant="secondary" className="text-xs">
+                              +{project.techniques.length - 3}
+                            </Badge>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </TableCell>
+
+                  <TableCell>
+                    <div className="flex flex-col gap-1">
+                      {project.is_published !== false ? (
+                        <Badge className="w-fit bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900 dark:text-green-300">
+                          <CheckCircle className="w-3 h-3 mr-1" />
+                          Published
+                        </Badge>
+                      ) : (
+                        <Badge
+                          variant="secondary"
+                          className="w-fit bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
+                        >
+                          <Clock className="w-3 h-3 mr-1" />
+                          Draft
+                        </Badge>
+                      )}
+                      {project.is_featured && (
+                        <Badge className="w-fit bg-yellow-100 text-yellow-700 hover:bg-yellow-200 dark:bg-yellow-900 dark:text-yellow-300">
+                          <Star className="w-3 h-3 mr-1" />
+                          Featured
+                        </Badge>
+                      )}
+                    </div>
+                  </TableCell>
+
+                  <TableCell>
+                    <div className="flex flex-col gap-1">
+                      <span className="text-sm font-medium">
+                        {format(new Date(project.created_at), "MMM dd, yyyy")}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {format(new Date(project.created_at), "h:mm a")}
+                      </span>
+                    </div>
+                  </TableCell>
+
+                  <TableCell>
+                    <div className="flex items-center justify-center">
+                      {project.is_featured ? (
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Featured on homepage</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      ) : (
+                        <Star className="h-5 w-5 text-gray-300 dark:text-gray-600" />
+                      )}
+                    </div>
+                  </TableCell>
+
+                  <TableCell className="text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button variant="ghost" size="sm" asChild className="h-8 w-8 p-0">
+                            <Link href={`/portfolio/${project.id}`} target="_blank">
+                              <ExternalLink className="h-4 w-4" />
+                            </Link>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>View public page</p>
+                        </TooltipContent>
+                      </Tooltip>
+
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button variant="ghost" size="sm" asChild className="h-8 w-8 p-0">
+                            <Link href={`/portfolio-dash/${project.id}/edit`}>
+                              <Pencil className="h-4 w-4" />
+                            </Link>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Edit project</p>
+                        </TooltipContent>
+                      </Tooltip>
+
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950"
+                            disabled={isDeleting && deleteId === project.id}
+                          >
+                            {isDeleting && deleteId === project.id ? (
+                              <div className="h-4 w-4 animate-spin rounded-full border-2 border-red-600 border-t-transparent" />
+                            ) : (
+                              <Trash2 className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Project</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Are you sure you want to delete "{project.title}"? This action cannot
+                              be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => handleDelete(project.id)}
+                              className="bg-red-600 hover:bg-red-700"
+                            >
+                              Delete Project
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
+    </TooltipProvider>
   );
-} 
+}
