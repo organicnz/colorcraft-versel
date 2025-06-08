@@ -141,7 +141,7 @@ export default async function Home() {
       featuredProjects={projectsToShow}
       services={services}
       testimonials={testimonials}
-      properties={properties}
+      properties={[]} // Not using hardcoded properties anymore
     />
   );
 }

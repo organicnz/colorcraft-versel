@@ -70,35 +70,34 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
 
-  // State for randomized projects
+  // State for randomized projects - use for both hero and portfolio sections
   const [displayProjects, setDisplayProjects] = useState(featuredProjects.slice(0, 4));
+  const [heroProject, setHeroProject] = useState(featuredProjects[0] || null);
 
   // Randomize projects on client-side mount
   useEffect(() => {
     if (featuredProjects.length > 0) {
       const shuffled = shuffleArray(featuredProjects);
       setDisplayProjects(shuffled.slice(0, 4));
+      setHeroProject(shuffled[0]); // Use first randomized project for hero
     }
   }, [featuredProjects]);
 
+
+
+  // Sync hero project with the slider rotation
   useEffect(() => {
     if (displayProjects.length > 0) {
       const interval = setInterval(() => {
-        setCurrentProjectIndex((prev) => (prev + 1) % displayProjects.length);
+        setCurrentProjectIndex((prev) => {
+          const nextIndex = (prev + 1) % displayProjects.length;
+          setHeroProject(displayProjects[nextIndex]);
+          return nextIndex;
+        });
       }, 5000);
       return () => clearInterval(interval);
     }
-  }, [displayProjects.length]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentProperty(prev => {
-        const currentIndex = properties.indexOf(prev);
-        return properties[(currentIndex + 1) % properties.length];
-      });
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [properties]);
+  }, [displayProjects]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -173,8 +172,8 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
             >
               <div className="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-2xl">
                 <Image
-                  src={currentProperty.image}
-                  alt={currentProperty.title}
+                  src={heroProject?.image || "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800"}
+                  alt={heroProject?.title || "Featured Project"}
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 50vw"
@@ -184,32 +183,35 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
                 {/* Gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
 
-                {/* Property info card with enhanced glass effect */}
+                {/* Project info card with enhanced glass effect */}
                 <GlassPanel className="absolute bottom-8 left-8 right-8 p-5">
-                  <h3 className="text-xl font-semibold mb-2 text-white">{currentProperty.title}</h3>
+                  <h3 className="text-xl font-semibold mb-2 text-white">{heroProject?.title || "Featured Project"}</h3>
                   <div className="flex flex-wrap gap-3 mb-3">
                     <Badge variant="secondary" className="bg-secondary-100/50 text-secondary-700 dark:bg-secondary-900/30 dark:text-secondary-300 rounded-full backdrop-blur-sm">
-                      {currentProperty.type}
+                      Featured
                     </Badge>
                     <Badge variant="outline" className="rounded-full bg-white/20 text-white border-white/30">
-                      {currentProperty.location}
+                      {heroProject?.material || "Premium Finish"}
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="font-medium text-primary-300">{currentProperty.price}</span>
-                    <span className="text-sm text-neutral-300">{currentProperty.return}</span>
+                    <span className="font-medium text-primary-300">{heroProject?.price || "Contact for pricing"}</span>
+                    <span className="text-sm text-neutral-300">Expert Craftsmanship</span>
                   </div>
                 </GlassPanel>
               </div>
 
-              {/* Image selector dots */}
+              {/* Project selector dots */}
               <div className="flex justify-center mt-6 space-x-2">
-                {properties.map((_, index) => (
+                {displayProjects.map((_, index) => (
                   <button
                     key={index}
-                    onClick={() => setCurrentProperty(properties[index])}
+                    onClick={() => {
+                      setCurrentProjectIndex(index);
+                      setHeroProject(displayProjects[index]);
+                    }}
                     className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                      properties.indexOf(currentProperty) === index
+                      currentProjectIndex === index
                         ? 'bg-primary-500 scale-125'
                         : 'bg-white/50 hover:bg-white/70'
                     }`}
