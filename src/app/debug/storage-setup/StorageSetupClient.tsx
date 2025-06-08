@@ -4,11 +4,13 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { CheckCircle, XCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { CheckCircle, XCircle, AlertCircle, Loader2, Copy } from 'lucide-react';
 
 interface ApiResponse {
   success?: boolean;
   message?: string;
+  note?: string;
+  sqlToRun?: string;
   error?: string;
   details?: string;
   directoryResults?: Array<{
@@ -17,6 +19,7 @@ interface ApiResponse {
     error?: string;
   }>;
   portfolioItemsProcessed?: number;
+  bucketStatus?: string;
 }
 
 export default function StorageSetupClient() {
@@ -37,7 +40,7 @@ export default function StorageSetupClient() {
 
       const data = await response.json();
       setResults(prev => ({ ...prev, storageSetup: data }));
-        } catch (error) {
+    } catch (error) {
       setResults(prev => ({
         ...prev,
         storageSetup: {
@@ -50,61 +53,107 @@ export default function StorageSetupClient() {
     }
   };
 
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    // You could add a toast notification here
+  };
+
   const renderResult = (result: ApiResponse | undefined, title: string) => {
     if (!result) return null;
 
     const isSuccess = result.success;
     const isError = result.error;
 
-         return (
-       <Alert className={isSuccess ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}>
-         <div className="flex items-center gap-2">
-           {isSuccess ? (
-             <CheckCircle className="h-4 w-4 text-green-600" />
-           ) : (
-             <XCircle className="h-4 w-4 text-red-600" />
-           )}
-           <span className="font-medium">{title}</span>
-         </div>
-        <AlertDescription className="mt-2">
-          {isSuccess ? (
-            <div>
-              <p className="text-green-700">{result.message}</p>
-              {result.portfolioItemsProcessed !== undefined && (
-                <p className="text-sm text-green-600 mt-1">
-                  Processed {result.portfolioItemsProcessed} portfolio items
-                </p>
-              )}
-              {result.directoryResults && result.directoryResults.length > 0 && (
-                <div className="mt-2">
-                  <p className="text-sm font-medium text-green-700">Directory Creation Results:</p>
-                  <ul className="text-xs text-green-600 mt-1 space-y-1">
-                    {result.directoryResults.map((dir, index) => (
-                      <li key={index} className="flex items-center gap-1">
-                        {dir.success ? (
-                          <CheckCircle className="h-3 w-3" />
-                        ) : (
-                          <XCircle className="h-3 w-3 text-red-500" />
-                        )}
-                        <span>
-                          {dir.id}: {dir.success ? 'Success' : `Failed - ${dir.error}`}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div>
-              <p className="text-red-700">{result.error}</p>
-              {result.details && (
-                <p className="text-sm text-red-600 mt-1">{result.details}</p>
-              )}
-            </div>
-          )}
-        </AlertDescription>
-      </Alert>
+    return (
+      <div className="space-y-4">
+        <Alert className={isSuccess ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}>
+          <div className="flex items-center gap-2">
+            {isSuccess ? (
+              <CheckCircle className="h-4 w-4 text-green-600" />
+            ) : (
+              <XCircle className="h-4 w-4 text-red-600" />
+            )}
+            <span className="font-medium">{title}</span>
+          </div>
+          <AlertDescription className="mt-2">
+            {isSuccess ? (
+              <div>
+                <p className="text-green-700">{result.message}</p>
+                {result.note && (
+                  <p className="text-sm text-green-600 mt-1 bg-green-100 p-2 rounded">{result.note}</p>
+                )}
+                {result.portfolioItemsProcessed !== undefined && (
+                  <p className="text-sm text-green-600 mt-1">
+                    Processed {result.portfolioItemsProcessed} portfolio items
+                  </p>
+                )}
+                {result.bucketStatus && (
+                  <p className="text-sm text-green-600 mt-1">
+                    Bucket status: {result.bucketStatus}
+                  </p>
+                )}
+                {result.directoryResults && result.directoryResults.length > 0 && (
+                  <div className="mt-2">
+                    <p className="text-sm font-medium text-green-700">Directory Creation Results:</p>
+                    <ul className="text-xs text-green-600 mt-1 space-y-1">
+                      {result.directoryResults.map((dir, index) => (
+                        <li key={index} className="flex items-center gap-1">
+                          {dir.success ? (
+                            <CheckCircle className="h-3 w-3" />
+                          ) : (
+                            <XCircle className="h-3 w-3 text-red-500" />
+                          )}
+                          <span>
+                            {dir.id}: {dir.success ? 'Success' : `Failed - ${dir.error}`}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div>
+                <p className="text-red-700">{result.error}</p>
+                {result.details && (
+                  <p className="text-sm text-red-600 mt-1">{result.details}</p>
+                )}
+              </div>
+            )}
+          </AlertDescription>
+        </Alert>
+
+        {/* Show SQL to run manually if provided */}
+        {result.sqlToRun && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <AlertCircle className="h-4 w-4 text-orange-500" />
+                Manual SQL Required
+              </CardTitle>
+              <CardDescription>
+                Copy this SQL and run it in your Supabase Dashboard → SQL Editor
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="relative">
+                <pre className="bg-gray-100 p-4 rounded text-xs overflow-auto max-h-64">
+                  {result.sqlToRun}
+                </pre>
+                <Button
+                  onClick={() => copyToClipboard(result.sqlToRun!)}
+                  size="sm"
+                  variant="outline"
+                  className="absolute top-2 right-2"
+                >
+                  <Copy className="h-3 w-3 mr-1" />
+                  Copy
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
     );
   };
 
@@ -125,7 +174,7 @@ export default function StorageSetupClient() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button 
+          <Button
             onClick={handleStorageSetup}
             disabled={isLoading}
             className="w-full"
@@ -133,14 +182,14 @@ export default function StorageSetupClient() {
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Applying Storage Policies...
+                Setting up Storage...
               </>
             ) : (
-              'Apply Storage Policies'
+              'Setup Storage & Get SQL'
             )}
           </Button>
 
-          {renderResult(results.storageSetup, 'Storage Policies Setup')}
+          {renderResult(results.storageSetup, 'Storage Setup')}
         </CardContent>
       </Card>
 
@@ -148,7 +197,7 @@ export default function StorageSetupClient() {
         <CardHeader>
           <CardTitle>Manual Setup Instructions</CardTitle>
           <CardDescription>
-            If the automated setup fails, you can run this SQL manually in your Supabase Dashboard
+            Complete setup by running the provided SQL in your Supabase Dashboard
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -156,11 +205,12 @@ export default function StorageSetupClient() {
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
               <div className="space-y-2">
-                <p><strong>Manual Setup Steps:</strong></p>
+                <p><strong>Complete Setup Steps:</strong></p>
                 <ol className="list-decimal list-inside space-y-1 text-sm">
+                  <li>Click "Setup Storage & Get SQL" above</li>
+                  <li>Copy the provided SQL code</li>
                   <li>Go to your Supabase Dashboard</li>
                   <li>Navigate to <strong>SQL Editor</strong></li>
-                  <li>Copy the contents of <code>portfolio-storage-setup.sql</code> from the project root</li>
                   <li>Paste and run the SQL script</li>
                   <li>Verify the policies are created in <strong>Storage &gt; Policies</strong></li>
                 </ol>

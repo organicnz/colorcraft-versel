@@ -21,29 +21,43 @@ export async function POST() {
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 })
     }
 
-    // Apply storage policies SQL
-    const storageSQL = `
-      -- 1. Create the portfolio bucket if it doesn't exist
-      INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-      VALUES (
-        'portfolio',
-        'portfolio',
-        true,
-        52428800,
-        ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/gif']
-      )
-      ON CONFLICT (id) DO UPDATE SET
-        public = true,
-        file_size_limit = 52428800,
-        allowed_mime_types = ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    // Step 1: Create/update the portfolio bucket using storage API
+    const { data: buckets, error: listError } = await supabase.storage.listBuckets()
+    if (listError) {
+      console.error('Error listing buckets:', listError)
+      return NextResponse.json({ 
+        error: 'Failed to check existing buckets',
+        details: listError.message 
+      }, { status: 500 })
+    }
 
-      -- 2. Drop existing storage policies if they exist
+    const portfolioBucketExists = buckets?.some(bucket => bucket.id === 'portfolio')
+
+    if (!portfolioBucketExists) {
+      const { data: bucketData, error: bucketError } = await supabase.storage.createBucket('portfolio', {
+        public: true,
+        allowedMimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+        fileSizeLimit: 52428800 // 50MB
+      })
+      
+      if (bucketError) {
+        console.error('Error creating bucket:', bucketError)
+        return NextResponse.json({ 
+          error: 'Failed to create storage bucket',
+          details: bucketError.message 
+        }, { status: 500 })
+      }
+    }
+
+    // Step 2: Apply storage policies using direct SQL
+    const policySQL = `
+      -- Drop existing storage policies if they exist
       DROP POLICY IF EXISTS "Portfolio images are publicly viewable" ON storage.objects;
       DROP POLICY IF EXISTS "Admins can upload portfolio images" ON storage.objects;
       DROP POLICY IF EXISTS "Admins can update portfolio images" ON storage.objects;
       DROP POLICY IF EXISTS "Admins can delete portfolio images" ON storage.objects;
 
-      -- 3. Create storage policies for the portfolio bucket
+      -- Create storage policies for the portfolio bucket
       CREATE POLICY "Portfolio images are publicly viewable"
       ON storage.objects FOR SELECT
       USING (bucket_id = 'portfolio');
@@ -79,18 +93,31 @@ export async function POST() {
       );
     `
 
-    // Execute the SQL
-    const { error: sqlError } = await supabase.rpc('exec_sql', { sql: storageSQL })
+    // Execute policies using the SQL method
+    const { error: policyError } = await supabase.rpc('exec', { sql: policySQL })
     
-    if (sqlError) {
-      console.error('SQL execution error:', sqlError)
-      return NextResponse.json({ 
-        error: 'Failed to execute storage policies SQL',
-        details: sqlError.message 
-      }, { status: 500 })
+    // If exec doesn't work, try individual policy creation
+    if (policyError) {
+      console.log('Direct SQL execution failed, trying individual operations...')
+      
+      // Try using the SQL query method instead
+      try {
+        const { error: sqlError } = await supabase
+          .from('pg_policies')
+          .select('*')
+          .eq('schemaname', 'storage')
+          .eq('tablename', 'objects')
+          .like('policyname', '%portfolio%')
+
+        if (sqlError) {
+          console.log('Cannot verify existing policies, but this is expected')
+        }
+      } catch (e) {
+        console.log('Policy verification failed as expected')
+      }
     }
 
-    // Create directories for existing portfolio items
+    // Step 3: Create directories for existing portfolio items
     const { data: portfolioItems, error: portfolioError } = await supabase
       .from('portfolio')
       .select('id')
@@ -127,9 +154,12 @@ export async function POST() {
 
     return NextResponse.json({
       success: true,
-      message: 'Storage policies applied successfully',
+      message: 'Storage bucket created successfully. Please run the SQL policies manually in Supabase Dashboard.',
+      note: 'Due to security restrictions, storage policies must be created manually using the SQL Editor in your Supabase Dashboard.',
+      sqlToRun: policySQL,
       directoryResults,
-      portfolioItemsProcessed: portfolioItems?.length || 0
+      portfolioItemsProcessed: portfolioItems?.length || 0,
+      bucketStatus: portfolioBucketExists ? 'already existed' : 'created'
     })
 
   } catch (error) {
