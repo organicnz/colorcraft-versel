@@ -8,12 +8,13 @@ import { AlertTriangle } from "lucide-react";
 export const dynamic = "force-dynamic";
 
 type EditProjectPageProps = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export default async function EditProjectPage({ params }: EditProjectPageProps) {
-  const { id } = params;
-  const supabase = createClient();
+  // Await params since they're now a Promise in Next.js 15
+  const { id } = await params;
+  const supabase = await createClient();
   
   // Get current session (middleware already checks auth, but we need user info)
   const { data: { session } } = await supabase.auth.getSession();

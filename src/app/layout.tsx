@@ -16,6 +16,7 @@ import { Providers } from "./providers";
 import { Menu } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { GlassNavbar } from "@/components/ui/glass-card";
+import { createClient } from "@/lib/supabase/server";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -42,6 +43,28 @@ export const metadata = {
     apple: "/favicon/apple-touch-icon.png",
   },
 };
+
+// AuthButton component to handle login/logout state
+async function AuthButton() {
+  const supabase = await createClient();
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if (session) {
+    return (
+      <form action="/auth/signout" method="post">
+        <Button variant="ghost" size="sm" type="submit">
+          Log out
+        </Button>
+      </form>
+    );
+  }
+
+  return (
+    <Button variant="ghost" size="sm" asChild>
+      <Link href="/login">Log in</Link>
+    </Button>
+  );
+}
 
 export default function RootLayout({
   children,
@@ -88,9 +111,7 @@ export default function RootLayout({
               <div className="flex flex-1 items-center justify-end space-x-4">
                 <nav className="flex items-center space-x-2">
                   <ThemeSwitcher />
-                  <Button variant="ghost" size="sm" asChild>
-                    <Link href="/login">Log in</Link>
-                  </Button>
+                  <AuthButton />
                   <Button size="sm" asChild>
                     <Link href="/contact">Free Consultation</Link>
                   </Button>
