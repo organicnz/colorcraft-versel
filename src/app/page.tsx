@@ -85,6 +85,7 @@ export default async function Home() {
   try {
     featuredProjects = await getPortfolioProjects({
       featuredOnly: true,
+      useAdmin: true, // Use admin client to bypass RLS for public portfolio display
       orderBy: [
         { column: 'completion_date', ascending: false }
       ]
