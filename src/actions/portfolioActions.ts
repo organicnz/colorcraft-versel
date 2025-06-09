@@ -47,7 +47,7 @@ function parseToPostgresArray(value: any): string[] {
 }
 
 // Updated schema to match database structure
-export const createPortfolioProjectSchema = z.object({
+const createPortfolioProjectSchema = z.object({
   title: z.string().min(1, "Title is required").max(255),
   brief_description: z.string().min(1, "Brief description is required"),
   description: z.string().optional(),
@@ -62,7 +62,7 @@ export const createPortfolioProjectSchema = z.object({
   status: z.enum(['published', 'draft', 'archived']).default('draft'),
 });
 
-export type PortfolioFormData = z.infer<typeof createPortfolioProjectSchema>;
+type PortfolioFormData = z.infer<typeof createPortfolioProjectSchema>;
 
 // --- Create Portfolio Project Action (Auto-generates UUID, starts as draft) ---
 export async function createPortfolioProject(formData: FormData) {
