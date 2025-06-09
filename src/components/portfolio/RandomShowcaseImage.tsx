@@ -72,7 +72,7 @@ export default function RandomShowcaseImage({
   return (
     <div className="relative w-full h-full">
       <Image
-        src={imageUrl}
+        src={showcaseImage}
         alt={title}
         width={width}
         height={height}

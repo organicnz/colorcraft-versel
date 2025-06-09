@@ -5,6 +5,9 @@ import { PlusIcon } from 'lucide-react';
 import PortfolioTable from '../_components/PortfolioTable';
 import { getPortfolioProjects } from '@/services/portfolio.service';
 
+// Force dynamic rendering due to Supabase auth using cookies
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'Manage Portfolio | Dashboard',
   description: 'Manage your portfolio projects',
