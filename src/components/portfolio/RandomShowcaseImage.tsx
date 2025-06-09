@@ -28,40 +28,43 @@ export default function RandomShowcaseImage({
 }: RandomShowcaseImageProps) {
   const [showcaseImage, setShowcaseImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
-    console.log('RandomShowcaseImage for:', portfolioId);
-    console.log('afterImages:', afterImages);
-    console.log('afterImages type:', typeof afterImages, 'isArray:', Array.isArray(afterImages));
+    setIsLoading(true);
+    setImageError(false);
 
     // Use database JSONB array if available
     if (afterImages && Array.isArray(afterImages) && afterImages.length > 0) {
-      console.log('Using afterImages from database, length:', afterImages.length);
-
       // Filter out any invalid URLs
       const validImages = afterImages.filter(img => img && typeof img === 'string' && img.length > 0);
-      console.log('Valid images after filtering:', validImages.length);
 
       if (validImages.length > 0) {
+        // Pick a random image from the valid ones
         const randomIndex = Math.floor(Math.random() * validImages.length);
-        const randomImage = validImages[randomIndex];
-        console.log('Selected random image:', randomImage);
-        setShowcaseImage(randomImage);
+        const selectedImage = validImages[randomIndex];
+        setShowcaseImage(selectedImage);
         setIsLoading(false);
         return;
       }
     }
 
-    console.log('No valid afterImages found, using fallback:', fallbackImage);
-    // Use fallback image if no valid images found
+    // Fallback to placeholder
     setShowcaseImage(fallbackImage);
     setIsLoading(false);
-  }, [portfolioId, afterImages, fallbackImage]);
+  }, [afterImages, fallbackImage]);
 
   if (isLoading) {
     return (
-      <div className={`${className} animate-pulse bg-muted flex items-center justify-center`}>
+      <div className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105 animate-pulse bg-muted flex items-center justify-center">
+        <div className="w-8 h-8 bg-muted-foreground/20 rounded"></div>
+      </div>
+    );
+  }
+
+  if (imageError || !showcaseImage) {
+    return (
+      <div className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105 bg-muted flex items-center justify-center">
         <div className="w-8 h-8 bg-muted-foreground/20 rounded"></div>
       </div>
     );
@@ -69,20 +72,14 @@ export default function RandomShowcaseImage({
 
   return (
     <Image
-      src={showcaseImage || fallbackImage}
-      alt={`${title} - Showcase image`}
+      src={showcaseImage}
+      alt={title}
       width={width}
       height={height}
-      className={className}
+      className={`${className} transition-transform duration-300 group-hover:scale-105`}
       sizes={sizes}
       priority={priority}
-      onError={() => {
-        console.error('Image failed to load:', showcaseImage);
-        if (!error) {
-          setError(true);
-          setShowcaseImage(fallbackImage);
-        }
-      }}
+      onError={() => setImageError(true)}
     />
   );
 } 
