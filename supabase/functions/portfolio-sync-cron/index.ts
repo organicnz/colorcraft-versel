@@ -36,7 +36,7 @@ async function syncSinglePortfolio(supabase: any, portfolio: any): Promise<SyncR
         sortBy: { column: 'name', order: 'asc' }
       })
 
-    // Filter for image files and create full paths
+    // Filter for image files and create full URLs
     const imageExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'svg']
     
     const beforeImages = (beforeFiles || [])
@@ -44,14 +44,24 @@ async function syncSinglePortfolio(supabase: any, portfolio: any): Promise<SyncR
         const ext = file.name.split('.').pop()?.toLowerCase()
         return ext && imageExtensions.includes(ext)
       })
-      .map((file: any) => `${portfolioId}/before_images/${file.name}`)
+      .map((file: any) => {
+        const { data } = supabase.storage
+          .from('portfolio')
+          .getPublicUrl(`${portfolioId}/before_images/${file.name}`)
+        return data.publicUrl
+      })
 
     const afterImages = (afterFiles || [])
       .filter((file: any) => {
         const ext = file.name.split('.').pop()?.toLowerCase()
         return ext && imageExtensions.includes(ext)
       })
-      .map((file: any) => `${portfolioId}/after_images/${file.name}`)
+      .map((file: any) => {
+        const { data } = supabase.storage
+          .from('portfolio')
+          .getPublicUrl(`${portfolioId}/after_images/${file.name}`)
+        return data.publicUrl
+      })
 
     // Only update if there are changes
     const currentBefore = Array.isArray(portfolio.before_images) ? portfolio.before_images : []

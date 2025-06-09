@@ -49,29 +49,39 @@ async function syncPortfolioImages(supabase: any, portfolioId: string) {
       console.log('Error listing after_images:', afterError)
     }
 
-    // Filter for image files and create full paths
+    // Filter for image files and create full URLs
     const imageExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'svg']
     
     const beforeImages = (beforeFiles || [])
-      .filter(file => {
+      .filter((file: any) => {
         const ext = file.name.split('.').pop()?.toLowerCase()
         return ext && imageExtensions.includes(ext)
       })
-      .map(file => `${portfolioId}/before_images/${file.name}`)
+      .map((file: any) => {
+        const { data } = supabase.storage
+          .from('portfolio')
+          .getPublicUrl(`${portfolioId}/before_images/${file.name}`)
+        return data.publicUrl
+      })
 
     const afterImages = (afterFiles || [])
-      .filter(file => {
+      .filter((file: any) => {
         const ext = file.name.split('.').pop()?.toLowerCase()
         return ext && imageExtensions.includes(ext)
       })
-      .map(file => `${portfolioId}/after_images/${file.name}`)
+      .map((file: any) => {
+        const { data } = supabase.storage
+          .from('portfolio')
+          .getPublicUrl(`${portfolioId}/after_images/${file.name}`)
+        return data.publicUrl
+      })
 
     console.log('Found images:', {
       before: beforeImages.length,
       after: afterImages.length
     })
 
-    // Update the portfolio record
+    // Update the portfolio record with full URLs
     const { error: updateError } = await supabase
       .from('portfolio')
       .update({
