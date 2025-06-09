@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getPortfolioProjects } from "@/services/portfolio.service";
 import PortfolioItem from "@/components/portfolio/PortfolioItem";
 import PortfolioTabs from "@/components/portfolio/PortfolioTabs";
 
@@ -33,12 +34,12 @@ export default async function PortfolioPage() {
     return <PortfolioTabs />;
   }
 
-  // For public users, get only published, non-archived portfolio items
-  const { data: projects } = await supabase
-    .from("portfolio")
-    .select("*")
-    .eq("status", "published") // Use status field instead of boolean fields
-    .order("created_at", { ascending: false });
+  // For public users, get only published portfolio items using the service
+  // This ensures proper array parsing of before_images and after_images
+  const projects = await getPortfolioProjects({});
+
+  // Filter to only published projects for public view
+  const publishedProjects = projects.filter(project => project.status === 'published');
 
   return (
     <div className="container py-12">
@@ -49,9 +50,9 @@ export default async function PortfolioPage() {
         </p>
       </div>
 
-      {projects && projects.length > 0 ? (
+      {publishedProjects && publishedProjects.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((project) => (
+          {publishedProjects.map((project) => (
             <PortfolioItem key={project.id} project={project} />
           ))}
         </div>
