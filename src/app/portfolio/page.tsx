@@ -2,6 +2,9 @@ import { createClient } from "@/lib/supabase/server";
 import { getPortfolioProjects } from "@/services/portfolio.service";
 import PortfolioItem from "@/components/portfolio/PortfolioItem";
 import PortfolioTabs from "@/components/portfolio/PortfolioTabs";
+import { Button } from "@/components/ui/button";
+import { Plus, Palette, Sparkles } from "lucide-react";
+import Link from "next/link";
 
 // Force dynamic rendering for authentication checks
 export const dynamic = 'force-dynamic';
@@ -42,30 +45,158 @@ export default async function PortfolioPage() {
   const publishedProjects = projects.filter(project => project.status === 'published');
 
   return (
-    <div className="container py-12">
-      <div className="mb-12 text-center">
-        <h1 className="text-4xl font-bold mb-4">Our Portfolio</h1>
-        <p className="text-lg text-gray-600">
-          Browse our collection of completed furniture transformations
-        </p>
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50">
+      {/* Hero Section */}
+      <div className="relative overflow-hidden bg-gradient-to-r from-amber-600 via-orange-600 to-red-500">
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="relative container mx-auto px-4 py-24">
+          <div className="text-center text-white">
+            <div className="flex justify-center mb-6">
+              <div className="bg-white/20 p-4 rounded-full backdrop-blur-sm">
+                <Palette className="h-12 w-12" />
+              </div>
+            </div>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
+              Our <span className="text-amber-200">Portfolio</span>
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto opacity-90">
+              Discover the artistry behind each furniture transformation.
+              From vintage restorations to modern makeovers, every piece tells a story.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                size="lg"
+                className="bg-white text-orange-600 hover:bg-amber-50 font-semibold px-8 py-3 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300"
+              >
+                <Sparkles className="mr-2 h-5 w-5" />
+                Explore Collection
+              </Button>
+              {isAdmin && (
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="bg-transparent border-white text-white hover:bg-white hover:text-orange-600 font-semibold px-8 py-3 rounded-full backdrop-blur-sm"
+                >
+                  <Link href="/portfolio-dash/new">
+                    <Plus className="mr-2 h-5 w-5" />
+                    Create New Project
+                  </Link>
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+        {/* Decorative wave */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1200 120" className="w-full h-auto text-amber-50">
+            <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="currentColor"></path>
+          </svg>
+        </div>
       </div>
 
-      {publishedProjects && publishedProjects.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {publishedProjects.map((project) => (
-            <PortfolioItem key={project.id} project={project} />
-          ))}
+      {/* Portfolio Grid Section */}
+      <div className="container mx-auto px-4 py-20">
+        {/* Stats Section */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+          <div className="text-center p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <div className="text-4xl font-bold text-orange-600 mb-2">{publishedProjects.length}+</div>
+            <div className="text-gray-600 font-medium">Projects Completed</div>
+          </div>
+          <div className="text-center p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <div className="text-4xl font-bold text-orange-600 mb-2">100%</div>
+            <div className="text-gray-600 font-medium">Client Satisfaction</div>
+          </div>
+          <div className="text-center p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <div className="text-4xl font-bold text-orange-600 mb-2">5+</div>
+            <div className="text-gray-600 font-medium">Years Experience</div>
+          </div>
         </div>
-      ) : (
-        <div className="text-center py-12">
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
-            No Published Projects Yet
-          </h3>
-          <p className="text-gray-600">
-            Check back soon to see our latest furniture transformations!
+
+        {/* Portfolio Grid */}
+        {publishedProjects && publishedProjects.length > 0 ? (
+          <>
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Transformations</h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Each piece is carefully restored and transformed with attention to detail and craftsmanship
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {publishedProjects.map((project, index) => (
+                <div
+                  key={project.id}
+                  className="transform hover:scale-105 transition-all duration-300"
+                  style={{
+                    animationDelay: `${index * 100}ms`,
+                  }}
+                >
+                  <PortfolioItem project={project} />
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="text-center py-20">
+            <div className="bg-white rounded-3xl p-12 max-w-2xl mx-auto shadow-xl">
+              <div className="mb-8">
+                <div className="bg-orange-100 p-6 rounded-full w-24 h-24 mx-auto flex items-center justify-center">
+                  <Palette className="h-12 w-12 text-orange-600" />
+                </div>
+              </div>
+              <h3 className="text-3xl font-bold text-gray-900 mb-4">
+                No Published Projects Yet
+              </h3>
+              <p className="text-lg text-gray-600 mb-8">
+                We're currently working on amazing furniture transformations.
+                Check back soon to see our latest creations!
+              </p>
+              {isAdmin && (
+                <Button asChild size="lg" className="bg-orange-600 hover:bg-orange-700">
+                  <Link href="/portfolio-dash/new">
+                    <Plus className="mr-2 h-5 w-5" />
+                    Create First Project
+                  </Link>
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* CTA Section */}
+      <div className="bg-gradient-to-r from-orange-600 to-red-600 py-20">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            Ready to Transform Your Furniture?
+          </h2>
+          <p className="text-xl text-orange-100 mb-8 max-w-2xl mx-auto">
+            Let's bring new life to your beloved pieces. Contact us today for a consultation.
           </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              asChild
+              size="lg"
+              className="bg-white text-orange-600 hover:bg-orange-50 font-semibold px-8 py-4 rounded-full shadow-xl"
+            >
+              <Link href="/contact">
+                Get Free Quote
+              </Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="bg-transparent border-white text-white hover:bg-white hover:text-orange-600 font-semibold px-8 py-4 rounded-full"
+            >
+              <Link href="/about">
+                Learn More
+              </Link>
+            </Button>
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

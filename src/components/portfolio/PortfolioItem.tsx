@@ -152,33 +152,35 @@ export default function PortfolioItem({
 
   return (
     <TooltipProvider>
-      <div className="group relative overflow-hidden rounded-lg transition-all hover:shadow-xl">
-        {/* Status Badge - Top Left */}
-        <div className="absolute top-2 left-2 z-10">
-          {project.status === 'archived' ? (
-            <Badge variant="secondary" className="bg-gray-100 text-gray-800">
-              Archived
-            </Badge>
-          ) : project.status === 'published' ? (
-            <Badge className="bg-green-100 text-green-800">
-              Published
-            </Badge>
-          ) : (
-            <Badge variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-200">
-              Draft
-            </Badge>
-          )}
-        </div>
+      <div className="group relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+        {/* Status Badge - Top Left (only show in admin mode) */}
+        {showAdminControls && (
+          <div className="absolute top-3 left-3 z-10">
+            {project.status === 'archived' ? (
+              <Badge variant="secondary" className="bg-gray-100 text-gray-800 shadow-lg">
+                Archived
+              </Badge>
+            ) : project.status === 'published' ? (
+              <Badge className="bg-green-100 text-green-800 shadow-lg">
+                Published
+              </Badge>
+            ) : (
+              <Badge variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-200 shadow-lg">
+                Draft
+              </Badge>
+            )}
+          </div>
+        )}
 
         {/* Admin Controls - Top Right */}
         {isAdmin && !isLoading && showAdminControls && (
-          <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <div className="absolute top-3 right-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   size="sm"
                   disabled={actionLoading}
-                  className="h-8 w-8 p-0 bg-white/90 hover:bg-white text-slate-700 hover:text-slate-900 shadow-lg backdrop-blur-sm"
+                  className="h-9 w-9 p-0 bg-white/95 hover:bg-white text-slate-700 hover:text-slate-900 shadow-lg backdrop-blur-sm rounded-full"
                 >
                   {actionLoading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -248,13 +250,13 @@ export default function PortfolioItem({
 
         {/* Simple Edit Button for non-admin or non-showAdminControls */}
         {isAdmin && !isLoading && !showAdminControls && (
-          <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <div className="absolute top-3 right-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
                   asChild
                   size="sm"
-                  className="h-8 w-8 p-0 bg-white/90 hover:bg-white text-slate-700 hover:text-slate-900 shadow-lg backdrop-blur-sm"
+                  className="h-9 w-9 p-0 bg-white/95 hover:bg-white text-slate-700 hover:text-slate-900 shadow-lg backdrop-blur-sm rounded-full"
                 >
                   <Link href={`/portfolio-dash/${project.id}/edit`}>
                     <Pencil className="h-4 w-4" />
@@ -270,60 +272,109 @@ export default function PortfolioItem({
 
         {/* Loading indicator for admin check */}
         {isLoading && (
-          <div className="absolute top-2 right-2 z-20">
-            <div className="h-8 w-8 bg-white/20 rounded flex items-center justify-center backdrop-blur-sm">
-              <Loader2 className="h-3 w-3 animate-spin text-white" />
+          <div className="absolute top-3 right-3 z-20">
+            <div className="h-9 w-9 bg-white/30 rounded-full flex items-center justify-center backdrop-blur-sm">
+              <Loader2 className="h-4 w-4 animate-spin text-white" />
             </div>
           </div>
         )}
 
-        <div className="aspect-square overflow-hidden">
+        <div className="aspect-[4/3] overflow-hidden rounded-t-2xl">
           {project.id ? (
             <RandomShowcaseImage
               portfolioId={project.id}
               title={project.title || "Furniture transformation"}
               afterImages={project.after_images}
               fallbackImage={fallbackImage}
-              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-              width={500}
-              height={500}
+              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+              width={600}
+              height={450}
             />
           ) : (
             <Image
               src={fallbackImage}
               alt={project.title || "Furniture transformation"}
-              width={500}
-              height={500}
-              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              width={600}
+              height={450}
+              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
           )}
         </div>
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-          <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-            <h3 className="text-xl font-bold">{project.title}</h3>
-            <p className="mt-1 line-clamp-2 text-sm text-gray-200">{project.brief_description}</p>
+        {/* Enhanced gradient overlay with better positioning */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+          <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+            <h3 className="text-2xl font-bold mb-2 leading-tight">{project.title}</h3>
+            <p className="text-sm text-gray-200 mb-4 line-clamp-2 leading-relaxed">
+              {project.brief_description}
+            </p>
 
             {project.techniques && project.techniques.length > 0 && (
-              <div className="mt-2 flex flex-wrap gap-1">
+              <div className="mb-4 flex flex-wrap gap-2">
                 {project.techniques.slice(0, 3).map((technique) => (
                   <span
                     key={technique}
-                    className="inline-block rounded-full bg-primary-600/40 px-2 py-0.5 text-xs"
+                    className="inline-block rounded-full bg-white/20 backdrop-blur-sm px-3 py-1 text-xs font-medium border border-white/30"
                   >
                     {technique}
                   </span>
                 ))}
+                {project.techniques.length > 3 && (
+                  <span className="inline-block rounded-full bg-orange-500/20 backdrop-blur-sm px-3 py-1 text-xs font-medium border border-orange-400/30">
+                    +{project.techniques.length - 3} more
+                  </span>
+                )}
               </div>
             )}
 
-            <Link
-              href={`/portfolio/${project.id}`}
-              className="mt-3 inline-block rounded-lg border border-white px-4 py-1 text-sm font-medium text-white hover:bg-white hover:text-primary-700 transition-colors"
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="bg-white/10 border-white/30 text-white hover:bg-white hover:text-orange-600 backdrop-blur-sm font-medium transition-all duration-300"
             >
+              <Link href={`/portfolio/${project.id}`}>
+                View Details
+              </Link>
+            </Button>
+          </div>
+        </div>
+
+        {/* Content section for non-hover state */}
+        <div className="p-6 group-hover:opacity-0 transition-opacity duration-500">
+          <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-1">{project.title}</h3>
+          <p className="text-gray-600 text-sm mb-4 line-clamp-2 leading-relaxed">
+            {project.brief_description}
+          </p>
+
+          {project.techniques && project.techniques.length > 0 && (
+            <div className="mb-4 flex flex-wrap gap-2">
+              {project.techniques.slice(0, 2).map((technique) => (
+                <span
+                  key={technique}
+                  className="inline-block rounded-full bg-orange-100 text-orange-800 px-3 py-1 text-xs font-medium"
+                >
+                  {technique}
+                </span>
+              ))}
+              {project.techniques.length > 2 && (
+                <span className="inline-block rounded-full bg-gray-100 text-gray-600 px-3 py-1 text-xs font-medium">
+                  +{project.techniques.length - 2}
+                </span>
+              )}
+            </div>
+          )}
+
+          <Button
+            asChild
+            variant="outline"
+            size="sm"
+            className="text-orange-600 border-orange-200 hover:bg-orange-50 font-medium"
+          >
+            <Link href={`/portfolio/${project.id}`}>
               View Project
             </Link>
-          </div>
+          </Button>
         </div>
       </div>
     </TooltipProvider>
