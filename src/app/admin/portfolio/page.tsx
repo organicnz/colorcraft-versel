@@ -11,6 +11,9 @@ import { auth } from '@/lib/supabase/server';
 import { createClient } from '@/lib/supabase/server';
 import PortfolioManagementClient from './PortfolioManagementClient';
 
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic';
+
 export default async function PortfolioManagementPage() {
   // Get current user authentication and role
   const { data: { session } } = await auth();

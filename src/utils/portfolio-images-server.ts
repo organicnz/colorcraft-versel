@@ -1,13 +1,13 @@
-import { createClient } from "@/lib/supabase/client";
+import { createClient } from "@/lib/supabase/server";
 
 /**
- * Get a random showcase image from the after_images directory for a portfolio item
- * @param portfolioId - The UUID of the portfolio item
+ * Server-side function to get random after image (for use in server components)
+ * @param portfolioId - The UUID of the portfolio item  
  * @returns Promise<string | null> - The public URL of a random after image, or null if none found
  */
-export async function getRandomAfterImage(portfolioId: string): Promise<string | null> {
+export async function getRandomAfterImageServer(portfolioId: string): Promise<string | null> {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
     
     // List all files in the after_images directory
     const { data: files, error } = await supabase.storage
@@ -23,7 +23,6 @@ export async function getRandomAfterImage(portfolioId: string): Promise<string |
     }
 
     if (!files || files.length === 0) {
-      console.warn(`No after_images found for portfolio ${portfolioId}`);
       return null;
     }
 
@@ -34,7 +33,6 @@ export async function getRandomAfterImage(portfolioId: string): Promise<string |
     });
 
     if (imageFiles.length === 0) {
-      console.warn(`No image files found in after_images for portfolio ${portfolioId}`);
       return null;
     }
 
@@ -55,13 +53,13 @@ export async function getRandomAfterImage(portfolioId: string): Promise<string |
 }
 
 /**
- * Get all after images for a portfolio item
+ * Server-side function to get all after images (for use in server components)
  * @param portfolioId - The UUID of the portfolio item
  * @returns Promise<string[]> - Array of public URLs for all after images
  */
-export async function getAllAfterImages(portfolioId: string): Promise<string[]> {
+export async function getAllAfterImagesServer(portfolioId: string): Promise<string[]> {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
     
     // List all files in the after_images directory
     const { data: files, error } = await supabase.storage
@@ -100,13 +98,13 @@ export async function getAllAfterImages(portfolioId: string): Promise<string[]> 
 }
 
 /**
- * Get all before images for a portfolio item
+ * Server-side function to get all before images (for use in server components)
  * @param portfolioId - The UUID of the portfolio item
  * @returns Promise<string[]> - Array of public URLs for all before images
  */
-export async function getAllBeforeImages(portfolioId: string): Promise<string[]> {
+export async function getAllBeforeImagesServer(portfolioId: string): Promise<string[]> {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
     
     // List all files in the before_images directory
     const { data: files, error } = await supabase.storage

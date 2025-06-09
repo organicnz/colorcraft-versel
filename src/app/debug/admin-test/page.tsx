@@ -8,6 +8,9 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { User, Shield, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 
+// Force dynamic rendering for this debug page
+export const dynamic = 'force-dynamic';
+
 export default function AdminTestPage() {
   const [user, setUser] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);

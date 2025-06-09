@@ -4,25 +4,34 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 
+// Force dynamic rendering for authentication checks
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: "Admin Dashboard | Color & Craft",
   description: "Admin dashboard for Color & Craft furniture restoration service",
 };
 
 export default async function AdminDashboardPage() {
-  const supabase = createClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  const supabase = await createClient();
   
-  if (!session) {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      redirect("/signin");
+    }
+    
+    // Check if user has admin role
+    const { data: user } = await supabase.from("users").select("role").eq("id", session.user.id).single();
+    const isAdmin = user?.role === "admin";
+    
+    if (!isAdmin) {
+      redirect("/dashboard");
+    }
+  } catch (error) {
+    console.error("Error checking admin access:", error);
     redirect("/signin");
-  }
-  
-  // Check if user has admin role
-  const { data: user } = await supabase.from("users").select("role").eq("id", session.user.id).single();
-  const isAdmin = user?.role === "admin";
-  
-  if (!isAdmin) {
-    redirect("/dashboard");
   }
 
   return (

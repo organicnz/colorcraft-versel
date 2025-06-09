@@ -2,21 +2,30 @@ import { createClient } from "@/lib/supabase/server";
 import PortfolioItem from "@/components/portfolio/PortfolioItem";
 import PortfolioTabs from "@/components/portfolio/PortfolioTabs";
 
+// Force dynamic rendering for authentication checks
+export const dynamic = 'force-dynamic';
+
 export default async function PortfolioPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // Check if user is admin
-  const { data: { session } } = await supabase.auth.getSession();
   let isAdmin = false;
 
-  if (session) {
-    const { data: userData } = await supabase
-      .from("users")
-      .select("role")
-      .eq("id", session.user.id)
-      .single();
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
 
-    isAdmin = userData?.role === "admin";
+    if (session) {
+      const { data: userData } = await supabase
+        .from("users")
+        .select("role")
+        .eq("id", session.user.id)
+        .single();
+
+      isAdmin = userData?.role === "admin";
+    }
+  } catch (error) {
+    console.error("Error checking user session:", error);
+    // Continue as non-admin user
   }
 
   // If admin, show tabs with different views
