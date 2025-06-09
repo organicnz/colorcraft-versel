@@ -10,8 +10,19 @@ function parsePostgresArray(value: any): string[] {
     return value;
   }
 
-  // If it's a string that looks like a JSON array, parse it
+  // If it's a string, handle PostgreSQL array format
   if (typeof value === 'string') {
+    // Handle PostgreSQL array format: {value1,value2,value3}
+    if (value.startsWith('{') && value.endsWith('}')) {
+      // Remove the curly braces and split by comma
+      const content = value.slice(1, -1);
+      if (!content.trim()) return [];
+      
+      // Split by comma and clean up each item
+      return content.split(',').map(item => item.trim()).filter(Boolean);
+    }
+    
+    // Try JSON parsing for proper JSON arrays
     try {
       const parsed = JSON.parse(value);
       return Array.isArray(parsed) ? parsed : [];
