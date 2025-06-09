@@ -211,18 +211,18 @@ export async function POST() {
       try {
         const { error: beforeError } = await serviceClient.storage
           .from('portfolio')
-          .upload(`${item.id}/before/.gitkeep`, new Blob([''], { type: 'text/plain' }), {
+          .upload(`${item.id}/before_images/.gitkeep`, new Blob([''], { type: 'text/plain' }), {
             upsert: true
           })
 
         if (beforeError && !beforeError.message.includes('already exists')) {
-          console.error(`Failed to create before directory for ${item.id}:`, beforeError)
+          console.error(`Failed to create before_images directory for ${item.id}:`, beforeError)
           itemResult.before = { success: false, error: beforeError.message }
         } else {
           itemResult.before = { success: true, error: '' }
         }
       } catch (error) {
-        console.error(`Error creating before directory for ${item.id}:`, error)
+        console.error(`Error creating before_images directory for ${item.id}:`, error)
         itemResult.before = { success: false, error: String(error) }
       }
 
@@ -230,18 +230,18 @@ export async function POST() {
       try {
         const { error: afterError } = await serviceClient.storage
           .from('portfolio')
-          .upload(`${item.id}/after/.gitkeep`, new Blob([''], { type: 'text/plain' }), {
+          .upload(`${item.id}/after_images/.gitkeep`, new Blob([''], { type: 'text/plain' }), {
             upsert: true
           })
 
         if (afterError && !afterError.message.includes('already exists')) {
-          console.error(`Failed to create after directory for ${item.id}:`, afterError)
+          console.error(`Failed to create after_images directory for ${item.id}:`, afterError)
           itemResult.after = { success: false, error: afterError.message }
         } else {
           itemResult.after = { success: true, error: '' }
         }
       } catch (error) {
-        console.error(`Error creating after directory for ${item.id}:`, error)
+        console.error(`Error creating after_images directory for ${item.id}:`, error)
         itemResult.after = { success: false, error: String(error) }
       }
 
@@ -255,12 +255,12 @@ export async function POST() {
     if (allPoliciesSuccessful) {
       return NextResponse.json({
         success: true,
-        message: 'Storage bucket and policies created successfully with before/after directory structure!',
+        message: 'Storage bucket and policies created successfully with before_images/after_images directory structure!',
         directoryResults,
         portfolioItemsProcessed: portfolioItems?.length || 0,
         bucketStatus: portfolioBucketExists ? 'already existed' : 'created',
         policyResults,
-        directoryStructure: 'before/after subdirectories created'
+        directoryStructure: 'before_images/after_images subdirectories created'
       })
     } else {
       // Provide SQL for manual execution if programmatic approach fails
@@ -306,7 +306,7 @@ USING (
   )
 );
 
--- Create function to automatically create portfolio directories with before/after structure
+-- Create function to automatically create portfolio directories with before_images/after_images structure
 CREATE OR REPLACE FUNCTION create_portfolio_directories(portfolio_uuid UUID)
 RETURNS BOOLEAN AS $$
 DECLARE
@@ -314,8 +314,8 @@ DECLARE
   after_path TEXT;
 BEGIN
   -- Create the directory paths
-  before_path := portfolio_uuid::TEXT || '/before/';
-  after_path := portfolio_uuid::TEXT || '/after/';
+  before_path := portfolio_uuid::TEXT || '/before_images/';
+  after_path := portfolio_uuid::TEXT || '/after_images/';
   
   -- Insert placeholder files to create the directory structure
   INSERT INTO storage.objects (bucket_id, name, owner_id, path_tokens)
@@ -323,7 +323,7 @@ BEGIN
     'portfolio',
     before_path || '.gitkeep',
     auth.uid(),
-    ARRAY[portfolio_uuid::TEXT, 'before', '.gitkeep']
+    ARRAY[portfolio_uuid::TEXT, 'before_images', '.gitkeep']
   )
   ON CONFLICT (bucket_id, name) DO NOTHING;
   
@@ -332,7 +332,7 @@ BEGIN
     'portfolio',
     after_path || '.gitkeep',
     auth.uid(),
-    ARRAY[portfolio_uuid::TEXT, 'after', '.gitkeep']
+    ARRAY[portfolio_uuid::TEXT, 'after_images', '.gitkeep']
   )
   ON CONFLICT (bucket_id, name) DO NOTHING;
   
@@ -365,14 +365,14 @@ CREATE TRIGGER create_portfolio_directory_on_insert
 
       return NextResponse.json({
         success: false,
-        message: 'Storage bucket created with before/after directories, but policies need manual setup',
+        message: 'Storage bucket created with before_images/after_images directories, but policies need manual setup',
         note: 'Programmatic policy creation failed. Please run the SQL manually.',
         sqlToRun: manualSQL,
         directoryResults,
         portfolioItemsProcessed: portfolioItems?.length || 0,
         bucketStatus: portfolioBucketExists ? 'already existed' : 'created',
         policyResults,
-        directoryStructure: 'before/after subdirectories created'
+        directoryStructure: 'before_images/after_images subdirectories created'
       })
     }
 

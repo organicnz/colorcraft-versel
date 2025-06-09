@@ -147,7 +147,7 @@ export default function StorageSetupClient() {
                                 ) : (
                                   <XCircle className="h-2 w-2 text-red-500" />
                                 )}
-                                <span>before/: {dir.before.success ? 'Success' : `Failed - ${dir.before.error}`}</span>
+                                <span>before_images/: {dir.before.success ? 'Success' : `Failed - ${dir.before.error}`}</span>
                               </div>
                               <div className="flex items-center gap-1 text-xs">
                                 {dir.after.success ? (
@@ -155,7 +155,7 @@ export default function StorageSetupClient() {
                                 ) : (
                                   <XCircle className="h-2 w-2 text-red-500" />
                                 )}
-                                <span>after/: {dir.after.success ? 'Success' : `Failed - ${dir.after.error}`}</span>
+                                <span>after_images/: {dir.after.success ? 'Success' : `Failed - ${dir.after.error}`}</span>
                               </div>
                             </div>
                           ) : (
@@ -220,7 +220,7 @@ export default function StorageSetupClient() {
       <div className="space-y-2">
         <h1 className="text-3xl font-bold">Storage Setup</h1>
         <p className="text-muted-foreground">
-          Set up Supabase storage bucket and policies for portfolio images with before/after organization
+          Set up Supabase storage bucket and policies for portfolio images with before_images/after_images organization
         </p>
       </div>
 
@@ -228,7 +228,7 @@ export default function StorageSetupClient() {
         <CardHeader>
           <CardTitle>Portfolio Storage Configuration</CardTitle>
           <CardDescription>
-            This will create the portfolio storage bucket with before/after directories and set up the necessary RLS policies for admin image uploads.
+            This will create the portfolio storage bucket with before_images/after_images directories and set up the necessary RLS policies for admin image uploads.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -237,10 +237,10 @@ export default function StorageSetupClient() {
             <div className="text-sm text-blue-700 font-mono">
               <div>portfolio/</div>
               <div className="ml-2">├── {'{portfolio-uuid}/'}</div>
-              <div className="ml-4">├── before/</div>
-              <div className="ml-6">└── before-images.jpg</div>
-              <div className="ml-4">└── after/</div>
-              <div className="ml-6">└── after-images.jpg</div>
+              <div className="ml-4">├── before_images/</div>
+              <div className="ml-6">└── before-image-1.jpg</div>
+              <div className="ml-4">└── after_images/</div>
+              <div className="ml-6">└── after-image-1.jpg</div>
             </div>
           </div>
           
@@ -252,10 +252,10 @@ export default function StorageSetupClient() {
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Setting up Storage with Before/After Directories...
+                Setting up Storage with Before/After Images Directories...
               </>
             ) : (
-              'Setup Storage with Before/After Structure'
+              'Setup Storage with Before/After Images Structure'
             )}
           </Button>
 
@@ -277,7 +277,7 @@ export default function StorageSetupClient() {
               <div className="space-y-2">
                 <p><strong>Complete Setup Steps:</strong></p>
                 <ol className="list-decimal list-inside space-y-1 text-sm">
-                  <li>Click "Setup Storage with Before/After Structure" above</li>
+                  <li>Click "Setup Storage with Before/After Images Structure" above</li>
                   <li>Copy the provided SQL code if manual setup is needed</li>
                   <li>Go to your Supabase Dashboard</li>
                   <li>Navigate to <strong>SQL Editor</strong></li>

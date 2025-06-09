@@ -62,7 +62,7 @@ USING (
   )
 );
 
--- 5. Create directories for existing portfolio items with before/after structure
+-- 5. Create directories for existing portfolio items with before_images/after_images structure
 DO $$
 DECLARE
   portfolio_record RECORD;
@@ -71,32 +71,32 @@ BEGIN
   FOR portfolio_record IN 
     SELECT id FROM portfolio
   LOOP
-    -- Insert .gitkeep files to create before/ directory structure
+    -- Insert .gitkeep files to create before_images/ directory structure
     INSERT INTO storage.objects (bucket_id, name, owner_id, path_tokens)
     VALUES (
       'portfolio',
-      portfolio_record.id::TEXT || '/before/.gitkeep',
+      portfolio_record.id::TEXT || '/before_images/.gitkeep',
       (SELECT id FROM auth.users LIMIT 1), -- Use first admin user as owner
-      ARRAY[portfolio_record.id::TEXT, 'before', '.gitkeep']
+      ARRAY[portfolio_record.id::TEXT, 'before_images', '.gitkeep']
     )
     ON CONFLICT (bucket_id, name) DO NOTHING;
     
-    -- Insert .gitkeep files to create after/ directory structure
+    -- Insert .gitkeep files to create after_images/ directory structure
     INSERT INTO storage.objects (bucket_id, name, owner_id, path_tokens)
     VALUES (
       'portfolio',
-      portfolio_record.id::TEXT || '/after/.gitkeep',
+      portfolio_record.id::TEXT || '/after_images/.gitkeep',
       (SELECT id FROM auth.users LIMIT 1), -- Use first admin user as owner
-      ARRAY[portfolio_record.id::TEXT, 'after', '.gitkeep']
+      ARRAY[portfolio_record.id::TEXT, 'after_images', '.gitkeep']
     )
     ON CONFLICT (bucket_id, name) DO NOTHING;
   END LOOP;
   
-  RAISE NOTICE 'Created before/ and after/ directories for existing portfolio items';
+  RAISE NOTICE 'Created before_images/ and after_images/ directories for existing portfolio items';
 END;
 $$;
 
--- 6. Create a function to automatically create portfolio directories with before/after structure
+-- 6. Create a function to automatically create portfolio directories with before_images/after_images structure
 CREATE OR REPLACE FUNCTION create_portfolio_directories(portfolio_uuid UUID)
 RETURNS BOOLEAN AS $$
 DECLARE
@@ -104,8 +104,8 @@ DECLARE
   after_path TEXT;
 BEGIN
   -- Create the directory paths
-  before_path := portfolio_uuid::TEXT || '/before/';
-  after_path := portfolio_uuid::TEXT || '/after/';
+  before_path := portfolio_uuid::TEXT || '/before_images/';
+  after_path := portfolio_uuid::TEXT || '/after_images/';
   
   -- Insert placeholder files to create the directory structure
   INSERT INTO storage.objects (bucket_id, name, owner_id, path_tokens)
@@ -113,7 +113,7 @@ BEGIN
     'portfolio',
     before_path || '.gitkeep',
     auth.uid(),
-    ARRAY[portfolio_uuid::TEXT, 'before', '.gitkeep']
+    ARRAY[portfolio_uuid::TEXT, 'before_images', '.gitkeep']
   )
   ON CONFLICT (bucket_id, name) DO NOTHING;
   
@@ -122,7 +122,7 @@ BEGIN
     'portfolio',
     after_path || '.gitkeep',
     auth.uid(),
-    ARRAY[portfolio_uuid::TEXT, 'after', '.gitkeep']
+    ARRAY[portfolio_uuid::TEXT, 'after_images', '.gitkeep']
   )
   ON CONFLICT (bucket_id, name) DO NOTHING;
   
@@ -153,7 +153,7 @@ CREATE TRIGGER create_portfolio_directory_on_insert
   EXECUTE FUNCTION create_portfolio_directory_trigger();
 
 -- 9. Verify the setup
-SELECT 'Portfolio storage setup with before/after directory structure completed successfully!' as status;
+SELECT 'Portfolio storage setup with before_images/after_images directory structure completed successfully!' as status;
 
 -- 10. Show created policies
 SELECT 
@@ -168,12 +168,12 @@ AND policyname LIKE '%portfolio%';
 -- 11. Example directory structure created:
 -- portfolio/
 --   ├── {portfolio-uuid-1}/
---   │   ├── before/
+--   │   ├── before_images/
 --   │   │   └── .gitkeep
---   │   └── after/
+--   │   └── after_images/
 --   │       └── .gitkeep
 --   └── {portfolio-uuid-2}/
---       ├── before/
+--       ├── before_images/
 --       │   └── .gitkeep
---       └── after/
+--       └── after_images/
 --           └── .gitkeep 
