@@ -26,8 +26,7 @@ export default function RandomShowcaseImage({
   sizes,
   priority = false,
 }: RandomShowcaseImageProps) {
-  const [showcaseImage, setShowcaseImage] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [showcaseImage, setShowcaseImage] = useState<string>(fallbackImage);
   const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
@@ -40,30 +39,23 @@ export default function RandomShowcaseImage({
       isArray: Array.isArray(afterImages)
     });
 
-    if (!afterImages || !Array.isArray(afterImages) || afterImages.length === 0) {
-      console.log('No valid afterImages, using fallback');
-      setShowcaseImage(fallbackImage);
-      setIsLoading(false);
-      return;
+    if (afterImages && Array.isArray(afterImages) && afterImages.length > 0) {
+      // Filter out any invalid URLs
+      const validImages = afterImages.filter(img => img && typeof img === 'string' && img.trim() !== '');
+
+      if (validImages.length > 0) {
+        // Select a random image
+        const randomIndex = Math.floor(Math.random() * validImages.length);
+        const selectedImage = validImages[randomIndex];
+
+        console.log('Selected image URL:', selectedImage);
+        setShowcaseImage(selectedImage);
+        return;
+      }
     }
 
-    // Filter out any invalid URLs
-    const validImages = afterImages.filter(img => img && typeof img === 'string' && img.trim() !== '');
-
-    if (validImages.length === 0) {
-      console.log('No valid image URLs found, using fallback');
-      setShowcaseImage(fallbackImage);
-      setIsLoading(false);
-      return;
-    }
-
-    // Select a random image
-    const randomIndex = Math.floor(Math.random() * validImages.length);
-    const selectedImage = validImages[randomIndex];
-
-    console.log('Selected image URL:', selectedImage);
-    setShowcaseImage(selectedImage);
-    setIsLoading(false);
+    console.log('Using fallback image:', fallbackImage);
+    setShowcaseImage(fallbackImage);
   }, [afterImages, fallbackImage, portfolioId]);
 
   const handleImageError = () => {
@@ -77,14 +69,6 @@ export default function RandomShowcaseImage({
     setImageError(false);
   };
 
-  if (isLoading) {
-    return (
-      <div className={`${className} animate-pulse bg-muted flex items-center justify-center`}>
-        <div className="w-8 h-8 bg-muted-foreground/20 rounded"></div>
-      </div>
-    );
-  }
-
   return (
     <div className="relative w-full h-full">
       {/* Debug info - temporary */}
@@ -93,7 +77,7 @@ export default function RandomShowcaseImage({
       </div>
 
       <Image
-        src={showcaseImage || fallbackImage}
+        src={showcaseImage}
         alt={title}
         width={width}
         height={height}
