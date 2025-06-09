@@ -71,13 +71,8 @@ export default function RandomShowcaseImage({
 
   return (
     <div className="relative w-full h-full">
-      {/* Debug info - temporary */}
-      <div className="absolute top-0 left-0 z-50 bg-black/80 text-white text-xs p-1 max-w-[200px] truncate">
-        {showcaseImage}
-      </div>
-
       <Image
-        src={showcaseImage}
+        src={imageUrl}
         alt={title}
         width={width}
         height={height}
