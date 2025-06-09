@@ -67,7 +67,7 @@ type PortfolioFormData = z.infer<typeof createPortfolioProjectSchema>;
 // --- Create Portfolio Project Action (Auto-generates UUID, starts as draft) ---
 export async function createPortfolioProject(formData: FormData) {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // Verify user authentication and admin role
     const {
@@ -154,7 +154,7 @@ export async function createPortfolioProject(formData: FormData) {
 // --- Update Portfolio Project Action (Handles draft/published state changes) ---
 export async function updatePortfolioProject(id: string, formData: FormData) {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // Verify user authentication and admin role
     const {
@@ -225,7 +225,7 @@ export async function updatePortfolioProject(id: string, formData: FormData) {
 // --- Publish Portfolio Project Action (Changes draft to published) ---
 export async function publishPortfolioProject(id: string) {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // Verify user authentication and admin role
     const {
@@ -279,7 +279,7 @@ export async function publishPortfolioProject(id: string) {
 // --- Unpublish Portfolio Project Action (Admin only) ---
 export async function unpublishPortfolioProject(id: string) {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // Verify user authentication and admin role
     const {
@@ -333,7 +333,7 @@ export async function unpublishPortfolioProject(id: string) {
 // --- Archive Portfolio Project Action (Soft Delete - Admin only) ---
 export async function archivePortfolioProject(id: string) {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // Verify user authentication and admin role
     const {
@@ -386,7 +386,7 @@ export async function archivePortfolioProject(id: string) {
 // --- Restore Portfolio Project Action (Unarchive - Admin only) ---
 export async function restorePortfolioProject(id: string) {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // Verify user authentication and admin role
     const {
@@ -439,7 +439,7 @@ export async function restorePortfolioProject(id: string) {
 // --- Permanently Delete Portfolio Project Action (Admin only) ---
 export async function deletePortfolioProject(id: string) {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // Verify user authentication and admin role
     const {
@@ -518,7 +518,7 @@ export async function deletePortfolioProject(id: string) {
 // --- Fetch Portfolio Projects Action ---
 export async function fetchPortfolioProjects(filter: "active" | "archived" | "all" = "active") {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     let query = supabase
       .from("portfolio")

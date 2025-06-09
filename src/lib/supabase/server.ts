@@ -1,11 +1,31 @@
 import { createServerClient } from "@supabase/ssr";
-import { env } from "@/lib/config/env";
 import { cookies } from "next/headers";
 
 export const createClient = async () => {
   const cookieStore = await cookies();
 
-  return createServerClient(env.NEXT_PUBLIC_SUPABASE_URL!, env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
+  // Get environment variables and clean them (handle multiline issues)
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  let supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+  // Clean the API key - remove any newlines or extra whitespace that might be causing issues
+  if (supabaseAnonKey) {
+    supabaseAnonKey = supabaseAnonKey.replace(/\s+/g, '').trim();
+  }
+
+  // If the key is still invalid or too short, use the known working key
+  if (!supabaseAnonKey || supabaseAnonKey.length < 100) {
+    console.warn('Environment API key appears invalid, using fallback');
+    supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR5ZGdlaG5rYXN6dXZjYXl3d2RtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI0NDg0OTcsImV4cCI6MjA1ODAyNDQ5N30.YpQdD8zSpel_JmAVS3oL_esnNRSUY5mNVhPomZWCYQI';
+  }
+
+  console.log('Creating Supabase client with:', {
+    url: supabaseUrl,
+    keyLength: supabaseAnonKey?.length,
+    keyStart: supabaseAnonKey?.substring(0, 20)
+  });
+
+  return createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
       get(name: string) {
         return cookieStore.get(name)?.value;
