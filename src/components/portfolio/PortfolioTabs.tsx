@@ -8,8 +8,6 @@ import PortfolioItem from "./PortfolioItem";
 import { fetchPortfolioProjects } from "@/actions/portfolioActions";
 import { 
   Loader2, 
-  CheckCircle, 
-  Clock, 
   Archive, 
   Eye, 
   EyeOff,
@@ -72,32 +70,7 @@ export default function PortfolioTabs() {
     loadProjects();
   }, []);
 
-  const getStatusBadge = (project: PortfolioProject) => {
-    if (project.status === 'archived') {
-      return (
-        <Badge variant="secondary" className="bg-gray-100 text-gray-800 hover:bg-gray-200">
-          <Archive className="w-3 h-3 mr-1" />
-          Archived
-        </Badge>
-      );
-    }
-    
-    if (project.status === 'published') {
-      return (
-        <Badge variant="default" className="bg-green-100 text-green-800 hover:bg-green-200">
-          <CheckCircle className="w-3 h-3 mr-1" />
-          Published
-        </Badge>
-      );
-    }
-    
-    return (
-      <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200">
-        <Clock className="w-3 h-3 mr-1" />
-        Draft
-      </Badge>
-    );
-  };
+
 
   const getStatsCards = () => {
     const publishedCount = activeProjects.filter(p => p.status === 'published').length;
@@ -181,11 +154,6 @@ export default function PortfolioTabs() {
               showAdminControls={true}
               onUpdate={loadProjects}
             />
-            
-            {/* Status badge overlay */}
-            <div className="absolute top-4 right-4 z-10">
-              {getStatusBadge(project)}
-            </div>
 
             {/* Creator info */}
             {project.created_by_user && (

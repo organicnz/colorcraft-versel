@@ -153,9 +153,26 @@ export default function PortfolioItem({
   return (
     <TooltipProvider>
       <div className="group relative overflow-hidden rounded-lg transition-all hover:shadow-xl">
+        {/* Status Badge - Top Left */}
+        <div className="absolute top-2 left-2 z-10">
+          {project.status === 'archived' ? (
+            <Badge variant="secondary" className="bg-gray-100 text-gray-800">
+              Archived
+            </Badge>
+          ) : project.status === 'published' ? (
+            <Badge className="bg-green-100 text-green-800">
+              Published
+            </Badge>
+          ) : (
+            <Badge variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-200">
+              Draft
+            </Badge>
+          )}
+        </div>
+
         {/* Admin Controls - Top Right */}
         {isAdmin && !isLoading && showAdminControls && (
-          <div className="absolute top-3 right-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -231,7 +248,7 @@ export default function PortfolioItem({
 
         {/* Simple Edit Button for non-admin or non-showAdminControls */}
         {isAdmin && !isLoading && !showAdminControls && (
-          <div className="absolute top-3 right-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -253,28 +270,12 @@ export default function PortfolioItem({
 
         {/* Loading indicator for admin check */}
         {isLoading && (
-          <div className="absolute top-3 right-3 z-20">
+          <div className="absolute top-2 right-2 z-20">
             <div className="h-8 w-8 bg-white/20 rounded flex items-center justify-center backdrop-blur-sm">
               <Loader2 className="h-3 w-3 animate-spin text-white" />
             </div>
           </div>
         )}
-
-        <div className="absolute top-2 right-2 flex gap-2">
-          {project.status === 'archived' ? (
-            <Badge variant="secondary" className="bg-gray-100 text-gray-800">
-              Archived
-            </Badge>
-          ) : project.status === 'published' ? (
-            <Badge className="bg-green-100 text-green-800">
-              Published
-            </Badge>
-          ) : (
-            <Badge variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-200">
-              Draft
-            </Badge>
-          )}
-        </div>
 
         <div className="aspect-square overflow-hidden">
           {project.id ? (

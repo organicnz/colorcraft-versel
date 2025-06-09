@@ -1,57 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import type { PortfolioProject } from '@/types/crm';
 
-// Function to parse PostgreSQL array strings like "{item1,item2}" to JavaScript arrays
-function parsePostgresArray(pgArray: string | string[]): string[] {
-  // If it's already an array, return it
-  if (Array.isArray(pgArray)) {
-    return pgArray;
-  }
-
-  // If it's null, undefined, or empty string, return empty array
-  if (!pgArray || pgArray === '') {
-    return [];
-  }
-
-  // Convert to string if it's not already
-  const arrayString = String(pgArray);
-
-  // If it's already a JSON array, parse it
-  if (arrayString.startsWith('[') && arrayString.endsWith(']')) {
-    try {
-      return JSON.parse(arrayString);
-    } catch {
-      return [];
-    }
-  }
-
-  // Handle PostgreSQL array format: {item1,item2,item3}
-  if (arrayString.startsWith('{') && arrayString.endsWith('}')) {
-    // Remove the braces
-    const content = arrayString.slice(1, -1);
-
-    // Handle empty array
-    if (content === '') {
-      return [];
-    }
-
-    // Split by comma and trim each item
-    return content.split(',').map(item => item.trim()).filter(item => item !== '');
-  }
-
-  // If it's a single string, return it as an array
-  return [arrayString];
-}
-
-// Function to normalize portfolio project data
-function normalizePortfolioProject(project: any): PortfolioProject {
-  return {
-    ...project,
-    before_images: parsePostgresArray(project.before_images || []),
-    after_images: parsePostgresArray(project.after_images || []),
-  };
-}
-
 export async function getPortfolioProjects(options?: {
   featuredOnly?: boolean;
   status?: 'published' | 'draft' | 'archived';
@@ -90,8 +39,8 @@ export async function getPortfolioProjects(options?: {
     throw new Error(`Failed to fetch portfolio projects: ${error.message}`);
   }
 
-  // Normalize the data to ensure proper array format
-  return (data || []).map(normalizePortfolioProject);
+  // Return data directly - JSONB arrays come back as native JavaScript arrays
+  return (data || []) as PortfolioProject[];
 }
 
 export async function getPortfolioProject(id: string) {
@@ -111,7 +60,8 @@ export async function getPortfolioProject(id: string) {
     return null;
   }
 
-  return normalizePortfolioProject(data);
+  // Return data directly - JSONB arrays come back as native JavaScript arrays
+  return data as PortfolioProject;
 }
 
 export async function getPortfolioStats() {
