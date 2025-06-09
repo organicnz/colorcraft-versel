@@ -346,42 +346,49 @@ export default function PortfolioItem({
           </div>
         </div>
 
-        {/* Content section for non-hover state with glassmorphism - flex-grow to fill remaining space */}
-        <div className="flex-grow p-6 group-hover:opacity-0 transition-opacity duration-500 bg-white/40 backdrop-blur-sm rounded-b-2xl flex flex-col">
-          <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 leading-tight">{project.title}</h3>
-          <p className="text-gray-700 text-sm mb-4 line-clamp-3 leading-relaxed flex-grow">
-            {project.brief_description}
-          </p>
+        {/* Content section for non-hover state with enhanced glassmorphism - flex-grow to fill remaining space */}
+        <div className="flex-grow p-6 group-hover:opacity-0 transition-opacity duration-500 bg-white/20 backdrop-blur-md rounded-b-2xl flex flex-col border-t border-white/30 relative overflow-hidden">
+          {/* Enhanced glassmorphism background with gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-white/20 to-white/10 backdrop-blur-md"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-white/40 via-transparent to-transparent"></div>
 
-          {project.techniques && project.techniques.length > 0 && (
-            <div className="mb-4 flex flex-wrap gap-2">
-              {project.techniques.slice(0, 2).map((technique) => (
-                <span
-                  key={technique}
-                  className="inline-block rounded-full bg-orange-200/60 backdrop-blur-sm text-orange-800 px-3 py-1 text-xs font-medium border border-orange-300/30"
-                >
-                  {technique}
-                </span>
-              ))}
-              {project.techniques.length > 2 && (
-                <span className="inline-block rounded-full bg-gray-200/60 backdrop-blur-sm text-gray-600 px-3 py-1 text-xs font-medium border border-gray-300/30">
-                  +{project.techniques.length - 2}
-                </span>
-              )}
+          {/* Content with proper z-index */}
+          <div className="relative z-10 flex flex-col h-full">
+            <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 leading-tight drop-shadow-sm">{project.title}</h3>
+            <p className="text-gray-800 text-sm mb-4 line-clamp-3 leading-relaxed flex-grow drop-shadow-sm">
+              {project.brief_description}
+            </p>
+
+            {project.techniques && project.techniques.length > 0 && (
+              <div className="mb-4 flex flex-wrap gap-2">
+                {project.techniques.slice(0, 2).map((technique) => (
+                  <span
+                    key={technique}
+                    className="inline-block rounded-full bg-orange-300/40 backdrop-blur-sm text-orange-900 px-3 py-1 text-xs font-medium border border-orange-400/50 shadow-sm"
+                  >
+                    {technique}
+                  </span>
+                ))}
+                {project.techniques.length > 2 && (
+                  <span className="inline-block rounded-full bg-white/40 backdrop-blur-sm text-gray-700 px-3 py-1 text-xs font-medium border border-gray-400/50 shadow-sm">
+                    +{project.techniques.length - 2}
+                  </span>
+                )}
+              </div>
+            )}
+
+            <div className="mt-auto">
+              <Button
+                asChild
+                variant="outline"
+                size="sm"
+                className="text-orange-700 border-orange-400/60 hover:bg-orange-200/60 backdrop-blur-sm font-medium bg-white/40 w-full shadow-sm border transition-all duration-300 hover:shadow-md"
+              >
+                <Link href={`/portfolio/${project.id}`}>
+                  View Project
+                </Link>
+              </Button>
             </div>
-          )}
-
-          <div className="mt-auto">
-            <Button
-              asChild
-              variant="outline"
-              size="sm"
-              className="text-orange-600 border-orange-300/40 hover:bg-orange-100/60 backdrop-blur-sm font-medium bg-white/30 w-full"
-            >
-              <Link href={`/portfolio/${project.id}`}>
-                View Project
-              </Link>
-            </Button>
           </div>
         </div>
       </div>
