@@ -34,27 +34,39 @@ export default function RandomShowcaseImage({
   useEffect(() => {
     async function loadRandomImage() {
       try {
+        console.log('RandomShowcaseImage loading for:', portfolioId);
+        console.log('afterImages prop:', afterImages);
+        console.log('afterImages type:', typeof afterImages);
+        console.log('afterImages Array.isArray:', Array.isArray(afterImages));
+
         setIsLoading(true);
 
         // Priority 1: Use database array if available (populated by edge function)
         if (afterImages && afterImages.length > 0) {
+          console.log('Using afterImages from database, length:', afterImages.length);
           // Filter out any invalid URLs
           const validImages = afterImages.filter(img => img && img.length > 0);
+          console.log('Valid images after filtering:', validImages.length);
+          
           if (validImages.length > 0) {
             const randomIndex = Math.floor(Math.random() * validImages.length);
             const randomImage = validImages[randomIndex];
+            console.log('Selected random image:', randomImage);
             setShowcaseImage(randomImage);
             setIsLoading(false);
             return;
           }
         }
 
+        console.log('Falling back to storage API lookup');
         // Priority 2: Fallback to storage API lookup (slower)
         const randomImage = await getRandomAfterImage(portfolioId);
         
         if (randomImage) {
+          console.log('Got image from storage API:', randomImage);
           setShowcaseImage(randomImage);
         } else {
+          console.log('Using fallback image:', fallbackImage);
           // Priority 3: Use fallback image
           setShowcaseImage(fallbackImage);
         }
