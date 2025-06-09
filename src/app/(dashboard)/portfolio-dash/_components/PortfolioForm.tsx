@@ -107,11 +107,17 @@ function ensureArray(value: any): string[] {
 
 // Helper function to parse comma-separated arrays
 function parseArrayField(value: string): string[] {
-  if (!value || value.trim() === "") return [];
-  return value
+  console.log("🔍 parseArrayField input:", value);
+  if (!value || value.trim() === "") {
+    console.log("🔍 parseArrayField: empty value, returning []");
+    return [];
+  }
+  const result = value
     .split(",")
     .map((item) => item.trim())
     .filter(Boolean);
+  console.log("🔍 parseArrayField result:", result);
+  return result;
 }
 
 export default function PortfolioForm({ initialData, isEditing = false }: PortfolioFormProps) {
@@ -151,6 +157,9 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
 
   const onSubmit = async (data: PortfolioFormData) => {
     setIsSubmitting(true);
+    console.log("🔍 Form submit data:", data);
+    console.log("🔍 Techniques array:", data.techniques);
+    console.log("🔍 Materials array:", data.materials);
 
     try {
       const formData = new FormData();
@@ -165,6 +174,7 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
         ) {
           // Convert arrays to comma-separated strings for FormData
           const arrayValue = Array.isArray(value) ? value.join(", ") : String(value || "");
+          console.log(`🔍 FormData ${key}:`, arrayValue);
           formData.append(key, arrayValue);
         } else if (typeof value === "boolean") {
           formData.append(key, value.toString());
@@ -510,7 +520,10 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                                   : ""
                             }
                             onChange={(e) => {
+                              console.log("🔍 Techniques input value:", e.target.value);
+                              console.log("🔍 Current field value:", field.value);
                               const parsed = parseArrayField(e.target.value);
+                              console.log("🔍 Calling field.onChange with:", parsed);
                               field.onChange(parsed);
                             }}
                             className="text-base pr-12"
@@ -568,7 +581,10 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                                   : ""
                             }
                             onChange={(e) => {
+                              console.log("🔍 Materials input value:", e.target.value);
+                              console.log("🔍 Current field value:", field.value);
                               const parsed = parseArrayField(e.target.value);
+                              console.log("🔍 Calling field.onChange with:", parsed);
                               field.onChange(parsed);
                             }}
                             className="text-base pr-12"
