@@ -451,12 +451,12 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
 
             <motion.div variants={fadeIn(0.2)} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
               {/* Phone Display */}
-              <div className="flex justify-center lg:justify-start order-2 lg:order-1">
+              <div className="flex justify-center lg:justify-start order-2 lg:order-1 px-4 sm:px-0">
                 <PhoneDisplay 
                   phoneNumber="(747) 755-7695"
                   email="contact@colorandcraft.com"
                   variant="hero"
-                  className="w-full max-w-md"
+                  className="w-full max-w-xs sm:max-w-sm"
                 />
               </div>
 
