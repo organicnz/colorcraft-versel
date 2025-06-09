@@ -31,55 +31,80 @@ export default function RandomShowcaseImage({
   const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
-    setIsLoading(true);
-    setImageError(false);
+    // Debug: Log what we're receiving
+    console.log('RandomShowcaseImage Debug:', {
+      portfolioId,
+      afterImages,
+      afterImagesType: typeof afterImages,
+      afterImagesLength: afterImages?.length,
+      isArray: Array.isArray(afterImages)
+    });
 
-    // Use provided image URLs (now full URLs from server)
-    if (afterImages && Array.isArray(afterImages) && afterImages.length > 0) {
-      // Filter out any invalid URLs
-      const validImages = afterImages.filter(img => img && typeof img === 'string' && img.length > 0);
-
-      if (validImages.length > 0) {
-        // Pick a random image from the valid ones
-        const randomIndex = Math.floor(Math.random() * validImages.length);
-        const selectedImage = validImages[randomIndex];
-        setShowcaseImage(selectedImage);
-        setIsLoading(false);
-        return;
-      }
+    if (!afterImages || !Array.isArray(afterImages) || afterImages.length === 0) {
+      console.log('No valid afterImages, using fallback');
+      setShowcaseImage(fallbackImage);
+      setIsLoading(false);
+      return;
     }
 
-    // Fallback to placeholder
-    setShowcaseImage(fallbackImage);
+    // Filter out any invalid URLs
+    const validImages = afterImages.filter(img => img && typeof img === 'string' && img.trim() !== '');
+
+    if (validImages.length === 0) {
+      console.log('No valid image URLs found, using fallback');
+      setShowcaseImage(fallbackImage);
+      setIsLoading(false);
+      return;
+    }
+
+    // Select a random image
+    const randomIndex = Math.floor(Math.random() * validImages.length);
+    const selectedImage = validImages[randomIndex];
+
+    console.log('Selected image URL:', selectedImage);
+    setShowcaseImage(selectedImage);
     setIsLoading(false);
-  }, [afterImages, fallbackImage]);
+  }, [afterImages, fallbackImage, portfolioId]);
+
+  const handleImageError = () => {
+    console.log('Image failed to load:', showcaseImage);
+    setImageError(true);
+    setShowcaseImage(fallbackImage);
+  };
+
+  const handleImageLoad = () => {
+    console.log('Image loaded successfully:', showcaseImage);
+    setImageError(false);
+  };
 
   if (isLoading) {
     return (
-      <div className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105 animate-pulse bg-muted flex items-center justify-center">
-        <div className="w-8 h-8 bg-muted-foreground/20 rounded"></div>
-      </div>
-    );
-  }
-
-  if (imageError || !showcaseImage) {
-    return (
-      <div className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105 bg-muted flex items-center justify-center">
+      <div className={`${className} animate-pulse bg-muted flex items-center justify-center`}>
         <div className="w-8 h-8 bg-muted-foreground/20 rounded"></div>
       </div>
     );
   }
 
   return (
-    <Image
-      src={showcaseImage}
-      alt={title}
-      width={width}
-      height={height}
-      className={`${className} transition-transform duration-300 group-hover:scale-105`}
-      sizes={sizes}
-      priority={priority}
-      onError={() => setImageError(true)}
-    />
+    <div className="relative w-full h-full">
+      {/* Debug info - temporary */}
+      <div className="absolute top-0 left-0 z-50 bg-black/80 text-white text-xs p-1 max-w-[200px] truncate">
+        {showcaseImage}
+      </div>
+
+      <Image
+        src={showcaseImage || fallbackImage}
+        alt={title}
+        width={width}
+        height={height}
+        className={className}
+        sizes={sizes}
+        priority={priority}
+        onError={handleImageError}
+        onLoad={handleImageLoad}
+        placeholder="blur"
+        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+      />
+    </div>
   );
 } 
