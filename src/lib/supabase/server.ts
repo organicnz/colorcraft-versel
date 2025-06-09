@@ -2,8 +2,8 @@ import { createServerClient } from "@supabase/ssr";
 import { env } from "@/lib/config/env";
 import { cookies } from "next/headers";
 
-export const createClient = () => {
-  const cookieStore = cookies();
+export const createClient = async () => {
+  const cookieStore = await cookies();
 
   return createServerClient(env.NEXT_PUBLIC_SUPABASE_URL!, env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
     cookies: {
@@ -35,7 +35,7 @@ export const createClient = () => {
 // Simplified auth helper for server actions and server components
 export async function auth() {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
     return await supabase.auth.getSession();
   } catch (error) {
     console.error("Error getting auth session:", error);
