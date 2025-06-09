@@ -42,7 +42,8 @@ type PortfolioProject = {
 };
 
 export default function PortfolioTabs() {
-  const [activeProjects, setActiveProjects] = useState<PortfolioProject[]>([]);
+  const [publishedProjects, setPublishedProjects] = useState<PortfolioProject[]>([]);
+  const [draftProjects, setDraftProjects] = useState<PortfolioProject[]>([]);
   const [archivedProjects, setArchivedProjects] = useState<PortfolioProject[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("active");
@@ -53,7 +54,11 @@ export default function PortfolioTabs() {
       // Fetch active projects (published + drafts)
       const activeResult = await fetchPortfolioProjects('active');
       if (activeResult.success && activeResult.data) {
-        setActiveProjects(activeResult.data);
+        // Separate published and draft projects
+        const published = activeResult.data.filter(p => p.status === 'published');
+        const drafts = activeResult.data.filter(p => p.status === 'draft');
+        setPublishedProjects(published);
+        setDraftProjects(drafts);
       }
 
       // Fetch archived projects
@@ -74,10 +79,10 @@ export default function PortfolioTabs() {
   }, []);
 
   const getStatsCards = () => {
-    const publishedCount = activeProjects.filter(p => p.status === 'published').length;
-    const draftCount = activeProjects.filter(p => p.status === 'draft').length;
+    const publishedCount = publishedProjects.length;
+    const draftCount = draftProjects.length;
     const archivedCount = archivedProjects.length;
-    const totalCount = activeProjects.length + archivedCount;
+    const totalCount = publishedCount + draftCount + archivedCount;
 
     return (
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
@@ -132,8 +137,14 @@ export default function PortfolioTabs() {
     );
   };
 
-  const renderProjectGrid = (projects: PortfolioProject[]) => {
+  const renderProjectGrid = (projects: PortfolioProject[], tabType: string) => {
     if (projects.length === 0) {
+      const emptyMessages = {
+        active: "No published projects yet. Publish some draft projects to see them here!",
+        draft: "No draft projects yet. Create your first draft project to get started!",
+        archived: "No archived projects yet."
+      };
+
       return (
         <div className="text-center py-12">
           <div className="bg-white/70 backdrop-blur-md border border-white/30 rounded-3xl p-8 max-w-md mx-auto shadow-lg">
@@ -146,9 +157,9 @@ export default function PortfolioTabs() {
               No projects found
             </h3>
             <p className="text-gray-600 mb-6">
-              {activeTab === "active" ? "Create your first portfolio project to get started!" : "No archived projects yet."}
+              {emptyMessages[tabType as keyof typeof emptyMessages]}
             </p>
-            {activeTab === "active" && (
+            {(tabType === "active" || tabType === "draft") && (
               <Button
                 asChild
                 size="lg"
@@ -229,10 +240,14 @@ export default function PortfolioTabs() {
       {getStatsCards()}
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-2 mb-8">
+        <TabsList className="grid w-full grid-cols-3 mb-8">
           <TabsTrigger value="active" className="flex items-center gap-2">
-            <FolderOpen className="h-4 w-4" />
-            Active ({activeProjects.length})
+            <Eye className="h-4 w-4" />
+            Published ({publishedProjects.length})
+          </TabsTrigger>
+          <TabsTrigger value="draft" className="flex items-center gap-2">
+            <EyeOff className="h-4 w-4" />
+            Draft ({draftProjects.length})
           </TabsTrigger>
           <TabsTrigger value="archived" className="flex items-center gap-2">
             <Archive className="h-4 w-4" />
@@ -242,10 +257,18 @@ export default function PortfolioTabs() {
 
         <TabsContent value="active">
           <div className="mb-4">
-            <h2 className="text-2xl font-semibold mb-2">Active Projects</h2>
-            <p className="text-gray-600">Published projects and drafts that are currently active</p>
+            <h2 className="text-2xl font-semibold mb-2">Published Projects</h2>
+            <p className="text-gray-600">Live projects visible on your public portfolio</p>
           </div>
-          {renderProjectGrid(activeProjects)}
+          {renderProjectGrid(publishedProjects, "active")}
+        </TabsContent>
+
+        <TabsContent value="draft">
+          <div className="mb-4">
+            <h2 className="text-2xl font-semibold mb-2">Draft Projects</h2>
+            <p className="text-gray-600">Projects in development that are not yet published</p>
+          </div>
+          {renderProjectGrid(draftProjects, "draft")}
         </TabsContent>
 
         <TabsContent value="archived">
@@ -253,7 +276,7 @@ export default function PortfolioTabs() {
             <h2 className="text-2xl font-semibold mb-2">Archived Projects</h2>
             <p className="text-gray-600">Projects that have been archived (soft deleted)</p>
           </div>
-          {renderProjectGrid(archivedProjects)}
+          {renderProjectGrid(archivedProjects, "archived")}
         </TabsContent>
       </Tabs>
     </div>
