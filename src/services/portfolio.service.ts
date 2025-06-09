@@ -13,7 +13,7 @@ async function convertToFullUrls(paths: string[]): Promise<string[]> {
       return path;
     }
     // Use Supabase client to get the correct public URL
-    const { data } = supabase.storage.from('portfolio-images').getPublicUrl(path);
+    const { data } = supabase.storage.from('portfolio').getPublicUrl(path);
     return data.publicUrl;
   });
 }
@@ -61,16 +61,8 @@ export async function getPortfolioProjects(options?: {
     return [];
   }
 
-  // Convert storage paths to full URLs
-  const projectsWithFullUrls = await Promise.all(
-    projects.map(async (project) => ({
-      ...project,
-      after_images: await convertToFullUrls(project.after_images || []),
-      before_images: await convertToFullUrls(project.before_images || []),
-    }))
-  );
-
-  return projectsWithFullUrls as PortfolioProject[];
+  // Images are already full URLs from the edge functions
+  return projects as PortfolioProject[];
 }
 
 export async function getPortfolioProject(id: string) {
@@ -91,14 +83,8 @@ export async function getPortfolioProject(id: string) {
     return null;
   }
 
-  // Convert storage paths to full URLs
-  const projectWithFullUrls = {
-    ...project,
-    after_images: await convertToFullUrls(project.after_images || []),
-    before_images: await convertToFullUrls(project.before_images || []),
-  };
-
-  return projectWithFullUrls as PortfolioProject;
+  // Images are already full URLs from the edge functions
+  return project as PortfolioProject;
 }
 
 export async function getPortfolioStats() {
