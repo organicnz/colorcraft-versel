@@ -12,9 +12,12 @@ import {
   Eye, 
   EyeOff,
   FolderOpen,
-  Trash2
+  Trash2,
+  Plus
 } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 type PortfolioProject = {
   id: string;
@@ -135,12 +138,31 @@ export default function PortfolioTabs() {
     if (projects.length === 0) {
       return (
         <div className="text-center py-12">
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
-            No projects found
-          </h3>
-          <p className="text-gray-600">
-            {activeTab === "active" ? "Create your first portfolio project!" : "No archived projects yet."}
-          </p>
+          <div className="bg-white/70 backdrop-blur-md border border-white/30 rounded-3xl p-8 max-w-md mx-auto shadow-lg">
+            <div className="mb-6">
+              <div className="bg-orange-200/60 backdrop-blur-sm p-4 rounded-full w-16 h-16 mx-auto flex items-center justify-center border border-orange-300/30">
+                <FolderOpen className="h-8 w-8 text-orange-600" />
+              </div>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              No projects found
+            </h3>
+            <p className="text-gray-600 mb-6">
+              {activeTab === "active" ? "Create your first portfolio project to get started!" : "No archived projects yet."}
+            </p>
+            {activeTab === "active" && (
+              <Button
+                asChild
+                size="lg"
+                className="bg-orange-600/90 hover:bg-orange-700/90 backdrop-blur-md text-white font-semibold px-6 py-3 rounded-full shadow-lg"
+              >
+                <Link href="/portfolio-dash/new">
+                  <Plus className="mr-2 h-5 w-5" />
+                  Create First Project
+                </Link>
+              </Button>
+            )}
+          </div>
         </div>
       );
     }
@@ -183,11 +205,27 @@ export default function PortfolioTabs() {
 
   return (
     <div className="container py-12">
-      <div className="mb-8 text-center">
-        <h1 className="text-4xl font-bold mb-4">Portfolio Management</h1>
-        <p className="text-lg text-gray-600">
-          Manage your portfolio projects with status tracking and organization
-        </p>
+      <div className="mb-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+          <div className="text-center md:text-left">
+            <h1 className="text-4xl font-bold mb-2">Portfolio Management</h1>
+            <p className="text-lg text-gray-600">
+              Manage your portfolio projects with status tracking and organization
+            </p>
+          </div>
+          <div className="mt-4 md:mt-0 text-center md:text-right">
+            <Button
+              asChild
+              size="lg"
+              className="bg-orange-600/90 hover:bg-orange-700/90 backdrop-blur-md text-white font-semibold px-6 py-3 rounded-full shadow-lg border border-orange-500/30 transition-all duration-300 hover:shadow-xl"
+            >
+              <Link href="/portfolio-dash/new">
+                <Plus className="mr-2 h-5 w-5" />
+                Create New Project
+              </Link>
+            </Button>
+          </div>
+        </div>
       </div>
 
       {getStatsCards()}

@@ -152,7 +152,7 @@ export default function PortfolioItem({
 
   return (
     <TooltipProvider>
-      <div className="group relative overflow-hidden rounded-2xl bg-white/80 backdrop-blur-md border border-white/20 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:bg-white/90">
+      <div className="group relative overflow-hidden rounded-2xl bg-white/80 backdrop-blur-md border border-white/20 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1 hover:bg-white/90 h-[480px] flex flex-col">
         {/* Status Badge - Top Left (only show in admin mode) */}
         {showAdminControls && (
           <div className="absolute top-3 left-3 z-10">
@@ -279,7 +279,8 @@ export default function PortfolioItem({
           </div>
         )}
 
-        <div className="aspect-[4/3] overflow-hidden rounded-t-2xl relative">
+        {/* Fixed height image container */}
+        <div className="h-64 overflow-hidden rounded-t-2xl relative flex-shrink-0">
           {project.id ? (
             <RandomShowcaseImage
               portfolioId={project.id}
@@ -288,18 +289,18 @@ export default function PortfolioItem({
               fallbackImage={fallbackImage}
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
               width={600}
-              height={450}
+              height={256}
             />
           ) : (
             <Image
               src={fallbackImage}
               alt={project.title || "Furniture transformation"}
               width={600}
-              height={450}
+              height={256}
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
           )}
-          
+
           {/* Glassmorphism overlay on image */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         </div>
@@ -308,14 +309,14 @@ export default function PortfolioItem({
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 backdrop-blur-sm">
           <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-lg">
-              <h3 className="text-2xl font-bold mb-2 leading-tight">{project.title}</h3>
-              <p className="text-sm text-gray-100 mb-4 line-clamp-2 leading-relaxed">
+              <h3 className="text-2xl font-bold mb-2 leading-tight line-clamp-2">{project.title}</h3>
+              <p className="text-sm text-gray-100 mb-4 line-clamp-3 leading-relaxed">
                 {project.brief_description}
               </p>
 
               {project.techniques && project.techniques.length > 0 && (
                 <div className="mb-4 flex flex-wrap gap-2">
-                  {project.techniques.slice(0, 3).map((technique) => (
+                  {project.techniques.slice(0, 2).map((technique) => (
                     <span
                       key={technique}
                       className="inline-block rounded-full bg-white/20 backdrop-blur-md px-3 py-1 text-xs font-medium border border-white/30 shadow-sm"
@@ -323,9 +324,9 @@ export default function PortfolioItem({
                       {technique}
                     </span>
                   ))}
-                  {project.techniques.length > 3 && (
+                  {project.techniques.length > 2 && (
                     <span className="inline-block rounded-full bg-orange-500/20 backdrop-blur-md px-3 py-1 text-xs font-medium border border-orange-400/30 shadow-sm">
-                      +{project.techniques.length - 3} more
+                      +{project.techniques.length - 2} more
                     </span>
                   )}
                 </div>
@@ -345,10 +346,10 @@ export default function PortfolioItem({
           </div>
         </div>
 
-        {/* Content section for non-hover state with glassmorphism */}
-        <div className="p-6 group-hover:opacity-0 transition-opacity duration-500 bg-white/40 backdrop-blur-sm rounded-b-2xl">
-          <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-1">{project.title}</h3>
-          <p className="text-gray-700 text-sm mb-4 line-clamp-2 leading-relaxed">
+        {/* Content section for non-hover state with glassmorphism - flex-grow to fill remaining space */}
+        <div className="flex-grow p-6 group-hover:opacity-0 transition-opacity duration-500 bg-white/40 backdrop-blur-sm rounded-b-2xl flex flex-col">
+          <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 leading-tight">{project.title}</h3>
+          <p className="text-gray-700 text-sm mb-4 line-clamp-3 leading-relaxed flex-grow">
             {project.brief_description}
           </p>
 
@@ -370,16 +371,18 @@ export default function PortfolioItem({
             </div>
           )}
 
-          <Button
-            asChild
-            variant="outline"
-            size="sm"
-            className="text-orange-600 border-orange-300/40 hover:bg-orange-100/60 backdrop-blur-sm font-medium bg-white/30"
-          >
-            <Link href={`/portfolio/${project.id}`}>
-              View Project
-            </Link>
-          </Button>
+          <div className="mt-auto">
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="text-orange-600 border-orange-300/40 hover:bg-orange-100/60 backdrop-blur-sm font-medium bg-white/30 w-full"
+            >
+              <Link href={`/portfolio/${project.id}`}>
+                View Project
+              </Link>
+            </Button>
+          </div>
         </div>
       </div>
     </TooltipProvider>

@@ -110,7 +110,90 @@ serve(async (req) => {
 
     console.log('Found portfolio:', portfolio.title)
 
-    // Get all files for this portfolio
+    // Handle DELETE events more efficiently
+    if (payload.type === 'DELETE' && payload.old_record?.name) {
+      const deletedFilePath = payload.old_record.name
+      console.log('Handling DELETE event for file:', deletedFilePath)
+
+      // Extract the file path components
+      const deletePathMatch = deletedFilePath.match(/^([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})\/(before_images|after_images)\/(.+)$/)
+
+      if (deletePathMatch) {
+        const [, deletePortfolioId, deleteImageType, fileName] = deletePathMatch
+
+        if (deletePortfolioId === portfolioId) {
+          // Get current portfolio data
+          const { data: currentPortfolio, error: currentError } = await supabase
+            .from('portfolio')
+            .select('before_images, after_images')
+            .eq('id', portfolioId)
+            .single()
+
+          if (currentError) {
+            console.error('Error fetching current portfolio data:', currentError)
+            // Fall back to full sync
+          } else {
+            // Generate the URL that should be removed
+            const { data: urlData } = supabase.storage
+              .from('portfolio')
+              .getPublicUrl(deletedFilePath)
+            const urlToRemove = urlData.publicUrl
+
+            console.log('Removing URL from database:', urlToRemove)
+
+            // Remove the specific URL from the appropriate array
+            let beforeImages = Array.isArray(currentPortfolio.before_images) ? [...currentPortfolio.before_images] : []
+            let afterImages = Array.isArray(currentPortfolio.after_images) ? [...currentPortfolio.after_images] : []
+
+            if (deleteImageType === 'before_images') {
+              beforeImages = beforeImages.filter(url => url !== urlToRemove)
+              console.log(`Removed from before_images. Count: ${currentPortfolio.before_images?.length || 0} → ${beforeImages.length}`)
+            } else if (deleteImageType === 'after_images') {
+              afterImages = afterImages.filter(url => url !== urlToRemove)
+              console.log(`Removed from after_images. Count: ${currentPortfolio.after_images?.length || 0} → ${afterImages.length}`)
+            }
+
+            // Update the portfolio with the filtered arrays
+            const { data: updateData, error: updateError } = await supabase
+              .from('portfolio')
+              .update({
+                before_images: beforeImages,
+                after_images: afterImages,
+                updated_at: new Date().toISOString()
+              })
+              .eq('id', portfolioId)
+              .select()
+
+            if (updateError) {
+              console.error('Error updating portfolio after DELETE:', updateError)
+              // Fall back to full sync below
+            } else {
+              console.log('Successfully removed deleted image URL from portfolio')
+              return new Response(
+                JSON.stringify({
+                  success: true,
+                  portfolioId,
+                  portfolioTitle: portfolio.title,
+                  action: 'DELETE',
+                  removedUrl: urlToRemove,
+                  beforeImagesCount: beforeImages.length,
+                  afterImagesCount: afterImages.length,
+                  filePath: deletedFilePath
+                }),
+                {
+                  headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+                  status: 200
+                }
+              )
+            }
+          }
+        }
+      }
+    }
+
+    console.log('Performing full sync (fallback or non-DELETE event)')
+
+    // Get all files for this portfolio (full sync approach)
     const { data: beforeFiles, error: beforeError } = await supabase.storage
       .from('portfolio')
       .list(`${portfolioId}/before_images`, {
@@ -215,7 +298,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         error: 'Internal server error',
-        message: error.message 
+        message: error instanceof Error ? error.message : 'Unknown error'
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

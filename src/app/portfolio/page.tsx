@@ -117,17 +117,35 @@ export default async function PortfolioPage() {
         {publishedProjects && publishedProjects.length > 0 ? (
           <>
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Transformations</h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Each piece is carefully restored and transformed with attention to detail and craftsmanship
-              </p>
+              <div className="flex flex-col md:flex-row items-center justify-between mb-8">
+                <div className="text-center md:text-left">
+                  <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Transformations</h2>
+                  <p className="text-xl text-gray-600 max-w-2xl">
+                    Each piece is carefully restored and transformed with attention to detail and craftsmanship
+                  </p>
+                </div>
+                {isAdmin && (
+                  <div className="mt-6 md:mt-0">
+                    <Button
+                      asChild
+                      size="lg"
+                      className="bg-orange-600/90 hover:bg-orange-700/90 backdrop-blur-md text-white font-semibold px-6 py-3 rounded-full shadow-lg border border-orange-500/30 transition-all duration-300 hover:shadow-xl"
+                    >
+                      <Link href="/portfolio-dash/new">
+                        <Plus className="mr-2 h-5 w-5" />
+                        Add New Project
+                      </Link>
+                    </Button>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {publishedProjects.map((project, index) => (
                 <div
                   key={project.id}
-                  className="transform hover:scale-105 transition-all duration-300"
+                  className="w-full"
                   style={{
                     animationDelay: `${index * 100}ms`,
                   }}
@@ -197,6 +215,21 @@ export default async function PortfolioPage() {
           </div>
         </div>
       </div>
+
+      {/* Floating Action Button for Admins */}
+      {isAdmin && (
+        <div className="fixed bottom-8 right-8 z-50">
+          <Button
+            asChild
+            size="lg"
+            className="h-16 w-16 p-0 bg-orange-600/95 hover:bg-orange-700/95 backdrop-blur-md text-white rounded-full shadow-2xl border border-orange-500/30 transition-all duration-300 hover:shadow-3xl hover:scale-110 group"
+          >
+            <Link href="/portfolio-dash/new" className="flex items-center justify-center h-full w-full">
+              <Plus className="h-8 w-8 group-hover:rotate-90 transition-transform duration-300" />
+            </Link>
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
