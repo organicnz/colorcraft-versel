@@ -34,7 +34,7 @@ export default async function DashboardPortfolioManagePage() {
     <div className="container py-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Portfolio Projects</h1>
-        <Button asChild>
+        <Button asChild className="bg-[#3ECF8E] hover:bg-[#38BC81] text-white border border-[#3ECF8E]/30 transition-all duration-300 hover:shadow-lg">
           <Link href="/portfolio-dash/new">
             <PlusIcon className="mr-2 h-4 w-4" />
             Add New Project
@@ -52,7 +52,7 @@ export default async function DashboardPortfolioManagePage() {
           <p className="text-muted-foreground mb-4">
             Add your first project to showcase in your portfolio.
           </p>
-          <Button asChild>
+          <Button asChild className="bg-[#3ECF8E] hover:bg-[#38BC81] text-white border border-[#3ECF8E]/30 transition-all duration-300 hover:shadow-lg">
             <Link href="/portfolio-dash/new">
               <PlusIcon className="mr-2 h-4 w-4" />
               Add Your First Project

@@ -154,11 +154,11 @@ export default function PortfolioTabs() {
               <Button
                 asChild
                 size="lg"
-                className="bg-orange-600/90 hover:bg-orange-700/90 backdrop-blur-md text-white font-semibold px-6 py-3 rounded-full shadow-lg"
+                className="bg-[#3ECF8E] hover:bg-[#38BC81] backdrop-blur-md text-white font-semibold px-6 py-3 rounded-full shadow-lg border border-[#3ECF8E]/30 transition-all duration-300 hover:shadow-xl"
               >
                 <Link href="/portfolio-dash/new">
                   <Plus className="mr-2 h-5 w-5" />
-                  Create First Project
+                  Create New Project
                 </Link>
               </Button>
             )}
@@ -217,7 +217,7 @@ export default function PortfolioTabs() {
             <Button
               asChild
               size="lg"
-              className="bg-orange-600/90 hover:bg-orange-700/90 backdrop-blur-md text-white font-semibold px-6 py-3 rounded-full shadow-lg border border-orange-500/30 transition-all duration-300 hover:shadow-xl"
+              className="bg-[#3ECF8E] hover:bg-[#38BC81] backdrop-blur-md text-white font-semibold px-6 py-3 rounded-full shadow-lg border border-[#3ECF8E]/30 transition-all duration-300 hover:shadow-xl"
             >
               <Link href="/portfolio-dash/new">
                 <Plus className="mr-2 h-5 w-5" />

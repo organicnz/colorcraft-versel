@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { GlassPanel, GlassCard } from "@/components/ui/glass-card";
 import { ArrowRight, Award, Palette, Send, Settings, Sparkles } from "lucide-react";
 import RandomShowcaseImage from '@/components/portfolio/RandomShowcaseImage';
+import PhoneDisplay from '@/components/ui/phone-display';
 
 // Animation variants
 const fadeIn = (delay = 0, duration = 0.8) => ({
@@ -418,6 +419,78 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
                 </GlassCard>
               </motion.div>
             ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section className="py-24 relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#3ECF8E]/5 via-transparent to-[#38BC81]/5"></div>
+
+        <div className="container relative z-10">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="max-w-4xl mx-auto"
+          >
+            <motion.div variants={fadeIn()} className="text-center mb-12">
+              <Badge variant="outline" className="mb-4 bg-white/50 backdrop-blur-sm border-white/30">
+                Get In Touch
+              </Badge>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                Ready to Transform
+                <span className="block bg-gradient-to-r from-[#3ECF8E] to-[#38BC81] bg-clip-text text-transparent">
+                  Your Furniture?
+                </span>
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                Contact us today for a free consultation and let's bring your vision to life
+              </p>
+            </motion.div>
+
+            <motion.div variants={fadeIn(0.2)} className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              {/* Phone Display */}
+              <div className="flex justify-center">
+                <PhoneDisplay 
+                  phoneNumber="(747) 755-7695"
+                  email="contact@colorandcraft.com"
+                  variant="hero"
+                  className="relative"
+                />
+              </div>
+
+              {/* CTA Content */}
+              <div className="text-center md:text-left">
+                <h3 className="text-2xl font-bold mb-4">Free Consultation</h3>
+                <p className="text-muted-foreground mb-6 leading-relaxed">
+                  Schedule a free consultation to discuss your project. We'll assess your furniture and provide expert recommendations for the perfect transformation.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button 
+                    size="lg" 
+                    className="bg-[#3ECF8E] hover:bg-[#38BC81] text-white font-semibold"
+                    asChild
+                  >
+                    <Link href="/contact">
+                      Get Your Quote
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="lg"
+                    className="border-[#3ECF8E]/40 text-[#3ECF8E] hover:bg-[#3ECF8E]/10"
+                    asChild
+                  >
+                    <Link href="/portfolio">
+                      View Portfolio
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>

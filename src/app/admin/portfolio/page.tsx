@@ -77,7 +77,7 @@ export default async function PortfolioManagementPage() {
           </div>
           
           {isAdmin && (
-            <Button asChild>
+            <Button asChild className="bg-[#3ECF8E] hover:bg-[#38BC81] text-white border border-[#3ECF8E]/30 transition-all duration-300 hover:shadow-lg">
               <Link href="/admin/portfolio/new">
                 <Plus className="h-4 w-4 mr-2" />
                 New Project

@@ -126,7 +126,7 @@ export default function EditorialButton({
                 </Link>
                 
                 <Link href="/portfolio-dash/new">
-                  <Button variant="ghost" className="w-full justify-start h-9 text-sm">
+                  <Button variant="ghost" className="w-full justify-start h-9 text-sm hover:bg-[#3ECF8E]/10 hover:text-[#3ECF8E] transition-colors">
                     <Plus className="h-4 w-4 mr-2" />
                     Add New Project
                   </Button>

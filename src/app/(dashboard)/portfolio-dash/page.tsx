@@ -133,7 +133,7 @@ export default async function PortfolioDashboardPage() {
           <Button
             asChild
             size="lg"
-            className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-lg"
+            className="bg-[#3ECF8E] hover:bg-[#38BC81] shadow-lg text-white border border-[#3ECF8E]/30 transition-all duration-300 hover:shadow-xl"
           >
             <Link href="/portfolio-dash/new" className="flex items-center gap-2">
               <PlusCircle className="w-5 h-5" />
@@ -227,7 +227,7 @@ export default async function PortfolioDashboardPage() {
                   Start building your portfolio by adding your first project. Showcase your best
                   work and attract new clients.
                 </p>
-                <Button asChild size="lg" className="bg-gradient-to-r from-blue-500 to-purple-600">
+                <Button asChild size="lg" className="bg-[#3ECF8E] hover:bg-[#38BC81] text-white border border-[#3ECF8E]/30 transition-all duration-300 hover:shadow-xl">
                   <Link href="/portfolio-dash/new" className="flex items-center gap-2">
                     <PlusCircle className="w-5 h-5" />
                     Add Your First Project

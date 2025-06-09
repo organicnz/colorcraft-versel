@@ -52,7 +52,7 @@ export default async function PortfolioManagementPage() {
         heading="Portfolio Management"
         text="Manage and organize your portfolio projects"
       >
-        <Button asChild>
+        <Button asChild className="bg-[#3ECF8E] hover:bg-[#38BC81] text-white border border-[#3ECF8E]/30 transition-all duration-300 hover:shadow-lg">
           <Link href="/portfolio-dash/new" className="flex items-center">
             <PlusCircle className="mr-2 h-4 w-4" />
             Add New Project

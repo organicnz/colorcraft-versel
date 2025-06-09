@@ -76,7 +76,7 @@ export default async function PortfolioPage() {
                   asChild
                   size="lg"
                   variant="outline"
-                  className="bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white/20 hover:text-white font-semibold px-8 py-3 rounded-full shadow-lg transition-all duration-300"
+                  className="bg-[#3ECF8E]/20 backdrop-blur-md border-[#3ECF8E]/40 text-white hover:bg-[#3ECF8E]/30 hover:text-white font-semibold px-8 py-3 rounded-full shadow-lg transition-all duration-300 hover:shadow-xl"
                 >
                   <Link href="/portfolio-dash/new">
                     <Plus className="mr-2 h-5 w-5" />
@@ -171,7 +171,7 @@ export default async function PortfolioPage() {
                 Check back soon to see our latest creations!
               </p>
               {isAdmin && (
-                <Button asChild size="lg" className="bg-orange-600/90 hover:bg-orange-700/90 backdrop-blur-md shadow-lg">
+                <Button asChild size="lg" className="bg-[#3ECF8E] hover:bg-[#38BC81] backdrop-blur-md shadow-lg text-white border border-[#3ECF8E]/30 transition-all duration-300 hover:shadow-xl">
                   <Link href="/portfolio-dash/new">
                     <Plus className="mr-2 h-5 w-5" />
                     Create First Project
@@ -222,7 +222,7 @@ export default async function PortfolioPage() {
           <Button
             asChild
             size="lg"
-            className="h-16 w-16 p-0 bg-orange-600/95 hover:bg-orange-700/95 backdrop-blur-md text-white rounded-full shadow-2xl border border-orange-500/30 transition-all duration-300 hover:shadow-3xl hover:scale-110 group"
+            className="h-16 w-16 p-0 bg-[#3ECF8E]/95 hover:bg-[#38BC81]/95 backdrop-blur-md text-white rounded-full shadow-2xl border border-[#3ECF8E]/30 transition-all duration-300 hover:shadow-3xl hover:scale-110 group"
           >
             <Link href="/portfolio-dash/new" className="flex items-center justify-center h-full w-full">
               <Plus className="h-8 w-8 group-hover:rotate-90 transition-transform duration-300" />
