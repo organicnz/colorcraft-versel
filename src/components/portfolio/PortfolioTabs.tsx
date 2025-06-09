@@ -73,8 +73,6 @@ export default function PortfolioTabs() {
     loadProjects();
   }, []);
 
-
-
   const getStatsCards = () => {
     const publishedCount = activeProjects.filter(p => p.status === 'published').length;
     const draftCount = activeProjects.filter(p => p.status === 'draft').length;
@@ -83,9 +81,9 @@ export default function PortfolioTabs() {
 
     return (
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <Card>
+        <Card glass={true} glassVariant="light" glassIntensity="medium">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Projects</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Projects</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center">
@@ -95,9 +93,9 @@ export default function PortfolioTabs() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card glass={true} glassVariant="light" glassIntensity="medium">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Published</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Published</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center">
@@ -107,9 +105,9 @@ export default function PortfolioTabs() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card glass={true} glassVariant="light" glassIntensity="medium">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Drafts</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Drafts</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center">
@@ -119,9 +117,9 @@ export default function PortfolioTabs() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card glass={true} glassVariant="light" glassIntensity="medium">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Archived</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Archived</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center">

@@ -68,7 +68,7 @@ export default async function CRMDashboardPage() {
       </div>
       
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <Card>
+        <Card glass={true} glassVariant="light" glassIntensity="medium">
           <CardHeader className="pb-2">
             <CardTitle>Total Customers</CardTitle>
             <CardDescription>All registered customers</CardDescription>
@@ -78,7 +78,7 @@ export default async function CRMDashboardPage() {
           </CardContent>
         </Card>
         
-        <Card>
+        <Card glass={true} glassVariant="light" glassIntensity="medium">
           <CardHeader className="pb-2">
             <CardTitle>Active Projects</CardTitle>
             <CardDescription>Currently in progress</CardDescription>
@@ -88,7 +88,7 @@ export default async function CRMDashboardPage() {
           </CardContent>
         </Card>
         
-        <Card>
+        <Card glass={true} glassVariant="light" glassIntensity="medium">
           <CardHeader className="pb-2">
             <CardTitle>New Leads</CardTitle>
             <CardDescription>This month</CardDescription>
@@ -99,7 +99,7 @@ export default async function CRMDashboardPage() {
         </Card>
       </div>
       
-      <Card>
+      <Card glass={true} glassVariant="light" glassIntensity="medium">
         <CardHeader>
           <CardTitle>Customer List</CardTitle>
           <CardDescription>Manage your customers and their projects</CardDescription>

@@ -101,16 +101,21 @@ export default async function CrmDashboard() {
       {/* Recent Activity */}
       <div>
         <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          {stats.recentActivity.length > 0 ? (
-            <div className="divide-y">
-              {stats.recentActivity.map((activity: any) => (
-                <ActivityItem key={activity.id} activity={activity} />
-              ))}
-            </div>
-          ) : (
-            <div className="p-4 text-center text-gray-500">No recent activity</div>
-          )}
+        <div className="bg-white/30 dark:bg-white/10 backdrop-blur-md rounded-xl shadow-glass border border-white/30 dark:border-white/10 overflow-hidden">
+          {/* Glass gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent dark:from-white/5 pointer-events-none" />
+          
+          <div className="relative z-10">
+            {stats.recentActivity.length > 0 ? (
+              <div className="divide-y divide-white/20 dark:divide-white/10">
+                {stats.recentActivity.map((activity: any) => (
+                  <ActivityItem key={activity.id} activity={activity} />
+                ))}
+              </div>
+            ) : (
+              <div className="p-6 text-center text-gray-600 dark:text-gray-400">No recent activity</div>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -131,18 +136,23 @@ function StatsCard({
   color: string;
 }) {
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
+    <div className="bg-white/30 dark:bg-white/10 backdrop-blur-md rounded-xl shadow-glass border border-white/30 dark:border-white/10 overflow-hidden transition-all duration-300 hover:bg-white/40 hover:shadow-glass-heavy hover:scale-[1.02]">
       <div className={`${color} h-2`}></div>
-      <div className="p-4">
-        <h3 className="text-gray-500 text-sm font-medium">{title}</h3>
-        <p className="text-3xl font-bold mt-1">{value}</p>
-        <div className="mt-4">
-          <Link 
-            href={link}
-            className="text-sm font-medium text-blue-600 hover:text-blue-800"
-          >
-            {linkText} →
-          </Link>
+      <div className="p-6 relative">
+        {/* Glass gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent dark:from-white/5 pointer-events-none" />
+        
+        <div className="relative z-10">
+          <h3 className="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2">{title}</h3>
+          <p className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{value}</p>
+          <div>
+            <Link 
+              href={link}
+              className="text-sm font-medium text-[#3ECF8E] hover:text-[#38BC81] transition-colors"
+            >
+              {linkText} →
+            </Link>
+          </div>
         </div>
       </div>
     </div>
@@ -161,12 +171,16 @@ function QuickLink({
   color: string;
 }) {
   return (
-    <Link 
-      href={link}
-      className={`${color} rounded-lg p-4 transition-transform hover:scale-105`}
-    >
-      <h3 className="text-lg font-medium">{title}</h3>
-      <p className="text-sm text-gray-600 mt-1">{description}</p>
+    <Link href={link}>
+      <div className="bg-white/30 dark:bg-white/10 backdrop-blur-md rounded-xl shadow-glass border border-white/30 dark:border-white/10 p-6 transition-all duration-300 hover:bg-white/40 hover:shadow-glass-heavy hover:scale-[1.02] group">
+        {/* Glass gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent dark:from-white/5 pointer-events-none rounded-xl" />
+        
+        <div className="relative z-10">
+          <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{title}</h3>
+          <p className="text-gray-600 dark:text-gray-300 text-sm">{description}</p>
+        </div>
+      </div>
     </Link>
   );
 }

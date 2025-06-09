@@ -144,7 +144,7 @@ export default async function PortfolioDashboardPage() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border-blue-200 dark:border-blue-800">
+          <Card glass={true} glassVariant="light" glassIntensity="medium" className="border-blue-200/50 dark:border-blue-800/50">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-300">
                 Total Projects
@@ -159,7 +159,7 @@ export default async function PortfolioDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-950 dark:to-yellow-900 border-yellow-200 dark:border-yellow-800">
+          <Card glass={true} glassVariant="light" glassIntensity="medium" className="border-yellow-200/50 dark:border-yellow-800/50">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-yellow-700 dark:text-yellow-300">
                 Featured Projects
@@ -176,7 +176,7 @@ export default async function PortfolioDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 border-purple-200 dark:border-purple-800">
+          <Card glass={true} glassVariant="light" glassIntensity="medium" className="border-purple-200/50 dark:border-purple-800/50">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-purple-700 dark:text-purple-300">
                 Recent Projects
