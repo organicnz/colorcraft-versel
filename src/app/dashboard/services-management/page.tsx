@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default async function ServicesManagementPage() {
   const cookieStore = cookies();
-  const supabase = createClient();
+  const supabase = await createClient();
   
   // Get the current user
   const {

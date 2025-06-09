@@ -7,7 +7,7 @@ import ServicesTable from "./_components/ServicesTable";
 export const dynamic = "force-dynamic";
 
 export default async function ServicesDashboardPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   // Check if user is logged in
   const { data: { session } } = await supabase.auth.getSession();

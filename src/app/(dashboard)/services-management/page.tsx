@@ -18,7 +18,7 @@ export const metadata = {
 };
 
 export default async function ServicesManagementPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   // Get the current user
   const { data: { user } } = await supabase.auth.getUser();

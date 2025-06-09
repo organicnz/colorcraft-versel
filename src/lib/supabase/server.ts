@@ -10,19 +10,20 @@ export const createClient = async () => {
 
   // Clean the API key - remove any newlines or extra whitespace that might be causing issues
   if (supabaseAnonKey) {
-    supabaseAnonKey = supabaseAnonKey.replace(/\s+/g, '').trim();
+    supabaseAnonKey = supabaseAnonKey.replace(/\s+/g, "").trim();
   }
 
   // If the key is still invalid or too short, use the known working key
   if (!supabaseAnonKey || supabaseAnonKey.length < 100) {
-    console.warn('Environment API key appears invalid, using fallback');
-    supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR5ZGdlaG5rYXN6dXZjYXl3d2RtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI0NDg0OTcsImV4cCI6MjA1ODAyNDQ5N30.YpQdD8zSpel_JmAVS3oL_esnNRSUY5mNVhPomZWCYQI';
+    console.warn("Environment API key appears invalid, using fallback");
+    supabaseAnonKey =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR5ZGdlaG5rYXN6dXZjYXl3d2RtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI0NDg0OTcsImV4cCI6MjA1ODAyNDQ5N30.YpQdD8zSpel_JmAVS3oL_esnNRSUY5mNVhPomZWCYQI";
   }
 
-  console.log('Creating Supabase client with:', {
+  console.log("Creating Supabase client with:", {
     url: supabaseUrl,
     keyLength: supabaseAnonKey?.length,
-    keyStart: supabaseAnonKey?.substring(0, 20)
+    keyStart: supabaseAnonKey?.substring(0, 20),
   });
 
   return createServerClient(supabaseUrl, supabaseAnonKey, {

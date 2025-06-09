@@ -16,7 +16,7 @@ export const metadata = {
 };
 
 export default async function PortfolioManagementPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   // Get the current user
   const { data: { user } } = await supabase.auth.getUser();

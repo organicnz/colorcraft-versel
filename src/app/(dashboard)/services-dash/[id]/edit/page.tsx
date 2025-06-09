@@ -14,7 +14,7 @@ type EditServicePageProps = {
 export default async function EditServicePage({ params }: EditServicePageProps) {
   // Await params since they're now a Promise in Next.js 15
   const { id } = await params;
-  const supabase = createClient();
+  const supabase = await createClient();
   
   // Get current session (middleware already checks auth, but we need user info)
   const { data: { session } } = await supabase.auth.getSession();
