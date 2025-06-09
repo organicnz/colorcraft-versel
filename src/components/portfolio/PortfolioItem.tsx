@@ -259,6 +259,7 @@ export default function PortfolioItem({
             <RandomShowcaseImage
               portfolioId={project.id}
               title={project.title || "Furniture transformation"}
+              afterImages={project.after_images}
               fallbackImage={fallbackImage}
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
               width={500}

@@ -7,7 +7,7 @@ import { getRandomAfterImage } from '@/utils/portfolio-images';
 interface RandomShowcaseImageProps {
   portfolioId: string;
   title: string;
-  afterImages?: string[];  // Optional: use database array if available
+  afterImages?: string[];  // Database array populated by edge function
   fallbackImage?: string;
   className?: string;
   width?: number;
@@ -19,7 +19,7 @@ interface RandomShowcaseImageProps {
 export default function RandomShowcaseImage({
   portfolioId,
   title,
-  afterImages,  // New prop for database array
+  afterImages,  // Database array populated by edge function
   fallbackImage = '/placeholder-image.jpg',
   className = 'h-full w-full object-cover',
   width = 500,
@@ -36,21 +36,26 @@ export default function RandomShowcaseImage({
       try {
         setIsLoading(true);
 
-        // If afterImages array is provided from database, use it
+        // Priority 1: Use database array if available (populated by edge function)
         if (afterImages && afterImages.length > 0) {
-          const randomIndex = Math.floor(Math.random() * afterImages.length);
-          const randomImage = afterImages[randomIndex];
-          setShowcaseImage(randomImage);
-          return;
+          // Filter out any invalid URLs
+          const validImages = afterImages.filter(img => img && img.length > 0);
+          if (validImages.length > 0) {
+            const randomIndex = Math.floor(Math.random() * validImages.length);
+            const randomImage = validImages[randomIndex];
+            setShowcaseImage(randomImage);
+            setIsLoading(false);
+            return;
+          }
         }
 
-        // Fallback to storage lookup if no database array
+        // Priority 2: Fallback to storage API lookup (slower)
         const randomImage = await getRandomAfterImage(portfolioId);
         
         if (randomImage) {
           setShowcaseImage(randomImage);
         } else {
-          // No images found in storage, use fallback
+          // Priority 3: Use fallback image
           setShowcaseImage(fallbackImage);
         }
       } catch (err) {
