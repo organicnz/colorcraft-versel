@@ -1,138 +1,90 @@
 import { createClient } from '@/lib/supabase/server';
-import { createAdminClient } from '@/lib/supabase/admin';
+import type { PortfolioProject } from '@/types/crm';
 
-// Helper function to parse PostgreSQL text[] arrays that come back as JSON strings
-function parsePostgresArray(value: any): string[] {
-  if (!value) return [];
-
-  // If it's already an array, return it
-  if (Array.isArray(value)) {
-    return value;
-  }
-
-  // If it's a string, handle PostgreSQL array format
-  if (typeof value === 'string') {
-    // Handle PostgreSQL array format: {value1,value2,value3}
-    if (value.startsWith('{') && value.endsWith('}')) {
-      // Remove the curly braces and split by comma
-      const content = value.slice(1, -1);
-      if (!content.trim()) return [];
-      
-      // Split by comma and clean up each item
-      return content.split(',').map(item => item.trim()).filter(Boolean);
-    }
-    
-    // Try JSON parsing for proper JSON arrays
-    try {
-      const parsed = JSON.parse(value);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      // If JSON parsing fails, treat as comma-separated string
-      return value.split(',').map(item => item.trim()).filter(Boolean);
-    }
-  }
-
-  return [];
-}
-
-// Helper function to normalize portfolio project data
-function normalizePortfolioProject(project: any) {
-  if (!project) return null;
-
-  return {
-    ...project,
-    before_images: parsePostgresArray(project.before_images),
-    after_images: parsePostgresArray(project.after_images),
-    techniques: parsePostgresArray(project.techniques),
-    materials: parsePostgresArray(project.materials),
-  };
-}
-
-/**
- * Fetches all portfolio projects
- * @param options Optional parameters for fetching projects
- * @returns Array of portfolio projects
- */
 export async function getPortfolioProjects(options?: {
   featuredOnly?: boolean;
-  orderBy?: { column: string; ascending: boolean }[];
-  useAdmin?: boolean; // Option to use admin client for higher privileges
+  status?: 'published' | 'draft' | 'archived';
+  limit?: number;
+  offset?: number;
 }) {
-  try {
-    // Use admin client if specified, otherwise use regular server client
-    const supabase = options?.useAdmin ? createAdminClient() : await createClient();
+  const supabase = await createClient();
 
-    let query = supabase
-      .from('portfolio')
-      .select('*');
+  let query = supabase
+    .from('portfolio')
+    .select('*')
+    .order('created_at', { ascending: false });
 
-    // Apply featured filter if requested
-    if (options?.featuredOnly) {
-      query = query.eq('is_featured', true);
-    }
-
-    // Apply ordering if specified
-    if (options?.orderBy && options.orderBy.length > 0) {
-      for (const order of options.orderBy) {
-        query = query.order(order.column, { ascending: order.ascending });
-      }
-    } else {
-      // Default ordering: featured first, then by created_at desc
-      query = query.order('is_featured', { ascending: false })
-                   .order('created_at', { ascending: false });
-    }
-
-    const { data: projects, error } = await query;
-
-    if (error) {
-      console.error('Portfolio fetch error:', error);
-      return [];
-    }
-
-    // Normalize the projects to ensure arrays are properly parsed
-    const normalizedProjects = (projects || []).map(normalizePortfolioProject);
-    return normalizedProjects;
-
-  } catch (error: any) {
-    console.error('Portfolio service error:', error);
-    return [];
+  if (options?.featuredOnly) {
+    query = query.eq('is_featured', true);
   }
+
+  if (options?.status) {
+    query = query.eq('status', options.status);
+  } else {
+    // By default, exclude archived projects
+    query = query.neq('status', 'archived');
+  }
+
+  if (options?.limit) {
+    query = query.limit(options.limit);
+  }
+
+  if (options?.offset) {
+    query = query.range(options.offset, options.offset + (options.limit || 10) - 1);
+  }
+
+  const { data: projects, error } = await query;
+
+  if (error) {
+    console.error('Error fetching portfolio projects:', error);
+    throw new Error('Failed to fetch portfolio projects');
+  }
+
+  // No normalization needed - JSONB arrays come back as native JavaScript arrays
+  return (projects || []) as PortfolioProject[];
 }
 
-/**
- * Fetches a single portfolio project by ID
- * @param id The project ID to fetch
- * @param useAdmin Whether to use admin client for higher privileges
- * @returns The portfolio project or null if not found
- */
 export async function getPortfolioProject(id: string, useAdmin = false) {
-  try {
-    // Use admin client if specified, otherwise use regular server client
-    const supabase = useAdmin ? createAdminClient() : await createClient();
+  const supabase = await createClient();
 
-    const { data: project, error } = await supabase
-      .from('portfolio')
-      .select('*')
-      .eq('id', id)
-      .single();
+  let query = supabase
+    .from('portfolio')
+    .select('*')
+    .eq('id', id);
 
-    if (error) {
-      if (error.code === 'PGRST116') {
-        // PGRST116 means no rows returned, which is expected when record is not found
-        return null;
-      }
+  if (!useAdmin) {
+    query = query.eq('status', 'published');
+  }
 
-      console.error('Portfolio project fetch error:', error);
-      return null;
-    }
+  const { data: project, error } = await query.single();
 
-    // Normalize the project to ensure arrays are properly parsed
-    return normalizePortfolioProject(project);
-
-  } catch (error: any) {
-    console.error('Portfolio project service error:', error);
+  if (error) {
+    console.error('Error fetching portfolio project:', error);
     return null;
   }
+
+  // No normalization needed - JSONB arrays come back as native JavaScript arrays
+  return project as PortfolioProject;
+}
+
+export async function getFeaturedPortfolioProjects(limit = 3) {
+  const supabase = await createClient();
+
+  const { data: projects, error } = await supabase
+    .from('portfolio')
+    .select('*')
+    .eq('is_featured', true)
+    .eq('status', 'published')
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error('Error fetching featured projects:', error);
+    throw new Error('Failed to fetch featured projects');
+  }
+
+  // No normalization needed - JSONB arrays come back as native JavaScript arrays
+  return (projects || []) as PortfolioProject[];
 }
 
 /**
