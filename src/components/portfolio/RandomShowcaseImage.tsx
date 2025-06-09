@@ -2,12 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { getRandomAfterImage } from '@/utils/portfolio-images';
 
 interface RandomShowcaseImageProps {
   portfolioId: string;
   title: string;
-  afterImages?: string[];  // Database array populated by edge function
+  afterImages?: string[];  // JSONB array from database
   fallbackImage?: string;
   className?: string;
   width?: number;
@@ -19,7 +18,7 @@ interface RandomShowcaseImageProps {
 export default function RandomShowcaseImage({
   portfolioId,
   title,
-  afterImages,  // Database array populated by edge function
+  afterImages,
   fallbackImage = '/placeholder-image.jpg',
   className = 'h-full w-full object-cover',
   width = 500,
@@ -32,54 +31,32 @@ export default function RandomShowcaseImage({
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    async function loadRandomImage() {
-      try {
-        console.log('RandomShowcaseImage loading for:', portfolioId);
-        console.log('afterImages prop:', afterImages);
-        console.log('afterImages type:', typeof afterImages);
-        console.log('afterImages Array.isArray:', Array.isArray(afterImages));
+    console.log('RandomShowcaseImage for:', portfolioId);
+    console.log('afterImages:', afterImages);
+    console.log('afterImages type:', typeof afterImages, 'isArray:', Array.isArray(afterImages));
 
-        setIsLoading(true);
+    // Use database JSONB array if available
+    if (afterImages && Array.isArray(afterImages) && afterImages.length > 0) {
+      console.log('Using afterImages from database, length:', afterImages.length);
 
-        // Priority 1: Use database array if available (populated by edge function)
-        if (afterImages && afterImages.length > 0) {
-          console.log('Using afterImages from database, length:', afterImages.length);
-          // Filter out any invalid URLs
-          const validImages = afterImages.filter(img => img && img.length > 0);
-          console.log('Valid images after filtering:', validImages.length);
-          
-          if (validImages.length > 0) {
-            const randomIndex = Math.floor(Math.random() * validImages.length);
-            const randomImage = validImages[randomIndex];
-            console.log('Selected random image:', randomImage);
-            setShowcaseImage(randomImage);
-            setIsLoading(false);
-            return;
-          }
-        }
+      // Filter out any invalid URLs
+      const validImages = afterImages.filter(img => img && typeof img === 'string' && img.length > 0);
+      console.log('Valid images after filtering:', validImages.length);
 
-        console.log('Falling back to storage API lookup');
-        // Priority 2: Fallback to storage API lookup (slower)
-        const randomImage = await getRandomAfterImage(portfolioId);
-        
-        if (randomImage) {
-          console.log('Got image from storage API:', randomImage);
-          setShowcaseImage(randomImage);
-        } else {
-          console.log('Using fallback image:', fallbackImage);
-          // Priority 3: Use fallback image
-          setShowcaseImage(fallbackImage);
-        }
-      } catch (err) {
-        console.error('Error loading random showcase image:', err);
-        setError(true);
-        setShowcaseImage(fallbackImage);
-      } finally {
+      if (validImages.length > 0) {
+        const randomIndex = Math.floor(Math.random() * validImages.length);
+        const randomImage = validImages[randomIndex];
+        console.log('Selected random image:', randomImage);
+        setShowcaseImage(randomImage);
         setIsLoading(false);
+        return;
       }
     }
 
-    loadRandomImage();
+    console.log('No valid afterImages found, using fallback:', fallbackImage);
+    // Use fallback image if no valid images found
+    setShowcaseImage(fallbackImage);
+    setIsLoading(false);
   }, [portfolioId, afterImages, fallbackImage]);
 
   if (isLoading) {
@@ -100,6 +77,7 @@ export default function RandomShowcaseImage({
       sizes={sizes}
       priority={priority}
       onError={() => {
+        console.error('Image failed to load:', showcaseImage);
         if (!error) {
           setError(true);
           setShowcaseImage(fallbackImage);
