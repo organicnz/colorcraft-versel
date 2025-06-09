@@ -90,9 +90,6 @@ export type PortfolioProject = {
   client_testimonial: string | null
   is_featured: boolean
   status: PortfolioStatus
-  is_published?: boolean // Keep for backward compatibility
-  is_draft?: boolean // Keep for backward compatibility
-  is_archived?: boolean // Keep for backward compatibility
   created_by?: string
   updated_by?: string
   created_at: string

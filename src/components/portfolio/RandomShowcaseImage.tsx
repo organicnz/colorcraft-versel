@@ -7,6 +7,7 @@ import { getRandomAfterImage } from '@/utils/portfolio-images';
 interface RandomShowcaseImageProps {
   portfolioId: string;
   title: string;
+  afterImages?: string[];  // Optional: use database array if available
   fallbackImage?: string;
   className?: string;
   width?: number;
@@ -18,6 +19,7 @@ interface RandomShowcaseImageProps {
 export default function RandomShowcaseImage({
   portfolioId,
   title,
+  afterImages,  // New prop for database array
   fallbackImage = '/placeholder-image.jpg',
   className = 'h-full w-full object-cover',
   width = 500,
@@ -33,6 +35,16 @@ export default function RandomShowcaseImage({
     async function loadRandomImage() {
       try {
         setIsLoading(true);
+
+        // If afterImages array is provided from database, use it
+        if (afterImages && afterImages.length > 0) {
+          const randomIndex = Math.floor(Math.random() * afterImages.length);
+          const randomImage = afterImages[randomIndex];
+          setShowcaseImage(randomImage);
+          return;
+        }
+
+        // Fallback to storage lookup if no database array
         const randomImage = await getRandomAfterImage(portfolioId);
         
         if (randomImage) {
@@ -51,7 +63,7 @@ export default function RandomShowcaseImage({
     }
 
     loadRandomImage();
-  }, [portfolioId, fallbackImage]);
+  }, [portfolioId, afterImages, fallbackImage]);
 
   if (isLoading) {
     return (

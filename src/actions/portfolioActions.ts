@@ -59,8 +59,7 @@ const portfolioSchema = z.object({
   client_name: z.string().optional(),
   client_testimonial: z.string().optional(),
   is_featured: z.boolean().default(false),
-  is_published: z.boolean().default(false),
-  is_draft: z.boolean().default(true),
+  status: z.enum(['published', 'draft', 'archived']).default('draft'),
 });
 
 export type PortfolioFormData = z.infer<typeof portfolioSchema>;
@@ -103,8 +102,7 @@ export async function createPortfolioProject(formData: FormData) {
       client_testimonial: (formData.get("client_testimonial") as string) || undefined,
       is_featured: formData.get("is_featured") === "true",
       // New portfolio items start as drafts by default
-      is_published: false,
-      is_draft: true,
+      status: 'draft',
     };
 
     // Insert into PostgreSQL - UUID will be auto-generated, arrays will be automatically converted to text[]
@@ -169,9 +167,9 @@ export async function updatePortfolioProject(id: string, formData: FormData) {
       client_name: (formData.get("client_name") as string) || undefined,
       client_testimonial: (formData.get("client_testimonial") as string) || undefined,
       is_featured: formData.get("is_featured") === "true",
-      // Handle publish/draft status
-      is_published: formData.get("is_published") === "true",
-      is_draft: formData.get("is_published") === "true" ? false : true, // If published, not draft
+      // Handle status - get from form or determine from is_published for backwards compatibility
+      status: (formData.get("status") as 'published' | 'draft' | 'archived') ||
+              (formData.get("is_published") === "true" ? 'published' : 'draft'),
     };
 
     const { error, data } = await supabase
@@ -189,9 +187,9 @@ export async function updatePortfolioProject(id: string, formData: FormData) {
     revalidatePath("/portfolio-dash");
     revalidatePath("/portfolio");
 
-    const statusMessage = data.is_published
+    const statusMessage = data.status === 'published'
       ? `Portfolio "${data.title}" published successfully`
-      : `Portfolio "${data.title}" saved as draft`;
+      : `Portfolio "${data.title}" saved as ${data.status}`;
 
     return {
       success: true,
@@ -231,8 +229,7 @@ export async function publishPortfolioProject(id: string) {
     const { error, data } = await supabase
       .from("portfolio")
       .update({
-        is_published: true,
-        is_draft: false,
+        status: 'published',
         updated_at: new Date().toISOString(),
       })
       .eq("id", id)
@@ -285,8 +282,7 @@ export async function unpublishPortfolioProject(id: string) {
     const { error, data } = await supabase
       .from("portfolio")
       .update({
-        is_published: false,
-        is_draft: true,
+        status: 'draft',
         updated_at: new Date().toISOString(),
       })
       .eq("id", id)
@@ -339,9 +335,7 @@ export async function archivePortfolioProject(id: string) {
     const { error, data } = await supabase
       .from("portfolio")
       .update({
-        is_archived: true,
-        is_published: false,
-        is_draft: false,
+        status: 'archived',
         updated_at: new Date().toISOString(),
       })
       .eq("id", id)
