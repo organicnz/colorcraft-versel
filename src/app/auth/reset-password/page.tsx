@@ -103,8 +103,11 @@ function ResetPasswordForm() {
       </div>
 
       {isSuccess ? (
-        <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
-          <div className="text-center">
+        <div className="bg-white/30 dark:bg-white/10 backdrop-blur-md rounded-xl shadow-glass border border-white/30 dark:border-white/10 p-8 transition-all duration-300 hover:bg-white/40 hover:shadow-glass-heavy relative">
+          {/* Glass gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent dark:from-white/5 pointer-events-none rounded-xl" />
+          
+          <div className="text-center relative z-10">
             <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 dark:bg-green-900">
               <svg className="h-6 w-6 text-green-600 dark:text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -122,64 +125,81 @@ function ResetPasswordForm() {
             </div>
           </div>
         </div>
-      ) : (
-        <form onSubmit={form.handleSubmit(onSubmit)} className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md text-sm text-red-600 dark:text-red-300">
-              {error}
+      ) : error ? (
+        <div className="bg-white/30 dark:bg-white/10 backdrop-blur-md rounded-xl shadow-glass border border-white/30 dark:border-white/10 p-8 transition-all duration-300 hover:bg-white/40 hover:shadow-glass-heavy relative">
+          {/* Glass gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent dark:from-white/5 pointer-events-none rounded-xl" />
+          
+          <div className="text-center relative z-10">
+            <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900">
+              <svg className="h-6 w-6 text-red-600 dark:text-red-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
             </div>
-          )}
-
-          <div className="mb-4">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              New Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              className="w-full p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/50 focus:border-primary"
-              {...form.register("password")}
-              disabled={isLoading}
-            />
-            {form.formState.errors.password && (
-              <p className="mt-1 text-sm text-red-500">
-                {form.formState.errors.password.message}
-              </p>
-            )}
+            <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Reset Failed</h3>
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+              {error}
+            </p>
+            <div className="mt-6">
+              <Link href="/auth/forgot-password" className="text-primary hover:text-primary-dark font-medium">
+                Request a new reset link
+              </Link>
+            </div>
           </div>
+        </div>
+      ) : (
+        <form onSubmit={form.handleSubmit(onSubmit)} className="bg-white/30 dark:bg-white/10 backdrop-blur-md rounded-xl shadow-glass border border-white/30 dark:border-white/10 p-8 transition-all duration-300 hover:bg-white/40 hover:shadow-glass-heavy relative">
+          {/* Glass gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent dark:from-white/5 pointer-events-none rounded-xl" />
+          
+          <div className="relative z-10">
+            <div className="space-y-6">
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  New Password
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  {...form.register("password")}
+                  className="w-full p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                  placeholder="Enter your new password"
+                />
+                {form.formState.errors.password && (
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                    {form.formState.errors.password.message}
+                  </p>
+                )}
+              </div>
 
-          <div className="mb-6">
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Confirm Password
-            </label>
-            <input
-              id="confirmPassword"
-              type="password"
-              className="w-full p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/50 focus:border-primary"
-              {...form.register("confirmPassword")}
-              disabled={isLoading}
-            />
-            {form.formState.errors.confirmPassword && (
-              <p className="mt-1 text-sm text-red-500">
-                {form.formState.errors.confirmPassword.message}
-              </p>
-            )}
-          </div>
+              <div>
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Confirm Password
+                </label>
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  {...form.register("confirmPassword")}
+                  className="w-full p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                  placeholder="Confirm your new password"
+                />
+                {form.formState.errors.confirmPassword && (
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                    {form.formState.errors.confirmPassword.message}
+                  </p>
+                )}
+              </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className={`w-full py-3 px-4 rounded-md font-medium text-white bg-primary hover:bg-primary-dark transition-colors ${
-              isLoading ? "opacity-70 cursor-not-allowed" : ""
-            }`}
-          >
-            {isLoading ? "Resetting..." : "Reset Password"}
-          </button>
-
-          <div className="mt-4 text-center">
-            <Link href="/login" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary">
-              Return to login
-            </Link>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className={`w-full py-3 px-4 rounded-md font-medium text-white bg-primary hover:bg-primary-dark transition-colors ${
+                  isLoading ? 'opacity-70 cursor-not-allowed' : ''
+                }`}
+              >
+                {isLoading ? 'Updating...' : 'Update Password'}
+              </button>
+            </div>
           </div>
         </form>
       )}

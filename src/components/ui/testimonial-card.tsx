@@ -30,7 +30,7 @@ export function TestimonialCard({
           ? 'bg-gradient-to-br from-primary-500/10 to-secondary-500/10 dark:from-primary-500/20 dark:to-secondary-500/20 backdrop-blur-sm border border-white/20 dark:border-neutral-800/30 shadow-xl'
           : variant === 'minimal'
             ? 'bg-transparent'
-            : 'bg-white dark:bg-neutral-800 shadow-lg',
+            : 'bg-white/30 dark:bg-white/10 backdrop-blur-md shadow-glass border border-white/30 dark:border-white/10 transition-all duration-300 hover:bg-white/40 hover:shadow-glass-heavy',
         className
       )}
       {...props}
@@ -38,8 +38,12 @@ export function TestimonialCard({
       {variant === 'featured' && (
         <div className="absolute top-0 right-0 -mt-6 -mr-6 w-24 h-24 opacity-10 rounded-full bg-accent-500 blur-xl" />
       )}
+
+      {(variant === 'default' || variant === 'featured') && (
+        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent dark:from-white/5 pointer-events-none rounded-xl" />
+      )}
       
-      <div className="p-6 md:p-8 relative z-10">
+      <div className={cn("p-6 md:p-8", variant !== 'minimal' && "relative z-10")}>
         <Quote 
           className={cn(
             "h-8 w-8 mb-4 opacity-20",
