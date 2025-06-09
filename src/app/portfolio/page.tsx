@@ -66,7 +66,7 @@ export default async function PortfolioPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 size="lg"
-                className="bg-white text-orange-600 hover:bg-amber-50 font-semibold px-8 py-3 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300"
+                className="bg-white/90 backdrop-blur-md text-orange-600 hover:bg-white hover:shadow-2xl font-semibold px-8 py-3 rounded-full shadow-xl transition-all duration-300 border border-white/50"
               >
                 <Sparkles className="mr-2 h-5 w-5" />
                 Explore Collection
@@ -76,7 +76,7 @@ export default async function PortfolioPage() {
                   asChild
                   size="lg"
                   variant="outline"
-                  className="bg-transparent border-white text-white hover:bg-white hover:text-orange-600 font-semibold px-8 py-3 rounded-full backdrop-blur-sm"
+                  className="bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white/20 hover:text-white font-semibold px-8 py-3 rounded-full shadow-lg transition-all duration-300"
                 >
                   <Link href="/portfolio-dash/new">
                     <Plus className="mr-2 h-5 w-5" />
@@ -99,15 +99,15 @@ export default async function PortfolioPage() {
       <div className="container mx-auto px-4 py-20">
         {/* Stats Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-          <div className="text-center p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <div className="text-center p-8 bg-white/60 backdrop-blur-md border border-white/30 rounded-2xl shadow-lg hover:shadow-xl hover:bg-white/70 transition-all duration-300">
             <div className="text-4xl font-bold text-orange-600 mb-2">{publishedProjects.length}+</div>
             <div className="text-gray-600 font-medium">Projects Completed</div>
           </div>
-          <div className="text-center p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <div className="text-center p-8 bg-white/60 backdrop-blur-md border border-white/30 rounded-2xl shadow-lg hover:shadow-xl hover:bg-white/70 transition-all duration-300">
             <div className="text-4xl font-bold text-orange-600 mb-2">100%</div>
             <div className="text-gray-600 font-medium">Client Satisfaction</div>
           </div>
-          <div className="text-center p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <div className="text-center p-8 bg-white/60 backdrop-blur-md border border-white/30 rounded-2xl shadow-lg hover:shadow-xl hover:bg-white/70 transition-all duration-300">
             <div className="text-4xl font-bold text-orange-600 mb-2">5+</div>
             <div className="text-gray-600 font-medium">Years Experience</div>
           </div>
@@ -139,9 +139,9 @@ export default async function PortfolioPage() {
           </>
         ) : (
           <div className="text-center py-20">
-            <div className="bg-white rounded-3xl p-12 max-w-2xl mx-auto shadow-xl">
+            <div className="bg-white/70 backdrop-blur-md border border-white/30 rounded-3xl p-12 max-w-2xl mx-auto shadow-xl hover:bg-white/80 transition-all duration-300">
               <div className="mb-8">
-                <div className="bg-orange-100 p-6 rounded-full w-24 h-24 mx-auto flex items-center justify-center">
+                <div className="bg-orange-200/60 backdrop-blur-sm p-6 rounded-full w-24 h-24 mx-auto flex items-center justify-center border border-orange-300/30">
                   <Palette className="h-12 w-12 text-orange-600" />
                 </div>
               </div>
@@ -153,7 +153,7 @@ export default async function PortfolioPage() {
                 Check back soon to see our latest creations!
               </p>
               {isAdmin && (
-                <Button asChild size="lg" className="bg-orange-600 hover:bg-orange-700">
+                <Button asChild size="lg" className="bg-orange-600/90 hover:bg-orange-700/90 backdrop-blur-md shadow-lg">
                   <Link href="/portfolio-dash/new">
                     <Plus className="mr-2 h-5 w-5" />
                     Create First Project
@@ -178,7 +178,7 @@ export default async function PortfolioPage() {
             <Button
               asChild
               size="lg"
-              className="bg-white text-orange-600 hover:bg-orange-50 font-semibold px-8 py-4 rounded-full shadow-xl"
+              className="bg-white/90 backdrop-blur-md text-orange-600 hover:bg-white hover:shadow-2xl font-semibold px-8 py-4 rounded-full shadow-xl border border-white/50 transition-all duration-300"
             >
               <Link href="/contact">
                 Get Free Quote
@@ -188,7 +188,7 @@ export default async function PortfolioPage() {
               asChild
               size="lg"
               variant="outline"
-              className="bg-transparent border-white text-white hover:bg-white hover:text-orange-600 font-semibold px-8 py-4 rounded-full"
+              className="bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white/20 hover:text-white font-semibold px-8 py-4 rounded-full shadow-lg transition-all duration-300"
             >
               <Link href="/about">
                 Learn More
