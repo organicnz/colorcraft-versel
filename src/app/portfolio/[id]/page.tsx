@@ -165,7 +165,7 @@ export default async function PortfolioProjectPage({ params }: PortfolioProjectP
         <div className="lg:col-span-2">
           {/* Project Description */}
           {project.description && (
-            <Card className="mb-8">
+            <Card className="mb-8 bg-white/30 dark:bg-white/10 backdrop-blur-md shadow-glass border border-white/30 dark:border-white/10 transition-all duration-300 hover:bg-white/40 hover:shadow-glass-heavy">
               <CardHeader>
                 <CardTitle>Project Details</CardTitle>
               </CardHeader>
@@ -179,7 +179,7 @@ export default async function PortfolioProjectPage({ params }: PortfolioProjectP
 
           {/* Client Testimonial */}
           {project.client_testimonial && (
-            <Card className="mb-8">
+            <Card className="mb-8 bg-white/30 dark:bg-white/10 backdrop-blur-md shadow-glass border border-white/30 dark:border-white/10 transition-all duration-300 hover:bg-white/40 hover:shadow-glass-heavy">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Quote className="h-5 w-5" />
@@ -204,7 +204,7 @@ export default async function PortfolioProjectPage({ params }: PortfolioProjectP
         <div className="space-y-6">
           {/* Techniques */}
           {project.techniques && project.techniques.length > 0 && (
-            <Card>
+            <Card className="bg-white/30 dark:bg-white/10 backdrop-blur-md shadow-glass border border-white/30 dark:border-white/10 transition-all duration-300 hover:bg-white/40 hover:shadow-glass-heavy">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Palette className="h-5 w-5" />
@@ -225,7 +225,7 @@ export default async function PortfolioProjectPage({ params }: PortfolioProjectP
 
           {/* Materials */}
           {project.materials && project.materials.length > 0 && (
-            <Card>
+            <Card className="bg-white/30 dark:bg-white/10 backdrop-blur-md shadow-glass border border-white/30 dark:border-white/10 transition-all duration-300 hover:bg-white/40 hover:shadow-glass-heavy">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Wrench className="h-5 w-5" />
@@ -245,7 +245,7 @@ export default async function PortfolioProjectPage({ params }: PortfolioProjectP
           )}
 
           {/* Contact CTA */}
-          <Card>
+          <Card className="bg-white/30 dark:bg-white/10 backdrop-blur-md shadow-glass border border-white/30 dark:border-white/10 transition-all duration-300 hover:bg-white/40 hover:shadow-glass-heavy">
             <CardContent className="pt-6">
               <h3 className="font-semibold mb-3">Love this transformation?</h3>
               <p className="text-sm text-muted-foreground mb-4">
@@ -271,7 +271,7 @@ export default async function PortfolioProjectPage({ params }: PortfolioProjectP
                 href={`/portfolio/${relatedProject.id}`}
                 className="group"
               >
-                <Card className="overflow-hidden transition-all hover:shadow-md">
+                <Card className="overflow-hidden transition-all hover:shadow-md bg-white/30 dark:bg-white/10 backdrop-blur-md shadow-glass border border-white/30 dark:border-white/10 hover:bg-white/40 hover:shadow-glass-heavy">
                   <div className="relative aspect-[4/3] bg-muted">
                     <RandomShowcaseImage
                       portfolioId={relatedProject.id}

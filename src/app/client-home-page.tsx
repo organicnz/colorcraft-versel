@@ -279,8 +279,13 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
       </section>
 
       {/* Featured Projects Section */}
-      <section className="py-24 bg-gradient-to-b from-transparent via-accent-50/30 to-transparent">
-        <div className="container">
+      <section className="py-24 relative overflow-hidden">
+        {/* Enhanced glassmorphism background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-white/10 to-transparent backdrop-blur-sm"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-accent-50/40 via-primary-50/20 to-transparent"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(59,130,246,0.1),transparent_50%)]"></div>
+
+        <div className="container relative z-10">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -289,17 +294,17 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
             className="text-center mb-16"
           >
             <motion.div variants={fadeIn()}>
-              <Badge variant="outline" className="mb-4 bg-white/50 backdrop-blur-sm border-white/30">
+              <Badge variant="outline" className="mb-4 bg-white/60 backdrop-blur-md border-white/40 shadow-glass">
                 Featured Work
               </Badge>
             </motion.div>
-            <motion.h2 variants={fadeIn(0.1)} className="text-4xl md:text-5xl font-bold mb-6">
+            <motion.h2 variants={fadeIn(0.1)} className="text-4xl md:text-5xl font-bold mb-6 drop-shadow-sm">
               Recent
               <span className="block bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
                 Transformations
               </span>
             </motion.h2>
-            <motion.p variants={fadeIn(0.2)} className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            <motion.p variants={fadeIn(0.2)} className="text-xl text-muted-foreground max-w-3xl mx-auto drop-shadow-sm">
               See how we've transformed ordinary furniture into extraordinary pieces
             </motion.p>
           </motion.div>
