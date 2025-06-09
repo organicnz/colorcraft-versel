@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     let result;
 
     if (portfolioId) {
-      // Refresh specific portfolio item
+      // Refresh specific portfolio item using enhanced function
       const { data, error } = await supabase.rpc('refresh_portfolio_images', {
         portfolio_uuid: portfolioId
       });
@@ -48,15 +48,19 @@ export async function POST(request: Request) {
         );
       }
 
+      // The enhanced function returns detailed information
+      const refreshResult = data?.[0];
       result = {
-        success: data,
-        message: data 
-          ? `Successfully refreshed images for portfolio ${portfolioId}`
-          : `Portfolio ${portfolioId} not found`,
-        portfolioId
+        success: refreshResult?.success || false,
+        message: refreshResult?.message || 'Unknown result',
+        portfolioId,
+        beforeCount: refreshResult?.before_count || 0,
+        afterCount: refreshResult?.after_count || 0,
+        beforeUrls: refreshResult?.before_urls || [],
+        afterUrls: refreshResult?.after_urls || []
       };
     } else {
-      // Refresh all portfolio items
+      // Refresh all portfolio items using enhanced function
       const { data, error } = await supabase.rpc('refresh_all_portfolio_images');
 
       if (error) {
@@ -67,10 +71,20 @@ export async function POST(request: Request) {
         );
       }
 
+      // Count successful and failed refreshes
+      const successful = data?.filter((item: any) => item.status === 'success').length || 0;
+      const failed = data?.filter((item: any) => item.status !== 'success').length || 0;
+      const totalBefore = data?.reduce((sum: number, item: any) => sum + (item.before_count || 0), 0) || 0;
+      const totalAfter = data?.reduce((sum: number, item: any) => sum + (item.after_count || 0), 0) || 0;
+
       result = {
-        success: true,
-        message: `Successfully refreshed images for ${data} portfolio items`,
-        refreshedCount: data
+        success: failed === 0,
+        message: `Refreshed ${successful} portfolio items successfully${failed > 0 ? `, ${failed} failed` : ''}`,
+        refreshedCount: successful,
+        failedCount: failed,
+        totalBeforeImages: totalBefore,
+        totalAfterImages: totalAfter,
+        details: data
       };
     }
 
