@@ -2,25 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { createClient } from '@/lib/supabase/client';
 
 interface RandomShowcaseImageProps {
   portfolioId: string;
   title: string;
-  afterImages?: string[];  // JSONB array from database
+  afterImages?: string[];  // Now receives full URLs from server
   fallbackImage?: string;
   className?: string;
   width?: number;
   height?: number;
   sizes?: string;
   priority?: boolean;
-}
-
-// Helper function to get full storage URL
-function getStorageUrl(path: string): string {
-  const supabase = createClient();
-  const { data } = supabase.storage.from('portfolio-images').getPublicUrl(path);
-  return data.publicUrl;
 }
 
 export default function RandomShowcaseImage({
@@ -42,7 +34,7 @@ export default function RandomShowcaseImage({
     setIsLoading(true);
     setImageError(false);
 
-    // Use database JSONB array if available
+    // Use provided image URLs (now full URLs from server)
     if (afterImages && Array.isArray(afterImages) && afterImages.length > 0) {
       // Filter out any invalid URLs
       const validImages = afterImages.filter(img => img && typeof img === 'string' && img.length > 0);
@@ -50,11 +42,8 @@ export default function RandomShowcaseImage({
       if (validImages.length > 0) {
         // Pick a random image from the valid ones
         const randomIndex = Math.floor(Math.random() * validImages.length);
-        const selectedPath = validImages[randomIndex];
-
-        // Convert storage path to full URL
-        const fullImageUrl = getStorageUrl(selectedPath);
-        setShowcaseImage(fullImageUrl);
+        const selectedImage = validImages[randomIndex];
+        setShowcaseImage(selectedImage);
         setIsLoading(false);
         return;
       }

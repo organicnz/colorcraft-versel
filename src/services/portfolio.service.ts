@@ -1,6 +1,20 @@
 import { createClient } from '@/lib/supabase/server';
 import type { PortfolioProject } from '@/types/crm';
 
+// Helper function to convert storage paths to full URLs
+function convertToFullUrls(paths: string[]): string[] {
+  if (!paths || !Array.isArray(paths)) return [];
+  
+  return paths.map(path => {
+    if (path.startsWith('http')) {
+      // Already a full URL
+      return path;
+    }
+    // Convert to full Supabase storage URL
+    return `https://ynkpuvwrgmxnhbdzfqze.supabase.co/storage/v1/object/public/portfolio-images/${path}`;
+  });
+}
+
 export async function getPortfolioProjects(options?: {
   featuredOnly?: boolean;
   status?: 'published' | 'draft' | 'archived';
@@ -30,38 +44,56 @@ export async function getPortfolioProjects(options?: {
   }
 
   if (options?.offset) {
-    query = query.range(options.offset, (options.offset + (options.limit || 10)) - 1);
+    query = query.range(options.offset, options.offset + (options?.limit || 10) - 1);
   }
 
-  const { data, error } = await query;
+  const { data: projects, error } = await query;
 
   if (error) {
+    console.error('Error fetching portfolio projects:', error);
     throw new Error(`Failed to fetch portfolio projects: ${error.message}`);
   }
 
-  // Return data directly - JSONB arrays come back as native JavaScript arrays
-  return (data || []) as PortfolioProject[];
+  if (!projects) {
+    return [];
+  }
+
+  // Convert storage paths to full URLs
+  const projectsWithFullUrls = projects.map(project => ({
+    ...project,
+    after_images: convertToFullUrls(project.after_images || []),
+    before_images: convertToFullUrls(project.before_images || []),
+  }));
+
+  return projectsWithFullUrls as PortfolioProject[];
 }
 
 export async function getPortfolioProject(id: string) {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
+  const { data: project, error } = await supabase
     .from('portfolio')
     .select('*')
     .eq('id', id)
     .single();
 
   if (error) {
+    console.error('Error fetching portfolio project:', error);
     throw new Error(`Failed to fetch portfolio project: ${error.message}`);
   }
 
-  if (!data) {
+  if (!project) {
     return null;
   }
 
-  // Return data directly - JSONB arrays come back as native JavaScript arrays
-  return data as PortfolioProject;
+  // Convert storage paths to full URLs
+  const projectWithFullUrls = {
+    ...project,
+    after_images: convertToFullUrls(project.after_images || []),
+    before_images: convertToFullUrls(project.before_images || []),
+  };
+
+  return projectWithFullUrls as PortfolioProject;
 }
 
 export async function getPortfolioStats() {
