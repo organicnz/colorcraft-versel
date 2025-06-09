@@ -10,6 +10,7 @@ import { CalendarDays, ArrowLeft, Quote, User, Palette, Wrench } from 'lucide-re
 import { getPortfolioProject, getRelatedProjects } from '@/services/portfolio.service';
 import EditorialButton from '@/components/portfolio/EditorialButton';
 import AdminProjectEditButton from '@/components/portfolio/AdminProjectEditButton';
+import RandomShowcaseImage from '@/components/portfolio/RandomShowcaseImage';
 
 interface PortfolioProjectPageProps {
   params: {
@@ -272,15 +273,15 @@ export default async function PortfolioProjectPage({ params }: PortfolioProjectP
               >
                 <Card className="overflow-hidden transition-all hover:shadow-md">
                   <div className="relative aspect-[4/3] bg-muted">
-                    {relatedProject.after_images?.[0] && (
-                      <Image
-                        src={relatedProject.after_images[0]}
-                        alt={relatedProject.title}
-                        fill
-                        className="object-cover transition-transform group-hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      />
-                    )}
+                    <RandomShowcaseImage
+                      portfolioId={relatedProject.id}
+                      title={relatedProject.title}
+                      fallbackImage={relatedProject.after_images?.[0] || "/placeholder-image.jpg"}
+                      className="object-cover transition-transform group-hover:scale-105"
+                      width={400}
+                      height={300}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
                   </div>
                   <CardHeader>
                     <CardTitle className="line-clamp-1 group-hover:text-primary">

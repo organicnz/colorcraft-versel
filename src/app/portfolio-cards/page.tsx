@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import Image from 'next/image';
+import RandomShowcaseImage from '@/components/portfolio/RandomShowcaseImage';
 
 // Sample data for portfolio projects
 const SAMPLE_PROJECTS = [
@@ -129,18 +130,19 @@ export default function PortfolioCardsPage() {
 }
 
 function FeaturedProjectCard({ project }: { project: typeof SAMPLE_PROJECTS[0] }) {
+  const fallbackImage = project.after_images?.[0] || "/placeholder-image.jpg";
   return (
     <Card className="overflow-hidden transition-all hover:shadow-md h-full flex flex-col">
       <div className="relative h-64 bg-muted w-full">
-        {project.after_images?.[0] && (
-          <Image
-            src={project.after_images[0]}
-            alt={project.title}
-            fill
-            priority={true}
-            className="object-cover"
-          />
-        )}
+        <RandomShowcaseImage
+          portfolioId={project.id}
+          title={project.title}
+          fallbackImage={fallbackImage}
+          className="object-cover"
+          width={400}
+          height={256}
+          priority={true}
+        />
         <div className="absolute top-2 right-2 bg-primary text-primary-foreground px-2 py-1 text-xs rounded">
           Featured
         </div>
@@ -175,18 +177,20 @@ function FeaturedProjectCard({ project }: { project: typeof SAMPLE_PROJECTS[0] }
 }
 
 function ProjectCard({ project }: { project: typeof SAMPLE_PROJECTS[0] }) {
+  const fallbackImage = project.after_images?.[0] || "/placeholder-image.jpg";
+
   return (
     <Card className="overflow-hidden transition-all hover:shadow-md">
       <div className="relative aspect-[4/3] bg-muted w-full">
-        {project.after_images?.[0] && (
-          <Image
-            src={project.after_images[0]}
-            alt={project.title}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover"
-          />
-        )}
+        <RandomShowcaseImage
+          portfolioId={project.id}
+          title={project.title}
+          fallbackImage={fallbackImage}
+          className="object-cover"
+          width={400}
+          height={300}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
         {project.is_featured && (
           <div className="absolute top-2 right-2 bg-primary text-primary-foreground px-2 py-1 text-xs rounded">
             Featured

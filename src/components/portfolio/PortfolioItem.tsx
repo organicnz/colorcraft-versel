@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { Pencil, Loader2, Archive, RotateCcw, Trash2 } from "lucide-react";
 import { PortfolioProject } from "@/types/crm";
+import RandomShowcaseImage from "./RandomShowcaseImage";
 import {
   archivePortfolioProject,
   restorePortfolioProject,
@@ -145,8 +146,8 @@ export default function PortfolioItem({
     }
   };
 
-  // Get the first "after" image as the main display image
-  const mainImage = project.after_images?.[0] || "/placeholder-image.jpg";
+  // Fallback to first after image if no storage images found
+  const fallbackImage = project.after_images?.[0] || "/placeholder-image.jpg";
 
   return (
     <TooltipProvider>
@@ -254,13 +255,24 @@ export default function PortfolioItem({
         )}
 
         <div className="aspect-square overflow-hidden">
-          <Image
-            src={mainImage}
-            alt={project.title || "Furniture transformation"}
-            width={500}
-            height={500}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
+          {project.id ? (
+            <RandomShowcaseImage
+              portfolioId={project.id}
+              title={project.title || "Furniture transformation"}
+              fallbackImage={fallbackImage}
+              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              width={500}
+              height={500}
+            />
+          ) : (
+            <Image
+              src={fallbackImage}
+              alt={project.title || "Furniture transformation"}
+              width={500}
+              height={500}
+              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          )}
         </div>
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
