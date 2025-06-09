@@ -75,9 +75,8 @@ export const sidebarNavItems = [
   },
   {
     title: "Portfolio",
-    href: "/dashboard/portfolio-dash",
+    href: "/admin/portfolio",
     icon: Palette,
-    admin: true
   },
   {
     title: "Services",

@@ -74,6 +74,8 @@ export type Service = {
   updated_at: string
 }
 
+export type PortfolioStatus = 'published' | 'draft' | 'archived'
+
 export type PortfolioProject = {
   id: string
   title: string
@@ -87,9 +89,10 @@ export type PortfolioProject = {
   client_name: string | null
   client_testimonial: string | null
   is_featured: boolean
-  is_published?: boolean
-  is_draft?: boolean
-  is_archived?: boolean
+  status: PortfolioStatus
+  is_published?: boolean // Keep for backward compatibility
+  is_draft?: boolean // Keep for backward compatibility
+  is_archived?: boolean // Keep for backward compatibility
   created_by?: string
   updated_by?: string
   created_at: string
