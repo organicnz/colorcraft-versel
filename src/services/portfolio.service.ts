@@ -1,6 +1,57 @@
 import { createClient } from '@/lib/supabase/server';
 import type { PortfolioProject } from '@/types/crm';
 
+// Function to parse PostgreSQL array strings like "{item1,item2}" to JavaScript arrays
+function parsePostgresArray(pgArray: string | string[]): string[] {
+  // If it's already an array, return it
+  if (Array.isArray(pgArray)) {
+    return pgArray;
+  }
+
+  // If it's null, undefined, or empty string, return empty array
+  if (!pgArray || pgArray === '') {
+    return [];
+  }
+
+  // Convert to string if it's not already
+  const arrayString = String(pgArray);
+
+  // If it's already a JSON array, parse it
+  if (arrayString.startsWith('[') && arrayString.endsWith(']')) {
+    try {
+      return JSON.parse(arrayString);
+    } catch {
+      return [];
+    }
+  }
+
+  // Handle PostgreSQL array format: {item1,item2,item3}
+  if (arrayString.startsWith('{') && arrayString.endsWith('}')) {
+    // Remove the braces
+    const content = arrayString.slice(1, -1);
+
+    // Handle empty array
+    if (content === '') {
+      return [];
+    }
+
+    // Split by comma and trim each item
+    return content.split(',').map(item => item.trim()).filter(item => item !== '');
+  }
+
+  // If it's a single string, return it as an array
+  return [arrayString];
+}
+
+// Function to normalize portfolio project data
+function normalizePortfolioProject(project: any): PortfolioProject {
+  return {
+    ...project,
+    before_images: parsePostgresArray(project.before_images || []),
+    after_images: parsePostgresArray(project.after_images || []),
+  };
+}
+
 export async function getPortfolioProjects(options?: {
   featuredOnly?: boolean;
   status?: 'published' | 'draft' | 'archived';
@@ -30,41 +81,58 @@ export async function getPortfolioProjects(options?: {
   }
 
   if (options?.offset) {
-    query = query.range(options.offset, options.offset + (options.limit || 10) - 1);
+    query = query.range(options.offset, (options.offset + (options.limit || 10)) - 1);
   }
 
-  const { data: projects, error } = await query;
+  const { data, error } = await query;
 
   if (error) {
-    console.error('Error fetching portfolio projects:', error);
-    throw new Error('Failed to fetch portfolio projects');
+    throw new Error(`Failed to fetch portfolio projects: ${error.message}`);
   }
 
-  // No normalization needed - JSONB arrays come back as native JavaScript arrays
-  return (projects || []) as PortfolioProject[];
+  // Normalize the data to ensure proper array format
+  return (data || []).map(normalizePortfolioProject);
 }
 
-export async function getPortfolioProject(id: string, useAdmin = false) {
+export async function getPortfolioProject(id: string) {
   const supabase = await createClient();
 
-  let query = supabase
+  const { data, error } = await supabase
     .from('portfolio')
     .select('*')
-    .eq('id', id);
-
-  if (!useAdmin) {
-    query = query.eq('status', 'published');
-  }
-
-  const { data: project, error } = await query.single();
+    .eq('id', id)
+    .single();
 
   if (error) {
-    console.error('Error fetching portfolio project:', error);
+    throw new Error(`Failed to fetch portfolio project: ${error.message}`);
+  }
+
+  if (!data) {
     return null;
   }
 
-  // No normalization needed - JSONB arrays come back as native JavaScript arrays
-  return project as PortfolioProject;
+  return normalizePortfolioProject(data);
+}
+
+export async function getPortfolioStats() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('portfolio')
+    .select('status');
+
+  if (error) {
+    throw new Error(`Failed to fetch portfolio stats: ${error.message}`);
+  }
+
+  const stats = {
+    total: data?.length || 0,
+    published: data?.filter(p => p.status === 'published').length || 0,
+    draft: data?.filter(p => p.status === 'draft').length || 0,
+    archived: data?.filter(p => p.status === 'archived').length || 0,
+  };
+
+  return stats;
 }
 
 export async function getFeaturedPortfolioProjects(limit = 3) {
