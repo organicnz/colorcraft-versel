@@ -322,14 +322,13 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
                   glassIntensity="medium"
                   className="group overflow-hidden h-full flex flex-col border-border/50 hover:shadow-glass-heavy transition-all duration-300 hover:scale-[1.02]"
                 >
-                  <CardHeader className="p-0 relative aspect-[4/3]">
+                  <CardHeader className="p-0 relative aspect-[4/3] overflow-hidden">
                     <RandomShowcaseImage
                       portfolioId={project.id}
                       title={project.title}
+                      afterImages={project.after_images}
                       fallbackImage={project.image}
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      width={400}
-                      height={300}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

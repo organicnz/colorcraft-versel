@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 
 interface RandomShowcaseImageProps {
@@ -20,69 +20,64 @@ export default function RandomShowcaseImage({
   title,
   afterImages,
   fallbackImage = '/placeholder-image.jpg',
-  className = 'h-full w-full object-cover',
+  className = 'w-full h-full object-cover',
   width = 500,
   height = 500,
   sizes,
   priority = false,
 }: RandomShowcaseImageProps) {
-  const [showcaseImage, setShowcaseImage] = useState<string>(fallbackImage);
-  const [imageError, setImageError] = useState(false);
-
-  useEffect(() => {
-    // Debug: Log what we're receiving
-    console.log('RandomShowcaseImage Debug:', {
-      portfolioId,
-      afterImages,
-      afterImagesType: typeof afterImages,
-      afterImagesLength: afterImages?.length,
-      isArray: Array.isArray(afterImages)
-    });
-
+  // Memoize the selected image to prevent unnecessary re-renders
+  const selectedImage = useMemo(() => {
     if (afterImages && Array.isArray(afterImages) && afterImages.length > 0) {
       // Filter out any invalid URLs
       const validImages = afterImages.filter(img => img && typeof img === 'string' && img.trim() !== '');
 
       if (validImages.length > 0) {
-        // Select a random image
-        const randomIndex = Math.floor(Math.random() * validImages.length);
-        const selectedImage = validImages[randomIndex];
-
-        console.log('Selected image URL:', selectedImage);
-        setShowcaseImage(selectedImage);
-        return;
+        // Use portfolio ID as seed for consistent randomization per card
+        const seed = portfolioId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        const randomIndex = seed % validImages.length;
+        return validImages[randomIndex];
       }
     }
-
-    console.log('Using fallback image:', fallbackImage);
-    setShowcaseImage(fallbackImage);
+    return fallbackImage;
   }, [afterImages, fallbackImage, portfolioId]);
 
+  const [currentImage, setCurrentImage] = useState<string>(selectedImage);
+  const [imageError, setImageError] = useState(false);
+
+  // Update current image when selected image changes
+  useEffect(() => {
+    if (!imageError) {
+      setCurrentImage(selectedImage);
+    }
+  }, [selectedImage, imageError]);
+
   const handleImageError = () => {
-    console.log('Image failed to load:', showcaseImage);
     setImageError(true);
-    setShowcaseImage(fallbackImage);
+    setCurrentImage(fallbackImage);
   };
 
   const handleImageLoad = () => {
-    console.log('Image loaded successfully:', showcaseImage);
     setImageError(false);
   };
 
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full h-full overflow-hidden bg-gray-100 dark:bg-gray-800">
       <Image
-        src={showcaseImage}
+        src={currentImage}
         alt={title}
-        width={width}
-        height={height}
+        fill
         className={className}
-        sizes={sizes}
+        sizes={sizes || "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
         priority={priority}
         onError={handleImageError}
         onLoad={handleImageLoad}
         placeholder="blur"
         blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+        style={{
+          objectFit: 'cover',
+          objectPosition: 'center',
+        }}
       />
     </div>
   );
