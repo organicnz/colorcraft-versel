@@ -432,9 +432,9 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
             whileInView="visible"
             viewport={{ once: true }}
             variants={staggerContainer}
-            className="max-w-4xl mx-auto"
+            className="max-w-5xl mx-auto"
           >
-            <motion.div variants={fadeIn()} className="text-center mb-12">
+            <motion.div variants={fadeIn()} className="text-center mb-16">
               <Badge variant="outline" className="mb-4 bg-white/50 backdrop-blur-sm border-white/30">
                 Get In Touch
               </Badge>
@@ -449,27 +449,27 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
               </p>
             </motion.div>
 
-            <motion.div variants={fadeIn(0.2)} className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <motion.div variants={fadeIn(0.2)} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
               {/* Phone Display */}
-              <div className="flex justify-center">
+              <div className="flex justify-center lg:justify-start order-2 lg:order-1">
                 <PhoneDisplay 
                   phoneNumber="(747) 755-7695"
                   email="contact@colorandcraft.com"
                   variant="hero"
-                  className="relative"
+                  className="w-full max-w-md"
                 />
               </div>
 
               {/* CTA Content */}
-              <div className="text-center md:text-left">
-                <h3 className="text-2xl font-bold mb-4">Free Consultation</h3>
-                <p className="text-muted-foreground mb-6 leading-relaxed">
+              <div className="text-center lg:text-left order-1 lg:order-2">
+                <h3 className="text-3xl font-bold mb-6">Free Consultation</h3>
+                <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
                   Schedule a free consultation to discuss your project. We'll assess your furniture and provide expert recommendations for the perfect transformation.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-4">
                   <Button 
                     size="lg" 
-                    className="bg-[#3ECF8E] hover:bg-[#38BC81] text-white font-semibold"
+                    className="bg-[#3ECF8E] hover:bg-[#38BC81] text-white font-semibold px-8 py-4"
                     asChild
                   >
                     <Link href="/contact">
@@ -480,7 +480,7 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
                   <Button 
                     variant="outline" 
                     size="lg"
-                    className="border-[#3ECF8E]/40 text-[#3ECF8E] hover:bg-[#3ECF8E]/10"
+                    className="border-[#3ECF8E]/40 text-[#3ECF8E] hover:bg-[#3ECF8E]/10 px-8 py-4"
                     asChild
                   >
                     <Link href="/portfolio">
