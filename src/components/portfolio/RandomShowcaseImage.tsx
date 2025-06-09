@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { createClient } from '@/lib/supabase/client';
 
 interface RandomShowcaseImageProps {
   portfolioId: string;
@@ -13,6 +14,13 @@ interface RandomShowcaseImageProps {
   height?: number;
   sizes?: string;
   priority?: boolean;
+}
+
+// Helper function to get full storage URL
+function getStorageUrl(path: string): string {
+  const supabase = createClient();
+  const { data } = supabase.storage.from('portfolio-images').getPublicUrl(path);
+  return data.publicUrl;
 }
 
 export default function RandomShowcaseImage({
@@ -42,8 +50,11 @@ export default function RandomShowcaseImage({
       if (validImages.length > 0) {
         // Pick a random image from the valid ones
         const randomIndex = Math.floor(Math.random() * validImages.length);
-        const selectedImage = validImages[randomIndex];
-        setShowcaseImage(selectedImage);
+        const selectedPath = validImages[randomIndex];
+
+        // Convert storage path to full URL
+        const fullImageUrl = getStorageUrl(selectedPath);
+        setShowcaseImage(fullImageUrl);
         setIsLoading(false);
         return;
       }
