@@ -1,17 +1,20 @@
 import { createClient } from '@/lib/supabase/server';
 import type { PortfolioProject } from '@/types/crm';
 
-// Helper function to convert storage paths to full URLs
-function convertToFullUrls(paths: string[]): string[] {
+// Helper function to convert storage paths to full URLs using Supabase client
+async function convertToFullUrls(paths: string[]): Promise<string[]> {
   if (!paths || !Array.isArray(paths)) return [];
+  
+  const supabase = await createClient();
   
   return paths.map(path => {
     if (path.startsWith('http')) {
       // Already a full URL
       return path;
     }
-    // Convert to full Supabase storage URL
-    return `https://ynkpuvwrgmxnhbdzfqze.supabase.co/storage/v1/object/public/portfolio-images/${path}`;
+    // Use Supabase client to get the correct public URL
+    const { data } = supabase.storage.from('portfolio-images').getPublicUrl(path);
+    return data.publicUrl;
   });
 }
 
@@ -59,11 +62,13 @@ export async function getPortfolioProjects(options?: {
   }
 
   // Convert storage paths to full URLs
-  const projectsWithFullUrls = projects.map(project => ({
-    ...project,
-    after_images: convertToFullUrls(project.after_images || []),
-    before_images: convertToFullUrls(project.before_images || []),
-  }));
+  const projectsWithFullUrls = await Promise.all(
+    projects.map(async (project) => ({
+      ...project,
+      after_images: await convertToFullUrls(project.after_images || []),
+      before_images: await convertToFullUrls(project.before_images || []),
+    }))
+  );
 
   return projectsWithFullUrls as PortfolioProject[];
 }
@@ -89,8 +94,8 @@ export async function getPortfolioProject(id: string) {
   // Convert storage paths to full URLs
   const projectWithFullUrls = {
     ...project,
-    after_images: convertToFullUrls(project.after_images || []),
-    before_images: convertToFullUrls(project.before_images || []),
+    after_images: await convertToFullUrls(project.after_images || []),
+    before_images: await convertToFullUrls(project.before_images || []),
   };
 
   return projectWithFullUrls as PortfolioProject;
