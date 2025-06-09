@@ -499,28 +499,47 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                         Techniques Used
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="e.g., Chalk Paint, Distressing, Staining"
-                          value={
-                            Array.isArray(field.value)
-                              ? field.value.join(", ")
-                              : field.value
-                                ? String(field.value)
-                                : ""
-                          }
-                          onChange={(e) => {
-                            const parsed = parseArrayField(e.target.value);
-                            field.onChange(parsed);
-                          }}
-                          className="text-base"
-                        />
+                        <div className="relative">
+                          <Input
+                            placeholder="Type techniques separated by commas (e.g., Chalk Paint, Distressing, Staining, French Polish)"
+                            value={
+                              Array.isArray(field.value)
+                                ? field.value.join(", ")
+                                : field.value
+                                  ? String(field.value)
+                                  : ""
+                            }
+                            onChange={(e) => {
+                              const parsed = parseArrayField(e.target.value);
+                              field.onChange(parsed);
+                            }}
+                            className="text-base pr-12"
+                          />
+                          {field.value && Array.isArray(field.value) && field.value.length > 0 && (
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                              <Badge variant="secondary" className="text-xs">
+                                {field.value.length}
+                              </Badge>
+                            </div>
+                          )}
+                        </div>
                       </FormControl>
-                      <FormDescription>
-                        Enter techniques separated by commas
+                      <FormDescription className="space-y-2">
+                        <div className="text-sm text-muted-foreground">
+                          💡 Tip: Type your techniques and separate them with commas. Press Enter or Tab to see them as individual tags.
+                        </div>
                         {field.value && Array.isArray(field.value) && field.value.length > 0 && (
-                          <Badge variant="secondary" className="ml-2">
-                            {field.value.length} technique{field.value.length !== 1 ? "s" : ""}
-                          </Badge>
+                          <div className="flex flex-wrap gap-2 p-2 bg-muted/50 rounded-md border">
+                            {field.value.map((technique, index) => (
+                              <Badge
+                                key={index}
+                                variant="outline"
+                                className="text-xs bg-blue-50 text-blue-700 border-blue-200"
+                              >
+                                {technique}
+                              </Badge>
+                            ))}
+                          </div>
                         )}
                       </FormDescription>
                       <FormMessage />
@@ -538,28 +557,47 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                         Materials Used
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="e.g., Sandpaper, Primer, Wood Stain"
-                          value={
-                            Array.isArray(field.value)
-                              ? field.value.join(", ")
-                              : field.value
-                                ? String(field.value)
-                                : ""
-                          }
-                          onChange={(e) => {
-                            const parsed = parseArrayField(e.target.value);
-                            field.onChange(parsed);
-                          }}
-                          className="text-base"
-                        />
+                        <div className="relative">
+                          <Input
+                            placeholder="Type materials separated by commas (e.g., Sandpaper, Primer, Wood Stain, Brass Hardware)"
+                            value={
+                              Array.isArray(field.value)
+                                ? field.value.join(", ")
+                                : field.value
+                                  ? String(field.value)
+                                  : ""
+                            }
+                            onChange={(e) => {
+                              const parsed = parseArrayField(e.target.value);
+                              field.onChange(parsed);
+                            }}
+                            className="text-base pr-12"
+                          />
+                          {field.value && Array.isArray(field.value) && field.value.length > 0 && (
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                              <Badge variant="secondary" className="text-xs">
+                                {field.value.length}
+                              </Badge>
+                            </div>
+                          )}
+                        </div>
                       </FormControl>
-                      <FormDescription>
-                        Enter materials separated by commas
+                      <FormDescription className="space-y-2">
+                        <div className="text-sm text-muted-foreground">
+                          💡 Tip: Type your materials and separate them with commas. Press Enter or Tab to see them as individual tags.
+                        </div>
                         {field.value && Array.isArray(field.value) && field.value.length > 0 && (
-                          <Badge variant="secondary" className="ml-2">
-                            {field.value.length} material{field.value.length !== 1 ? "s" : ""}
-                          </Badge>
+                          <div className="flex flex-wrap gap-2 p-2 bg-muted/50 rounded-md border">
+                            {field.value.map((material, index) => (
+                              <Badge
+                                key={index}
+                                variant="outline"
+                                className="text-xs bg-green-50 text-green-700 border-green-200"
+                              >
+                                {material}
+                              </Badge>
+                            ))}
+                          </div>
                         )}
                       </FormDescription>
                       <FormMessage />
