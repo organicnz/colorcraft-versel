@@ -37,8 +37,7 @@ export default async function PortfolioPage() {
   const { data: projects } = await supabase
     .from("portfolio")
     .select("*")
-    .eq("is_published", true)
-    .eq("is_archived", false) // Only show non-archived projects
+    .eq("status", "published") // Use status field instead of boolean fields
     .order("created_at", { ascending: false });
 
   return (

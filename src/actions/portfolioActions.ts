@@ -46,11 +46,11 @@ function parseToPostgresArray(value: any): string[] {
   return ensureArray(value);
 }
 
-// Enhanced validation schema for portfolio projects - matches database schema
-const portfolioSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  description: z.string().optional(),
+// Updated schema to match database structure
+export const createPortfolioProjectSchema = z.object({
+  title: z.string().min(1, "Title is required").max(255),
   brief_description: z.string().min(1, "Brief description is required"),
+  description: z.string().optional(),
   before_images: z.array(z.string()).default([]),
   after_images: z.array(z.string()).default([]),
   techniques: z.array(z.string()).default([]),
@@ -62,14 +62,14 @@ const portfolioSchema = z.object({
   status: z.enum(['published', 'draft', 'archived']).default('draft'),
 });
 
-export type PortfolioFormData = z.infer<typeof portfolioSchema>;
+export type PortfolioFormData = z.infer<typeof createPortfolioProjectSchema>;
 
 // --- Create Portfolio Project Action (Auto-generates UUID, starts as draft) ---
 export async function createPortfolioProject(formData: FormData) {
   try {
     const supabase = createClient();
 
-    // Basic validation: Check if user is admin
+    // Verify user authentication and admin role
     const {
       data: { session },
     } = await supabase.auth.getSession();
@@ -77,7 +77,6 @@ export async function createPortfolioProject(formData: FormData) {
       return { error: "You must be logged in to create portfolio projects" };
     }
 
-    // Get user data and verify admin role
     const { data: userData, error: userError } = await supabase
       .from("users")
       .select("role")
@@ -88,27 +87,37 @@ export async function createPortfolioProject(formData: FormData) {
       return { error: "You do not have permission to create portfolio projects" };
     }
 
-    // Extract and validate form data - handle PostgreSQL arrays properly
-    const portfolioData: Partial<PortfolioFormData> = {
+    // Process form data
+    const rawData = {
       title: formData.get("title") as string,
+      brief_description: formData.get("brief_description") as string,
       description: formData.get("description") as string,
-      brief_description: (formData.get("brief_description") as string) || undefined,
       before_images: parseToPostgresArray(formData.get("before_images") as string),
       after_images: parseToPostgresArray(formData.get("after_images") as string),
       techniques: parseToPostgresArray(formData.get("techniques") as string),
       materials: parseToPostgresArray(formData.get("materials") as string),
-      completion_date: (formData.get("completion_date") as string) || undefined,
-      client_name: (formData.get("client_name") as string) || undefined,
-      client_testimonial: (formData.get("client_testimonial") as string) || undefined,
+      completion_date: formData.get("completion_date") as string,
+      client_name: formData.get("client_name") as string,
+      client_testimonial: formData.get("client_testimonial") as string,
       is_featured: formData.get("is_featured") === "true",
-      // New portfolio items start as drafts by default
-      status: 'draft',
+      status: (formData.get("status") as 'published' | 'draft' | 'archived') || 'draft',
     };
 
-    // Insert into PostgreSQL - UUID will be auto-generated, arrays will be automatically converted to text[]
-    const { error, data } = await supabase
+    // Handle status - get from form or use default
+    const status = rawData.status || 'draft';
+
+    // Validate using the schema
+    const validatedData = createPortfolioProjectSchema.parse(rawData);
+
+    // Create the portfolio project in the database
+    const { data, error } = await supabase
       .from("portfolio")
-      .insert([portfolioData])
+      .insert({
+        ...validatedData,
+        completion_date: validatedData.completion_date || null,
+        created_by: session.user.id,
+        updated_by: session.user.id,
+      })
       .select()
       .single();
 
@@ -120,14 +129,25 @@ export async function createPortfolioProject(formData: FormData) {
     revalidatePath("/portfolio-dash");
     revalidatePath("/portfolio");
 
+    const statusMessage = data.status === 'published'
+      ? "Portfolio project created and published!"
+      : "Portfolio project created as draft!";
+
     return {
       success: true,
       data,
-      message: `Portfolio "${data.title}" created as draft. UUID: ${data.id}`,
+      message: statusMessage,
     };
   } catch (error: any) {
-    console.error("Unexpected error creating portfolio:", error);
-    return { error: "An unexpected error occurred: " + error.message };
+    if (error instanceof z.ZodError) {
+      const errorMessages = error.errors
+        .map((err) => `${err.path.join(".")}: ${err.message}`)
+        .join(", ");
+      return { error: `Validation error: ${errorMessages}` };
+    }
+
+    console.error("Create portfolio error:", error);
+    return { error: "Failed to create portfolio project. Please try again." };
   }
 }
 
@@ -207,7 +227,7 @@ export async function publishPortfolioProject(id: string) {
   try {
     const supabase = createClient();
 
-    // Verify admin authentication
+    // Verify user authentication and admin role
     const {
       data: { session },
     } = await supabase.auth.getSession();
@@ -230,6 +250,7 @@ export async function publishPortfolioProject(id: string) {
       .from("portfolio")
       .update({
         status: 'published',
+        updated_by: session.user.id,
         updated_at: new Date().toISOString(),
       })
       .eq("id", id)
@@ -247,20 +268,20 @@ export async function publishPortfolioProject(id: string) {
     return {
       success: true,
       data,
-      message: `Portfolio "${data.title}" published successfully!`,
+      message: `Portfolio "${data.title}" published successfully`,
     };
   } catch (error: any) {
-    console.error("Unexpected error publishing portfolio:", error);
-    return { error: "An unexpected error occurred: " + error.message };
+    console.error("Publish portfolio error:", error);
+    return { error: "Failed to publish portfolio project. Please try again." };
   }
 }
 
-// --- Unpublish Portfolio Project Action (Changes published back to draft) ---
+// --- Unpublish Portfolio Project Action (Admin only) ---
 export async function unpublishPortfolioProject(id: string) {
   try {
     const supabase = createClient();
 
-    // Verify admin authentication
+    // Verify user authentication and admin role
     const {
       data: { session },
     } = await supabase.auth.getSession();
@@ -278,11 +299,12 @@ export async function unpublishPortfolioProject(id: string) {
       return { error: "You do not have permission to unpublish portfolio projects" };
     }
 
-    // Update status back to draft
+    // Update status to draft
     const { error, data } = await supabase
       .from("portfolio")
       .update({
         status: 'draft',
+        updated_by: session.user.id,
         updated_at: new Date().toISOString(),
       })
       .eq("id", id)
@@ -300,11 +322,11 @@ export async function unpublishPortfolioProject(id: string) {
     return {
       success: true,
       data,
-      message: `Portfolio "${data.title}" moved back to drafts`,
+      message: `Portfolio "${data.title}" unpublished successfully`,
     };
   } catch (error: any) {
-    console.error("Unexpected error unpublishing portfolio:", error);
-    return { error: "An unexpected error occurred: " + error.message };
+    console.error("Unpublish portfolio error:", error);
+    return { error: "Failed to unpublish portfolio project. Please try again." };
   }
 }
 
@@ -331,7 +353,7 @@ export async function archivePortfolioProject(id: string) {
       return { error: "You do not have permission to archive portfolio projects" };
     }
 
-    // Archive the portfolio record (soft delete)
+    // Archive the portfolio record
     const { error, data } = await supabase
       .from("portfolio")
       .update({
@@ -388,8 +410,7 @@ export async function restorePortfolioProject(id: string) {
     const { error, data } = await supabase
       .from("portfolio")
       .update({
-        is_archived: false,
-        is_draft: true, // Restore as draft by default
+        status: 'draft', // Restore as draft by default
         updated_at: new Date().toISOString(),
       })
       .eq("id", id)
@@ -510,11 +531,11 @@ export async function fetchPortfolioProjects(filter: "active" | "archived" | "al
       )
       .order("created_at", { ascending: false });
 
-    // Apply filtering based on the requested filter
+    // Apply filtering based on the requested filter using status field
     if (filter === "active") {
-      query = query.eq("is_archived", false);
+      query = query.in("status", ["published", "draft"]);
     } else if (filter === "archived") {
-      query = query.eq("is_archived", true);
+      query = query.eq("status", "archived");
     }
     // 'all' filter doesn't add any conditions
 

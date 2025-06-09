@@ -41,9 +41,16 @@ import {
   Upload,
 } from "lucide-react";
 import ImageUpload from "@/components/ui/image-upload";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Define portfolio schema matching the database structure with draft/published states
-export const portfolioSchema = z.object({
+const portfolioSchema = z.object({
   id: z.string().optional(),
   title: z.string().min(1, "Title is required"),
   brief_description: z.string().min(1, "Brief description is required"),
@@ -56,8 +63,7 @@ export const portfolioSchema = z.object({
   client_name: z.string().optional(),
   client_testimonial: z.string().optional(),
   is_featured: z.boolean().default(false),
-  is_published: z.boolean().default(false),
-  is_draft: z.boolean().default(true),
+  status: z.enum(['published', 'draft', 'archived']).default('draft'),
 });
 
 export type PortfolioFormData = z.infer<typeof portfolioSchema>;
@@ -111,8 +117,8 @@ function parseArrayField(value: string): string[] {
 export default function PortfolioForm({ initialData, isEditing = false }: PortfolioFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [portfolioId, setPortfolioId] = useState<string>(initialData?.id || "");
-  const [isDraft, setIsDraft] = useState(initialData?.is_draft ?? true);
-  const [isPublished, setIsPublished] = useState(initialData?.is_published ?? false);
+  const [isDraft, setIsDraft] = useState(initialData?.status === 'draft');
+  const [isPublished, setIsPublished] = useState(initialData?.status === 'published');
   const router = useRouter();
 
   const form = useForm<PortfolioFormData>({
@@ -130,19 +136,18 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
       client_name: initialData?.client_name || "",
       client_testimonial: initialData?.client_testimonial || "",
       is_featured: initialData?.is_featured || false,
-      is_published: initialData?.is_published || false,
-      is_draft: initialData?.is_draft ?? true,
+      status: initialData?.status || 'draft',
     },
   });
 
   // Watch form values to sync with local state
-  const watchedIsPublished = form.watch("is_published");
-  const watchedIsDraft = form.watch("is_draft");
+  const watchedIsPublished = form.watch("status");
+  const watchedIsDraft = form.watch("status");
 
   useEffect(() => {
-    setIsPublished(watchedIsPublished);
-    setIsDraft(watchedIsDraft);
-  }, [watchedIsPublished, watchedIsDraft]);
+    setIsPublished(watchedIsPublished === 'published');
+    setIsDraft(watchedIsPublished === 'draft');
+  }, [watchedIsPublished]);
 
   const onSubmit = async (data: PortfolioFormData) => {
     setIsSubmitting(true);
@@ -217,10 +222,9 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
         toast.error(result.error);
       } else {
         toast.success(result.message);
-        setIsPublished(!isPublished);
-        setIsDraft(isPublished); // If unpublishing, becomes draft
-        form.setValue("is_published", !isPublished);
-        form.setValue("is_draft", isPublished);
+        setIsPublished(result.data.status === 'published');
+        setIsDraft(result.data.status === 'draft');
+        form.setValue("status", result.data.status);
       }
     } catch (error) {
       console.error("Publish toggle error:", error);
@@ -322,26 +326,67 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-base font-medium">Project Title</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g., Vintage Dresser Restoration"
-                        {...field}
-                        className="text-base"
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Give your project a descriptive and engaging title
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Title */}
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Project Title *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter project title" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Status */}
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Status</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="draft">
+                            <div className="flex items-center gap-2">
+                              <Badge variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-200">
+                                Draft
+                              </Badge>
+                              <span>Working on it</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="published">
+                            <div className="flex items-center gap-2">
+                              <Badge className="bg-green-100 text-green-800">
+                                Published
+                              </Badge>
+                              <span>Visible to public</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="archived">
+                            <div className="flex items-center gap-2">
+                              <Badge variant="secondary" className="bg-gray-100 text-gray-800">
+                                Archived
+                              </Badge>
+                              <span>Hidden from public</span>
+                            </div>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               <FormField
                 control={form.control}

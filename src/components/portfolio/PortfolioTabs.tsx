@@ -31,9 +31,7 @@ type PortfolioProject = {
   client_name?: string;
   client_testimonial?: string;
   is_featured: boolean;
-  is_published?: boolean;
-  is_draft?: boolean;
-  is_archived?: boolean;
+  status: 'published' | 'draft' | 'archived';
   created_by?: string;
   updated_by?: string;
   created_at: string;
@@ -75,7 +73,7 @@ export default function PortfolioTabs() {
   }, []);
 
   const getStatusBadge = (project: PortfolioProject) => {
-    if (project.is_archived) {
+    if (project.status === 'archived') {
       return (
         <Badge variant="secondary" className="bg-gray-100 text-gray-800 hover:bg-gray-200">
           <Archive className="w-3 h-3 mr-1" />
@@ -84,7 +82,7 @@ export default function PortfolioTabs() {
       );
     }
     
-    if (project.is_published) {
+    if (project.status === 'published') {
       return (
         <Badge variant="default" className="bg-green-100 text-green-800 hover:bg-green-200">
           <CheckCircle className="w-3 h-3 mr-1" />
@@ -102,8 +100,8 @@ export default function PortfolioTabs() {
   };
 
   const getStatsCards = () => {
-    const publishedCount = activeProjects.filter(p => p.is_published).length;
-    const draftCount = activeProjects.filter(p => p.is_draft).length;
+    const publishedCount = activeProjects.filter(p => p.status === 'published').length;
+    const draftCount = activeProjects.filter(p => p.status === 'draft').length;
     const archivedCount = archivedProjects.length;
     const totalCount = activeProjects.length + archivedCount;
 

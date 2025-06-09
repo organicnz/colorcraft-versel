@@ -33,6 +33,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
 
 type PortfolioItemProps = {
   project: Partial<PortfolioProject>;
@@ -177,10 +178,15 @@ export default function PortfolioItem({
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                {project.is_archived ? (
+                {project.status === 'archived' ? (
                   <DropdownMenuItem onClick={handleRestore}>
                     <RotateCcw className="h-4 w-4 mr-2" />
                     Restore
+                  </DropdownMenuItem>
+                ) : project.status === 'published' ? (
+                  <DropdownMenuItem onClick={handleArchive}>
+                    <Archive className="h-4 w-4 mr-2" />
+                    Archive
                   </DropdownMenuItem>
                 ) : (
                   <DropdownMenuItem onClick={handleArchive}>
@@ -253,6 +259,22 @@ export default function PortfolioItem({
             </div>
           </div>
         )}
+
+        <div className="absolute top-2 right-2 flex gap-2">
+          {project.status === 'archived' ? (
+            <Badge variant="secondary" className="bg-gray-100 text-gray-800">
+              Archived
+            </Badge>
+          ) : project.status === 'published' ? (
+            <Badge className="bg-green-100 text-green-800">
+              Published
+            </Badge>
+          ) : (
+            <Badge variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-200">
+              Draft
+            </Badge>
+          )}
+        </div>
 
         <div className="aspect-square overflow-hidden">
           {project.id ? (
