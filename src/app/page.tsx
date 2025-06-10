@@ -9,7 +9,7 @@ import { ArrowRight, Award, Palette, Send, Settings, Sparkles } from "lucide-rea
 import { getPortfolioProjects } from "@/services/portfolio.service";
 import ClientHomePage from "./client-home-page";
 import ModernHomePage from "@/components/homepage/ModernHomePage";
-import HomepageSwitcher from "@/components/homepage/HomepageSwitcher";
+import HomePageRenderer from "@/components/homepage/HomePageRenderer";
 
 // Force dynamic rendering for each request to enable randomization
 export const dynamic = 'force-dynamic';
@@ -129,7 +129,7 @@ export default async function Home() {
   );
 
   return (
-    <HomepageSwitcher
+    <HomePageRenderer
       classicHomepage={classicHomepage}
       modernHomepage={modernHomepage}
     />
