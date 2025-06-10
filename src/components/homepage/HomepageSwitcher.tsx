@@ -16,7 +16,7 @@ export default function HomepageSwitcher({
   modernHomepage
 }: HomepageSwitcherProps) {
   const [isModern, setIsModern] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
 
   // Load saved preference
   useEffect(() => {

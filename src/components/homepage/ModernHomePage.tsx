@@ -304,14 +304,14 @@ export default function ModernHomePage({
                   whileHover={{ scale: 1.02, rotateY: 5 }}
                   transition={{ duration: 0.4 }}
                 >
-                  <Image
-                    src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=700&h=800&fit=crop"
-                    alt="Featured furniture piece"
-                    width={700}
-                    height={800}
-                    className="object-cover"
-                    priority
-                  />
+                                     <Image
+                     src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=700&h=800&fit=crop&auto=format&q=80"
+                     alt="Beautiful transformed vintage dresser showcasing expert furniture painting"
+                     width={700}
+                     height={800}
+                     className="object-cover"
+                     priority
+                   />
 
                   {/* Glassmorphism overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
@@ -440,31 +440,26 @@ export default function ModernHomePage({
             {/* Advanced Grid with Container Queries */}
             <motion.div
               variants={staggerContainer}
-              className="grid grid-cols-1 @lg:grid-cols-2 @4xl:grid-cols-4 gap-8"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
             >
               {featuredProjects.slice(0, 4).map((project, index) => (
                 <motion.div
-                  key={project.id}
+                  key={`${project.id}-${index}`}
                   variants={fadeInUp}
-                  className="group @container"
+                  className="group"
                 >
                   <motion.div
-                    className="relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500"
+                    className="relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 h-full flex flex-col"
                     whileHover={{ y: -8 }}
                   >
                     {/* Project Image with Advanced Effects */}
-                    <div className="relative h-80 @sm:h-96 overflow-hidden">
-                      <motion.div
-                        whileHover={{ scale: 1.1 }}
-                        transition={{ duration: 0.6, ease: "easeOut" }}
-                      >
-                        <Image
-                          src={project.image}
-                          alt={project.title}
-                          fill
-                          className="object-cover"
-                        />
-                      </motion.div>
+                    <div className="relative h-64 overflow-hidden">
+                      <Image
+                        src={project.image}
+                        alt={project.title}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
 
                       {/* Gradient overlay */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -477,12 +472,7 @@ export default function ModernHomePage({
                       </div>
 
                       {/* View Details Button */}
-                      <motion.div
-                        className="absolute bottom-4 left-4 right-4"
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
-                      >
+                      <div className="absolute bottom-4 left-4 right-4">
                         <Button
                           variant="secondary"
                           size="sm"
@@ -491,28 +481,28 @@ export default function ModernHomePage({
                           View Details
                           <ArrowRight className="ml-2 h-4 w-4" />
                         </Button>
-                      </motion.div>
+                      </div>
                     </div>
 
                     {/* Project Details with Modern Styling */}
-                    <div className="p-6 space-y-4">
+                    <div className="p-6 space-y-4 flex-1 flex flex-col">
                       <div className="flex items-start justify-between">
-                        <h3 className="font-bold text-xl text-slate-900 group-hover:text-violet-600 transition-colors duration-300">
+                        <h3 className="font-bold text-lg text-slate-900 group-hover:text-violet-600 transition-colors duration-300 line-clamp-2">
                           {project.title}
                         </h3>
-                        <div className="text-right">
-                          <div className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">$2,500</div>
-                          <div className="text-sm text-slate-500">Starting from</div>
+                        <div className="text-right ml-2 flex-shrink-0">
+                          <div className="text-xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">$2,500</div>
+                          <div className="text-xs text-slate-500">Starting</div>
                         </div>
                       </div>
 
-                      <p className="text-slate-600 leading-relaxed">
-                        {project.description}
+                      <p className="text-slate-600 leading-relaxed text-sm line-clamp-3 flex-1">
+                        {project.description || "Professional furniture transformation with attention to detail and quality craftsmanship."}
                       </p>
 
-                      <div className="flex items-center justify-between pt-2 border-t border-slate-100">
-                        <span className="text-sm text-slate-500 font-medium">{project.material || "Premium Materials"}</span>
-                        <span className="text-sm text-slate-500 font-medium">2-3 weeks</span>
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-100 mt-auto">
+                        <span className="text-xs text-slate-500 font-medium">{project.material || "Premium Materials"}</span>
+                        <span className="text-xs text-slate-500 font-medium">2-3 weeks</span>
                       </div>
                     </div>
                   </motion.div>
