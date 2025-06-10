@@ -1,0 +1,62 @@
+name: Backup Deploy to Netlify
+
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for backup deployment'
+        required: true
+        default: 'Vercel limit reached'
+
+jobs:
+  backup-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build application
+      run: npm run build
+      env:
+        NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        
+    - name: Deploy to Netlify
+      uses: nwtgck/actions-netlify@v3.0
+      with:
+        publish-dir: './out'
+        production-branch: main
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        deploy-message: "Backup deployment - ${{ github.event.inputs.reason }}"
+        enable-pull-request-comment: false
+        enable-commit-comment: false
+        overwrites-pull-request-comment: false
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        
+    - name: Update next.config.js for static export
+      run: |
+        echo "module.exports = { output: 'export', trailingSlash: true, images: { unoptimized: true } }" > next.config.backup.js
+        mv next.config.backup.js next.config.js
+        
+    - name: Build static export
+      run: npm run build
+      
+    - name: Deployment Summary
+      run: |
+        echo "🚀 Backup deployment completed!"
+        echo "🔗 Check your Netlify dashboard for the deployment URL"
+        echo "ℹ️  This is a static export, some features may be limited" 
