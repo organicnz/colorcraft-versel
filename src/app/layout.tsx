@@ -74,87 +74,78 @@ export default function RootLayout({
       <head>
         <Script id="prevent-flash" strategy="beforeInteractive">
           {`
-            // Ultra-aggressive anti-flash system
+            // ULTIMATE ANTI-FLASH PREVENTION SYSTEM
             (function() {
-              // 1. Disable ALL animations and transitions immediately
-              const style = document.createElement('style');
-              style.innerHTML = \`
-                *, *::before, *::after, [data-framer-motion], [class*="animate-"], [class*="transition-"] {
-                  animation: none !important;
-                  transition: none !important;
-                  transform: none !important;
-                  opacity: 1 !important;
-                  animation-duration: 0s !important;
-                  animation-delay: 0s !important;
-                  transition-duration: 0s !important;
-                  transition-delay: 0s !important;
-                }
-                body {
-                  opacity: 0 !important;
-                  visibility: hidden !important;
-                }
-              \`;
-              style.setAttribute('id', 'flash-prevention');
-              document.head.appendChild(style);
-
-              // 2. Handle theme immediately
+              // 1. Immediately handle theme detection
               const theme = localStorage.getItem('theme') || 'light';
               if (theme === 'dark') {
                 document.documentElement.classList.add('dark');
               }
 
-              // 3. Comprehensive animation enabler
-              function enableAnimationsAndShow() {
+              // 2. Add additional blocking styles for extra protection
+              const style = document.createElement('style');
+              style.id = 'flash-prevention-extra';
+              style.innerHTML = \`
+                /* Extra flash prevention */
+                body {
+                  visibility: hidden !important;
+                  opacity: 0 !important;
+                }
+                * {
+                  transition: none !important;
+                  animation: none !important;
+                }
+              \`;
+              document.head.appendChild(style);
+
+              // 3. Function to safely show the page
+              function showPage() {
                 try {
-                  // Remove blocking styles
-                  const blockingStyle = document.getElementById('flash-prevention');
-                  if (blockingStyle) {
-                    blockingStyle.remove();
+                  // Remove extra blocking styles
+                  const extraStyle = document.getElementById('flash-prevention-extra');
+                  if (extraStyle) {
+                    extraStyle.remove();
                   }
 
-                  // Add transition classes
-                  document.body.classList.add('transitions-enabled', 'loaded');
+                  // Add loaded class to enable transitions and show page
+                  document.body.classList.add('loaded', 'transitions-enabled');
 
-                  // Show the body
-                  document.body.style.opacity = '1';
-                  document.body.style.visibility = 'visible';
-
-                  console.log('🎉 Page animations enabled and visible');
+                  console.log('✅ Page loaded and visible - anti-flash complete');
                 } catch (error) {
-                  console.error('Error enabling animations:', error);
-                  // Fallback: show page anyway
-                  document.body.style.opacity = '1';
+                  console.error('Error showing page:', error);
+                  // Emergency fallback
                   document.body.style.visibility = 'visible';
+                  document.body.style.opacity = '1';
                 }
               }
 
-              // 4. Multiple trigger points for maximum reliability
-              let triggered = false;
-              function triggerOnce() {
-                if (triggered) return;
-                triggered = true;
-                enableAnimationsAndShow();
+              // 4. Multiple triggers with aggressive timing
+              let hasShown = false;
+              function triggerShow() {
+                if (hasShown) return;
+                hasShown = true;
+                showPage();
               }
 
-              // Immediate if already ready
+              // Immediate check
               if (document.readyState === 'complete') {
-                setTimeout(triggerOnce, 50);
+                setTimeout(triggerShow, 10);
               }
 
-              // Load event
-              window.addEventListener('load', () => setTimeout(triggerOnce, 100));
-
-              // DOMContentLoaded fallback
-              document.addEventListener('DOMContentLoaded', () => setTimeout(triggerOnce, 150));
-
-              // Final fallback after 1 second
-              setTimeout(triggerOnce, 1000);
-
-              // Emergency fallback after 2 seconds
+              // Multiple event listeners
+              document.addEventListener('DOMContentLoaded', () => setTimeout(triggerShow, 20));
+              window.addEventListener('load', () => setTimeout(triggerShow, 30));
+              
+              // Progressive fallbacks
+              setTimeout(triggerShow, 500);  // 0.5s fallback
+              setTimeout(triggerShow, 1000); // 1s fallback
+              
+              // Emergency fallback
               setTimeout(() => {
-                document.body.style.opacity = '1';
                 document.body.style.visibility = 'visible';
-                console.log('🚨 Emergency fallback triggered');
+                document.body.style.opacity = '1';
+                document.body.classList.add('loaded', 'transitions-enabled');
+                console.log('🚨 Emergency fallback activated');
               }, 2000);
             })();
           `}

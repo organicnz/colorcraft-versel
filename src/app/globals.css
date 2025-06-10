@@ -27,6 +27,182 @@
 }
 
 @layer base {
+  /* ULTIMATE ANTI-FLASH SYSTEM */
+  
+  /* Block ALL animations and transitions until page is ready */
+  *,
+  *::before,
+  *::after {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
+    animation: none !important;
+    -webkit-animation: none !important;
+    -moz-animation: none !important;
+    -o-animation: none !important;
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    -webkit-animation-duration: 0s !important;
+    -webkit-animation-delay: 0s !important;
+    transform: none !important;
+    -webkit-transform: none !important;
+  }
+
+  /* Block all possible animation sources */
+  [data-framer-motion-initial="true"],
+  [data-framer-motion] {
+    transform: none !important;
+    opacity: 1 !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Block Tailwind animations specifically */
+  [class*="animate-"],
+  [class*="transition-"],
+  .motion-reduce\:animate-none,
+  .motion-reduce\:transition-none {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Prevent layout shifts */
+  .grid,
+  .flex {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Hide everything until ready */
+  html {
+    background: white !important;
+  }
+
+  .dark html {
+    background: #0f172a !important;
+  }
+
+  body {
+    color: var(--text-main);
+    background: linear-gradient(
+        to bottom,
+        rgb(var(--background-start-rgb)),
+        rgb(var(--background-end-rgb))
+      )
+      fixed;
+    min-height: 100vh;
+    /* CRITICAL: Hide body completely until ready */
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+
+  /* Only show after loaded class is added */
+  body.loaded {
+    visibility: visible !important;
+    opacity: 1 !important;
+    transition: opacity 0.2s ease-in-out !important;
+  }
+
+  /* Theme variables */
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 224 71.4% 4.1%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 71.4% 4.1%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71.4% 4.1%;
+    --primary: 220.9 39.3% 11%;
+    --primary-foreground: 210 20% 98%;
+    --secondary: 220 14.3% 95.9%;
+    --secondary-foreground: 220.9 39.3% 11%;
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
+    --accent: 220 14.3% 95.9%;
+    --accent-foreground: 220.9 39.3% 11%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 224 71.4% 4.1%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+
+    --background-start-rgb: 255, 255, 255;
+    --background-end-rgb: 255, 255, 255;
+    --text-main: hsl(224, 71.4%, 4.1%);
+    --text-secondary: hsl(220, 8.9%, 46.1%);
+    --bg-card: hsl(0, 0%, 100%);
+    --border: hsl(220, 13%, 91%);
+    --primary: hsl(220.9, 39.3%, 11%);
+    --primary-light: hsl(220.9, 39.3%, 21%);
+  }
+
+  .dark {
+    --background: 224 71.4% 4.1%;
+    --foreground: 210 20% 98%;
+    --card: 224 71.4% 4.1%;
+    --card-foreground: 210 20% 98%;
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 210 20% 98%;
+    --primary-foreground: 220.9 39.3% 11%;
+    --secondary: 215 27.9% 16.9%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 217.9 10.6% 64.9%;
+    --accent: 215 27.9% 16.9%;
+    --accent-foreground: 210 20% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    --ring: 216 12.2% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+
+    --background-start-rgb: 15, 23, 42;
+    --background-end-rgb: 15, 23, 42;
+    --text-main: hsl(210, 20%, 98%);
+    --text-secondary: hsl(217.9, 10.6%, 64.9%);
+    --bg-card: hsl(224, 71.4%, 4.1%);
+    --border: hsl(215, 27.9%, 16.9%);
+    --primary: hsl(210, 20%, 98%);
+    --primary-light: hsl(210, 20%, 88%);
+  }
+
+  /* Only enable transitions after everything is loaded */
+  .transitions-enabled *,
+  .transitions-enabled *::before,
+  .transitions-enabled *::after {
+    -webkit-transition: all 0.15s ease-in-out;
+    -moz-transition: all 0.15s ease-in-out;
+    -o-transition: all 0.15s ease-in-out;
+    transition: all 0.15s ease-in-out;
+  }
+
+  /* Smooth theme transitions only when enabled */
+  .transitions-enabled .dark\:bg-slate-900,
+  .transitions-enabled .bg-white,
+  .transitions-enabled [data-theme] {
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+  }
+
+  /* Interactive elements get faster transitions */
+  .transitions-enabled button,
+  .transitions-enabled a,
+  .transitions-enabled input,
+  .transitions-enabled select {
+    transition: all 0.15s ease-in-out;
+  }
+
   /* Ultra-aggressive anti-flash rules */
   *,
   *::before,
@@ -729,28 +905,4 @@ select:focus {
   padding: 1rem 0;
   text-align: center;
   color: var(--text-secondary);
-}
-
-/* Re-enable transitions ONLY after everything is loaded */
-.transitions-enabled *,
-.transitions-enabled *::before,
-.transitions-enabled *::after {
-  -webkit-transition: all 0.2s ease-in-out;
-  -moz-transition: all 0.2s ease-in-out;
-  -o-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
-}
-
-/* Smooth transitions for theme changes */
-.transitions-enabled .dark\:bg-slate-900,
-.transitions-enabled .bg-white {
-  transition: background-color 0.2s ease-in-out;
-}
-
-/* Special handling for interactive elements */
-.transitions-enabled button,
-.transitions-enabled a,
-.transitions-enabled input,
-.transitions-enabled select {
-  transition: all 0.2s ease-in-out;
 }
