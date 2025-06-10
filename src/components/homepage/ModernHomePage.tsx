@@ -88,10 +88,6 @@ export default function ModernHomePage({
     setEmail("");
   };
 
-  // Debug logging
-  console.log('🔍 ModernHomePage featuredProjects:', featuredProjects);
-  console.log('🔍 First project image:', featuredProjects?.[0]?.image);
-
   // Enhanced team members with modern design
   const teamMembers = [
     {
