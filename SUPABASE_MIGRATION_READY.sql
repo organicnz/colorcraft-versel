@@ -1,10 +1,14 @@
--- Chat System Database Schema
--- Drop tables if they exist (for development)
+-- ================================================================
+-- COLORCRAFT CHAT SYSTEM MIGRATION
+-- Copy this ENTIRE file and paste into Supabase SQL Editor
+-- ================================================================
+
+-- Clean slate: Drop existing tables if they exist
 DROP TABLE IF EXISTS public.chat_messages CASCADE;
 DROP TABLE IF EXISTS public.chat_participants CASCADE;
 DROP TABLE IF EXISTS public.chat_conversations CASCADE;
 
--- Chat conversations table
+-- Create chat conversations table
 CREATE TABLE public.chat_conversations (
   id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
   title text DEFAULT 'New Conversation',
@@ -19,7 +23,7 @@ CREATE TABLE public.chat_conversations (
   last_message_at timestamp with time zone DEFAULT now()
 );
 
--- Chat participants table (for tracking who's in each conversation)
+-- Create chat participants table
 CREATE TABLE public.chat_participants (
   id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
   conversation_id uuid REFERENCES public.chat_conversations(id) ON DELETE CASCADE NOT NULL,
@@ -31,7 +35,7 @@ CREATE TABLE public.chat_participants (
   UNIQUE(conversation_id, user_id)
 );
 
--- Chat messages table
+-- Create chat messages table
 CREATE TABLE public.chat_messages (
   id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
   conversation_id uuid REFERENCES public.chat_conversations(id) ON DELETE CASCADE NOT NULL,
@@ -46,7 +50,7 @@ CREATE TABLE public.chat_messages (
   updated_at timestamp with time zone DEFAULT now() NOT NULL
 );
 
--- Indexes for performance
+-- Create performance indexes
 CREATE INDEX idx_chat_conversations_status ON public.chat_conversations(status);
 CREATE INDEX idx_chat_conversations_updated_at ON public.chat_conversations(updated_at DESC);
 CREATE INDEX idx_chat_conversations_assigned_admin ON public.chat_conversations(assigned_admin_id);
@@ -55,12 +59,12 @@ CREATE INDEX idx_chat_messages_created_at ON public.chat_messages(created_at DES
 CREATE INDEX idx_chat_participants_conversation_id ON public.chat_participants(conversation_id);
 CREATE INDEX idx_chat_participants_user_id ON public.chat_participants(user_id);
 
--- RLS Policies
+-- Enable Row Level Security
 ALTER TABLE public.chat_conversations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.chat_participants ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.chat_messages ENABLE ROW LEVEL SECURITY;
 
--- Conversations policies
+-- RLS Policies for conversations
 CREATE POLICY "Admins can view all conversations" ON public.chat_conversations
   FOR SELECT USING (
     EXISTS (
@@ -69,7 +73,7 @@ CREATE POLICY "Admins can view all conversations" ON public.chat_conversations
     )
   );
 
-CREATE POLICY "Users can view their own conversations" ON public.chat_conversations
+CREATE POLICY "Users can view their conversations" ON public.chat_conversations
   FOR SELECT USING (
     EXISTS (
       SELECT 1 FROM public.chat_participants 
@@ -89,8 +93,8 @@ CREATE POLICY "Admins can update all conversations" ON public.chat_conversations
     )
   );
 
--- Participants policies
-CREATE POLICY "Participants can view their own participation" ON public.chat_participants
+-- RLS Policies for participants
+CREATE POLICY "Participants can view their participation" ON public.chat_participants
   FOR SELECT USING (
     user_id = auth.uid() OR
     EXISTS (
@@ -102,11 +106,11 @@ CREATE POLICY "Participants can view their own participation" ON public.chat_par
 CREATE POLICY "Anyone can join conversations" ON public.chat_participants
   FOR INSERT WITH CHECK (true);
 
-CREATE POLICY "Users can update their own participation" ON public.chat_participants
+CREATE POLICY "Users can update their participation" ON public.chat_participants
   FOR UPDATE USING (user_id = auth.uid());
 
--- Messages policies
-CREATE POLICY "Conversation participants can view messages" ON public.chat_messages
+-- RLS Policies for messages
+CREATE POLICY "Participants can view messages" ON public.chat_messages
   FOR SELECT USING (
     EXISTS (
       SELECT 1 FROM public.chat_participants 
@@ -119,7 +123,7 @@ CREATE POLICY "Conversation participants can view messages" ON public.chat_messa
     )
   );
 
-CREATE POLICY "Conversation participants can send messages" ON public.chat_messages
+CREATE POLICY "Participants can send messages" ON public.chat_messages
   FOR INSERT WITH CHECK (
     EXISTS (
       SELECT 1 FROM public.chat_participants 
@@ -128,7 +132,7 @@ CREATE POLICY "Conversation participants can send messages" ON public.chat_messa
     ) OR sender_id = auth.uid()
   );
 
--- Functions for updating timestamps
+-- Create trigger functions
 CREATE OR REPLACE FUNCTION update_conversation_timestamp()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -141,13 +145,6 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
--- Trigger to update conversation timestamp when new message is added
-CREATE TRIGGER update_conversation_on_message
-  AFTER INSERT ON public.chat_messages
-  FOR EACH ROW
-  EXECUTE PROCEDURE update_conversation_timestamp();
-
--- Function to update participant last seen
 CREATE OR REPLACE FUNCTION update_participant_last_seen()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -158,13 +155,23 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
--- Trigger to update last seen when user sends message
+-- Create triggers
+CREATE TRIGGER update_conversation_on_message
+  AFTER INSERT ON public.chat_messages
+  FOR EACH ROW
+  EXECUTE PROCEDURE update_conversation_timestamp();
+
 CREATE TRIGGER update_last_seen_on_message
   AFTER INSERT ON public.chat_messages
   FOR EACH ROW
   EXECUTE PROCEDURE update_participant_last_seen();
 
--- Add some helpful comments
+-- Add table comments
 COMMENT ON TABLE public.chat_conversations IS 'Stores chat conversation metadata';
 COMMENT ON TABLE public.chat_participants IS 'Tracks users participating in conversations';
 COMMENT ON TABLE public.chat_messages IS 'Stores individual chat messages';
+
+-- ================================================================
+-- MIGRATION COMPLETE! 
+-- After running this, your chat system will be ready to use.
+-- ================================================================ 

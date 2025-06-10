@@ -5,23 +5,51 @@ import { useTheme } from "next-themes";
 
 export default function ThemeSwitcher() {
   const [mounted, setMounted] = useState(false);
-  const { theme, setTheme, systemTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
 
-  // useEffect only runs on the client, so we can safely show the UI
+  // Wait for the page to be fully hydrated before showing the theme switcher
   useEffect(() => {
-    // Add a small delay to ensure everything is hydrated
-    const timer = setTimeout(() => {
-      setMounted(true);
+    console.log('🎛️ [THEME-SWITCHER] Initializing...');
+    console.log('🎛️ [THEME-SWITCHER] Current theme:', theme);
+    
+    // Wait for the anti-flash system to complete
+    const checkReady = () => {
+      if (document.documentElement.classList.contains('ready')) {
+        console.log('✅ [THEME-SWITCHER] Anti-flash system ready, mounting switcher');
+        setMounted(true);
+      } else {
+        console.log('⏳ [THEME-SWITCHER] Waiting for anti-flash system...');
+        setTimeout(checkReady, 50);
+      }
+    };
+    
+    checkReady();
+  }, [theme]);
+
+  // Handle theme change with anti-flash protection
+  const handleThemeChange = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    console.log('🎨 [THEME-SWITCHER] Changing theme from', theme, 'to', newTheme);
+    
+    // Temporarily disable transitions during theme change
+    console.log('🔒 [THEME-SWITCHER] Disabling transitions...');
+    document.documentElement.classList.remove('transitions-enabled');
+    
+    setTheme(newTheme);
+    
+    // Re-enable transitions after a short delay
+    setTimeout(() => {
+      console.log('✅ [THEME-SWITCHER] Re-enabling transitions');
+      document.documentElement.classList.add('transitions-enabled');
     }, 100);
+  };
 
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Show a stable placeholder during SSR/hydration - more specific styling to prevent flash
+  // Show a stable placeholder during hydration
   if (!mounted) {
+    console.log('⏳ [THEME-SWITCHER] Not mounted yet, showing placeholder');
     return (
       <button
-        className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center opacity-70"
+        className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center opacity-50"
         disabled
         aria-label="Loading theme switcher"
         style={{
@@ -30,64 +58,32 @@ export default function ThemeSwitcher() {
           transition: 'none'
         }}
       >
-        <div className="w-4 h-4 rounded-full bg-slate-400" />
+        <div className="w-4 h-4 rounded-full bg-slate-400 dark:bg-slate-500" />
       </button>
     );
   }
 
-  const currentTheme = theme === 'system' ? systemTheme : theme;
-
-  const handleThemeToggle = () => {
-    // Temporarily disable transitions during theme change
-    document.documentElement.style.setProperty('--theme-switching', 'true');
-
-    const newTheme = currentTheme === "dark" ? "light" : "dark";
-    setTheme(newTheme);
-
-    // Re-enable transitions after a short delay
-    setTimeout(() => {
-      document.documentElement.style.removeProperty('--theme-switching');
-    }, 150);
-  };
+  const isDark = theme === 'dark';
+  console.log('🎛️ [THEME-SWITCHER] Rendering mounted switcher, isDark:', isDark);
 
   return (
     <button
-      aria-label="Toggle Dark Mode"
-      type="button"
-      className="w-10 h-10 p-3 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 transition-colors duration-200"
-      onClick={handleThemeToggle}
-      style={{ transition: 'background-color 0.2s ease-in-out' }}
+      onClick={handleThemeChange}
+      className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 flex items-center justify-center transition-colors duration-200"
+      aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}
     >
-      {/* Sun icon */}
-      {currentTheme === "dark" ? (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          className="w-4 h-4 text-yellow-500"
-        >
+      {isDark ? (
+        <svg className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
           <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+            fillRule="evenodd"
+            d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+            clipRule="evenodd"
           />
         </svg>
       ) : (
-        // Moon icon
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          className="w-4 h-4 text-slate-700 dark:text-slate-300"
-        >
+        <svg className="w-5 h-5 text-slate-700" fill="currentColor" viewBox="0 0 20 20">
           <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+            d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
           />
         </svg>
       )}

@@ -72,168 +72,141 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <Script id="prevent-flash" strategy="beforeInteractive">
-          {`
-            // ENHANCED ANTI-FLASH PREVENTION SYSTEM FOR NEXT-THEMES
-            (function() {
-              try {
-                // 1. Use the correct localStorage key that next-themes uses
-                const STORAGE_KEY = 'theme'; // next-themes default key
-
-                // 2. Get the theme from localStorage or use default
-                const storedTheme = localStorage.getItem(STORAGE_KEY);
-                const defaultTheme = 'light'; // matches ThemeProvider defaultTheme
-
-                // 3. Determine the theme to apply
-                let themeToApply = defaultTheme;
-
-                if (storedTheme) {
-                  // If system theme is stored, check system preference
-                  if (storedTheme === 'system') {
-                    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                      themeToApply = 'dark';
-                    } else {
-                      themeToApply = 'light';
-                    }
-                  } else {
-                    themeToApply = storedTheme;
-                  }
-                }
-
-                // 4. Apply the theme to the document immediately
-                if (themeToApply === 'dark') {
-                  document.documentElement.classList.add('dark');
-                  document.documentElement.style.colorScheme = 'dark';
-                } else {
-                  document.documentElement.classList.remove('dark');
-                  document.documentElement.style.colorScheme = 'light';
-                }
-
-                // 5. AGGRESSIVE anti-flash: Hide everything until fully loaded
-                const style = document.createElement('style');
-                style.id = 'anti-flash-style';
-                style.innerHTML = \`
-                  /* Ultra-aggressive flash Prevention */
-                  html, body {
-                    visibility: hidden !important;
-                    opacity: 0 !important;
-                  }
-                  *, *::before, *::after {
-                    transition: none !important;
-                    animation: none !important;
-                    animation-duration: 0s !important;
-                    animation-delay: 0s !important;
-                    -webkit-transition: none !important;
-                    -moz-transition: none !important;
-                    -o-transition: none !important;
-                  }
-                  /* Block all possible sources of animation */
-                  [data-framer-motion-initial],
-                  [data-framer-motion] {
-                    transform: none !important;
-                    opacity: 1 !important;
-                  }
-                  .animate-*, .transition-* {
-                    animation: none !important;
-                    transition: none !important;
-                  }
-                \`;
-                document.head.appendChild(style);
-
-                // 6. Function to reveal the page - only once
-                let hasRevealed = false;
-                function revealPage() {
-                  if (hasRevealed) return;
-                  hasRevealed = true;
-
+        {/* CRITICAL: Ultra-aggressive anti-flash - runs immediately */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // NUCLEAR ANTI-FLASH - Execute immediately, no delays
+              console.log('🚀 [NUCLEAR] Anti-flash script starting...');
+              (function() {
+                try {
+                  console.log('🔍 [NUCLEAR] Document ready state:', document.readyState);
+                  console.log('🔍 [NUCLEAR] HTML classes before:', document.documentElement.className);
+                  
+                  // Get theme immediately
+                  var theme = 'light';
                   try {
-                    const antiFlashStyle = document.getElementById('anti-flash-style');
-                    if (antiFlashStyle) {
-                      antiFlashStyle.remove();
+                    var stored = localStorage.getItem('theme');
+                    console.log('🔍 [NUCLEAR] Stored theme:', stored);
+                    if (stored === 'dark' || stored === 'light') {
+                      theme = stored;
+                      console.log('✅ [NUCLEAR] Using stored theme:', theme);
+                    } else if (stored === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                      theme = 'dark';
+                      console.log('✅ [NUCLEAR] Using system dark theme');
+                    } else {
+                      console.log('✅ [NUCLEAR] Using default light theme');
                     }
-
-                    // Add classes to enable transitions and show page
-                    document.documentElement.style.visibility = 'visible';
-                    document.documentElement.style.opacity = '1';
-                    document.body.style.visibility = 'visible';
-                    document.body.style.opacity = '1';
-                    document.body.classList.add('loaded', 'transitions-enabled');
-
-                    console.log('✅ Anti-flash complete - page revealed');
-                  } catch (error) {
-                    console.error('Error revealing page:', error);
-                    // Emergency fallback
-                    document.documentElement.style.visibility = 'visible';
-                    document.documentElement.style.opacity = '1';
-                    document.body.style.visibility = 'visible';
-                    document.body.style.opacity = '1';
+                  } catch(e) {
+                    console.warn('⚠️ [NUCLEAR] Error reading localStorage:', e);
                   }
-                }
-
-                // 7. Wait for React hydration to complete before revealing
-                let hydrationComplete = false;
-                let domReady = false;
-
-                function checkReveal() {
-                  // Only reveal after both DOM is ready AND a delay for hydration
-                  if (domReady && !hasRevealed) {
-                    setTimeout(revealPage, 150); // Small delay to ensure hydration is complete
+                  
+                  // Apply theme class RIGHT NOW
+                  var html = document.documentElement;
+                  console.log('🎨 [NUCLEAR] Applying theme:', theme);
+                  if (theme === 'dark') {
+                    html.classList.add('dark');
+                    html.style.colorScheme = 'dark';
+                    console.log('🌙 [NUCLEAR] Dark theme applied to HTML');
+                  } else {
+                    html.classList.remove('dark');
+                    html.style.colorScheme = 'light';
+                    console.log('☀️ [NUCLEAR] Light theme applied to HTML');
                   }
-                }
-
-                // Wait for DOM to be ready
-                if (document.readyState === 'complete') {
-                  domReady = true;
-                  checkReveal();
-                } else if (document.readyState === 'interactive') {
-                  domReady = true;
-                  checkReveal();
-                } else {
-                  document.addEventListener('DOMContentLoaded', () => {
-                    domReady = true;
-                    checkReveal();
-                  });
-                }
-
-                // Additional safety nets
-                window.addEventListener('load', () => {
-                  setTimeout(() => {
-                    if (!hasRevealed) revealPage();
-                  }, 100);
-                });
-
-                // Progressive fallbacks with longer delays to prevent multiple flashes
-                setTimeout(() => {
-                  if (!hasRevealed) revealPage();
-                }, 800);  // 0.8s fallback
-
-                setTimeout(() => {
-                  if (!hasRevealed) revealPage();
-                }, 1500); // 1.5s fallback
-
-                // Emergency fallback
-                setTimeout(() => {
-                  if (!hasRevealed) {
-                    document.documentElement.style.visibility = 'visible';
-                    document.documentElement.style.opacity = '1';
-                    document.body.style.visibility = 'visible';
-                    document.body.style.opacity = '1';
-                    document.body.classList.add('loaded', 'transitions-enabled');
-                    console.log('🚨 Emergency fallback activated');
+                  console.log('🔍 [NUCLEAR] HTML classes after theme:', html.className);
+                  
+                  // NUCLEAR LOCKDOWN - Hide everything immediately
+                  console.log('🔒 [NUCLEAR] Injecting lockdown styles...');
+                  var style = document.createElement('style');
+                  style.id = 'nuclear-lockdown';
+                  var bg = theme === 'dark' ? '#0f172a' : '#ffffff';
+                  style.textContent = 
+                    'html{visibility:hidden!important;opacity:0!important;background:' + bg + '!important}' +
+                    'body{visibility:hidden!important;opacity:0!important}' +
+                    '*,*::before,*::after{transition:none!important;animation:none!important;transform:none!important;' +
+                    '-webkit-transition:none!important;-webkit-animation:none!important;-webkit-transform:none!important}' +
+                    '[class*="animate-"],[class*="transition-"]{animation:none!important;transition:none!important}';
+                  
+                  document.head.appendChild(style);
+                  console.log('✅ [NUCLEAR] Lockdown styles injected with background:', bg);
+                  
+                  // REVEAL FUNCTION - only once
+                  var revealed = false;
+                  var revealAttempt = 0;
+                  function reveal(source) {
+                    revealAttempt++;
+                    console.log('🎯 [NUCLEAR] Reveal attempt #' + revealAttempt + ' from:', source);
+                    if (revealed) {
+                      console.log('⚠️ [NUCLEAR] Already revealed, ignoring attempt from:', source);
+                      return;
+                    }
+                    revealed = true;
+                    console.log('🚀 [NUCLEAR] Starting reveal process...');
+                    
+                    try {
+                      var lockdown = document.getElementById('nuclear-lockdown');
+                      if (lockdown) {
+                        lockdown.remove();
+                        console.log('✅ [NUCLEAR] Lockdown styles removed');
+                      } else {
+                        console.warn('⚠️ [NUCLEAR] Lockdown styles not found');
+                      }
+                      
+                      console.log('👁️ [NUCLEAR] Making page visible...');
+                      html.style.visibility = 'visible';
+                      html.style.opacity = '1';
+                      document.body.style.visibility = 'visible';
+                      document.body.style.opacity = '1';
+                      
+                      console.log('🏷️ [NUCLEAR] Adding ready classes...');
+                      html.classList.add('ready');
+                      document.body.classList.add('loaded', 'transitions-enabled');
+                      
+                      console.log('✅ [NUCLEAR] Nuclear anti-flash complete!');
+                      console.log('🔍 [NUCLEAR] Final HTML classes:', html.className);
+                      console.log('🔍 [NUCLEAR] Final body classes:', document.body.className);
+                    } catch(e) {
+                      console.error('❌ [NUCLEAR] Error during reveal:', e);
+                      html.style.cssText = 'visibility:visible!important;opacity:1!important';
+                      document.body.style.cssText = 'visibility:visible!important;opacity:1!important';
+                      console.log('🚨 [NUCLEAR] Emergency fallback activated');
+                    }
                   }
-                }, 3000);
-
-              } catch (error) {
-                console.error('Anti-flash script error:', error);
-                // Emergency fallback
-                document.documentElement.style.visibility = 'visible';
-                document.documentElement.style.opacity = '1';
-                document.body.style.visibility = 'visible';
-                document.body.style.opacity = '1';
-              }
-            })();
-          `}
-        </Script>
+                  
+                  // Multiple reveal triggers
+                  console.log('⏰ [NUCLEAR] Setting up reveal timers...');
+                  setTimeout(function() { reveal('50ms timer'); }, 50);   // Very fast
+                  setTimeout(function() { reveal('200ms timer'); }, 200);  // Fast fallback
+                  setTimeout(function() { reveal('500ms timer'); }, 500);  // Medium fallback
+                  setTimeout(function() { reveal('1000ms timer'); }, 1000); // Slow fallback
+                  
+                  // DOM ready reveal
+                  console.log('📄 [NUCLEAR] Setting up DOM ready listener...');
+                  if (document.readyState === 'loading') {
+                    console.log('⏳ [NUCLEAR] Document still loading, adding event listener');
+                    document.addEventListener('DOMContentLoaded', function() {
+                      console.log('📄 [NUCLEAR] DOMContentLoaded fired');
+                      reveal('DOMContentLoaded');
+                    });
+                  } else {
+                    console.log('✅ [NUCLEAR] Document already ready, revealing immediately');
+                    reveal('immediate - doc ready');
+                  }
+                  
+                  console.log('🎯 [NUCLEAR] All reveal triggers set up');
+                  
+                } catch(e) {
+                  console.error('💥 [NUCLEAR] Fatal error in anti-flash script:', e);
+                  // Emergency: show everything
+                  document.documentElement.style.cssText = 'visibility:visible!important;opacity:1!important';
+                  document.body.style.cssText = 'visibility:visible!important;opacity:1!important';
+                  console.log('🚨 [NUCLEAR] Emergency reveal executed due to error');
+                }
+              })();
+              console.log('🏁 [NUCLEAR] Anti-flash script setup complete');
+            `,
+          }}
+        />
         <Script id="remove-extension-attributes" strategy="afterInteractive">
           {`
             // Remove browser extension attributes like bis_skin_checked

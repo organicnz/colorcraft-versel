@@ -27,81 +27,32 @@
 }
 
 @layer base {
-  /* ULTIMATE ANTI-FLASH SYSTEM - Updated for multiple blink prevention */
-  
-  /* Block ALL animations and transitions until page is ready - More aggressive */
-  html:not(.transitions-enabled) *,
-  html:not(.transitions-enabled) *::before,
-  html:not(.transitions-enabled) *::after {
-    -webkit-transition: none !important;
-    -moz-transition: none !important;
-    -o-transition: none !important;
-    transition: none !important;
-    animation: none !important;
-    -webkit-animation: none !important;
-    -moz-animation: none !important;
-    -o-animation: none !important;
-    animation-duration: 0s !important;
-    animation-delay: 0s !important;
-    -webkit-animation-duration: 0s !important;
-    -webkit-animation-delay: 0s !important;
-    transform: none !important;
-    -webkit-transform: none !important;
-  }
+  /* NUCLEAR ANTI-FLASH CSS - Simplified for speed */
 
-  /* Block all possible animation sources */
-  html:not(.transitions-enabled) [data-framer-motion-initial="true"],
-  html:not(.transitions-enabled) [data-framer-motion] {
-    transform: none !important;
-    opacity: 1 !important;
-    animation: none !important;
-    transition: none !important;
-  }
-
-  /* Block Tailwind animations specifically until ready */
-  html:not(.transitions-enabled) [class*="animate-"],
-  html:not(.transitions-enabled) [class*="transition-"],
-  html:not(.transitions-enabled) .motion-reduce\:animate-none,
-  html:not(.transitions-enabled) .motion-reduce\:transition-none {
-    animation: none !important;
-    transition: none !important;
-  }
-
-  /* Prevent layout shifts */
-  html:not(.transitions-enabled) .grid,
-  html:not(.transitions-enabled) .flex {
-    animation: none !important;
-    transition: none !important;
-  }
-
-  /* Hide everything until ready - no exceptions */
+  /* Ensure proper background colors are applied immediately */
   html {
-    background: white !important;
+    background: white;
   }
 
-  .dark html {
-    background: #0f172a !important;
+  html.dark {
+    background: #0f172a;
   }
 
-  /* CRITICAL: Hide body completely until ready - more aggressive */
-  body:not(.loaded) {
-    visibility: hidden !important;
-    opacity: 0 !important;
+  /* Only enable transitions after the nuclear script enables them */
+  .transitions-enabled * {
+    transition: all 0.15s ease-in-out;
   }
 
-  /* Only show after loaded class is added */
-  body.loaded {
-    visibility: visible !important;
-    opacity: 1 !important;
+  .transitions-enabled .dark\\:bg-slate-900,
+  .transitions-enabled .bg-white,
+  .transitions-enabled [data-theme] {
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
   }
 
-  /* Only enable transitions after everything is loaded and ready */
-  .transitions-enabled *,
-  .transitions-enabled *::before,
-  .transitions-enabled *::after {
-    -webkit-transition: all 0.15s ease-in-out;
-    -moz-transition: all 0.15s ease-in-out;
-    -o-transition: all 0.15s ease-in-out;
+  .transitions-enabled button,
+  .transitions-enabled a,
+  .transitions-enabled input,
+  .transitions-enabled select {
     transition: all 0.15s ease-in-out;
   }
 

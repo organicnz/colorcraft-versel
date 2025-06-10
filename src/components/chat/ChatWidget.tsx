@@ -23,7 +23,18 @@ export default function ChatWidget() {
   const [customerName, setCustomerName] = useState('')
   const [customerEmail, setCustomerEmail] = useState('')
   const [showContactForm, setShowContactForm] = useState(false)
+  const [isStartingChat, setIsStartingChat] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  console.log('🎯 ChatWidget state:', {
+    isOpen: state.isOpen,
+    currentConversation: state.currentConversation?.id,
+    conversations: state.conversations.length,
+    showContactForm,
+    isLoading: state.isLoading,
+    error
+  })
 
   // Scroll to bottom when new messages arrive
   useEffect(() => {
@@ -32,30 +43,53 @@ export default function ChatWidget() {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!newMessage.trim() || !state.currentConversation) return
 
     try {
+      console.log('📤 Sending message:', newMessage)
       await actions.sendMessage({
         conversation_id: state.currentConversation.id,
         content: newMessage.trim()
       })
       setNewMessage('')
+      console.log('✅ Message sent successfully')
     } catch (error) {
-      console.error('Error sending message:', error)
+      console.error('❌ Error sending message:', error)
+      setError('Failed to send message. Please try again.')
     }
   }
 
   const handleStartNewChat = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    console.log('🚀 Starting new chat with:', { customerName, customerEmail })
+    
+    if (!customerName.trim()) {
+      setError('Please enter your name')
+      return
+    }
+    
+    if (!customerEmail.trim()) {
+      setError('Please enter your email')
+      return
+    }
+
+    setIsStartingChat(true)
+    setError(null)
+
     try {
+      console.log('🔄 Calling startNewChat action...')
       await actions.startNewChat(customerName, customerEmail)
+      console.log('✅ Chat started successfully')
       setShowContactForm(false)
       setCustomerName('')
       setCustomerEmail('')
     } catch (error) {
-      console.error('Error starting chat:', error)
+      console.error('❌ Error starting chat:', error)
+      setError(error instanceof Error ? error.message : 'Failed to start chat. Please try again.')
+    } finally {
+      setIsStartingChat(false)
     }
   }
 
@@ -167,6 +201,11 @@ export default function ChatWidget() {
             {/* Contact form */}
             {showContactForm && (
               <div className="flex-1 p-4">
+                {error && (
+                  <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+                    {error}
+                  </div>
+                )}
                 <form onSubmit={handleStartNewChat} className="space-y-4">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -175,9 +214,13 @@ export default function ChatWidget() {
                     <Input
                       id="name"
                       value={customerName}
-                      onChange={(e) => setCustomerName(e.target.value)}
+                      onChange={(e) => {
+                        setCustomerName(e.target.value)
+                        setError(null) // Clear error when user starts typing
+                      }}
                       placeholder="Enter your name"
                       required
+                      disabled={isStartingChat}
                     />
                   </div>
                   <div>
@@ -188,19 +231,27 @@ export default function ChatWidget() {
                       id="email"
                       type="email"
                       value={customerEmail}
-                      onChange={(e) => setCustomerEmail(e.target.value)}
+                      onChange={(e) => {
+                        setCustomerEmail(e.target.value)
+                        setError(null) // Clear error when user starts typing
+                      }}
                       placeholder="Enter your email"
                       required
+                      disabled={isStartingChat}
                     />
                   </div>
                   <div className="flex space-x-2">
-                    <Button type="submit" className="flex-1">
-                      Start Chat
+                    <Button type="submit" className="flex-1" disabled={isStartingChat}>
+                      {isStartingChat ? 'Starting Chat...' : 'Start Chat'}
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={() => setShowContactForm(false)}
+                      onClick={() => {
+                        setShowContactForm(false)
+                        setError(null)
+                      }}
+                      disabled={isStartingChat}
                     >
                       Cancel
                     </Button>

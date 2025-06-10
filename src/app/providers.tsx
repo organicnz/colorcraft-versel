@@ -1,12 +1,19 @@
 "use client";
 
 import { ThemeProvider } from "next-themes";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { ReactQueryProvider } from "@/lib/react-query/provider";
 import SupabaseProvider from "@/components/providers/SupabaseProvider";
 import { Toaster } from "@/components/ui/toaster";
 
 export function Providers({ children }: { children: ReactNode }) {
+  useEffect(() => {
+    console.log('🔧 [PROVIDERS] Providers component mounted');
+    console.log('🔧 [PROVIDERS] Document ready state:', document.readyState);
+    console.log('🔧 [PROVIDERS] HTML classes:', document.documentElement.className);
+    console.log('🔧 [PROVIDERS] Body classes:', document.body.className);
+  }, []);
+
   return (
     <ReactQueryProvider>
       <SupabaseProvider>

@@ -1,4 +1,25 @@
--- Chat System Database Schema
+#!/usr/bin/env node
+
+/**
+ * Chat System Setup Script
+ * This script sets up the chat system tables in Supabase
+ */
+
+const { createClient } = require('@supabase/supabase-js')
+require('dotenv').config({ path: '.env.local' })
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+if (!supabaseUrl || !supabaseServiceKey) {
+  console.error('❌ Missing Supabase environment variables')
+  console.error('Please ensure NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set in .env.local')
+  process.exit(1)
+}
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey)
+
+const setupSQL = `
 -- Drop tables if they exist (for development)
 DROP TABLE IF EXISTS public.chat_messages CASCADE;
 DROP TABLE IF EXISTS public.chat_participants CASCADE;
@@ -19,7 +40,7 @@ CREATE TABLE public.chat_conversations (
   last_message_at timestamp with time zone DEFAULT now()
 );
 
--- Chat participants table (for tracking who's in each conversation)
+-- Chat participants table
 CREATE TABLE public.chat_participants (
   id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
   conversation_id uuid REFERENCES public.chat_conversations(id) ON DELETE CASCADE NOT NULL,
@@ -164,7 +185,80 @@ CREATE TRIGGER update_last_seen_on_message
   FOR EACH ROW
   EXECUTE PROCEDURE update_participant_last_seen();
 
--- Add some helpful comments
+-- Add helpful comments
 COMMENT ON TABLE public.chat_conversations IS 'Stores chat conversation metadata';
 COMMENT ON TABLE public.chat_participants IS 'Tracks users participating in conversations';
 COMMENT ON TABLE public.chat_messages IS 'Stores individual chat messages';
+`
+
+async function setupChatSystem() {
+  console.log('🚀 Setting up chat system...')
+  
+  try {
+    // Check if tables already exist
+    const { data: existingTables } = await supabase
+      .from('information_schema.tables')
+      .select('table_name')
+      .eq('table_schema', 'public')
+      .in('table_name', ['chat_conversations', 'chat_participants', 'chat_messages'])
+    
+    if (existingTables && existingTables.length > 0) {
+      console.log('⚠️  Chat tables already exist. Dropping and recreating...')
+    }
+
+    // Note: We can't execute raw SQL directly through the JS client
+    // So we'll provide instructions for manual execution
+    console.log('\n📋 MANUAL SETUP REQUIRED:')
+    console.log('Since we cannot execute raw SQL through the JavaScript client,')
+    console.log('please follow these steps to set up the chat system:\n')
+    
+    console.log('1. Open your Supabase project dashboard')
+    console.log('2. Navigate to the SQL Editor')
+    console.log('3. Copy and paste the following SQL:\n')
+    console.log('--- SQL START ---')
+    console.log(setupSQL)
+    console.log('--- SQL END ---\n')
+    console.log('4. Execute the SQL')
+    console.log('5. Run this script again to verify the setup\n')
+
+    // Try to verify if tables exist by querying them
+    try {
+      const { data: testConversations, error: convError } = await supabase
+        .from('chat_conversations')
+        .select('id')
+        .limit(1)
+
+      const { data: testParticipants, error: partError } = await supabase
+        .from('chat_participants')
+        .select('id')
+        .limit(1)
+
+      const { data: testMessages, error: msgError } = await supabase
+        .from('chat_messages')
+        .select('id')
+        .limit(1)
+
+      if (!convError && !partError && !msgError) {
+        console.log('✅ Chat system tables verified successfully!')
+        console.log('✅ Setup complete! The chat widget should now work.')
+        return
+      }
+    } catch (error) {
+      // Tables don't exist yet
+    }
+
+    console.log('❌ Chat tables not found. Please run the SQL migration manually.')
+    console.log('\nAlternatively, you can save the SQL to a file and run it:')
+    console.log('node scripts/setup-chat-system.js > migration.sql')
+    
+  } catch (error) {
+    console.error('❌ Error setting up chat system:', error)
+    process.exit(1)
+  }
+}
+
+if (require.main === module) {
+  setupChatSystem()
+}
+
+module.exports = { setupChatSystem, setupSQL } 

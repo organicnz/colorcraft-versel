@@ -5,19 +5,21 @@ import { NewChatMessage } from '@/types/chat'
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const conversationId = searchParams.get('conversationId')
+    const conversationId = searchParams.get('conversation_id')
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '50')
     const offset = (page - 1) * limit
 
+    console.log('🔍 Fetching messages for conversation:', conversationId)
+
     if (!conversationId) {
-      return NextResponse.json({ error: 'conversationId is required' }, { status: 400 })
+      return NextResponse.json({ error: 'conversation_id is required' }, { status: 400 })
     }
 
     // Check if user is authenticated
     const supabase = await createClient()
     const { data: { session } } = await supabase.auth.getSession()
-    
+
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -44,17 +46,17 @@ export async function GET(request: NextRequest) {
     // Fetch messages
     const { data: messages, error } = await supabase
       .from('chat_messages')
-      .select(`
-        *,
-        sender:users(full_name, email)
-      `)
+      .select('*')
       .eq('conversation_id', conversationId)
       .order('created_at', { ascending: true })
       .range(offset, offset + limit - 1)
 
     if (error) {
+      console.error('❌ Error fetching messages:', error)
       throw error
     }
+
+    console.log('✅ Messages fetched:', messages?.length || 0)
 
     // Mark messages as read if user is participant
     if (participant) {
@@ -75,35 +77,42 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error fetching messages:', error)
+    console.error('💥 Error fetching messages:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('🚀 Creating new message...')
+
     // Check if user is authenticated
     const supabase = await createClient()
     const { data: { session } } = await supabase.auth.getSession()
-    
+
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const body = await request.json()
+    console.log('📝 Message data:', body)
+
     const { conversation_id, content, message_type = 'text' } = body
 
     if (!conversation_id || !content) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    // Check if user is admin or participant
+    // Get user information
     const { data: user } = await supabase
       .from('users')
-      .select('role')
+      .select('role, full_name, email')
       .eq('id', session.user.id)
       .single()
 
+    console.log('👤 User info:', user)
+
+    // Check if user is admin or participant
     const { data: participant } = await supabase
       .from('chat_participants')
       .select('*')
@@ -116,41 +125,45 @@ export async function POST(request: NextRequest) {
     }
 
     // Create message
+    console.log('🔄 Inserting message into database...')
     const { data: message, error } = await supabase
       .from('chat_messages')
       .insert({
         conversation_id,
         sender_id: session.user.id,
-        sender_type: user?.role === 'admin' ? 'admin' : 'customer',
+        sender_name: user?.full_name || session.user.email || 'Unknown User',
+        sender_email: user?.email || session.user.email,
         message_type,
         content,
         is_read: false
       })
-      .select(`
-        *,
-        sender:users(full_name, email)
-      `)
+      .select()
       .single()
 
     if (error) {
+      console.error('❌ Error creating message:', error)
       throw error
     }
+
+    console.log('✅ Message created:', message.id)
 
     // Update conversation last_message_at
     await supabase
       .from('chat_conversations')
-      .update({ 
+      .update({
         last_message_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       })
       .eq('id', conversation_id)
 
-    // Update participant last_seen
+    // Update participant last_seen_at
     await supabase
       .from('chat_participants')
-      .update({ last_seen: new Date().toISOString() })
+      .update({ last_seen_at: new Date().toISOString() })
       .eq('conversation_id', conversation_id)
       .eq('user_id', session.user.id)
+
+    console.log('🎉 Message successfully created!')
 
     return NextResponse.json({
       success: true,
@@ -158,7 +171,7 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error creating message:', error)
+    console.error('💥 Error creating message:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 } 

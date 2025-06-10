@@ -1,4 +1,6 @@
--- Chat System Database Schema
+-- Chat System Migration for Supabase
+-- Run this SQL in your Supabase SQL Editor
+
 -- Drop tables if they exist (for development)
 DROP TABLE IF EXISTS public.chat_messages CASCADE;
 DROP TABLE IF EXISTS public.chat_participants CASCADE;
@@ -19,7 +21,7 @@ CREATE TABLE public.chat_conversations (
   last_message_at timestamp with time zone DEFAULT now()
 );
 
--- Chat participants table (for tracking who's in each conversation)
+-- Chat participants table
 CREATE TABLE public.chat_participants (
   id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
   conversation_id uuid REFERENCES public.chat_conversations(id) ON DELETE CASCADE NOT NULL,
@@ -164,7 +166,7 @@ CREATE TRIGGER update_last_seen_on_message
   FOR EACH ROW
   EXECUTE PROCEDURE update_participant_last_seen();
 
--- Add some helpful comments
+-- Add helpful comments
 COMMENT ON TABLE public.chat_conversations IS 'Stores chat conversation metadata';
 COMMENT ON TABLE public.chat_participants IS 'Tracks users participating in conversations';
-COMMENT ON TABLE public.chat_messages IS 'Stores individual chat messages';
+COMMENT ON TABLE public.chat_messages IS 'Stores individual chat messages'; 

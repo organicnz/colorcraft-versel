@@ -68,28 +68,43 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('🚀 Starting chat conversation creation...')
+
     // Check if user is authenticated
     const supabase = await createClient()
     const { data: { session } } = await supabase.auth.getSession()
     
     if (!session) {
+      console.log('❌ No session found')
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const body = await request.json()
-    const { customer_name, customer_email, subject } = body
+    console.log('✅ User authenticated:', session.user.id)
 
-    if (!customer_name || !customer_email || !subject) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+    const body = await request.json()
+    console.log('📝 Request body:', body)
+    
+    const { title, customer_name, customer_email } = body
+
+    // Validate required fields
+    if (!customer_name) {
+      console.log('❌ Missing customer_name')
+      return NextResponse.json({ error: 'Customer name is required' }, { status: 400 })
+    }
+
+    if (!customer_email) {
+      console.log('❌ Missing customer_email')
+      return NextResponse.json({ error: 'Customer email is required' }, { status: 400 })
     }
 
     // Create conversation
+    console.log('🔄 Creating conversation...')
     const { data: conversation, error: convError } = await supabase
       .from('chat_conversations')
       .insert({
+        title: title || `Chat with ${customer_name}`,
         customer_name,
         customer_email,
-        subject,
         status: 'active',
         priority: 'normal'
       })
@@ -97,12 +112,16 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (convError) {
+      console.error('❌ Error creating conversation:', convError)
       throw convError
     }
 
+    console.log('✅ Conversation created:', conversation.id)
+
     // Add participant
     if (conversation) {
-      await supabase
+      console.log('🔄 Adding participant...')
+      const { error: participantError } = await supabase
         .from('chat_participants')
         .insert({
           conversation_id: conversation.id,
@@ -110,18 +129,34 @@ export async function POST(request: NextRequest) {
           participant_type: 'customer'
         })
 
+      if (participantError) {
+        console.error('❌ Error adding participant:', participantError)
+      } else {
+        console.log('✅ Participant added')
+      }
+
       // Create initial system message
-      await supabase
+      console.log('🔄 Creating initial system message...')
+      const { error: messageError } = await supabase
         .from('chat_messages')
         .insert({
           conversation_id: conversation.id,
           sender_id: session.user.id,
-          sender_type: 'system',
+          sender_name: 'System',
+          sender_email: '',
           message_type: 'system',
           content: `Conversation started by ${customer_name}`,
           is_read: true
         })
+
+      if (messageError) {
+        console.error('❌ Error creating system message:', messageError)
+      } else {
+        console.log('✅ System message created')
+      }
     }
+
+    console.log('🎉 Chat conversation successfully created!')
 
     return NextResponse.json({
       success: true,
@@ -129,7 +164,7 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error creating conversation:', error)
+    console.error('💥 Error creating conversation:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 } 
