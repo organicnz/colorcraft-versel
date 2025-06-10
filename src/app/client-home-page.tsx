@@ -493,7 +493,7 @@ export default function ClientHomePage({
                     glass={true}
                     glassVariant="light"
                     glassIntensity="medium"
-                    className="group overflow-hidden h-full flex flex-col border-border/50 hover:shadow-glass-heavy transition-all duration-300 hover:scale-[1.02] backdrop-blur-lg"
+                    className="group overflow-hidden h-full flex flex-col border-border/50 hover:shadow-glass-heavy transition-all duration-300 hover:scale-[1.02]"
                   >
                     <CardHeader className="p-0 relative aspect-[4/3] overflow-hidden">
                       <motion.div
@@ -516,7 +516,7 @@ export default function ClientHomePage({
                         transition={{ duration: 0.3 }}
                       />
                     </CardHeader>
-                    <CardContent className="p-4 flex-grow flex flex-col relative z-10 bg-white/40 dark:bg-white/5">
+                    <CardContent className="p-4 flex-grow flex flex-col relative z-10">
                       <h3 className="text-lg font-medium text-card-foreground mb-1 line-clamp-1">
                         {project.title}
                       </h3>
