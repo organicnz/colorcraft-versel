@@ -101,7 +101,6 @@ export default function ClientHomePage({
     offset: ["start end", "end start"],
   });
 
-  const featuredY = useTransform(featuredProgress, [0, 1], [100, -100]);
   const featuredOpacity = useTransform(featuredProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
   const featuredScale = useTransform(featuredProgress, [0, 0.5, 1], [0.8, 1, 1.05]);
 
@@ -109,6 +108,22 @@ export default function ClientHomePage({
   const bgLayer1 = useTransform(heroProgress, [0, 1], [0, -150]);
   const bgLayer2 = useTransform(heroProgress, [0, 1], [0, -100]);
   const bgLayer3 = useTransform(heroProgress, [0, 1], [0, -50]);
+
+  // Additional transform values for featured project
+  const heroProjectY = useTransform(heroProgress, [0, 1], [0, -50]);
+  const heroProjectScale = useTransform(heroProgress, [0, 1], [1, 1.1]);
+
+  // Featured section transforms
+  const featuredBgY1 = useTransform(featuredProgress, [0, 1], [0, -100]);
+  const featuredBgY2 = useTransform(featuredProgress, [0, 1], [0, -80]);
+  const featuredBgY3 = useTransform(featuredProgress, [0, 1], [0, -60]);
+  const featuredFloat1Y = useTransform(featuredProgress, [0, 1], [50, -100]);
+  const featuredFloat1Opacity = useTransform(featuredProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
+  const featuredFloat2Y = useTransform(featuredProgress, [0, 1], [80, -150]);
+  const featuredFloat2Opacity = useTransform(featuredProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+  const featuredHeaderY = useTransform(featuredProgress, [0, 1], [30, -30]);
+  const featuredGridY = useTransform(featuredProgress, [0, 1], [50, -50]);
+  const featuredFooterY = useTransform(featuredProgress, [0, 1], [20, -20]);
 
   // Auto-rotate hero project
   useEffect(() => {
@@ -158,7 +173,7 @@ export default function ClientHomePage({
         />
 
         <motion.div
-          style={{ y: heroY, opacity: heroOpacity, scale: heroScale }}
+                      style={{ y: heroY, opacity: heroOpacity, scale: heroScale }}
           className="relative z-10 container mx-auto px-4"
         >
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -223,13 +238,13 @@ export default function ClientHomePage({
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                style={{ y: useTransform(heroProgress, [0, 1], [0, -50]) }}
+                style={{ y: heroProjectY }}
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="order-1 lg:order-2 relative"
               >
                 <div className="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-2xl">
                   <motion.div
-                    style={{ scale: useTransform(heroProgress, [0, 1], [1, 1.1]) }}
+                    style={{ scale: heroProjectScale }}
                     className="w-full h-full"
                   >
                     <Image
@@ -377,30 +392,30 @@ export default function ClientHomePage({
       <section ref={featuredRef} className="py-24 relative overflow-hidden">
         {/* Multi-layered parallax backgrounds */}
         <motion.div
-          style={{ y: useTransform(featuredProgress, [0, 1], [0, -100]) }}
+          style={{ y: featuredBgY1 }}
           className="absolute inset-0 bg-gradient-to-br from-white/30 via-white/10 to-transparent backdrop-blur-sm"
         />
         <motion.div
-          style={{ y: useTransform(featuredProgress, [0, 1], [0, -80]) }}
+          style={{ y: featuredBgY2 }}
           className="absolute inset-0 bg-gradient-to-b from-accent-50/40 via-primary-50/20 to-transparent"
         />
         <motion.div
-          style={{ y: useTransform(featuredProgress, [0, 1], [0, -60]) }}
+          style={{ y: featuredBgY3 }}
           className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(59,130,246,0.1),transparent_50%)]"
         />
 
         {/* Floating background elements */}
         <motion.div
           style={{
-            y: useTransform(featuredProgress, [0, 1], [50, -100]),
-            opacity: useTransform(featuredProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]),
+            y: featuredFloat1Y,
+            opacity: featuredFloat1Opacity,
           }}
           className="absolute top-20 left-1/4 w-64 h-64 bg-primary-200/20 rounded-full blur-3xl"
         />
         <motion.div
           style={{
-            y: useTransform(featuredProgress, [0, 1], [80, -150]),
-            opacity: useTransform(featuredProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]),
+            y: featuredFloat2Y,
+            opacity: featuredFloat2Opacity,
           }}
           className="absolute bottom-20 right-1/4 w-48 h-48 bg-accent-200/20 rounded-full blur-2xl"
         />
@@ -408,7 +423,7 @@ export default function ClientHomePage({
         <div className="container relative z-10">
           <motion.div
             style={{
-              y: useTransform(featuredProgress, [0, 1], [30, -30]),
+              y: featuredHeaderY,
               opacity: featuredOpacity,
             }}
             className="text-center mb-16"
@@ -432,7 +447,7 @@ export default function ClientHomePage({
 
           <motion.div
             style={{
-              y: useTransform(featuredProgress, [0, 1], [50, -50]),
+              y: featuredGridY,
               scale: featuredScale,
             }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
@@ -520,7 +535,7 @@ export default function ClientHomePage({
 
           <motion.div
             style={{
-              y: useTransform(featuredProgress, [0, 1], [20, -20]),
+              y: featuredFooterY,
               opacity: featuredOpacity,
             }}
             className="text-center mt-12"
