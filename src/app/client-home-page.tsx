@@ -298,41 +298,31 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(59,130,246,0.1),transparent_50%)]"></div>
 
         <div className="container relative z-10">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="text-center mb-16"
-          >
-            <motion.div variants={fadeIn()}>
-              <Badge variant="outline" className="mb-4 bg-white/60 backdrop-blur-md border-white/40 shadow-glass">
-                Featured Work
-              </Badge>
-            </motion.div>
-            <motion.h2 variants={fadeIn(0.1)} className="text-4xl md:text-5xl font-bold mb-6 drop-shadow-sm">
+          <div className="text-center mb-16">
+            <Badge variant="outline" className="mb-4 bg-white/60 backdrop-blur-md border-white/40 shadow-glass">
+              Featured Work
+            </Badge>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 drop-shadow-sm">
               Recent
               <span className="block bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
                 Transformations
               </span>
-            </motion.h2>
-            <motion.p variants={fadeIn(0.2)} className="text-xl text-muted-foreground max-w-3xl mx-auto drop-shadow-sm">
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto drop-shadow-sm">
               See how we've transformed ordinary furniture into extraordinary pieces
-            </motion.p>
-          </motion.div>
+            </p>
+          </div>
 
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {displayProjects.length > 0 ? (
               displayProjects.map((project, index) => (
-                <motion.div
-                  key={project.id}
-                  variants={fadeIn(index * 0.1)}
+                <div
+                  key={`${project.id}-${index}`}
+                  className="opacity-0 animate-fade-in"
+                  style={{
+                    animationDelay: `${index * 150}ms`,
+                    animationFillMode: 'forwards'
+                  }}
                 >
                   <Card
                     glass={true}
@@ -341,14 +331,15 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
                     className="group overflow-hidden h-full flex flex-col border-border/50 hover:shadow-glass-heavy transition-all duration-300 hover:scale-[1.02]"
                   >
                     <CardHeader className="p-0 relative aspect-[4/3] overflow-hidden">
-                      <RandomShowcaseImage
-                        portfolioId={project.id}
-                        title={project.title}
-                        afterImages={project.after_images}
-                        fallbackImage={project.image}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      />
+                      <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
+                        <Image
+                          src={project.image}
+                          alt={project.title}
+                          fill
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        />
+                      </div>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </CardHeader>
                     <CardContent className="p-4 flex-grow flex flex-col relative z-10">
@@ -361,7 +352,7 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
                       </Button>
                     </CardContent>
                   </Card>
-                </motion.div>
+                </div>
               ))
             ) : (
               <div className="col-span-full text-center py-12">
@@ -378,7 +369,7 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
                 </div>
               </div>
             )}
-          </motion.div>
+          </div>
 
           <div className="text-center mt-12">
             <Button variant="link" asChild className="text-primary group">
