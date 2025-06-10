@@ -1,8 +1,8 @@
 {
   "framework": "nextjs",
-  "buildCommand": "yarn vercel-build",
-  "installCommand": "yarn install",
-  "devCommand": "next dev --turbopack",
+  "installCommand": "pnpm install",
+  "buildCommand": "pnpm vercel-build",
+  "devCommand": "pnpm dev",
   "regions": ["iad1"],
   "headers": [
     {
@@ -40,5 +40,10 @@
         }
       ]
     }
-  ]
+  ],
+  "functions": {
+    "src/app/api/**/*.ts": {
+      "runtime": "nodejs18.x"
+    }
+  }
 } 
