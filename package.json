@@ -113,7 +113,6 @@
     "@types/node": "^22.15.30",
     "@types/pg": "^8.15.4",
     "@types/react": "^19.1.7",
-    "@types/react-datepicker": "^7.0.0",
     "@types/react-dom": "^19.1.6",
     "@types/uuid": "^10.0.0",
     "drizzle-kit": "^0.31.1",
