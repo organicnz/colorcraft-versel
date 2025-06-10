@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 export default async function SupabaseTestPage() {
   const supabase = await createClient();
   
-  let testResults = {
+  const testResults = {
     connection: 'Not tested',
     projects: 'Not tested',
     portfolio: 'Not tested',

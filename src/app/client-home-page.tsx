@@ -67,6 +67,44 @@ export default function ClientHomePage({
   const featuredRef = useRef<HTMLElement>(null);
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
   const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState("");
+
+  // Scroll progress tracking
+  const { scrollYProgress } = useScroll();
+
+  // Hero section transforms
+  const heroY = useTransform(scrollYProgress, [0, 0.3], [0, -100]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 0.95]);
+
+  // Services section transforms
+  const servicesY = useTransform(scrollYProgress, [0.1, 0.4], [50, -50]);
+  const servicesOpacity = useTransform(scrollYProgress, [0.1, 0.2, 0.35, 0.4], [0, 1, 1, 0]);
+
+  // Featured section transforms
+  const featuredY = useTransform(scrollYProgress, [0.3, 0.7], [100, -100]);
+  const featuredOpacity = useTransform(scrollYProgress, [0.3, 0.4, 0.6, 0.7], [0, 1, 1, 0]);
+  const featuredScale = useTransform(scrollYProgress, [0.3, 0.7], [0.9, 1.1]);
+
+  // Individual project transforms - pre-calculate for each index
+  const featuredProgress = useTransform(scrollYProgress, [0.3, 0.7], [0, 1]);
+  const project0Y = useTransform(featuredProgress, [0, 1], [20, -20]);
+  const project1Y = useTransform(featuredProgress, [0, 1], [30, -30]);
+  const project2Y = useTransform(featuredProgress, [0, 1], [40, -40]);
+  const project3Y = useTransform(featuredProgress, [0, 1], [50, -50]);
+  const projectOpacity = useTransform(featuredProgress, [0, 0.1, 0.9, 1], [0, 1, 1, 0]);
+
+  // Grid and footer transforms
+  const featuredGridY = useTransform(scrollYProgress, [0.35, 0.65], [50, -50]);
+  const featuredFooterY = useTransform(scrollYProgress, [0.4, 0.7], [30, -30]);
+
+  // Array of pre-calculated transforms for projects
+  const projectTransforms = [project0Y, project1Y, project2Y, project3Y];
+
+  // Additional floating element transforms
+  const floatingElement1Y = useTransform(scrollYProgress, [0, 1], [0, -80]);
+  const floatingElement2Y = useTransform(scrollYProgress, [0, 1], [0, -120]);
 
   // Debug logging
   console.log("🔍 ClientHomePage render:", {
@@ -85,45 +123,24 @@ export default function ClientHomePage({
     currentProject: currentProject?.title,
   });
 
-  // Hero parallax animations
-  const { scrollYProgress: heroProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-
-  const heroY = useTransform(heroProgress, [0, 1], [0, -200]);
-  const heroOpacity = useTransform(heroProgress, [0, 1], [1, 0]);
-  const heroScale = useTransform(heroProgress, [0, 1], [1, 1.1]);
-
-  // Featured section parallax
-  const { scrollYProgress: featuredProgress } = useScroll({
-    target: featuredRef,
-    offset: ["start end", "end start"],
-  });
-
-  const featuredOpacity = useTransform(featuredProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-  const featuredScale = useTransform(featuredProgress, [0, 0.5, 1], [0.8, 1, 1.05]);
-
   // Background layers parallax
-  const bgLayer1 = useTransform(heroProgress, [0, 1], [0, -150]);
-  const bgLayer2 = useTransform(heroProgress, [0, 1], [0, -100]);
-  const bgLayer3 = useTransform(heroProgress, [0, 1], [0, -50]);
+  const bgLayer1 = useTransform(scrollYProgress, [0, 1], [0, -150]);
+  const bgLayer2 = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const bgLayer3 = useTransform(scrollYProgress, [0, 1], [0, -50]);
 
   // Additional transform values for featured project
-  const heroProjectY = useTransform(heroProgress, [0, 1], [0, -50]);
-  const heroProjectScale = useTransform(heroProgress, [0, 1], [1, 1.1]);
+  const heroProjectY = useTransform(scrollYProgress, [0, 1], [0, -50]);
+  const heroProjectScale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
 
   // Featured section transforms
-  const featuredBgY1 = useTransform(featuredProgress, [0, 1], [0, -100]);
-  const featuredBgY2 = useTransform(featuredProgress, [0, 1], [0, -80]);
-  const featuredBgY3 = useTransform(featuredProgress, [0, 1], [0, -60]);
-  const featuredFloat1Y = useTransform(featuredProgress, [0, 1], [50, -100]);
-  const featuredFloat1Opacity = useTransform(featuredProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
-  const featuredFloat2Y = useTransform(featuredProgress, [0, 1], [80, -150]);
-  const featuredFloat2Opacity = useTransform(featuredProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-  const featuredHeaderY = useTransform(featuredProgress, [0, 1], [30, -30]);
-  const featuredGridY = useTransform(featuredProgress, [0, 1], [50, -50]);
-  const featuredFooterY = useTransform(featuredProgress, [0, 1], [20, -20]);
+  const featuredBgY1 = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const featuredBgY2 = useTransform(scrollYProgress, [0, 1], [0, -80]);
+  const featuredBgY3 = useTransform(scrollYProgress, [0, 1], [0, -60]);
+  const featuredFloat1Y = useTransform(scrollYProgress, [0, 1], [50, -100]);
+  const featuredFloat1Opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
+  const featuredFloat2Y = useTransform(scrollYProgress, [0, 1], [80, -150]);
+  const featuredFloat2Opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+  const featuredHeaderY = useTransform(scrollYProgress, [0, 1], [30, -30]);
 
   // Auto-rotate hero project
   useEffect(() => {
@@ -164,11 +181,11 @@ export default function ClientHomePage({
 
         {/* Additional floating elements */}
         <motion.div
-          style={{ y: useTransform(heroProgress, [0, 1], [0, -80]) }}
+          style={{ y: floatingElement1Y }}
           className="absolute top-1/3 left-1/3 w-32 h-32 bg-secondary-200/20 rounded-full blur-2xl"
         />
         <motion.div
-          style={{ y: useTransform(heroProgress, [0, 1], [0, -120]) }}
+          style={{ y: floatingElement2Y }}
           className="absolute bottom-1/3 right-1/3 w-48 h-48 bg-primary-300/20 rounded-full blur-2xl"
         />
 
@@ -457,8 +474,8 @@ export default function ClientHomePage({
                 <motion.div
                   key={`${project.id}-${index}`}
                   style={{
-                    y: useTransform(featuredProgress, [0, 1], [20 + index * 10, -20 - index * 10]),
-                    opacity: useTransform(featuredProgress, [0, 0.1, 0.9, 1], [0, 1, 1, 0]),
+                    y: projectTransforms[index],
+                    opacity: projectOpacity,
                   }}
                   className="opacity-0 animate-fade-in"
                   data-delay={index * 150}
