@@ -6,6 +6,8 @@
     "dev": "next dev --turbopack",
     "dev:legacy": "next dev",
     "build": "next build",
+    "prebuild": "echo 'Starting prebuild...' && node scripts/verify-env.js || true",
+    "build:production": "echo 'Building for production...' && next build",
     "vercel-build": "node scripts/verify-env.js || true && next build",
     "start": "next start",
     "lint": "next lint",

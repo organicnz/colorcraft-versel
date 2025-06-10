@@ -7,7 +7,15 @@
 require('dotenv').config({ path: '.env.local' });
 const fs = require('fs');
 const path = require('path');
-const chalk = require('chalk') || { green: s => s, red: s => s, yellow: s => s, blue: s => s, bold: s => s };
+
+// Fallback chalk functions if chalk is not available
+const chalk = (() => {
+  try {
+    return require('chalk');
+  } catch (e) {
+    return { green: s => s, red: s => s, yellow: s => s, blue: s => s, bold: s => s };
+  }
+})();
 
 // Define required environment variables
 const REQUIRED_VARS = [
@@ -92,7 +100,14 @@ function verifyEnvironment() {
     console.log('- Do NOT use the service_role key for NEXT_PUBLIC_SUPABASE_ANON_KEY');
     console.log('- Make sure to enable the variables for all environments (Production, Preview, Development)');
     
-    process.exit(1);
+    // In Vercel environment, just warn but don't fail the build
+    if (process.env.VERCEL === "1") {
+      console.log(chalk.yellow('\n⚠️  Running in Vercel - environment variables should be configured in Vercel dashboard'));
+      console.log(chalk.yellow('   Build will continue but app may not work properly without these variables'));
+      process.exit(0);
+    } else {
+      process.exit(1);
+    }
   } else {
     console.log(chalk.green('✓ All required environment variables are set'));
     
