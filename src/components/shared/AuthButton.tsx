@@ -44,6 +44,12 @@ export function AuthButton() {
   const supabase = createClient();
 
   useEffect(() => {
+    // Add timeout to prevent infinite loading
+    const loadingTimeout = setTimeout(() => {
+      console.warn('Auth loading timeout - setting loading to false');
+      setLoading(false);
+    }, 5000);
+
     // Get initial session and user data
     const getSession = async () => {
       try {
@@ -52,19 +58,33 @@ export function AuthButton() {
         
         if (session?.user) {
           // Fetch additional user data including role
-          const { data: profile } = await supabase
-            .from('users')
-            .select('id, email, full_name, avatar_url, role')
-            .eq('id', session.user.id)
-            .single();
-          
-          setUserData(profile || {
-            id: session.user.id,
-            email: session.user.email || '',
-            full_name: session.user.user_metadata?.full_name,
-            avatar_url: session.user.user_metadata?.avatar_url,
-            role: 'customer'
-          });
+          try {
+            const { data: profile } = await supabase
+              .from('users')
+              .select('id, email, full_name, avatar_url, role')
+              .eq('id', session.user.id)
+              .single();
+            
+            setUserData(profile || {
+              id: session.user.id,
+              email: session.user.email || '',
+              full_name: session.user.user_metadata?.full_name,
+              avatar_url: session.user.user_metadata?.avatar_url,
+              role: 'customer'
+            });
+          } catch (profileError) {
+            console.error('Error fetching user profile:', profileError);
+            // Set fallback user data even if profile fetch fails
+            setUserData({
+              id: session.user.id,
+              email: session.user.email || '',
+              full_name: session.user.user_metadata?.full_name,
+              avatar_url: session.user.user_metadata?.avatar_url,
+              role: 'customer'
+            });
+          }
+        } else {
+          setUserData(null);
         }
         
         console.log('Initial session check:', !!session?.user);
@@ -73,6 +93,7 @@ export function AuthButton() {
         setUser(null);
         setUserData(null);
       } finally {
+        clearTimeout(loadingTimeout);
         setLoading(false);
       }
     };

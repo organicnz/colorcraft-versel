@@ -18,7 +18,8 @@ import {
   ArrowRight,
   Filter,
   Grid3X3,
-  Search
+  Search,
+  Loader2
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -56,8 +57,12 @@ export const dynamic = 'force-dynamic';
 export default function PortfolioPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [projects, setProjects] = useState([]);
+  const [displayedProjects, setDisplayedProjects] = useState([]);
   const [filterType, setFilterType] = useState("all");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const projectsPerPage = 6; // Show 6 projects (3 columns x 2 rows)
 
   // Sample data with ultra-modern structure
   const sampleProjects = [
@@ -112,6 +117,58 @@ export default function PortfolioPage() {
       completion_time: '2 weeks',
       techniques: ['Metal Framework', 'Weathering', 'Industrial Hardware'],
       price_range: '$400-700'
+    },
+    {
+      id: 'sample-5',
+      title: 'Antique Wardrobe Restoration',
+      description: 'Comprehensive restoration of a French antique wardrobe with authentic period finishes and hardware restoration.',
+      before_images: ['https://images.unsplash.com/photo-1562113530-57ba4cea7cb3?w=800&h=600&fit=crop&auto=format&q=80'],
+      after_images: ['https://images.unsplash.com/photo-1562113530-57ba4cea7cb3?w=800&h=600&fit=crop&auto=format&q=80'],
+      status: 'published',
+      is_featured: true,
+      category: 'restoration',
+      completion_time: '6 weeks',
+      techniques: ['Period Restoration', 'Authentic Finishes', 'Hardware Restoration'],
+      price_range: '$1500-2000'
+    },
+    {
+      id: 'sample-6',
+      title: 'Contemporary Side Table',
+      description: 'Modern transformation of a traditional side table with sleek lines, minimalist design, and high-gloss finish.',
+      before_images: ['https://images.unsplash.com/photo-1549497538-303791108f95?w=800&h=600&fit=crop&auto=format&q=80'],
+      after_images: ['https://images.unsplash.com/photo-1549497538-303791108f95?w=800&h=600&fit=crop&auto=format&q=80'],
+      status: 'published',
+      is_featured: false,
+      category: 'modern',
+      completion_time: '1 week',
+      techniques: ['Minimalist Design', 'High-Gloss Finish', 'Clean Lines'],
+      price_range: '$300-500'
+    },
+    {
+      id: 'sample-7',
+      title: 'Rustic Dining Set Revival',
+      description: 'Complete makeover of a rustic dining set with weathered wood finish and modern comfort updates.',
+      before_images: ['https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop&auto=format&q=80'],
+      after_images: ['https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop&auto=format&q=80'],
+      status: 'published',
+      is_featured: false,
+      category: 'vintage',
+      completion_time: '5 weeks',
+      techniques: ['Weathered Finish', 'Comfort Updates', 'Rustic Styling'],
+      price_range: '$1200-1800'
+    },
+    {
+      id: 'sample-8',
+      title: 'Modern Storage Cabinet',
+      description: 'Sleek storage solution with contemporary design, hidden compartments, and premium materials.',
+      before_images: ['https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80'],
+      after_images: ['https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80'],
+      status: 'published',
+      is_featured: false,
+      category: 'modern',
+      completion_time: '3 weeks',
+      techniques: ['Hidden Compartments', 'Premium Materials', 'Contemporary Design'],
+      price_range: '$900-1300'
     }
   ];
 
@@ -156,12 +213,46 @@ export default function PortfolioPage() {
 
   useEffect(() => {
     setProjects(sampleProjects);
+    // Initialize displayed projects with first page
+    setDisplayedProjects(sampleProjects.slice(0, projectsPerPage));
     setIsLoading(false);
   }, []);
+
+  // Update displayed projects when filter changes
+  useEffect(() => {
+    const filtered = filterType === "all"
+      ? projects
+      : projects.filter(project => project.category === filterType);
+    
+    setDisplayedProjects(filtered.slice(0, projectsPerPage));
+    setCurrentPage(1);
+  }, [filterType, projects]);
 
   const filteredProjects = filterType === "all"
     ? projects
     : projects.filter(project => project.category === filterType);
+
+  const hasMoreProjects = displayedProjects.length < filteredProjects.length;
+
+  const loadMoreProjects = () => {
+    if (isLoadingMore || !hasMoreProjects) return;
+    
+    setIsLoadingMore(true);
+    
+    // Simulate loading delay for better UX
+    setTimeout(() => {
+      const filtered = filterType === "all"
+        ? projects
+        : projects.filter(project => project.category === filterType);
+      
+      const nextPage = currentPage + 1;
+      const newProjects = filtered.slice(0, nextPage * projectsPerPage);
+      
+      setDisplayedProjects(newProjects);
+      setCurrentPage(nextPage);
+      setIsLoadingMore(false);
+    }, 500);
+  };
 
   return (
     <div className="min-h-screen bg-white overflow-hidden">
@@ -347,7 +438,7 @@ export default function PortfolioPage() {
             variants={staggerContainer}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
-            {filteredProjects.map((project, index) => (
+            {displayedProjects.map((project, index) => (
               <motion.div
                 key={project.id}
                 variants={fadeInUp}
@@ -418,24 +509,37 @@ export default function PortfolioPage() {
           </motion.div>
 
           {/* Load More Button */}
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeInUp}
-            className="text-center mt-16"
-          >
-            <motion.div whileHover={scaleOnHover}>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-2 border-slate-200 text-slate-700 hover:bg-slate-50 px-8 py-4 rounded-2xl backdrop-blur-sm bg-white/50"
-              >
-                <Grid3X3 className="mr-2 h-5 w-5" />
-                Load More Projects
-              </Button>
+          {hasMoreProjects && (
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeInUp}
+              className="text-center mt-16"
+            >
+              <motion.div whileHover={scaleOnHover}>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-2 border-slate-200 text-slate-700 hover:bg-slate-50 px-8 py-4 rounded-2xl backdrop-blur-sm bg-white/50"
+                  onClick={loadMoreProjects}
+                  disabled={isLoadingMore}
+                >
+                  {isLoadingMore ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Loading More...
+                    </>
+                  ) : (
+                    <>
+                      <Grid3X3 className="mr-2 h-5 w-5" />
+                      Load More Projects
+                    </>
+                  )}
+                </Button>
+              </motion.div>
             </motion.div>
-          </motion.div>
+          )}
         </div>
       </section>
     </div>
