@@ -516,7 +516,7 @@ export default function ClientHomePage({
                         transition={{ duration: 0.3 }}
                       />
                     </CardHeader>
-                    <CardContent className="p-4 flex-grow flex flex-col relative z-10 bg-white/40 dark:bg-white/5 backdrop-blur-md">
+                    <CardContent className="p-4 flex-grow flex flex-col relative z-10 bg-white/40 dark:bg-white/5">
                       <h3 className="text-lg font-medium text-card-foreground mb-1 line-clamp-1">
                         {project.title}
                       </h3>
