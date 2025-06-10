@@ -46,7 +46,8 @@
     "test:email": "node scripts/test-email.js",
     "test:email:reset": "node scripts/test-custom-emails.js reset",
     "test:email:verify": "node scripts/test-custom-emails.js verify",
-    "diagnose": "node scripts/verify-env.js && node scripts/verify-db-connection.js"
+    "diagnose": "node scripts/verify-env.js && node scripts/verify-db-connection.js",
+    "commit": "node scripts/auto-commit.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
