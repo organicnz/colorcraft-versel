@@ -2,7 +2,7 @@ import type { Config } from 'tailwindcss'
 import { colors } from './src/styles/colors'
 
 const config: Config = {
-  darkMode: ["class"],
+  darkMode: "class",
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -301,20 +301,20 @@ const config: Config = {
         
         // Primary colors
         primary: {
-          DEFAULT: colors.primary[500],
-          ...colors.primary
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
         
         // Secondary colors
         secondary: {
-          DEFAULT: colors.secondary[500],
-          ...colors.secondary
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
         },
         
         // Accent colors
         accent: {
-          DEFAULT: colors.accent[500],
-          ...colors.accent
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
         },
         
         // Neutral colors
@@ -353,6 +353,13 @@ const config: Config = {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        chart: {
+          "1": "hsl(var(--chart-1))",
+          "2": "hsl(var(--chart-2))",
+          "3": "hsl(var(--chart-3))",
+          "4": "hsl(var(--chart-4))",
+          "5": "hsl(var(--chart-5))",
         },
       },
       borderRadius: {
@@ -405,6 +412,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 }
 export default config 

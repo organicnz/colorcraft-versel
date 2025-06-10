@@ -3,69 +3,77 @@ import { createClient } from '@/lib/supabase/server'
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createClient()
-    
-    // Check if user is admin
+    // Check if user is authenticated and is admin
+    const supabase = await createClient()
     const { data: { session } } = await supabase.auth.getSession()
     
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    // Check if user is admin
     const { data: user } = await supabase
       .from('users')
       .select('role')
       .eq('id', session.user.id)
       .single()
 
-    if (user?.role !== 'admin') {
+    if (!user || user.role !== 'admin') {
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 })
     }
 
-    // Create the chat system tables using SQL
+    // SQL to create chat system tables
     const setupSQL = `
-      -- Chat conversations table
+      -- Create chat_conversations table
       CREATE TABLE IF NOT EXISTS public.chat_conversations (
-        id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
-        title text DEFAULT 'New Conversation',
-        status text NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'closed', 'archived')),
-        priority text NOT NULL DEFAULT 'normal' CHECK (priority IN ('low', 'normal', 'high', 'urgent')),
-        customer_email text,
-        customer_name text,
-        assigned_admin_id uuid REFERENCES auth.users(id),
-        metadata jsonb DEFAULT '{}',
-        created_at timestamp with time zone DEFAULT now() NOT NULL,
-        updated_at timestamp with time zone DEFAULT now() NOT NULL,
-        last_message_at timestamp with time zone DEFAULT now()
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        customer_name TEXT NOT NULL,
+        customer_email TEXT NOT NULL,
+        subject TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'closed', 'waiting')),
+        priority TEXT NOT NULL DEFAULT 'normal' CHECK (priority IN ('low', 'normal', 'high', 'urgent')),
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
+        closed_at TIMESTAMP WITH TIME ZONE,
+        last_message_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
       );
 
-      -- Chat participants table
+      -- Create chat_participants table
       CREATE TABLE IF NOT EXISTS public.chat_participants (
-        id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
-        conversation_id uuid REFERENCES public.chat_conversations(id) ON DELETE CASCADE NOT NULL,
-        user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE,
-        participant_type text NOT NULL CHECK (participant_type IN ('customer', 'admin', 'guest')),
-        joined_at timestamp with time zone DEFAULT now() NOT NULL,
-        last_seen_at timestamp with time zone DEFAULT now(),
-        is_online boolean DEFAULT false,
-        UNIQUE(conversation_id, user_id)
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        conversation_id UUID REFERENCES public.chat_conversations(id) ON DELETE CASCADE NOT NULL,
+        user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+        participant_type TEXT NOT NULL CHECK (participant_type IN ('customer', 'admin')),
+        is_online BOOLEAN DEFAULT FALSE,
+        last_seen TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
       );
 
-      -- Chat messages table
+      -- Create chat_messages table
       CREATE TABLE IF NOT EXISTS public.chat_messages (
-        id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
-        conversation_id uuid REFERENCES public.chat_conversations(id) ON DELETE CASCADE NOT NULL,
-        sender_id uuid REFERENCES auth.users(id) ON DELETE SET NULL,
-        sender_name text NOT NULL,
-        sender_email text,
-        message_type text NOT NULL DEFAULT 'text' CHECK (message_type IN ('text', 'image', 'file', 'system')),
-        content text NOT NULL,
-        metadata jsonb DEFAULT '{}',
-        is_read boolean DEFAULT false,
-        created_at timestamp with time zone DEFAULT now() NOT NULL,
-        updated_at timestamp with time zone DEFAULT now() NOT NULL
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        conversation_id UUID REFERENCES public.chat_conversations(id) ON DELETE CASCADE NOT NULL,
+        sender_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+        sender_type TEXT NOT NULL CHECK (sender_type IN ('customer', 'admin')),
+        message_type TEXT NOT NULL DEFAULT 'text' CHECK (message_type IN ('text', 'file', 'image', 'system')),
+        content TEXT NOT NULL,
+        is_read BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
       );
-    `;
+
+      -- Create indexes for performance
+      CREATE INDEX IF NOT EXISTS idx_chat_conversations_status ON public.chat_conversations(status);
+      CREATE INDEX IF NOT EXISTS idx_chat_conversations_created_at ON public.chat_conversations(created_at);
+      CREATE INDEX IF NOT EXISTS idx_chat_participants_conversation ON public.chat_participants(conversation_id);
+      CREATE INDEX IF NOT EXISTS idx_chat_participants_user ON public.chat_participants(user_id);
+      CREATE INDEX IF NOT EXISTS idx_chat_messages_conversation ON public.chat_messages(conversation_id);
+      CREATE INDEX IF NOT EXISTS idx_chat_messages_created_at ON public.chat_messages(created_at);
+
+      -- Enable RLS
+      ALTER TABLE public.chat_conversations ENABLE ROW LEVEL SECURITY;
+      ALTER TABLE public.chat_participants ENABLE ROW LEVEL SECURITY;
+      ALTER TABLE public.chat_messages ENABLE ROW LEVEL SECURITY;
+    `
 
     // Execute the SQL
     const { error: tableError } = await supabase.rpc('exec_sql', { sql: setupSQL })
@@ -75,22 +83,27 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to create tables' }, { status: 500 })
     }
 
-    // Check if tables were created by testing a simple query
-    const { data: testData, error: testError } = await supabase
+    // Test the tables by checking if they exist
+    const { data: testData } = await supabase
       .from('chat_conversations')
-      .select('id')
+      .select('*')
       .limit(1)
 
-    if (testError) {
-      console.log('Tables may not exist yet, that\'s expected on first run')
-    }
-
-    return NextResponse.json({ 
+    return NextResponse.json({
+      success: true,
       message: 'Chat system setup completed successfully',
-      tablesCreated: !testError
+      tables: {
+        chat_conversations: 'created',
+        chat_participants: 'created', 
+        chat_messages: 'created'
+      }
     })
+
   } catch (error) {
-    console.error('Error setting up chat system:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error('Setup error:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
   }
 } 

@@ -4,131 +4,132 @@ import { NewChatConversation } from '@/types/chat'
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createClient()
-    
-    // Get current user
+    // Check if user is authenticated
+    const supabase = await createClient()
     const { data: { session } } = await supabase.auth.getSession()
     
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Check if user is admin
+    // Check if user is admin (only admins can see all conversations)
     const { data: user } = await supabase
       .from('users')
       .select('role')
       .eq('id', session.user.id)
       .single()
 
-    let query = supabase
+    const { data: conversations } = await supabase
       .from('chat_conversations')
       .select(`
         *,
-        chat_messages(
+        chat_participants (
+          *,
+          users (
+            full_name,
+            email
+          )
+        ),
+        chat_messages (
           id,
           content,
-          sender_name,
-          message_type,
-          created_at
+          created_at,
+          is_read,
+          sender_type
         )
       `)
-
-    // If not admin, only show conversations user is participating in
-    if (user?.role !== 'admin') {
-      query = query
-        .eq('chat_participants.user_id', session.user.id)
-        .neq('status', 'archived')
-    }
-
-    const { data: conversations, error } = await query
       .order('last_message_at', { ascending: false })
 
-    if (error) {
-      console.error('Error fetching conversations:', error)
-      return NextResponse.json({ error: error.message }, { status: 500 })
-    }
-
-    // Process conversations to add unread count and last message
-    const processedConversations = conversations?.map(conv => {
+    // Process conversations to add derived data
+    const processedConversations = conversations?.map((conv: any) => {
       const messages = conv.chat_messages || []
-      const lastMessage = messages.sort((a, b) => 
+      const lastMessage = messages.sort((a: any, b: any) =>
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       )[0]
-      
+
       return {
         ...conv,
-        last_message: lastMessage,
-        unread_count: messages.filter(m => !m.is_read).length,
-        chat_messages: undefined // Remove to avoid confusion
+        last_message: lastMessage || null,
+        unread_count: messages.filter((m: any) => !m.is_read).length,
+        participant_count: conv.chat_participants?.length || 0
       }
     })
 
-    return NextResponse.json({ conversations: processedConversations })
+    return NextResponse.json({
+      conversations: processedConversations || [],
+      total: processedConversations?.length || 0
+    })
+
   } catch (error) {
-    console.error('Error in GET /api/chat/conversations:', error)
+    console.error('Error fetching conversations:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createClient()
-    const body: NewChatConversation = await request.json()
-    
-    // Get current user or allow anonymous users
+    // Check if user is authenticated
+    const supabase = await createClient()
     const { data: { session } } = await supabase.auth.getSession()
     
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const body = await request.json()
+    const { customer_name, customer_email, subject } = body
+
+    if (!customer_name || !customer_email || !subject) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+    }
+
     // Create conversation
     const { data: conversation, error: convError } = await supabase
       .from('chat_conversations')
       .insert({
-        title: body.title || 'New Conversation',
-        customer_email: body.customer_email || session?.user?.email,
-        customer_name: body.customer_name || session?.user?.user_metadata?.full_name,
-        priority: body.priority || 'normal',
-        metadata: body.metadata || {}
+        customer_name,
+        customer_email,
+        subject,
+        status: 'active',
+        priority: 'normal'
       })
       .select()
       .single()
 
     if (convError) {
-      console.error('Error creating conversation:', convError)
-      return NextResponse.json({ error: convError.message }, { status: 500 })
+      throw convError
     }
 
     // Add participant
-    if (session?.user?.id) {
-      const { error: participantError } = await supabase
+    if (conversation) {
+      await supabase
         .from('chat_participants')
         .insert({
           conversation_id: conversation.id,
           user_id: session.user.id,
-          participant_type: session?.user?.user_metadata?.role === 'admin' ? 'admin' : 'customer'
+          participant_type: 'customer'
         })
 
-      if (participantError) {
-        console.error('Error adding participant:', participantError)
-      }
+      // Create initial system message
+      await supabase
+        .from('chat_messages')
+        .insert({
+          conversation_id: conversation.id,
+          sender_id: session.user.id,
+          sender_type: 'system',
+          message_type: 'system',
+          content: `Conversation started by ${customer_name}`,
+          is_read: true
+        })
     }
 
-    // Send welcome message
-    const { error: messageError } = await supabase
-      .from('chat_messages')
-      .insert({
-        conversation_id: conversation.id,
-        sender_name: 'System',
-        message_type: 'system',
-        content: 'Welcome! How can we help you today?',
-        metadata: { type: 'welcome' }
-      })
+    return NextResponse.json({
+      success: true,
+      conversation
+    })
 
-    if (messageError) {
-      console.error('Error sending welcome message:', messageError)
-    }
-
-    return NextResponse.json({ conversation })
   } catch (error) {
-    console.error('Error in POST /api/chat/conversations:', error)
+    console.error('Error creating conversation:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 } 

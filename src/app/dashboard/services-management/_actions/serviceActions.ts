@@ -5,143 +5,237 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
-// Service schema for validation
-export const serviceSchema = z.object({
-  title: z.string().min(1, "Title is required"),
+// Validation schema for service data
+const serviceSchema = z.object({
+  name: z.string().min(1, "Service name is required"),
   description: z.string().min(1, "Description is required"),
-  price: z.coerce.number().min(0, "Price must be a positive number"),
-  is_featured: z.boolean().default(false),
+  short_description: z.string().optional(),
+  price_range: z.string().optional(),
+  image_url: z.string().url().optional(),
+  is_active: z.boolean().default(true),
 });
 
-export type ServiceFormValues = z.infer<typeof serviceSchema>;
+export type ServiceFormData = z.infer<typeof serviceSchema> & { id?: string };
 
-// Create a new service
-export async function createService(formData: ServiceFormValues) {
+export async function createService(formData: ServiceFormData) {
   try {
-    const supabase = createClient();
-    
-    // Verify user is authenticated
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      throw new Error("You must be logged in to create a service");
+    // Validate form data
+    const validatedFields = serviceSchema.safeParse(formData);
+
+    if (!validatedFields.success) {
+      return {
+        error: "Invalid form data. Please check your entries.",
+        details: validatedFields.error.flatten().fieldErrors,
+      };
     }
-    
-    // Verify user is admin
+
+    const serviceData = validatedFields.data;
+
+    // Initialize Supabase client
+    const supabase = await createClient();
+
+    // Get user session to verify permissions
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session) {
+      return { error: "You must be logged in to create services" };
+    }
+
+    // Get user data to check role
     const { data: userData, error: userError } = await supabase
       .from("users")
       .select("role")
       .eq("id", session.user.id)
       .single();
-      
-    if (userError || !userData || userData.role !== "admin") {
-      throw new Error("You do not have permission to create services");
+
+    if (userError || !userData) {
+      return { error: "Failed to verify user permissions" };
     }
-    
-    // Insert the new service
-    const { data, error } = await supabase
-      .from("services")
-      .insert({
-        title: formData.title,
-        description: formData.description,
-        price: formData.price,
-        is_featured: formData.is_featured,
-      })
-      .select()
-      .single();
-    
+
+    // Check if user has admin or contributor role
+    if (userData.role !== "admin" && userData.role !== "contributor") {
+      return { error: "You don't have permission to create services" };
+    }
+
+    // Insert service
+    const { data, error } = await supabase.from("services").insert([serviceData]).select().single();
+
     if (error) {
-      throw new Error(error.message);
+      console.error("Database error:", error);
+      return { error: "Failed to create service" };
     }
-    
-    revalidatePath("/dashboard/services-management");
-    return { success: true, data };
-  } catch (error: any) {
-    return { success: false, error: error.message || "Failed to create service" };
+
+    revalidatePath("/services-dash");
+    return { success: "Service created successfully", data };
+  } catch (error) {
+    console.error("Service creation error:", error);
+    return { error: "An unexpected error occurred" };
   }
 }
 
-// Update an existing service
-export async function updateService(id: string, formData: ServiceFormValues) {
+export async function updateService(formData: ServiceFormData) {
   try {
-    const supabase = createClient();
-    
-    // Verify user is authenticated
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      throw new Error("You must be logged in to update a service");
+    // Validate form data
+    const validatedFields = serviceSchema.safeParse(formData);
+
+    if (!validatedFields.success) {
+      return {
+        error: "Invalid form data. Please check your entries.",
+        details: validatedFields.error.flatten().fieldErrors,
+      };
     }
-    
-    // Verify user is admin
+
+    const { id, ...serviceData } = validatedFields.data as ServiceFormData;
+
+    if (!id) {
+      return { error: "Service ID is required for updates" };
+    }
+
+    // Initialize Supabase client
+    const supabase = await createClient();
+
+    // Get user session to verify permissions
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session) {
+      return { error: "You must be logged in to update services" };
+    }
+
+    // Get user data to check role
     const { data: userData, error: userError } = await supabase
       .from("users")
       .select("role")
       .eq("id", session.user.id)
       .single();
-      
-    if (userError || !userData || userData.role !== "admin") {
-      throw new Error("You do not have permission to update services");
+
+    if (userError || !userData) {
+      return { error: "Failed to verify user permissions" };
     }
-    
-    // Update the service
+
+    // Check if user has admin or contributor role
+    if (userData.role !== "admin" && userData.role !== "contributor") {
+      return { error: "You don't have permission to update services" };
+    }
+
+    // Update service
     const { data, error } = await supabase
       .from("services")
-      .update({
-        title: formData.title,
-        description: formData.description,
-        price: formData.price,
-        is_featured: formData.is_featured,
-        updated_at: new Date().toISOString(),
-      })
+      .update(serviceData)
       .eq("id", id)
       .select()
       .single();
-    
+
     if (error) {
-      throw new Error(error.message);
+      console.error("Database error:", error);
+      return { error: "Failed to update service" };
     }
-    
+
     revalidatePath("/dashboard/services-management");
-    return { success: true, data };
-  } catch (error: any) {
-    return { success: false, error: error.message || "Failed to update service" };
+    revalidatePath(`/dashboard/services-management/${id}`);
+    return { success: "Service updated successfully", data };
+  } catch (error) {
+    console.error("Service update error:", error);
+    return { error: "An unexpected error occurred" };
   }
 }
 
-// Delete a service
 export async function deleteService(id: string) {
   try {
-    const supabase = createClient();
-    
-    // Verify user is authenticated
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      throw new Error("You must be logged in to delete a service");
+    if (!id) {
+      return { error: "Service ID is required" };
     }
-    
-    // Verify user is admin
+
+    // Initialize Supabase client
+    const supabase = await createClient();
+
+    // Get user session to verify permissions
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session) {
+      return { error: "You must be logged in to delete services" };
+    }
+
+    // Get user data to check role
     const { data: userData, error: userError } = await supabase
       .from("users")
       .select("role")
       .eq("id", session.user.id)
       .single();
-      
-    if (userError || !userData || userData.role !== "admin") {
-      throw new Error("You do not have permission to delete services");
+
+    if (userError || !userData) {
+      return { error: "Failed to verify user permissions" };
     }
-    
-    // Delete the service
-    const { error } = await supabase
-      .from("services")
-      .delete()
-      .eq("id", id);
-    
+
+    // Check if user has admin role (only admins can delete)
+    if (userData.role !== "admin") {
+      return { error: "You don't have permission to delete services" };
+    }
+
+    // Delete service
+    const { error } = await supabase.from("services").delete().eq("id", id);
+
     if (error) {
-      throw new Error(error.message);
+      console.error("Database error:", error);
+      return { error: "Failed to delete service" };
     }
-    
+
     revalidatePath("/dashboard/services-management");
-    return { success: true };
-  } catch (error: any) {
-    return { success: false, error: error.message || "Failed to delete service" };
+    return { success: "Service deleted successfully" };
+  } catch (error) {
+    console.error("Service deletion error:", error);
+    return { error: "An unexpected error occurred" };
+  }
+}
+
+export async function getServiceById(id: string) {
+  try {
+    if (!id) {
+      return { error: "Service ID is required" };
+    }
+
+    // Initialize Supabase client
+    const supabase = await createClient();
+
+    // Get service
+    const { data, error } = await supabase.from("services").select("*").eq("id", id).single();
+
+    if (error) {
+      console.error("Database error:", error);
+      return { error: "Failed to fetch service" };
+    }
+
+    return { data, error: null };
+  } catch (error) {
+    console.error("Service fetch error:", error);
+    return { error: "An unexpected error occurred" };
+  }
+}
+
+export async function getServices() {
+  try {
+    // Initialize Supabase client
+    const supabase = await createClient();
+
+    // Get all services
+    const { data, error } = await supabase
+      .from("services")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Database error:", error);
+      return { error: "Failed to fetch services" };
+    }
+
+    return { data, error: null };
+  } catch (error) {
+    console.error("Services fetch error:", error);
+    return { error: "An unexpected error occurred" };
   }
 } 
