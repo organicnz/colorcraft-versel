@@ -18,18 +18,39 @@ async function convertToFullUrls(paths: string[]): Promise<string[]> {
   });
 }
 
+// Helper function to normalize portfolio project data
+function normalizePortfolioProject(project: any): PortfolioProject {
+  return {
+    ...project,
+    before_images: Array.isArray(project.before_images) ? project.before_images : [],
+    after_images: Array.isArray(project.after_images) ? project.after_images : [],
+    techniques: Array.isArray(project.techniques) ? project.techniques : [],
+    materials: Array.isArray(project.materials) ? project.materials : [],
+  };
+}
+
 export async function getPortfolioProjects(options?: {
   featuredOnly?: boolean;
   status?: 'published' | 'draft' | 'archived';
   limit?: number;
   offset?: number;
+  orderBy?: Array<{ column: string; ascending: boolean }>;
 }) {
   const supabase = await createClient();
 
   let query = supabase
     .from('portfolio')
-    .select('*')
-    .order('created_at', { ascending: false });
+    .select('*');
+
+  // Apply ordering
+  if (options?.orderBy && options.orderBy.length > 0) {
+    options.orderBy.forEach(order => {
+      query = query.order(order.column, { ascending: order.ascending });
+    });
+  } else {
+    // Default ordering
+    query = query.order('created_at', { ascending: false });
+  }
 
   if (options?.featuredOnly) {
     query = query.eq('is_featured', true);
@@ -61,8 +82,8 @@ export async function getPortfolioProjects(options?: {
     return [];
   }
 
-  // Images are already full URLs from the edge functions
-  return projects as PortfolioProject[];
+  // Normalize the projects to ensure arrays are properly parsed
+  return projects.map(normalizePortfolioProject);
 }
 
 export async function getPortfolioProject(id: string) {

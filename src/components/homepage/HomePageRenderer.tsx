@@ -11,24 +11,23 @@ export default function HomePageRenderer({
   classicHomepage,
   modernHomepage
 }: HomePageRendererProps) {
-  const [isModern, setIsModern] = useState<boolean | null>(null); // Start with null to prevent hydration mismatch
+  const [isModern, setIsModern] = useState(true); // Default to modern to match server
+  const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    // Only run on client side to prevent hydration mismatch
+    // Only run on client side after hydration
     const saved = localStorage.getItem('colorcraft-homepage-modern');
     if (saved === 'false') {
       setIsModern(false);
-    } else {
-      setIsModern(true); // Default to modern if no preference or if saved as 'true'
     }
+    // Set hydrated to true after the first render
+    setIsHydrated(true);
   }, []);
 
-  // During SSR and initial hydration, always render modern (default)
-  // This prevents hydration mismatches
-  if (isModern === null) {
-    return modernHomepage;
+  // Prevent flash by only showing user preference after hydration
+  if (!isHydrated) {
+    return modernHomepage; // Always show modern during SSR/initial hydration
   }
 
-  // After hydration, render based on user preference
   return isModern ? modernHomepage : classicHomepage;
 } 

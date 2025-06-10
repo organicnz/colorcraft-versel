@@ -5,36 +5,43 @@ import { useTheme } from "next-themes";
 
 export default function ThemeSwitcher() {
   const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, systemTheme } = useTheme();
 
   // useEffect only runs on the client, so we can safely show the UI
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // Show a stable placeholder during SSR/hydration
   if (!mounted) {
     return (
-      <button className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center">
-        <span className="sr-only">Toggle theme</span>
+      <button 
+        className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center opacity-50"
+        disabled
+        aria-label="Loading theme switcher"
+      >
+        <div className="w-4 h-4 rounded-full bg-slate-400 dark:bg-slate-400" />
       </button>
     );
   }
+
+  const currentTheme = theme === 'system' ? systemTheme : theme;
 
   return (
     <button
       aria-label="Toggle Dark Mode"
       type="button"
-      className="w-10 h-10 p-3 rounded-full bg-slate-200 hover:bg-slate-300 transition-colors"
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      className="w-10 h-10 p-3 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 transition-colors duration-200"
+      onClick={() => setTheme(currentTheme === "dark" ? "light" : "dark")}
     >
       {/* Sun icon */}
-      {theme === "dark" ? (
+      {currentTheme === "dark" ? (
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          className="w-4 h-4 text-yellow-600"
+          className="w-4 h-4 text-yellow-500"
         >
           <path
             strokeLinecap="round"
@@ -50,7 +57,7 @@ export default function ThemeSwitcher() {
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          className="w-4 h-4 text-slate-800"
+          className="w-4 h-4 text-slate-700 dark:text-slate-300"
         >
           <path
             strokeLinecap="round"

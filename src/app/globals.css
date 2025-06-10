@@ -27,6 +27,30 @@
 }
 
 @layer base {
+  /* Prevent flash of unstyled content */
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+
+  /* Prevent theme transition flash */
+  *,
+  *::before,
+  *::after {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
+  }
+
+  /* Re-enable transitions after initial load */
+  .transitions-enabled * {
+    -webkit-transition: all 0.2s ease-in-out !important;
+    -moz-transition: all 0.2s ease-in-out !important;
+    -o-transition: all 0.2s ease-in-out !important;
+    transition: all 0.2s ease-in-out !important;
+  }
+
   :root {
     /* Light theme variables */
     --foreground-rgb: 51, 51, 51;
@@ -83,6 +107,15 @@
       )
       fixed;
     min-height: 100vh;
+    /* Prevent flash during initial load */
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in-out forwards;
+  }
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
   }
 
   .card, .bg-card {
@@ -91,6 +124,15 @@
 
   .bg-muted {
     background-color: var(--bg-muted);
+  }
+
+  /* Prevent layout shift during hydration */
+  .no-flash {
+    visibility: hidden;
+  }
+
+  .no-flash.hydrated {
+    visibility: visible;
   }
 }
 

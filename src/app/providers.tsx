@@ -10,7 +10,12 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <ReactQueryProvider>
       <SupabaseProvider>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+                <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem={false}
+          disableTransitionOnChange={true}
+        >
           {children}
           <Toaster />
         </ThemeProvider>

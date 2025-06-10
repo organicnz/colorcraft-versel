@@ -72,6 +72,23 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <Script id="prevent-flash" strategy="beforeInteractive">
+          {`
+            // Prevent flash by ensuring consistent initial state
+            (function() {
+              // Check if theme preference exists
+              const theme = localStorage.getItem('theme') || 'light';
+              if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+              }
+              
+              // Enable transitions after initial paint
+              setTimeout(function() {
+                document.body.classList.add('transitions-enabled');
+              }, 100);
+            })();
+          `}
+        </Script>
         <Script id="remove-extension-attributes" strategy="afterInteractive">
           {`
             // Remove browser extension attributes like bis_skin_checked
@@ -199,7 +216,7 @@ export default function RootLayout({
                           <Link
                             key={link.href}
                             href={link.href}
-                            className="text-lg font-medium text-slate-700 hover:text-[#3ECF8E] transition-colors py-2 border-b border-slate-100 last:border-0"
+                            className="text-slate-700 hover:text-[#3ECF8E] text-base font-medium transition-colors"
                           >
                             {link.label}
                           </Link>
@@ -210,17 +227,25 @@ export default function RootLayout({
                       <div className="pt-4 border-t border-slate-200">
                         <PhoneDisplay
                           phoneNumber="(747) 755-7695"
-                          email="contact@colorandcraft.com"
                           variant="contact"
+                          showIcons={true}
                           className="mb-4"
                         />
 
+                        {/* Mobile CTA */}
                         <Button
-                          className="w-full bg-[#3ECF8E] hover:bg-[#38BC81] text-white font-semibold py-3 rounded-full"
+                          size="sm"
+                          className="w-full bg-[#3ECF8E] hover:bg-[#38BC81] text-white font-semibold py-2 rounded-full"
                           asChild
                         >
                           <Link href="/contact">Get Free Quote</Link>
                         </Button>
+                      </div>
+
+                      {/* Mobile Theme Switcher */}
+                      <div className="flex items-center justify-between pt-4 border-t border-slate-200">
+                        <span className="text-sm text-slate-600">Theme</span>
+                        <ThemeSwitcher />
                       </div>
                     </div>
                   </SheetContent>
@@ -229,12 +254,19 @@ export default function RootLayout({
             </div>
           </GlassNavbar>
 
-          <main className="flex-grow">{children}</main>
+          {/* Main Content */}
+          <main className="flex-1">
+            {children}
+          </main>
 
+          {/* Footer */}
           <Footer />
+
+          {/* Chat Widget */}
           <ChatWidget />
+
+          {/* Analytics */}
           <Analytics />
-          <Toaster />
         </Providers>
       </body>
     </html>

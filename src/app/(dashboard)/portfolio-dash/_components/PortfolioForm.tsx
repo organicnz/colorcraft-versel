@@ -127,22 +127,22 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
   const [isPublished, setIsPublished] = useState(initialData?.status === 'published');
   const router = useRouter();
 
-  const form = useForm<PortfolioFormData>({
+  const form = useForm({
     resolver: zodResolver(portfolioSchema),
     defaultValues: {
       id: initialData?.id || "",
       title: initialData?.title || "",
       brief_description: initialData?.brief_description || "",
       description: initialData?.description || "",
-      before_images: ensureArray(initialData?.before_images) || [],
-      after_images: ensureArray(initialData?.after_images) || [],
-      techniques: ensureArray(initialData?.techniques) || [],
-      materials: ensureArray(initialData?.materials) || [],
+      before_images: ensureArray(initialData?.before_images),
+      after_images: ensureArray(initialData?.after_images),
+      techniques: ensureArray(initialData?.techniques),
+      materials: ensureArray(initialData?.materials),
       completion_date: initialData?.completion_date || "",
       client_name: initialData?.client_name || "",
       client_testimonial: initialData?.client_testimonial || "",
       is_featured: initialData?.is_featured || false,
-      status: initialData?.status || 'draft',
+      status: (initialData?.status || 'draft') as 'published' | 'draft' | 'archived',
     },
   });
 

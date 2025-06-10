@@ -35,7 +35,6 @@ export default async function PortfolioManagementPage() {
   // Fetch all projects for admin, only published for non-admin
   const allProjects = await getPortfolioProjects({
     featuredOnly: false,
-    useAdmin: isAdmin, // Use admin access if user is admin
     orderBy: [
       { column: 'created_at', ascending: false }
     ]

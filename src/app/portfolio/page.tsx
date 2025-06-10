@@ -54,10 +54,25 @@ const scaleOnHover = {
 // Force dynamic rendering for authentication checks
 export const dynamic = 'force-dynamic';
 
+// Define the project type
+interface ProjectType {
+  id: string;
+  title: string;
+  description: string;
+  before_images: string[];
+  after_images: string[];
+  status: string;
+  is_featured: boolean;
+  category: string;
+  completion_time: string;
+  techniques: string[];
+  price_range: string;
+}
+
 export default function PortfolioPage() {
   const [isLoading, setIsLoading] = useState(true);
-  const [projects, setProjects] = useState([]);
-  const [displayedProjects, setDisplayedProjects] = useState([]);
+  const [projects, setProjects] = useState<ProjectType[]>([]);
+  const [displayedProjects, setDisplayedProjects] = useState<ProjectType[]>([]);
   const [filterType, setFilterType] = useState("all");
   const [isAdmin, setIsAdmin] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -65,7 +80,7 @@ export default function PortfolioPage() {
   const projectsPerPage = 6; // Show 6 projects (3 columns x 2 rows)
 
   // Sample data with ultra-modern structure
-  const sampleProjects = [
+  const sampleProjects: ProjectType[] = [
     {
       id: 'sample-1',
       title: 'Victorian Dresser Revival',
