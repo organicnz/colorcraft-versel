@@ -479,9 +479,9 @@ export default function ModernHomePage({
                         </div>
 
                         <p className="text-slate-600 text-sm line-clamp-3 leading-relaxed">
-                          {project.description?.length > 80
-                            ? `${project.description.substring(0, 80)}...`
-                            : project.description || "Professional furniture transformation with attention to detail and premium materials."
+                          {project.description?.length > 45
+                            ? `${project.description.substring(0, 45)}...`
+                            : project.description || "Expert furniture transformation with premium materials."
                           }
                         </p>
                       </div>
@@ -567,8 +567,8 @@ export default function ModernHomePage({
                         </h3>
 
                         <p className="text-slate-600 leading-relaxed text-sm flex-1">
-                          {service.description.length > 65
-                            ? `${service.description.substring(0, 65)}...`
+                          {service.description.length > 50
+                            ? `${service.description.substring(0, 50)}...`
                             : service.description
                           }
                         </p>

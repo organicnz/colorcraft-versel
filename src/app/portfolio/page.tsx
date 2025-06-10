@@ -84,20 +84,20 @@ export default function PortfolioPage() {
     {
       id: 'sample-1',
       title: 'Victorian Dresser Revival',
-      description: 'A stunning transformation of a 19th-century Victorian dresser using premium chalk paint and modern hardware, bringing timeless elegance to contemporary spaces.',
+      description: 'Elegant restoration with chalk paint and brass accents.',
       before_images: ['https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80'],
       after_images: ['https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80'],
       status: 'published',
       is_featured: true,
       category: 'restoration',
       completion_time: '3 weeks',
-      techniques: ['Chalk Paint', 'Hardware Upgrade', 'Distressing'],
+      techniques: ['Chalk Paint', 'Distressing', 'Hardware Upgrade'],
       price_range: '$800-1200'
     },
     {
       id: 'sample-2',
       title: 'Modern Coffee Table Makeover',
-      description: 'Complete transformation of a dated coffee table into a sleek modern centerpiece featuring geometric patterns and premium finishes.',
+      description: 'Sleek transformation with geometric design.',
       before_images: ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop&auto=format&q=80'],
       after_images: ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop&auto=format&q=80'],
       status: 'published',
@@ -110,7 +110,7 @@ export default function PortfolioPage() {
     {
       id: 'sample-3',
       title: 'Vintage Chair Restoration',
-      description: 'Meticulous restoration of mid-century modern chair with new upholstery, refinished wood, and structural reinforcement for lasting beauty.',
+      description: 'Mid-century restoration with new upholstery.',
       before_images: ['https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=800&h=600&fit=crop&auto=format&q=80'],
       after_images: ['https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=800&h=600&fit=crop&auto=format&q=80'],
       status: 'published',
@@ -123,7 +123,7 @@ export default function PortfolioPage() {
     {
       id: 'sample-4',
       title: 'Industrial Bookshelf Conversion',
-      description: 'Converting old wooden shelving into an industrial-style bookshelf with metal pipe framework and weathered finish.',
+      description: 'Industrial-style with metal pipe framework.',
       before_images: ['https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&h=600&fit=crop&auto=format&q=80'],
       after_images: ['https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&h=600&fit=crop&auto=format&q=80'],
       status: 'published',
@@ -136,7 +136,7 @@ export default function PortfolioPage() {
     {
       id: 'sample-5',
       title: 'Antique Wardrobe Restoration',
-      description: 'Comprehensive restoration of a French antique wardrobe with authentic period finishes and hardware restoration.',
+      description: 'Authentic French period restoration.',
       before_images: ['https://images.unsplash.com/photo-1562113530-57ba4cea7cb3?w=800&h=600&fit=crop&auto=format&q=80'],
       after_images: ['https://images.unsplash.com/photo-1562113530-57ba4cea7cb3?w=800&h=600&fit=crop&auto=format&q=80'],
       status: 'published',
@@ -149,7 +149,7 @@ export default function PortfolioPage() {
     {
       id: 'sample-6',
       title: 'Contemporary Side Table',
-      description: 'Modern transformation of a traditional side table with sleek lines, minimalist design, and high-gloss finish.',
+      description: 'Minimalist design with high-gloss finish.',
       before_images: ['https://images.unsplash.com/photo-1549497538-303791108f95?w=800&h=600&fit=crop&auto=format&q=80'],
       after_images: ['https://images.unsplash.com/photo-1549497538-303791108f95?w=800&h=600&fit=crop&auto=format&q=80'],
       status: 'published',
@@ -162,7 +162,7 @@ export default function PortfolioPage() {
     {
       id: 'sample-7',
       title: 'Rustic Dining Set Revival',
-      description: 'Complete makeover of a rustic dining set with weathered wood finish and modern comfort updates.',
+      description: 'Weathered wood finish with comfort updates.',
       before_images: ['https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop&auto=format&q=80'],
       after_images: ['https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop&auto=format&q=80'],
       status: 'published',
@@ -175,7 +175,7 @@ export default function PortfolioPage() {
     {
       id: 'sample-8',
       title: 'Modern Storage Cabinet',
-      description: 'Sleek storage solution with contemporary design, hidden compartments, and premium materials.',
+      description: 'Contemporary design with hidden compartments.',
       before_images: ['https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80'],
       after_images: ['https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80'],
       status: 'published',
