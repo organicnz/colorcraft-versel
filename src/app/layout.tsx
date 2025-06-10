@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'
 import { Toaster } from "@/components/ui/toaster"
 import { Providers } from './providers'
 import { Analytics } from "@vercel/analytics/react"
+import ChatWidget from "@/components/chat/ChatWidget"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import ThemeSwitcher from "@/components/shared/ThemeSwitcher"
@@ -231,6 +232,7 @@ export default function RootLayout({
           <main className="flex-grow">{children}</main>
 
           <Footer />
+          <ChatWidget />
           <Analytics />
           <Toaster />
         </Providers>

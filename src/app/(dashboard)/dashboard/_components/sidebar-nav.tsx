@@ -96,6 +96,12 @@ export const sidebarNavItems = [
     icon: MessageSquare,
   },
   {
+    title: "Chat Support",
+    href: "/dashboard/chat",
+    icon: MessageSquare,
+    admin: true
+  },
+  {
     title: "Content",
     href: "/dashboard/content",
     icon: BookOpen,
