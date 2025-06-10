@@ -9,30 +9,54 @@ export default function ThemeSwitcher() {
 
   // useEffect only runs on the client, so we can safely show the UI
   useEffect(() => {
-    setMounted(true);
+    // Add a small delay to ensure everything is hydrated
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, []);
 
-  // Show a stable placeholder during SSR/hydration
+  // Show a stable placeholder during SSR/hydration - more specific styling to prevent flash
   if (!mounted) {
     return (
-      <button 
-        className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center opacity-50"
+      <button
+        className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center opacity-70"
         disabled
         aria-label="Loading theme switcher"
+        style={{
+          visibility: 'visible',
+          pointerEvents: 'none',
+          transition: 'none'
+        }}
       >
-        <div className="w-4 h-4 rounded-full bg-slate-400 dark:bg-slate-400" />
+        <div className="w-4 h-4 rounded-full bg-slate-400" />
       </button>
     );
   }
 
   const currentTheme = theme === 'system' ? systemTheme : theme;
 
+  const handleThemeToggle = () => {
+    // Temporarily disable transitions during theme change
+    document.documentElement.style.setProperty('--theme-switching', 'true');
+
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+
+    // Re-enable transitions after a short delay
+    setTimeout(() => {
+      document.documentElement.style.removeProperty('--theme-switching');
+    }, 150);
+  };
+
   return (
     <button
       aria-label="Toggle Dark Mode"
       type="button"
       className="w-10 h-10 p-3 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 transition-colors duration-200"
-      onClick={() => setTheme(currentTheme === "dark" ? "light" : "dark")}
+      onClick={handleThemeToggle}
+      style={{ transition: 'background-color 0.2s ease-in-out' }}
     >
       {/* Sun icon */}
       {currentTheme === "dark" ? (

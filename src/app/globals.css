@@ -27,12 +27,12 @@
 }
 
 @layer base {
-  /* ULTIMATE ANTI-FLASH SYSTEM */
+  /* ULTIMATE ANTI-FLASH SYSTEM - Updated for multiple blink prevention */
   
-  /* Block ALL animations and transitions until page is ready */
-  *,
-  *::before,
-  *::after {
+  /* Block ALL animations and transitions until page is ready - More aggressive */
+  html:not(.transitions-enabled) *,
+  html:not(.transitions-enabled) *::before,
+  html:not(.transitions-enabled) *::after {
     -webkit-transition: none !important;
     -moz-transition: none !important;
     -o-transition: none !important;
@@ -50,31 +50,31 @@
   }
 
   /* Block all possible animation sources */
-  [data-framer-motion-initial="true"],
-  [data-framer-motion] {
+  html:not(.transitions-enabled) [data-framer-motion-initial="true"],
+  html:not(.transitions-enabled) [data-framer-motion] {
     transform: none !important;
     opacity: 1 !important;
     animation: none !important;
     transition: none !important;
   }
 
-  /* Block Tailwind animations specifically */
-  [class*="animate-"],
-  [class*="transition-"],
-  .motion-reduce\:animate-none,
-  .motion-reduce\:transition-none {
+  /* Block Tailwind animations specifically until ready */
+  html:not(.transitions-enabled) [class*="animate-"],
+  html:not(.transitions-enabled) [class*="transition-"],
+  html:not(.transitions-enabled) .motion-reduce\:animate-none,
+  html:not(.transitions-enabled) .motion-reduce\:transition-none {
     animation: none !important;
     transition: none !important;
   }
 
   /* Prevent layout shifts */
-  .grid,
-  .flex {
+  html:not(.transitions-enabled) .grid,
+  html:not(.transitions-enabled) .flex {
     animation: none !important;
     transition: none !important;
   }
 
-  /* Hide everything until ready */
+  /* Hide everything until ready - no exceptions */
   html {
     background: white !important;
   }
@@ -83,16 +83,8 @@
     background: #0f172a !important;
   }
 
-  body {
-    color: var(--text-main);
-    background: linear-gradient(
-        to bottom,
-        rgb(var(--background-start-rgb)),
-        rgb(var(--background-end-rgb))
-      )
-      fixed;
-    min-height: 100vh;
-    /* CRITICAL: Hide body completely until ready */
+  /* CRITICAL: Hide body completely until ready - more aggressive */
+  body:not(.loaded) {
     visibility: hidden !important;
     opacity: 0 !important;
   }
@@ -101,7 +93,16 @@
   body.loaded {
     visibility: visible !important;
     opacity: 1 !important;
-    transition: opacity 0.2s ease-in-out !important;
+  }
+
+  /* Only enable transitions after everything is loaded and ready */
+  .transitions-enabled *,
+  .transitions-enabled *::before,
+  .transitions-enabled *::after {
+    -webkit-transition: all 0.15s ease-in-out;
+    -moz-transition: all 0.15s ease-in-out;
+    -o-transition: all 0.15s ease-in-out;
+    transition: all 0.15s ease-in-out;
   }
 
   /* Theme variables */
@@ -178,16 +179,6 @@
     --primary-light: hsl(210, 20%, 88%);
   }
 
-  /* Only enable transitions after everything is loaded */
-  .transitions-enabled *,
-  .transitions-enabled *::before,
-  .transitions-enabled *::after {
-    -webkit-transition: all 0.15s ease-in-out;
-    -moz-transition: all 0.15s ease-in-out;
-    -o-transition: all 0.15s ease-in-out;
-    transition: all 0.15s ease-in-out;
-  }
-
   /* Smooth theme transitions only when enabled */
   .transitions-enabled .dark\:bg-slate-900,
   .transitions-enabled .bg-white,
@@ -203,132 +194,6 @@
     transition: all 0.15s ease-in-out;
   }
 
-  /* Ultra-aggressive anti-flash rules */
-  *,
-  *::before,
-  *::after {
-    -webkit-transition: none !important;
-    -moz-transition: none !important;
-    -o-transition: none !important;
-    transition: none !important;
-    animation: none !important;
-    -webkit-animation: none !important;
-    -moz-animation: none !important;
-    -o-animation: none !important;
-    animation-duration: 0s !important;
-    animation-delay: 0s !important;
-    -webkit-animation-duration: 0s !important;
-    -webkit-animation-delay: 0s !important;
-    transform: none !important;
-    -webkit-transform: none !important;
-  }
-
-  /* Block all possible animation sources */
-  [data-framer-motion-initial="true"],
-  [data-framer-motion] {
-    transform: none !important;
-    opacity: 1 !important;
-    animation: none !important;
-    transition: none !important;
-  }
-
-  /* Disable CSS Grid/Flexbox animations */
-  .grid,
-  .flex {
-    animation: none !important;
-    transition: none !important;
-  }
-
-  /* Prevent flash of unstyled content */
-  html {
-    -webkit-tap-highlight-color: transparent;
-    scroll-behavior: smooth;
-  }
-
-  /* Prevent theme transition flash */
-  *,
-  *::before,
-  *::after {
-    -webkit-transition: none !important;
-    -moz-transition: none !important;
-    -o-transition: none !important;
-    transition: none !important;
-    animation-duration: 0s !important;
-    animation-delay: 0s !important;
-    -webkit-animation-duration: 0s !important;
-    -webkit-animation-delay: 0s !important;
-  }
-
-  /* Block framer-motion animations during initial load */
-  [data-framer-motion-initial="true"] {
-    transform: none !important;
-    opacity: 1 !important;
-  }
-
-  /* Re-enable transitions after initial load */
-  .transitions-enabled * {
-    -webkit-transition: all 0.2s ease-in-out !important;
-    -moz-transition: all 0.2s ease-in-out !important;
-    -o-transition: all 0.2s ease-in-out !important;
-    transition: all 0.2s ease-in-out !important;
-    animation-duration: initial !important;
-    animation-delay: initial !important;
-    -webkit-animation-duration: initial !important;
-    -webkit-animation-delay: initial !important;
-  }
-
-  /* Allow specific animations after transitions are enabled */
-  .transitions-enabled [data-framer-motion-initial="true"] {
-    transform: initial !important;
-    opacity: initial !important;
-  }
-
-  :root {
-    /* Light theme variables */
-    --foreground-rgb: 51, 51, 51;
-    --background-start-rgb: 249, 250, 252;
-    --background-end-rgb: 240, 242, 245;
-    --primary: #0F72C1;
-    --primary-light: #1a85d9;
-    --primary-dark: #0c5ea0;
-    --secondary: #E4A04C;
-    --secondary-light: #f4b871;
-    --secondary-dark: #c4842c;
-    --accent: #2A9D8F;
-    --accent-light: #34c2b0;
-    --accent-dark: #1c7268;
-    --border: #E8ECF2;
-    --text-main: #333333;
-    --text-secondary: #666666;
-    --bg-card: #FFFFFF;
-    --bg-muted: #F5F7FA;
-
-    /* Glassmorphism variables */
-    --glass-border: rgba(255, 255, 255, 0.2);
-    --glass-bg: rgba(255, 255, 255, 0.1);
-    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    --glass-backdrop-blur: 16px;
-  }
-
-  .dark {
-    --foreground-rgb: 229, 231, 235;
-    --background-start-rgb: 17, 24, 39;
-    --background-end-rgb: 11, 15, 25;
-    --primary: #3B82F6;
-    --primary-light: #60A5FA;
-    --primary-dark: #2563EB;
-    --border: #1F2937;
-    --text-main: #F3F4F6;
-    --text-secondary: #D1D5DB;
-    --bg-card: #111827;
-    --bg-muted: #1F2937;
-
-    /* Dark theme glassmorphism variables */
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --glass-bg: rgba(255, 255, 255, 0.05);
-    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-  }
-
   /* Apply theme variables to elements */
   body {
     color: var(--text-main);
@@ -339,16 +204,6 @@
       )
       fixed;
     min-height: 100vh;
-    /* Prevent flash during initial load - controlled by script */
-    opacity: 0 !important;
-    transition: none !important;
-    animation: none !important;
-  }
-
-  /* Body is shown after initial load completes */
-  body.loaded {
-    opacity: 1 !important;
-    transition: opacity 0.3s ease-in-out !important;
   }
 
   .card, .bg-card {
@@ -367,6 +222,8 @@
   .no-flash.hydrated {
     visibility: visible;
   }
+
+  /* Remove the old duplicate rules that were causing conflicts */
 }
 
 @layer utilities {

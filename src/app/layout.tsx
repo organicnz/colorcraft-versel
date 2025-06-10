@@ -74,79 +74,163 @@ export default function RootLayout({
       <head>
         <Script id="prevent-flash" strategy="beforeInteractive">
           {`
-            // ULTIMATE ANTI-FLASH PREVENTION SYSTEM
+            // ENHANCED ANTI-FLASH PREVENTION SYSTEM FOR NEXT-THEMES
             (function() {
-              // 1. Immediately handle theme detection
-              const theme = localStorage.getItem('theme') || 'light';
-              if (theme === 'dark') {
-                document.documentElement.classList.add('dark');
-              }
+              try {
+                // 1. Use the correct localStorage key that next-themes uses
+                const STORAGE_KEY = 'theme'; // next-themes default key
 
-              // 2. Add additional blocking styles for extra protection
-              const style = document.createElement('style');
-              style.id = 'flash-prevention-extra';
-              style.innerHTML = \`
-                /* Extra flash prevention */
-                body {
-                  visibility: hidden !important;
-                  opacity: 0 !important;
-                }
-                * {
-                  transition: none !important;
-                  animation: none !important;
-                }
-              \`;
-              document.head.appendChild(style);
+                // 2. Get the theme from localStorage or use default
+                const storedTheme = localStorage.getItem(STORAGE_KEY);
+                const defaultTheme = 'light'; // matches ThemeProvider defaultTheme
 
-              // 3. Function to safely show the page
-              function showPage() {
-                try {
-                  // Remove extra blocking styles
-                  const extraStyle = document.getElementById('flash-prevention-extra');
-                  if (extraStyle) {
-                    extraStyle.remove();
+                // 3. Determine the theme to apply
+                let themeToApply = defaultTheme;
+
+                if (storedTheme) {
+                  // If system theme is stored, check system preference
+                  if (storedTheme === 'system') {
+                    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                      themeToApply = 'dark';
+                    } else {
+                      themeToApply = 'light';
+                    }
+                  } else {
+                    themeToApply = storedTheme;
                   }
-
-                  // Add loaded class to enable transitions and show page
-                  document.body.classList.add('loaded', 'transitions-enabled');
-
-                  console.log('✅ Page loaded and visible - anti-flash complete');
-                } catch (error) {
-                  console.error('Error showing page:', error);
-                  // Emergency fallback
-                  document.body.style.visibility = 'visible';
-                  document.body.style.opacity = '1';
                 }
-              }
 
-              // 4. Multiple triggers with aggressive timing
-              let hasShown = false;
-              function triggerShow() {
-                if (hasShown) return;
-                hasShown = true;
-                showPage();
-              }
+                // 4. Apply the theme to the document immediately
+                if (themeToApply === 'dark') {
+                  document.documentElement.classList.add('dark');
+                  document.documentElement.style.colorScheme = 'dark';
+                } else {
+                  document.documentElement.classList.remove('dark');
+                  document.documentElement.style.colorScheme = 'light';
+                }
 
-              // Immediate check
-              if (document.readyState === 'complete') {
-                setTimeout(triggerShow, 10);
-              }
+                // 5. AGGRESSIVE anti-flash: Hide everything until fully loaded
+                const style = document.createElement('style');
+                style.id = 'anti-flash-style';
+                style.innerHTML = \`
+                  /* Ultra-aggressive flash Prevention */
+                  html, body {
+                    visibility: hidden !important;
+                    opacity: 0 !important;
+                  }
+                  *, *::before, *::after {
+                    transition: none !important;
+                    animation: none !important;
+                    animation-duration: 0s !important;
+                    animation-delay: 0s !important;
+                    -webkit-transition: none !important;
+                    -moz-transition: none !important;
+                    -o-transition: none !important;
+                  }
+                  /* Block all possible sources of animation */
+                  [data-framer-motion-initial],
+                  [data-framer-motion] {
+                    transform: none !important;
+                    opacity: 1 !important;
+                  }
+                  .animate-*, .transition-* {
+                    animation: none !important;
+                    transition: none !important;
+                  }
+                \`;
+                document.head.appendChild(style);
 
-              // Multiple event listeners
-              document.addEventListener('DOMContentLoaded', () => setTimeout(triggerShow, 20));
-              window.addEventListener('load', () => setTimeout(triggerShow, 30));
-              
-              // Progressive fallbacks
-              setTimeout(triggerShow, 500);  // 0.5s fallback
-              setTimeout(triggerShow, 1000); // 1s fallback
-              
-              // Emergency fallback
-              setTimeout(() => {
+                // 6. Function to reveal the page - only once
+                let hasRevealed = false;
+                function revealPage() {
+                  if (hasRevealed) return;
+                  hasRevealed = true;
+
+                  try {
+                    const antiFlashStyle = document.getElementById('anti-flash-style');
+                    if (antiFlashStyle) {
+                      antiFlashStyle.remove();
+                    }
+
+                    // Add classes to enable transitions and show page
+                    document.documentElement.style.visibility = 'visible';
+                    document.documentElement.style.opacity = '1';
+                    document.body.style.visibility = 'visible';
+                    document.body.style.opacity = '1';
+                    document.body.classList.add('loaded', 'transitions-enabled');
+
+                    console.log('✅ Anti-flash complete - page revealed');
+                  } catch (error) {
+                    console.error('Error revealing page:', error);
+                    // Emergency fallback
+                    document.documentElement.style.visibility = 'visible';
+                    document.documentElement.style.opacity = '1';
+                    document.body.style.visibility = 'visible';
+                    document.body.style.opacity = '1';
+                  }
+                }
+
+                // 7. Wait for React hydration to complete before revealing
+                let hydrationComplete = false;
+                let domReady = false;
+
+                function checkReveal() {
+                  // Only reveal after both DOM is ready AND a delay for hydration
+                  if (domReady && !hasRevealed) {
+                    setTimeout(revealPage, 150); // Small delay to ensure hydration is complete
+                  }
+                }
+
+                // Wait for DOM to be ready
+                if (document.readyState === 'complete') {
+                  domReady = true;
+                  checkReveal();
+                } else if (document.readyState === 'interactive') {
+                  domReady = true;
+                  checkReveal();
+                } else {
+                  document.addEventListener('DOMContentLoaded', () => {
+                    domReady = true;
+                    checkReveal();
+                  });
+                }
+
+                // Additional safety nets
+                window.addEventListener('load', () => {
+                  setTimeout(() => {
+                    if (!hasRevealed) revealPage();
+                  }, 100);
+                });
+
+                // Progressive fallbacks with longer delays to prevent multiple flashes
+                setTimeout(() => {
+                  if (!hasRevealed) revealPage();
+                }, 800);  // 0.8s fallback
+
+                setTimeout(() => {
+                  if (!hasRevealed) revealPage();
+                }, 1500); // 1.5s fallback
+
+                // Emergency fallback
+                setTimeout(() => {
+                  if (!hasRevealed) {
+                    document.documentElement.style.visibility = 'visible';
+                    document.documentElement.style.opacity = '1';
+                    document.body.style.visibility = 'visible';
+                    document.body.style.opacity = '1';
+                    document.body.classList.add('loaded', 'transitions-enabled');
+                    console.log('🚨 Emergency fallback activated');
+                  }
+                }, 3000);
+
+              } catch (error) {
+                console.error('Anti-flash script error:', error);
+                // Emergency fallback
+                document.documentElement.style.visibility = 'visible';
+                document.documentElement.style.opacity = '1';
                 document.body.style.visibility = 'visible';
                 document.body.style.opacity = '1';
-                document.body.classList.add('loaded', 'transitions-enabled');
-                console.log('🚨 Emergency fallback activated');
-              }, 2000);
+              }
             })();
           `}
         </Script>
