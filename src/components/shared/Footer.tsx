@@ -1,50 +1,53 @@
 "use client";
 
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { Sparkles, Phone, Mail, MapPin, ArrowRight, Heart, Palette } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import React from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  ArrowRight,
+  Sparkles,
+  Palette,
+  Phone,
+  Mail,
+  MapPin,
+  Heart,
+} from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* Background Effects */}
+    <footer className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-black overflow-hidden">
+      {/* Background Elements */}
       <div className="absolute inset-0">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-violet-500/10 to-purple-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 rounded-full blur-3xl" />
-      </div>
-
-      {/* Modern Grid Pattern */}
-      <div className="absolute inset-0 opacity-[0.02]">
-        <div className="h-full w-full bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:4rem_4rem]" />
+        <div className="absolute top-20 left-20 w-40 h-40 bg-gradient-to-br from-violet-600/10 to-purple-600/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-20 w-60 h-60 bg-gradient-to-br from-blue-600/10 to-cyan-600/10 rounded-full blur-3xl" />
       </div>
 
       <div className="relative">
         {/* Newsletter Section */}
         <div className="border-b border-white/10">
-          <div className="container mx-auto py-16 px-6">
+          <div className="container mx-auto py-20 px-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               className="max-w-4xl mx-auto text-center"
             >
-              <div className="space-y-6">
-                <div className="flex items-center justify-center gap-3 mb-6">
+              <div className="space-y-8">
+                <div className="flex items-center justify-center gap-3 mb-8">
                   <Sparkles className="w-8 h-8 text-violet-400" />
-                  <h3 className="text-3xl font-bold bg-gradient-to-r from-white to-slate-200 bg-clip-text text-transparent">
+                  <h3 className="text-4xl font-bold bg-gradient-to-r from-white to-slate-200 bg-clip-text text-transparent">
                     Stay Inspired
                   </h3>
                   <Sparkles className="w-8 h-8 text-violet-400" />
                 </div>
 
-                <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+                <p className="text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
                   Get the latest design trends, transformation tips, and exclusive offers delivered to your inbox.
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto mt-8">
                   <Input
                     type="email"
                     placeholder="Enter your email"
@@ -61,8 +64,8 @@ export default function Footer() {
         </div>
 
         {/* Main Footer Content */}
-        <div className="container mx-auto py-16 px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div className="container mx-auto py-20 px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
 
             {/* Company Info */}
             <motion.div
@@ -72,7 +75,7 @@ export default function Footer() {
               transition={{ delay: 0.1 }}
               className="lg:col-span-2"
             >
-              <div className="space-y-6">
+              <div className="space-y-8">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-600 to-purple-600 p-3 shadow-lg">
                     <Palette className="w-6 h-6 text-white" />
@@ -82,29 +85,29 @@ export default function Footer() {
                   </h4>
                 </div>
 
-                <p className="text-slate-300 leading-relaxed max-w-md">
+                <p className="text-slate-300 leading-relaxed max-w-md text-lg">
                   Transforming furniture with expert craftsmanship and artistic vision. We breathe new life into treasured pieces through premium painting, restoration, and custom finishes.
                 </p>
 
                 {/* Contact Info */}
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <div className="flex items-center gap-3 text-slate-300">
                     <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
                       <Phone className="w-4 h-4" />
                     </div>
-                    <span>+1 747 755 7695</span>
+                    <span className="text-lg">+1 747 755 7695</span>
                   </div>
                   <div className="flex items-center gap-3 text-slate-300">
                     <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
                       <Mail className="w-4 h-4" />
                     </div>
-                    <span>hello@colorcraft.com</span>
+                    <span className="text-lg">hello@colorcraft.com</span>
                   </div>
                   <div className="flex items-center gap-3 text-slate-300">
                     <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
                       <MapPin className="w-4 h-4" />
                     </div>
-                    <span>Creative District, CA</span>
+                    <span className="text-lg">Creative District, CA</span>
                   </div>
                 </div>
               </div>
@@ -117,8 +120,8 @@ export default function Footer() {
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
             >
-              <h5 className="text-white font-semibold mb-6 text-lg">Services</h5>
-              <ul className="space-y-3">
+              <h5 className="text-white font-semibold mb-8 text-xl">Services</h5>
+              <ul className="space-y-4">
                 {[
                   { label: "Custom Painting", href: "/services/custom-painting" },
                   { label: "Furniture Restoration", href: "/services/restoration" },
@@ -129,7 +132,7 @@ export default function Footer() {
                   <li key={index}>
                     <Link
                       href={item.href}
-                      className="text-slate-300 hover:text-white transition-colors duration-300 group flex items-center gap-2"
+                      className="text-slate-300 hover:text-white transition-colors duration-300 group flex items-center gap-2 text-lg"
                     >
                       <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                       <span className="group-hover:translate-x-1 transition-transform duration-300">
@@ -148,8 +151,8 @@ export default function Footer() {
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
             >
-              <h5 className="text-white font-semibold mb-6 text-lg">Company</h5>
-              <ul className="space-y-3">
+              <h5 className="text-white font-semibold mb-8 text-xl">Company</h5>
+              <ul className="space-y-4">
                 {[
                   { label: "Our Story", href: "/about" },
                   { label: "Our Team", href: "/about#team" },
@@ -160,7 +163,7 @@ export default function Footer() {
                   <li key={index}>
                     <Link
                       href={item.href}
-                      className="text-slate-300 hover:text-white transition-colors duration-300 group flex items-center gap-2"
+                      className="text-slate-300 hover:text-white transition-colors duration-300 group flex items-center gap-2 text-lg"
                     >
                       <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                       <span className="group-hover:translate-x-1 transition-transform duration-300">
@@ -179,12 +182,12 @@ export default function Footer() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.4 }}
-            className="mt-12 pt-8 border-t border-white/10"
+            className="mt-16 pt-12 border-t border-white/10"
           >
-            <div className="flex flex-col items-center space-y-6">
+            <div className="flex flex-col items-center space-y-8">
               <div className="text-center">
-                <p className="text-slate-300 mb-4">Follow our journey and get inspired</p>
-                <div className="flex space-x-4">
+                <p className="text-slate-300 mb-6 text-xl">Follow our journey and get inspired</p>
+                <div className="flex space-x-6">
                   {[
                     {
                       name: "Facebook",
@@ -216,12 +219,12 @@ export default function Footer() {
                       href={social.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`group relative w-12 h-12 rounded-2xl bg-gradient-to-br ${social.gradient} p-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110`}
+                      className={`group relative w-14 h-14 rounded-2xl bg-gradient-to-br ${social.gradient} p-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110`}
                       aria-label={`Follow us on ${social.name}`}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="w-6 h-6 text-white"
+                        className="w-8 h-8 text-white"
                         fill="currentColor"
                         viewBox="0 0 24 24"
                       >
@@ -238,49 +241,48 @@ export default function Footer() {
 
         {/* Copyright */}
         <div className="border-t border-white/10">
-          <div className="container mx-auto py-8 px-6">
+          <div className="container mx-auto py-10 px-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0"
+              className="flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0"
             >
-              <div className="flex items-center gap-2 text-slate-400">
+              <div className="flex items-center gap-2 text-slate-400 text-lg">
                 <span>&copy; {new Date().getFullYear()} Color & Craft.</span>
                 <span>Made with</span>
                 <Heart className="w-4 h-4 text-red-400 fill-current" />
                 <span>in California</span>
               </div>
 
-              <div className="flex space-x-6">
+              <div className="flex space-x-8">
                 {[
                   { label: "Privacy Policy", href: "/privacy" },
                   { label: "Terms of Service", href: "/terms" },
                   { label: "Cookie Policy", href: "/cookies" },
-                ].map((link) => (
+                ].map((item, index) => (
                   <Link
-                    key={link.label}
-                    href={link.href}
-                    className="text-slate-400 hover:text-white text-sm transition-colors duration-300"
+                    key={index}
+                    href={item.href}
+                    className="text-slate-400 hover:text-white transition-colors duration-300 text-lg"
                   >
-                    {link.label}
+                    {item.label}
                   </Link>
                 ))}
               </div>
             </motion.div>
 
+            {/* Additional Company Info */}
             <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="mt-6 pt-6 border-t border-white/5"
+              className="mt-8 pt-6 border-t border-white/10 text-center"
             >
-              <p className="text-xs text-slate-500 text-center max-w-4xl mx-auto leading-relaxed">
+              <p className="text-slate-500 text-sm leading-relaxed max-w-2xl mx-auto">
                 Color & Craft is committed to providing high-quality furniture painting and restoration services.
-                Our expert craftspeople use premium materials and time-tested techniques to transform your cherished
-                furniture pieces into stunning works of art. Every project is a testament to our dedication to
-                excellence and artistic vision.
+                Our team of skilled artisans brings your vision to life with attention to detail and superior craftsmanship.
               </p>
             </motion.div>
           </div>
