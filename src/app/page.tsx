@@ -8,6 +8,8 @@ import { GlassPanel, GlassCard } from "@/components/ui/glass-card";
 import { ArrowRight, Award, Palette, Send, Settings, Sparkles } from "lucide-react";
 import { getPortfolioProjects } from "@/services/portfolio.service";
 import ClientHomePage from "./client-home-page";
+import ModernHomePage from "@/components/homepage/ModernHomePage";
+import HomepageSwitcher from "@/components/homepage/HomepageSwitcher";
 
 // Force dynamic rendering for each request to enable randomization
 export const dynamic = 'force-dynamic';
@@ -107,12 +109,29 @@ export default async function Home() {
     },
   ];
 
-  return (
+  // Classic homepage component
+  const classicHomepage = (
     <ClientHomePage
       featuredProjects={projectsToShow}
       services={services}
       testimonials={testimonials}
       properties={[]}
+    />
+  );
+
+  // Modern homepage component
+  const modernHomepage = (
+    <ModernHomePage
+      featuredProjects={projectsToShow}
+      services={services}
+      testimonials={testimonials}
+    />
+  );
+
+  return (
+    <HomepageSwitcher
+      classicHomepage={classicHomepage}
+      modernHomepage={modernHomepage}
     />
   );
 }
