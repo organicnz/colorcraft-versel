@@ -751,31 +751,15 @@ export default function ModernHomePage({
                 ))}
               </motion.div>
 
-              {/* Newsletter Signup with Modern Design */}
-              <motion.div variants={fadeInUp} className="max-w-2xl mx-auto">
-                <motion.div
-                  className="p-8 rounded-3xl bg-white/5 backdrop-blur-sm border border-white/10 shadow-lg"
-                  whileHover={{ scale: 1.02 }}
-                >
-                  <div className="text-center space-y-6">
-                    <h3 className="text-2xl font-bold text-white">Stay Inspired</h3>
-                    <p className="text-slate-300">Get design tips and transformation stories delivered to your inbox.</p>
-
-                    <form onSubmit={handleSubmit} className="flex gap-4">
-                      <Input
-                        type="email"
-                        placeholder="Enter your email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="flex-1 bg-white/10 border-white/20 text-white placeholder:text-slate-400 rounded-xl backdrop-blur-sm"
-                      />
-                      <motion.div whileHover={scaleOnHover} whileTap={{ scale: 0.95 }}>
-                        <Button type="submit" className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-8 rounded-xl shadow-lg">
-                          Subscribe
-                        </Button>
-                      </motion.div>
-                    </form>
-                  </div>
+              {/* Call to Action */}
+              <motion.div variants={fadeInUp} className="text-center">
+                <motion.div whileHover={scaleOnHover}>
+                  <Link href="/contact">
+                    <Button size="lg" className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-12 py-4 rounded-2xl shadow-xl">
+                      Start Your Transformation
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
                 </motion.div>
               </motion.div>
             </motion.div>
