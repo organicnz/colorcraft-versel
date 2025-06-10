@@ -74,56 +74,88 @@ export default function RootLayout({
       <head>
         <Script id="prevent-flash" strategy="beforeInteractive">
           {`
-            // Prevent flash by ensuring consistent initial state
+            // Ultra-aggressive anti-flash system
             (function() {
-              // Disable all animations and transitions immediately
+              // 1. Disable ALL animations and transitions immediately
               const style = document.createElement('style');
               style.innerHTML = \`
-                *, *::before, *::after {
+                *, *::before, *::after, [data-framer-motion], [class*="animate-"], [class*="transition-"] {
+                  animation: none !important;
+                  transition: none !important;
+                  transform: none !important;
+                  opacity: 1 !important;
                   animation-duration: 0s !important;
                   animation-delay: 0s !important;
                   transition-duration: 0s !important;
                   transition-delay: 0s !important;
                 }
+                body {
+                  opacity: 0 !important;
+                  visibility: hidden !important;
+                }
               \`;
+              style.setAttribute('id', 'flash-prevention');
               document.head.appendChild(style);
 
-              // Check if theme preference exists
+              // 2. Handle theme immediately
               const theme = localStorage.getItem('theme') || 'light';
               if (theme === 'dark') {
                 document.documentElement.classList.add('dark');
               }
 
-              // Function to enable animations and show page
-              function enableAnimations() {
-                // Remove the blocking styles
-                if (style.parentNode) {
-                  style.remove();
+              // 3. Comprehensive animation enabler
+              function enableAnimationsAndShow() {
+                try {
+                  // Remove blocking styles
+                  const blockingStyle = document.getElementById('flash-prevention');
+                  if (blockingStyle) {
+                    blockingStyle.remove();
+                  }
+
+                  // Add transition classes
+                  document.body.classList.add('transitions-enabled', 'loaded');
+
+                  // Show the body
+                  document.body.style.opacity = '1';
+                  document.body.style.visibility = 'visible';
+
+                  console.log('🎉 Page animations enabled and visible');
+                } catch (error) {
+                  console.error('Error enabling animations:', error);
+                  // Fallback: show page anyway
+                  document.body.style.opacity = '1';
+                  document.body.style.visibility = 'visible';
                 }
-                
-                // Add transitions-enabled class
-                document.body.classList.add('transitions-enabled');
-                
-                // Show the body
-                document.body.classList.add('loaded');
               }
 
-              // Try multiple approaches to ensure animations are enabled
-              if (document.readyState === 'complete') {
-                setTimeout(enableAnimations, 100);
-              } else {
-                window.addEventListener('load', function() {
-                  setTimeout(enableAnimations, 100);
-                });
-                
-                // Fallback for DOMContentLoaded
-                document.addEventListener('DOMContentLoaded', function() {
-                  setTimeout(enableAnimations, 200);
-                });
+              // 4. Multiple trigger points for maximum reliability
+              let triggered = false;
+              function triggerOnce() {
+                if (triggered) return;
+                triggered = true;
+                enableAnimationsAndShow();
               }
-              
-              // Final fallback to ensure page shows
-              setTimeout(enableAnimations, 1500);
+
+              // Immediate if already ready
+              if (document.readyState === 'complete') {
+                setTimeout(triggerOnce, 50);
+              }
+
+              // Load event
+              window.addEventListener('load', () => setTimeout(triggerOnce, 100));
+
+              // DOMContentLoaded fallback
+              document.addEventListener('DOMContentLoaded', () => setTimeout(triggerOnce, 150));
+
+              // Final fallback after 1 second
+              setTimeout(triggerOnce, 1000);
+
+              // Emergency fallback after 2 seconds
+              setTimeout(() => {
+                document.body.style.opacity = '1';
+                document.body.style.visibility = 'visible';
+                console.log('🚨 Emergency fallback triggered');
+              }, 2000);
             })();
           `}
         </Script>

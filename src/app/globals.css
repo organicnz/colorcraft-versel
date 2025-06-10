@@ -27,6 +27,45 @@
 }
 
 @layer base {
+  /* Ultra-aggressive anti-flash rules */
+  *,
+  *::before,
+  *::after {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
+    animation: none !important;
+    -webkit-animation: none !important;
+    -moz-animation: none !important;
+    -o-animation: none !important;
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    -webkit-animation-duration: 0s !important;
+    -webkit-animation-delay: 0s !important;
+    transform: none !important;
+    -webkit-transform: none !important;
+  }
+
+  /* Block all possible animation sources */
+  [data-framer-motion-initial="true"],
+  [data-framer-motion],
+  .motion-preset-*,
+  .animate-*,
+  .transition-* {
+    transform: none !important;
+    opacity: 1 !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Disable CSS Grid/Flexbox animations */
+  .grid,
+  .flex {
+    animation: none !important;
+    transition: none !important;
+  }
+
   /* Prevent flash of unstyled content */
   html {
     -webkit-tap-highlight-color: transparent;
@@ -128,13 +167,15 @@
       fixed;
     min-height: 100vh;
     /* Prevent flash during initial load - controlled by script */
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
+    opacity: 0 !important;
+    transition: none !important;
+    animation: none !important;
   }
 
   /* Body is shown after initial load completes */
   body.loaded {
-    opacity: 1;
+    opacity: 1 !important;
+    transition: opacity 0.3s ease-in-out !important;
   }
 
   .card, .bg-card {
@@ -691,4 +732,28 @@ select:focus {
   padding: 1rem 0;
   text-align: center;
   color: var(--text-secondary);
+}
+
+/* Re-enable transitions ONLY after everything is loaded */
+.transitions-enabled *,
+.transitions-enabled *::before,
+.transitions-enabled *::after {
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Smooth transitions for theme changes */
+.transitions-enabled .dark\:bg-slate-900,
+.transitions-enabled .bg-white {
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Special handling for interactive elements */
+.transitions-enabled button,
+.transitions-enabled a,
+.transitions-enabled input,
+.transitions-enabled select {
+  transition: all 0.2s ease-in-out;
 }
