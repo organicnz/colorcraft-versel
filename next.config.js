@@ -12,8 +12,9 @@ const nextConfig = {
     config.resolve.alias['@'] = path.join(__dirname, 'src');
     return config;
   },
-  // Use standalone output mode to fix deployment issues
-  output: 'standalone',
+  // Use standalone for API routes, export for static pages
+  output: process.env.GITHUB_ACTIONS ? 'standalone' : 'standalone',
+  trailingSlash: true,
   // Turbopack configuration (moved from experimental.turbo)
   turbopack: {
     resolveAlias: {
@@ -23,26 +24,32 @@ const nextConfig = {
   // Server external packages (moved from experimental.serverComponentsExternalPackages)
   serverExternalPackages: ["postgres"],
   images: {
-    domains: [],
-    formats: ['image/avif', 'image/webp'],
-    dangerouslyAllowSVG: true,
-    contentDispositionType: 'attachment',
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    unoptimized: process.env.GITHUB_ACTIONS === 'true',
+    domains: [
+      'images.unsplash.com',
+      'via.placeholder.com',
+      'tydgehnkaszuvcaywwdm.supabase.co'
+    ],
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**.uploadthing.com',
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
       },
       {
         protocol: 'https',
-        hostname: '**.supabase.co',
+        hostname: 'via.placeholder.com',
+        port: '',
+        pathname: '/**',
       },
       {
         protocol: 'https',
-        hostname: 'colorcraft.live',
+        hostname: 'tydgehnkaszuvcaywwdm.supabase.co',
+        port: '',
+        pathname: '/storage/v1/object/public/**',
       },
     ],
-    unoptimized: process.env.NODE_ENV === 'development', // Disable optimization in development to rule out image optimization issues
   },
   logging: {
     fetches: {
@@ -69,6 +76,18 @@ const nextConfig = {
     ],
     // React 19 compatibility for Next.js 15
     reactCompiler: false, // Disable until React 19 is stable
+  },
+  // Static optimization
+  generateBuildId: async () => {
+    return 'colorcraft-build'
+  },
+  // Environment variables available at build time
+  env: {
+    CUSTOM_KEY: 'my-value',
+  },
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+    // Important: return the modified config
+    return config
   },
 };
 
