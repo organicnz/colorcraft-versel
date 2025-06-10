@@ -1,17 +1,17 @@
 "use client";
 
-import Link from 'next/link'
-import Image from 'next/image'
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { useState, useEffect, useRef } from 'react'
+import Link from "next/link";
+import Image from "next/image";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { GlassPanel, GlassCard } from "@/components/ui/glass-card";
 import { ArrowRight, Award, Palette, Send, Settings, Sparkles } from "lucide-react";
-import RandomShowcaseImage from '@/components/portfolio/RandomShowcaseImage';
-import PhoneDisplay from '@/components/ui/phone-display';
+import RandomShowcaseImage from "@/components/portfolio/RandomShowcaseImage";
+import PhoneDisplay from "@/components/ui/phone-display";
 
 // Animation variants
 const fadeIn = (delay = 0, duration = 0.8) => ({
@@ -19,7 +19,7 @@ const fadeIn = (delay = 0, duration = 0.8) => ({
   visible: {
     opacity: 1,
     y: 0,
-    transition: { delay, duration, ease: "easeOut" }
+    transition: { delay, duration, ease: "easeOut" },
   },
 });
 
@@ -28,7 +28,7 @@ const slideIn = (direction = "left", delay = 0) => ({
   visible: {
     opacity: 1,
     x: 0,
-    transition: { delay, duration: 0.8, ease: "easeOut" }
+    transition: { delay, duration: 0.8, ease: "easeOut" },
   },
 });
 
@@ -57,35 +57,58 @@ interface ClientHomePageProps {
   properties: any[];
 }
 
-export default function ClientHomePage({ featuredProjects, services, testimonials, properties }: ClientHomePageProps) {
+export default function ClientHomePage({
+  featuredProjects,
+  services,
+  testimonials,
+  properties,
+}: ClientHomePageProps) {
   const heroRef = useRef<HTMLElement>(null);
+  const featuredRef = useRef<HTMLElement>(null);
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
 
   // Debug logging
-  console.log('🔍 ClientHomePage render:', {
+  console.log("🔍 ClientHomePage render:", {
     featuredProjects: featuredProjects?.length || 0,
     featuredProjectsSample: featuredProjects?.slice(0, 2),
   });
 
   // Use first 4 projects for display with safety check
-  const displayProjects = featuredProjects && Array.isArray(featuredProjects) ? featuredProjects.slice(0, 4) : [];
+  const displayProjects =
+    featuredProjects && Array.isArray(featuredProjects) ? featuredProjects.slice(0, 4) : [];
   const currentProject = displayProjects[currentProjectIndex] || displayProjects[0];
 
-  console.log('🔍 Display projects:', {
+  console.log("🔍 Display projects:", {
     displayProjectsLength: displayProjects.length,
     currentProjectIndex,
     currentProject: currentProject?.title,
   });
 
-  // Scroll animations
-  const { scrollYProgress } = useScroll({
+  // Hero parallax animations
+  const { scrollYProgress: heroProgress } = useScroll({
     target: heroRef,
-    offset: ["start start", "end start"]
+    offset: ["start start", "end start"],
   });
-  
-  const y = useTransform(scrollYProgress, [0, 1], [0, -200]);
-  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
+
+  const heroY = useTransform(heroProgress, [0, 1], [0, -200]);
+  const heroOpacity = useTransform(heroProgress, [0, 1], [1, 0]);
+  const heroScale = useTransform(heroProgress, [0, 1], [1, 1.1]);
+
+  // Featured section parallax
+  const { scrollYProgress: featuredProgress } = useScroll({
+    target: featuredRef,
+    offset: ["start end", "end start"],
+  });
+
+  const featuredY = useTransform(featuredProgress, [0, 1], [100, -100]);
+  const featuredOpacity = useTransform(featuredProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+  const featuredScale = useTransform(featuredProgress, [0, 0.5, 1], [0.8, 1, 1.05]);
+
+  // Background layers parallax
+  const bgLayer1 = useTransform(heroProgress, [0, 1], [0, -150]);
+  const bgLayer2 = useTransform(heroProgress, [0, 1], [0, -100]);
+  const bgLayer3 = useTransform(heroProgress, [0, 1], [0, -50]);
 
   // Auto-rotate hero project
   useEffect(() => {
@@ -99,20 +122,45 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Newsletter signup:', email);
-    setEmail('');
+    console.log("Newsletter signup:", email);
+    setEmail("");
   };
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section with Featured Project */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background with glass effects */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900" />
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary-200/30 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-accent-200/30 rounded-full blur-3xl" />
+      {/* Hero Section with Advanced Parallax */}
+      <section
+        ref={heroRef}
+        className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      >
+        {/* Multi-layered parallax backgrounds */}
+        <motion.div
+          style={{ y: bgLayer1 }}
+          className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900"
+        />
+        <motion.div
+          style={{ y: bgLayer2 }}
+          className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary-200/30 rounded-full blur-3xl"
+        />
+        <motion.div
+          style={{ y: bgLayer3 }}
+          className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-accent-200/30 rounded-full blur-3xl"
+        />
 
-        <motion.div style={{ y, opacity }} className="relative z-10 container mx-auto px-4">
+        {/* Additional floating elements */}
+        <motion.div
+          style={{ y: useTransform(heroProgress, [0, 1], [0, -80]) }}
+          className="absolute top-1/3 left-1/3 w-32 h-32 bg-secondary-200/20 rounded-full blur-2xl"
+        />
+        <motion.div
+          style={{ y: useTransform(heroProgress, [0, 1], [0, -120]) }}
+          className="absolute bottom-1/3 right-1/3 w-48 h-48 bg-primary-300/20 rounded-full blur-2xl"
+        />
+
+        <motion.div
+          style={{ y: heroY, opacity: heroOpacity, scale: heroScale }}
+          className="relative z-10 container mx-auto px-4"
+        >
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Hero Content */}
             <motion.div
@@ -122,7 +170,10 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
               className="order-2 lg:order-1"
             >
               <motion.div variants={fadeIn(0)}>
-                <Badge variant="outline" className="mb-6 bg-white/50 backdrop-blur-sm border-white/30">
+                <Badge
+                  variant="outline"
+                  className="mb-6 bg-white/50 backdrop-blur-sm border-white/30"
+                >
                   ✨ Premium Furniture Restoration
                 </Badge>
               </motion.div>
@@ -141,55 +192,75 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
                 variants={fadeIn(0.2)}
                 className="text-xl text-muted-foreground mb-8 leading-relaxed"
               >
-                Expert craftsmanship meets creative vision. We breathe new life into your beloved furniture
-                with premium finishes and meticulous attention to detail.
+                Expert craftsmanship meets creative vision. We breathe new life into your beloved
+                furniture with premium finishes and meticulous attention to detail.
               </motion.p>
 
-              <motion.div
-                variants={fadeIn(0.3)}
-                className="flex flex-col sm:flex-row gap-4"
-              >
-                <Button size="lg" asChild className="bg-primary hover:bg-primary/90 text-white px-8 py-4 text-lg">
+              <motion.div variants={fadeIn(0.3)} className="flex flex-col sm:flex-row gap-4">
+                <Button
+                  size="lg"
+                  asChild
+                  className="bg-primary hover:bg-primary/90 text-white px-8 py-4 text-lg"
+                >
                   <Link href="/contact">
                     Get Free Quote
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
-                <Button variant="outline" size="lg" asChild className="px-8 py-4 text-lg bg-white/50 backdrop-blur-sm border-white/30 hover:bg-white/70">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  asChild
+                  className="px-8 py-4 text-lg bg-white/50 backdrop-blur-sm border-white/30 hover:bg-white/70"
+                >
                   <Link href="/portfolio">View Portfolio</Link>
                 </Button>
               </motion.div>
             </motion.div>
 
-            {/* Featured Project Showcase */}
+            {/* Featured Project Showcase with Parallax */}
             {currentProject && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
+                style={{ y: useTransform(heroProgress, [0, 1], [0, -50]) }}
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="order-1 lg:order-2 relative"
               >
                 <div className="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-2xl">
-                  <Image
-                    src={currentProject.image}
-                    alt={currentProject.title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    priority
-                  />
+                  <motion.div
+                    style={{ scale: useTransform(heroProgress, [0, 1], [1, 1.1]) }}
+                    className="w-full h-full"
+                  >
+                    <Image
+                      src={currentProject.image}
+                      alt={currentProject.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      priority
+                    />
+                  </motion.div>
 
                   {/* Gradient overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
 
                   {/* Project info card */}
                   <GlassPanel className="absolute bottom-8 left-8 right-8 p-5">
-                    <h3 className="text-xl font-semibold mb-2 text-white">{currentProject.title}</h3>
+                    <h3 className="text-xl font-semibold mb-2 text-white">
+                      {currentProject.title}
+                    </h3>
                     <div className="flex flex-wrap gap-3 mb-3">
-                      <Badge variant="secondary" className="bg-secondary-100/50 text-secondary-700 dark:bg-secondary-900/30 dark:text-secondary-300 rounded-full backdrop-blur-sm">
+                      <Badge
+                        variant="secondary"
+                        className="bg-secondary-100/50 text-secondary-700 dark:bg-secondary-900/30 dark:text-secondary-300 rounded-full backdrop-blur-sm"
+                      >
                         Featured
                       </Badge>
-                      <Badge variant="outline" className="rounded-full bg-white/20 text-white border-white/30">
+                      <Badge
+                        variant="outline"
+                        className="rounded-full bg-white/20 text-white border-white/30"
+                      >
                         {currentProject.material}
                       </Badge>
                     </div>
@@ -209,8 +280,8 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
                         onClick={() => setCurrentProjectIndex(index)}
                         className={`w-3 h-3 rounded-full transition-all duration-300 ${
                           currentProjectIndex === index
-                            ? 'bg-primary-500 scale-125'
-                            : 'bg-white/50 hover:bg-white/70'
+                            ? "bg-primary-500 scale-125"
+                            : "bg-white/50 hover:bg-white/70"
                         }`}
                       />
                     ))}
@@ -235,7 +306,10 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
             className="text-center mb-16"
           >
             <motion.div variants={fadeIn()}>
-              <Badge variant="outline" className="mb-4 bg-white/50 backdrop-blur-sm border-white/30">
+              <Badge
+                variant="outline"
+                className="mb-4 bg-white/50 backdrop-blur-sm border-white/30"
+              >
                 Our Services
               </Badge>
             </motion.div>
@@ -245,8 +319,12 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
                 Tells Your Story
               </span>
             </motion.h2>
-            <motion.p variants={fadeIn(0.2)} className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              From vintage restoration to modern makeovers, we offer comprehensive furniture transformation services
+            <motion.p
+              variants={fadeIn(0.2)}
+              className="text-xl text-muted-foreground max-w-3xl mx-auto"
+            >
+              From vintage restoration to modern makeovers, we offer comprehensive furniture
+              transformation services
             </motion.p>
           </motion.div>
 
@@ -271,11 +349,16 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
                         <IconComponent className="h-8 w-8 text-primary-600" />
                       </div>
                       <h3 className="text-2xl font-semibold mb-4">{service.title}</h3>
-                      <p className="text-muted-foreground mb-6 leading-relaxed">{service.description}</p>
+                      <p className="text-muted-foreground mb-6 leading-relaxed">
+                        {service.description}
+                      </p>
                       <div className="space-y-2">
                         {service.features.map((feature: string, featureIndex: number) => (
                           <div key={featureIndex} className="flex items-center justify-center">
-                            <Badge variant="secondary" className="bg-primary-50/50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">
+                            <Badge
+                              variant="secondary"
+                              className="bg-primary-50/50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300"
+                            >
                               {feature}
                             </Badge>
                           </div>
@@ -291,15 +374,49 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
       </section>
 
       {/* Featured Projects Section */}
-      <section className="py-24 relative overflow-hidden">
-        {/* Enhanced glassmorphism background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-white/10 to-transparent backdrop-blur-sm"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-accent-50/40 via-primary-50/20 to-transparent"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(59,130,246,0.1),transparent_50%)]"></div>
+      <section ref={featuredRef} className="py-24 relative overflow-hidden">
+        {/* Multi-layered parallax backgrounds */}
+        <motion.div
+          style={{ y: useTransform(featuredProgress, [0, 1], [0, -100]) }}
+          className="absolute inset-0 bg-gradient-to-br from-white/30 via-white/10 to-transparent backdrop-blur-sm"
+        />
+        <motion.div
+          style={{ y: useTransform(featuredProgress, [0, 1], [0, -80]) }}
+          className="absolute inset-0 bg-gradient-to-b from-accent-50/40 via-primary-50/20 to-transparent"
+        />
+        <motion.div
+          style={{ y: useTransform(featuredProgress, [0, 1], [0, -60]) }}
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(59,130,246,0.1),transparent_50%)]"
+        />
+
+        {/* Floating background elements */}
+        <motion.div
+          style={{
+            y: useTransform(featuredProgress, [0, 1], [50, -100]),
+            opacity: useTransform(featuredProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]),
+          }}
+          className="absolute top-20 left-1/4 w-64 h-64 bg-primary-200/20 rounded-full blur-3xl"
+        />
+        <motion.div
+          style={{
+            y: useTransform(featuredProgress, [0, 1], [80, -150]),
+            opacity: useTransform(featuredProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]),
+          }}
+          className="absolute bottom-20 right-1/4 w-48 h-48 bg-accent-200/20 rounded-full blur-2xl"
+        />
 
         <div className="container relative z-10">
-          <div className="text-center mb-16">
-            <Badge variant="outline" className="mb-4 bg-white/60 backdrop-blur-md border-white/40 shadow-glass">
+          <motion.div
+            style={{
+              y: useTransform(featuredProgress, [0, 1], [30, -30]),
+              opacity: featuredOpacity,
+            }}
+            className="text-center mb-16"
+          >
+            <Badge
+              variant="outline"
+              className="mb-4 bg-white/60 backdrop-blur-md border-white/40 shadow-glass"
+            >
               Featured Work
             </Badge>
             <h2 className="text-4xl md:text-5xl font-bold mb-6 drop-shadow-sm">
@@ -311,54 +428,84 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto drop-shadow-sm">
               See how we've transformed ordinary furniture into extraordinary pieces
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <motion.div
+            style={{
+              y: useTransform(featuredProgress, [0, 1], [50, -50]),
+              scale: featuredScale,
+            }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          >
             {displayProjects.length > 0 ? (
               displayProjects.map((project, index) => (
-                <div
+                <motion.div
                   key={`${project.id}-${index}`}
-                  className="opacity-0 animate-fade-in"
                   style={{
-                    animationDelay: `${index * 150}ms`,
-                    animationFillMode: 'forwards'
+                    y: useTransform(featuredProgress, [0, 1], [20 + index * 10, -20 - index * 10]),
+                    opacity: useTransform(featuredProgress, [0, 0.1, 0.9, 1], [0, 1, 1, 0]),
                   }}
+                  className="opacity-0 animate-fade-in"
+                  data-delay={index * 150}
                 >
                   <Card
                     glass={true}
                     glassVariant="light"
                     glassIntensity="medium"
-                    className="group overflow-hidden h-full flex flex-col border-border/50 hover:shadow-glass-heavy transition-all duration-300 hover:scale-[1.02]"
+                    className="group overflow-hidden h-full flex flex-col border-border/50 hover:shadow-glass-heavy transition-all duration-300 hover:scale-[1.02] backdrop-blur-lg"
                   >
                     <CardHeader className="p-0 relative aspect-[4/3] overflow-hidden">
-                      <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
+                      <motion.div
+                        className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900"
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ duration: 0.3 }}
+                      >
                         <Image
                           src={project.image}
                           alt={project.title}
                           fill
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          className="w-full h-full object-cover transition-transform duration-500"
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                         />
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      </motion.div>
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"
+                        initial={{ opacity: 0 }}
+                        whileHover={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                      />
                     </CardHeader>
-                    <CardContent className="p-4 flex-grow flex flex-col relative z-10">
-                      <h3 className="text-lg font-medium text-card-foreground mb-1 line-clamp-1">{project.title}</h3>
-                      <p className="text-sm text-muted-foreground mb-1 line-clamp-1">{project.description}</p>
-                      <p className="text-xs text-muted-foreground/80 mb-3 line-clamp-1">{project.material}</p>
-                      <p className="text-base font-semibold text-primary mt-auto mb-3">{project.price}</p>
-                      <Button variant="outline" size="sm" asChild className="mt-auto w-full bg-white/50 backdrop-blur-sm border-white/30 hover:bg-white/70">
+                    <CardContent className="p-4 flex-grow flex flex-col relative z-10 bg-white/40 dark:bg-white/5 backdrop-blur-md">
+                      <h3 className="text-lg font-medium text-card-foreground mb-1 line-clamp-1">
+                        {project.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground mb-1 line-clamp-1">
+                        {project.description}
+                      </p>
+                      <p className="text-xs text-muted-foreground/80 mb-3 line-clamp-1">
+                        {project.material}
+                      </p>
+                      <p className="text-base font-semibold text-primary mt-auto mb-3">
+                        {project.price}
+                      </p>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        asChild
+                        className="mt-auto w-full bg-white/50 backdrop-blur-sm border-white/30 hover:bg-white/70"
+                      >
                         <Link href={`/portfolio/${project.id}`}>View Details</Link>
                       </Button>
                     </CardContent>
                   </Card>
-                </div>
+                </motion.div>
               ))
             ) : (
               <div className="col-span-full text-center py-12">
                 <div className="bg-white/30 dark:bg-white/10 backdrop-blur-md shadow-glass border border-white/30 dark:border-white/10 rounded-2xl p-8">
                   <p className="text-muted-foreground">
-                    🔍 Debug: No projects to display (displayProjects.length: {displayProjects.length})
+                    🔍 Debug: No projects to display (displayProjects.length:{" "}
+                    {displayProjects.length})
                   </p>
                   <p className="text-sm text-muted-foreground mt-2">
                     Featured projects: {featuredProjects?.length || 0}
@@ -369,16 +516,22 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
                 </div>
               </div>
             )}
-          </div>
+          </motion.div>
 
-          <div className="text-center mt-12">
+          <motion.div
+            style={{
+              y: useTransform(featuredProgress, [0, 1], [20, -20]),
+              opacity: featuredOpacity,
+            }}
+            className="text-center mt-12"
+          >
             <Button variant="link" asChild className="text-primary group">
               <Link href="/portfolio">
                 View All Portfolio Pieces
                 <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -395,7 +548,10 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
             className="text-center mb-16"
           >
             <motion.div variants={fadeIn()}>
-              <Badge variant="outline" className="mb-4 bg-white/50 backdrop-blur-sm border-white/30">
+              <Badge
+                variant="outline"
+                className="mb-4 bg-white/50 backdrop-blur-sm border-white/30"
+              >
                 Client Stories
               </Badge>
             </motion.div>
@@ -416,11 +572,17 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
           >
             {testimonials.map((testimonial, index) => (
               <motion.div key={index} variants={fadeIn(index * 0.1)}>
-                <GlassCard variant="light" intensity="medium" className="h-full hover:scale-[1.02] transition-all duration-300">
+                <GlassCard
+                  variant="light"
+                  intensity="medium"
+                  className="h-full hover:scale-[1.02] transition-all duration-300"
+                >
                   <div className="text-center">
                     <div className="flex justify-center mb-4">
                       {[...Array(testimonial.rating)].map((_, i) => (
-                        <span key={i} className="text-yellow-400 text-xl">★</span>
+                        <span key={i} className="text-yellow-400 text-xl">
+                          ★
+                        </span>
                       ))}
                     </div>
                     <p className="text-muted-foreground mb-6 italic leading-relaxed">
@@ -459,7 +621,10 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
             className="max-w-5xl mx-auto"
           >
             <motion.div variants={fadeIn()} className="text-center mb-16">
-              <Badge variant="outline" className="mb-4 bg-white/50 backdrop-blur-sm border-white/30">
+              <Badge
+                variant="outline"
+                className="mb-4 bg-white/50 backdrop-blur-sm border-white/30"
+              >
                 Get In Touch
               </Badge>
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
@@ -473,10 +638,13 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
               </p>
             </motion.div>
 
-            <motion.div variants={fadeIn(0.2)} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+            <motion.div
+              variants={fadeIn(0.2)}
+              className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start"
+            >
               {/* Phone Display */}
               <div className="flex justify-center lg:justify-start order-2 lg:order-1 px-4 sm:px-0">
-                <PhoneDisplay 
+                <PhoneDisplay
                   phoneNumber="(747) 755-7695"
                   email="contact@colorandcraft.com"
                   variant="hero"
@@ -488,11 +656,12 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
               <div className="text-center lg:text-left order-1 lg:order-2">
                 <h3 className="text-3xl font-bold mb-6">Free Consultation</h3>
                 <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                  Schedule a free consultation to discuss your project. We'll assess your furniture and provide expert recommendations for the perfect transformation.
+                  Schedule a free consultation to discuss your project. We'll assess your furniture
+                  and provide expert recommendations for the perfect transformation.
                 </p>
                 <div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-4">
-                  <Button 
-                    size="lg" 
+                  <Button
+                    size="lg"
                     className="bg-[#3ECF8E] hover:bg-[#38BC81] text-white font-semibold px-8 py-4"
                     asChild
                   >
@@ -501,15 +670,13 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     size="lg"
                     className="border-[#3ECF8E]/40 text-[#3ECF8E] hover:bg-[#3ECF8E]/10 px-8 py-4"
                     asChild
                   >
-                    <Link href="/portfolio">
-                      View Portfolio
-                    </Link>
+                    <Link href="/portfolio">View Portfolio</Link>
                   </Button>
                 </div>
               </div>
@@ -533,7 +700,8 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
             <GlassCard variant="light" intensity="strong" className="p-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Stay Updated</h2>
               <p className="text-muted-foreground mb-8 text-lg">
-                Get the latest furniture transformation tips and project showcases delivered to your inbox.
+                Get the latest furniture transformation tips and project showcases delivered to your
+                inbox.
               </p>
               <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
                 <Input
@@ -555,4 +723,4 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
       </section>
     </div>
   );
-} 
+}
