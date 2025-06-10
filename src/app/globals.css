@@ -41,6 +41,16 @@
     -moz-transition: none !important;
     -o-transition: none !important;
     transition: none !important;
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    -webkit-animation-duration: 0s !important;
+    -webkit-animation-delay: 0s !important;
+  }
+
+  /* Block framer-motion animations during initial load */
+  [data-framer-motion-initial="true"] {
+    transform: none !important;
+    opacity: 1 !important;
   }
 
   /* Re-enable transitions after initial load */
@@ -49,6 +59,16 @@
     -moz-transition: all 0.2s ease-in-out !important;
     -o-transition: all 0.2s ease-in-out !important;
     transition: all 0.2s ease-in-out !important;
+    animation-duration: initial !important;
+    animation-delay: initial !important;
+    -webkit-animation-duration: initial !important;
+    -webkit-animation-delay: initial !important;
+  }
+
+  /* Allow specific animations after transitions are enabled */
+  .transitions-enabled [data-framer-motion-initial="true"] {
+    transform: initial !important;
+    opacity: initial !important;
   }
 
   :root {
@@ -107,15 +127,14 @@
       )
       fixed;
     min-height: 100vh;
-    /* Prevent flash during initial load */
+    /* Prevent flash during initial load - controlled by script */
     opacity: 0;
-    animation: fadeIn 0.5s ease-in-out forwards;
+    transition: opacity 0.3s ease-in-out;
   }
 
-  @keyframes fadeIn {
-    to {
-      opacity: 1;
-    }
+  /* Body is shown after initial load completes */
+  body.loaded {
+    opacity: 1;
   }
 
   .card, .bg-card {

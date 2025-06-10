@@ -76,16 +76,54 @@ export default function RootLayout({
           {`
             // Prevent flash by ensuring consistent initial state
             (function() {
+              // Disable all animations and transitions immediately
+              const style = document.createElement('style');
+              style.innerHTML = \`
+                *, *::before, *::after {
+                  animation-duration: 0s !important;
+                  animation-delay: 0s !important;
+                  transition-duration: 0s !important;
+                  transition-delay: 0s !important;
+                }
+              \`;
+              document.head.appendChild(style);
+
               // Check if theme preference exists
               const theme = localStorage.getItem('theme') || 'light';
               if (theme === 'dark') {
                 document.documentElement.classList.add('dark');
               }
-              
-              // Enable transitions after initial paint
-              setTimeout(function() {
+
+              // Function to enable animations and show page
+              function enableAnimations() {
+                // Remove the blocking styles
+                if (style.parentNode) {
+                  style.remove();
+                }
+                
+                // Add transitions-enabled class
                 document.body.classList.add('transitions-enabled');
-              }, 100);
+                
+                // Show the body
+                document.body.classList.add('loaded');
+              }
+
+              // Try multiple approaches to ensure animations are enabled
+              if (document.readyState === 'complete') {
+                setTimeout(enableAnimations, 100);
+              } else {
+                window.addEventListener('load', function() {
+                  setTimeout(enableAnimations, 100);
+                });
+                
+                // Fallback for DOMContentLoaded
+                document.addEventListener('DOMContentLoaded', function() {
+                  setTimeout(enableAnimations, 200);
+                });
+              }
+              
+              // Final fallback to ensure page shows
+              setTimeout(enableAnimations, 1500);
             })();
           `}
         </Script>
