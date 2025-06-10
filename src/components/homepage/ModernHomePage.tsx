@@ -8,14 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-  ArrowRight, 
-  Award, 
-  Palette, 
-  Settings, 
-  Sparkles, 
-  Phone, 
-  Mail, 
+import {
+  ArrowRight,
+  Award,
+  Palette,
+  Settings,
+  Sparkles,
+  Phone,
+  Mail,
   MapPin,
   Star,
   CheckCircle
@@ -65,14 +65,14 @@ export default function ModernHomePage({
     },
     {
       name: "James Wilson",
-      role: "Restoration Specialist", 
+      role: "Restoration Specialist",
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face",
       description: "Expert in antique furniture and period-accurate finishes"
     },
     {
       name: "Emma Rodriguez",
       role: "Design Consultant",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face", 
+      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face",
       description: "Creative visionary specializing in modern upcycling"
     }
   ];
@@ -91,9 +91,9 @@ export default function ModernHomePage({
           />
           <div className="absolute inset-0 bg-gradient-to-r from-white/90 to-white/70" />
         </div>
-        
+
         <div className="relative container mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
-          <motion.div 
+          <motion.div
             className="space-y-8 max-w-xl"
             initial="hidden"
             animate="visible"
@@ -104,16 +104,16 @@ export default function ModernHomePage({
                 ✨ Premium Furniture Transformations
               </Badge>
               <h1 className="text-5xl lg:text-6xl font-bold text-slate-900 leading-tight">
-                Crafting sanctuaries that embrace 
-                <span className="text-primary-600"> warmth</span> and 
+                Crafting sanctuaries that embrace
+                <span className="text-primary-600"> warmth</span> and
                 <span className="text-accent-600"> tranquility</span>
               </h1>
               <p className="text-xl text-slate-600 leading-relaxed">
-                Every piece is a canvas for cherished memories, where comfort and connection thrive. 
+                Every piece is a canvas for cherished memories, where comfort and connection thrive.
                 Transform your furniture into heirloom pieces that tell your story.
               </p>
             </motion.div>
-            
+
             <motion.div variants={fadeIn} className="flex flex-col sm:flex-row gap-4">
               <Button size="lg" className="bg-primary-600 hover:bg-primary-700 text-white px-8">
                 View Our Work
@@ -123,7 +123,7 @@ export default function ModernHomePage({
                 Get Free Quote
               </Button>
             </motion.div>
-            
+
             <motion.div variants={fadeIn} className="flex items-center gap-8 pt-8">
               <div className="text-center">
                 <div className="text-2xl font-bold text-slate-900">200+</div>
@@ -141,7 +141,7 @@ export default function ModernHomePage({
               </div>
             </motion.div>
           </motion.div>
-          
+
           <motion.div
             className="relative"
             initial={{ opacity: 0, scale: 0.9 }}
@@ -179,14 +179,14 @@ export default function ModernHomePage({
             >
               <h2 className="text-4xl font-bold text-slate-900">About ColorCraft</h2>
               <p className="text-xl text-slate-600 leading-relaxed">
-                At ColorCraft, we believe that furniture is more than just functional pieces; 
-                they're the foundation of your sanctuary where cherished memories are crafted, 
-                and where warmth and tranquility thrive. Our mission is to guide you on your 
-                journey to creating the perfect living space, providing unparalleled service 
+                At ColorCraft, we believe that furniture is more than just functional pieces;
+                they're the foundation of your sanctuary where cherished memories are crafted,
+                and where warmth and tranquility thrive. Our mission is to guide you on your
+                journey to creating the perfect living space, providing unparalleled service
                 and expertise every step of the way.
               </p>
             </motion.div>
-            
+
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -197,18 +197,18 @@ export default function ModernHomePage({
               <motion.div variants={fadeIn} className="text-left space-y-3">
                 <h3 className="text-2xl font-semibold text-slate-900">Mission</h3>
                 <p className="text-slate-600">
-                  At ColorCraft, our mission is to help you transform your furniture pieces 
-                  into beautiful, functional art that perfectly aligns with your lifestyle 
-                  and aspirations. We're committed to making the restoration and transformation 
+                  At ColorCraft, our mission is to help you transform your furniture pieces
+                  into beautiful, functional art that perfectly aligns with your lifestyle
+                  and aspirations. We're committed to making the restoration and transformation
                   process seamless and inspiring.
                 </p>
               </motion.div>
-              
+
               <motion.div variants={fadeIn} className="text-left space-y-3">
                 <h3 className="text-2xl font-semibold text-slate-900">Values</h3>
                 <p className="text-slate-600">
-                  Integrity, craftsmanship, and client satisfaction drive us. We uphold the 
-                  highest quality standards, deliver exceptional results, and offer personalized 
+                  Integrity, craftsmanship, and client satisfaction drive us. We uphold the
+                  highest quality standards, deliver exceptional results, and offer personalized
                   guidance tailored to your unique vision and needs.
                 </p>
               </motion.div>
@@ -217,7 +217,7 @@ export default function ModernHomePage({
         </div>
       </section>
 
-      {/* Featured Projects */}
+      {/* Featured Projects - RealVantage Style */}
       <section className="py-20 bg-slate-50">
         <div className="container mx-auto px-6">
           <motion.div
@@ -229,51 +229,85 @@ export default function ModernHomePage({
           >
             <h2 className="text-4xl font-bold text-slate-900">Featured Transformations</h2>
             <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-              Discover our portfolio of stunning furniture transformations that showcase 
+              Discover our portfolio of stunning furniture transformations that showcase
               our expertise and attention to detail.
             </p>
           </motion.div>
-          
+
+          {/* Featured Projects Grid - RealVantage Style */}
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={stagger}
-            className="grid md:grid-cols-2 lg:grid-cols-4 gap-8"
+            className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
           >
             {featuredProjects.slice(0, 4).map((project, index) => (
               <motion.div key={project.id} variants={fadeIn}>
-                <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-white">
-                  <div className="relative overflow-hidden rounded-t-lg">
+                <div className="group cursor-pointer">
+                  {/* Project Image */}
+                  <div className="relative overflow-hidden rounded-lg mb-4">
                     <Image
                       src={project.image}
                       alt={project.title}
                       width={400}
                       height={300}
-                      className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute top-4 left-4">
-                      <Badge className="bg-white/90 text-slate-700">
+                      <Badge className="bg-primary-600 text-white border-0 px-3 py-1">
                         Featured
                       </Badge>
                     </div>
-                  </div>
-                  <CardContent className="p-6 space-y-3">
-                    <h3 className="font-semibold text-slate-900 text-lg">{project.title}</h3>
-                    <p className="text-slate-600 text-sm line-clamp-2">{project.description}</p>
-                    <div className="flex justify-between items-center pt-2">
-                      <span className="text-primary-600 font-medium">{project.price}</span>
-                      <Link href={`/portfolio/${project.id}`}>
-                        <Button variant="ghost" size="sm" className="text-primary-600 hover:text-primary-700">
-                          View Details
-                          <ArrowRight className="ml-1 h-4 w-4" />
-                        </Button>
-                      </Link>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute bottom-4 left-4 right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <Button variant="secondary" size="sm" className="w-full bg-white/90 text-slate-900 hover:bg-white">
+                        View Details
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+
+                  {/* Project Details - RealVantage Style */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold text-slate-900 text-lg group-hover:text-primary-600 transition-colors">
+                        {project.title}
+                      </h3>
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-slate-900">$2,500</div>
+                        <div className="text-sm text-slate-500">Starting from</div>
+                      </div>
+                    </div>
+
+                    <p className="text-slate-600 text-sm leading-relaxed">
+                      {project.description}
+                    </p>
+
+                    <div className="flex items-center justify-between text-sm text-slate-500 pt-2">
+                      <span>{project.material || "Premium Materials"}</span>
+                      <span>2-3 weeks</span>
+                    </div>
+                  </div>
+                </div>
               </motion.div>
             ))}
+          </motion.div>
+
+          {/* View All Projects Button */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeIn}
+            className="text-center mt-12"
+          >
+            <Link href="/portfolio">
+              <Button size="lg" variant="outline" className="border-slate-300 text-slate-700 hover:bg-slate-50 px-8">
+                View All Transformations
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
           </motion.div>
         </div>
       </section>
@@ -293,7 +327,7 @@ export default function ModernHomePage({
               Comprehensive furniture transformation services tailored to bring your vision to life.
             </p>
           </motion.div>
-          
+
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -342,7 +376,7 @@ export default function ModernHomePage({
               Meet the skilled artisans behind every beautiful transformation.
             </p>
           </motion.div>
-          
+
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -391,7 +425,7 @@ export default function ModernHomePage({
                 Ready to transform your furniture? Let's discuss your vision and create something beautiful together.
               </p>
             </motion.div>
-            
+
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -409,7 +443,7 @@ export default function ModernHomePage({
                   Creative District, CD 12345
                 </p>
               </motion.div>
-              
+
               <motion.div variants={fadeIn} className="space-y-3">
                 <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto">
                   <Phone className="w-8 h-8 text-primary-600" />
@@ -420,7 +454,7 @@ export default function ModernHomePage({
                   Mon-Sat: 9AM-6PM
                 </p>
               </motion.div>
-              
+
               <motion.div variants={fadeIn} className="space-y-3">
                 <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto">
                   <Mail className="w-8 h-8 text-primary-600" />
@@ -432,7 +466,7 @@ export default function ModernHomePage({
                 </p>
               </motion.div>
             </motion.div>
-            
+
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -463,4 +497,4 @@ export default function ModernHomePage({
       </section>
     </div>
   );
-} 
+}
