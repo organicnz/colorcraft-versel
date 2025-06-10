@@ -18,7 +18,7 @@ export default function ImageTest() {
           alt="House - standard" 
           width={600} 
           height={400}
-          className="border border-gray-300" 
+          className="border border-slate-300" 
           onLoad={() => console.log("Standard image loaded")}
           onError={() => console.log("Standard image error")}
         />
@@ -26,7 +26,7 @@ export default function ImageTest() {
       
       <div className="mb-8">
         <h2 className="text-xl font-semibold mb-4">2. Next.js Image Component</h2>
-        <div className="relative w-full max-w-3xl h-[400px] border border-gray-300">
+        <div className="relative w-full max-w-3xl h-[400px] border border-slate-300">
           <Image
             src="/images/hero-house.png"
             alt="House - Next.js Image"
@@ -54,16 +54,16 @@ export default function ImageTest() {
           alt="House - direct path" 
           width={600} 
           height={400}
-          className="border border-gray-300" 
+          className="border border-slate-300" 
         />
-        <p className="mt-2 text-sm text-gray-500">
+        <p className="mt-2 text-sm text-slate-500">
           Note: This method typically won't work in Next.js, as it expects all public assets to be served from the public directory without including "public" in the path.
         </p>
       </div>
       
       <div className="mb-8">
         <h2 className="text-xl font-semibold mb-4">4. Reference Image (hero-furniture.png)</h2>
-        <div className="relative w-full max-w-3xl h-[400px] border border-gray-300">
+        <div className="relative w-full max-w-3xl h-[400px] border border-slate-300">
           <Image
             src="/images/hero-furniture.png"
             alt="Furniture - reference"

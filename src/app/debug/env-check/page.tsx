@@ -22,7 +22,7 @@ export default function EnvCheckPage() {
           ))}
         </div>
         
-        <div className="mt-6 p-4 bg-gray-50 rounded">
+        <div className="mt-6 p-4 bg-slate-50 rounded">
           <h3 className="font-semibold mb-2">URL Check:</h3>
           <div className="text-sm">
             {process.env.NEXT_PUBLIC_SUPABASE_URL ? (

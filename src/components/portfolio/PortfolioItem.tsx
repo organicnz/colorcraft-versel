@@ -157,7 +157,7 @@ export default function PortfolioItem({
         {showAdminControls && (
           <div className="absolute top-3 left-3 z-10">
             {project.status === 'archived' ? (
-              <Badge variant="secondary" className="bg-white/20 backdrop-blur-md text-gray-800 shadow-lg border border-white/30">
+              <Badge variant="secondary" className="bg-white/20 backdrop-blur-md text-slate-800 shadow-lg border border-white/30">
                 Archived
               </Badge>
             ) : project.status === 'published' ? (
@@ -310,7 +310,7 @@ export default function PortfolioItem({
           <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-lg">
               <h3 className="text-2xl font-bold mb-2 leading-tight line-clamp-2">{project.title}</h3>
-              <p className="text-sm text-gray-100 mb-4 line-clamp-3 leading-relaxed">
+              <p className="text-sm text-slate-100 mb-4 line-clamp-3 leading-relaxed">
                 {project.brief_description}
               </p>
 
@@ -354,8 +354,8 @@ export default function PortfolioItem({
 
           {/* Content with proper z-index */}
           <div className="relative z-10 flex flex-col h-full">
-            <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 leading-tight drop-shadow-sm">{project.title}</h3>
-            <p className="text-gray-800 text-sm mb-4 line-clamp-3 leading-relaxed flex-grow drop-shadow-sm">
+            <h3 className="text-xl font-bold text-slate-900 mb-2 line-clamp-2 leading-tight drop-shadow-sm">{project.title}</h3>
+            <p className="text-slate-800 text-sm mb-4 line-clamp-3 leading-relaxed flex-grow drop-shadow-sm">
               {project.brief_description}
             </p>
 
@@ -370,7 +370,7 @@ export default function PortfolioItem({
                   </span>
                 ))}
                 {project.techniques.length > 2 && (
-                  <span className="inline-block rounded-full bg-white/40 backdrop-blur-sm text-gray-700 px-3 py-1 text-xs font-medium border border-gray-400/50 shadow-sm">
+                  <span className="inline-block rounded-full bg-white/40 backdrop-blur-sm text-slate-700 px-3 py-1 text-xs font-medium border border-slate-400/50 shadow-sm">
                     +{project.techniques.length - 2}
                   </span>
                 )}

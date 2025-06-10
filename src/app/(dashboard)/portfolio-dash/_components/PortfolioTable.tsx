@@ -221,9 +221,9 @@ export default function PortfolioTable({ projects }: PortfolioTableProps) {
                             </AvatarFallback>
                           </Avatar>
                         ) : (
-                          <Avatar className="h-12 w-12 rounded-lg border-2 border-gray-200 dark:border-gray-800">
-                            <AvatarFallback className="rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700">
-                              <Camera className="h-6 w-6 text-gray-500" />
+                          <Avatar className="h-12 w-12 rounded-lg border-2 border-slate-200 dark:border-slate-800">
+                            <AvatarFallback className="rounded-lg bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700">
+                              <Camera className="h-6 w-6 text-slate-500" />
                             </AvatarFallback>
                           </Avatar>
                         )}
@@ -298,7 +298,7 @@ export default function PortfolioTable({ projects }: PortfolioTableProps) {
                             </TooltipContent>
                           </Tooltip>
                         ) : (
-                          <Star className="h-5 w-5 text-gray-300 dark:text-gray-600" />
+                          <Star className="h-5 w-5 text-slate-300 dark:text-slate-600" />
                         )}
                       </div>
                     </TableCell>

@@ -41,7 +41,7 @@ export default function FeatureFlagExample() {
       </div>
       
       {darkModeEnabled && (
-        <div className="p-3 bg-gray-800 text-white rounded">
+        <div className="p-3 bg-slate-800 text-white rounded">
           This content only appears when Dark Mode is enabled.
         </div>
       )}

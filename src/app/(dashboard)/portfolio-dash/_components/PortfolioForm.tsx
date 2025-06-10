@@ -257,10 +257,10 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
       {/* Header with Status */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-slate-900">
             {isEditing ? "Edit Portfolio Project" : "Create Portfolio Project"}
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-slate-600 mt-2">
             {isEditing
               ? "Update your portfolio project details and manage publication status"
               : "Start creating a new portfolio project. It will be saved as a draft with a unique UUID."}
@@ -384,7 +384,7 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                           </SelectItem>
                           <SelectItem value="archived">
                             <div className="flex items-center gap-2">
-                              <Badge variant="secondary" className="bg-gray-100 text-gray-800">
+                              <Badge variant="secondary" className="bg-slate-100 text-slate-800">
                                 Archived
                               </Badge>
                               <span>Hidden from public</span>
@@ -450,7 +450,7 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                   <Upload className="h-5 w-5 text-green-600" />
                   Project Images
                 </CardTitle>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-slate-600">
                   Upload before and after images for your portfolio project. Images are organized
                   automatically in your portfolio directory.
                 </p>

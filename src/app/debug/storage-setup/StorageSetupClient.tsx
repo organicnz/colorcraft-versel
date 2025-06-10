@@ -195,7 +195,7 @@ export default function StorageSetupClient() {
             </CardHeader>
             <CardContent>
               <div className="relative">
-                <pre className="bg-gray-100 p-4 rounded text-xs overflow-auto max-h-64">
+                <pre className="bg-slate-100 p-4 rounded text-xs overflow-auto max-h-64">
                   {result.sqlToRun}
                 </pre>
                 <Button

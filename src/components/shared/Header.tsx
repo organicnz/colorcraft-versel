@@ -26,7 +26,7 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white border-b border-gray-200">
+    <header className="bg-white border-b border-slate-200">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -45,25 +45,25 @@ export default function Header() {
           <nav className="hidden md:flex space-x-8">
             <Link
               href="/"
-              className="text-gray-600 hover:text-primary transition-colors"
+              className="text-slate-600 hover:text-primary transition-colors"
             >
               Home
             </Link>
             <Link
               href="/portfolio"
-              className="text-gray-600 hover:text-primary transition-colors"
+              className="text-slate-600 hover:text-primary transition-colors"
             >
               Portfolio
             </Link>
             <Link
               href="/services"
-              className="text-gray-600 hover:text-primary transition-colors"
+              className="text-slate-600 hover:text-primary transition-colors"
             >
               Services
             </Link>
             <Link
               href="/contact"
-              className="text-gray-600 hover:text-primary transition-colors"
+              className="text-slate-600 hover:text-primary transition-colors"
             >
               Contact
             </Link>
@@ -88,7 +88,7 @@ export default function Header() {
           {/* Mobile menu button */}
           <button
             type="button"
-            className="md:hidden p-2 rounded-md text-gray-600 hover:text-primary"
+            className="md:hidden p-2 rounded-md text-slate-600 hover:text-primary"
             onClick={() => setIsOpen(!isOpen)}
           >
             <span className="sr-only">Open menu</span>
@@ -131,36 +131,36 @@ export default function Header() {
           <div className="md:hidden py-4 space-y-2">
             <Link
               href="/"
-              className="block px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-md"
+              className="block px-4 py-2 text-slate-600 hover:bg-slate-50 rounded-md"
               onClick={() => setIsOpen(false)}
             >
               Home
             </Link>
             <Link
               href="/portfolio"
-              className="block px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-md"
+              className="block px-4 py-2 text-slate-600 hover:bg-slate-50 rounded-md"
               onClick={() => setIsOpen(false)}
             >
               Portfolio
             </Link>
             <Link
               href="/services"
-              className="block px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-md"
+              className="block px-4 py-2 text-slate-600 hover:bg-slate-50 rounded-md"
               onClick={() => setIsOpen(false)}
             >
               Services
             </Link>
             <Link
               href="/contact"
-              className="block px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-md"
+              className="block px-4 py-2 text-slate-600 hover:bg-slate-50 rounded-md"
               onClick={() => setIsOpen(false)}
             >
               Contact
             </Link>
-            <div className="pt-4 border-t border-gray-200 flex flex-col space-y-2">
+            <div className="pt-4 border-t border-slate-200 flex flex-col space-y-2">
               <Link
                 href="/auth/signin"
-                className="block px-4 py-2 text-center text-primary hover:bg-gray-50 rounded-md"
+                className="block px-4 py-2 text-center text-primary hover:bg-slate-50 rounded-md"
                 onClick={() => setIsOpen(false)}
               >
                 Sign In

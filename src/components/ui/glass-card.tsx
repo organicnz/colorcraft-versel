@@ -140,13 +140,13 @@ export function GlassNavbar({
       className={cn(
         // Glass navbar specific styles
         "sticky top-0 z-50 w-full",
-        "bg-white/70 dark:bg-gray-900/70",
+        "bg-white/70 dark:bg-slate-900/70",
         "backdrop-blur-xl",
         "border-b border-white/20 dark:border-white/10",
         "shadow-glass-light",
         // Smooth transitions
         "transition-all duration-300",
-        "supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-gray-900/60",
+        "supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-slate-900/60",
         className
       )}
       {...props}
@@ -163,7 +163,7 @@ export function GlassButton({
   ...props
 }: GlassCardProps & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   const buttonVariants = {
-    light: "bg-white/20 hover:bg-white/30 text-gray-900 dark:text-white",
+    light: "bg-white/20 hover:bg-white/30 text-slate-900 dark:text-white",
     dark: "bg-black/20 hover:bg-black/30 text-white",
     primary: "bg-primary-500/20 hover:bg-primary-500/30 text-primary-900 dark:text-primary-100",
     accent: "bg-accent-500/20 hover:bg-accent-500/30 text-accent-900 dark:text-accent-100",

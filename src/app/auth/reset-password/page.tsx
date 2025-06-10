@@ -94,10 +94,10 @@ function ResetPasswordForm() {
   return (
     <div className="w-full max-w-md">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-light text-gray-900 dark:text-white">
+        <h1 className="text-3xl font-light text-slate-900 dark:text-white">
           Reset your <span className="font-medium text-primary">password</span>
         </h1>
-        <p className="mt-3 text-gray-600 dark:text-gray-300">
+        <p className="mt-3 text-slate-600 dark:text-slate-300">
           Please enter your new password below.
         </p>
       </div>
@@ -113,8 +113,8 @@ function ResetPasswordForm() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Password Reset Successful</h3>
-            <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+            <h3 className="mt-4 text-lg font-medium text-slate-900 dark:text-white">Password Reset Successful</h3>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
               Your password has been reset successfully.
               <br />You will be redirected to the login page.
             </p>
@@ -136,8 +136,8 @@ function ResetPasswordForm() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </div>
-            <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Reset Failed</h3>
-            <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+            <h3 className="mt-4 text-lg font-medium text-slate-900 dark:text-white">Reset Failed</h3>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
               {error}
             </p>
             <div className="mt-6">
@@ -155,14 +155,14 @@ function ResetPasswordForm() {
           <div className="relative z-10">
             <div className="space-y-6">
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label htmlFor="password" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                   New Password
                 </label>
                 <input
                   id="password"
                   type="password"
                   {...form.register("password")}
-                  className="w-full p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                  className="w-full p-3 rounded-md border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary/50 focus:border-primary"
                   placeholder="Enter your new password"
                 />
                 {form.formState.errors.password && (
@@ -173,14 +173,14 @@ function ResetPasswordForm() {
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                   Confirm Password
                 </label>
                 <input
                   id="confirmPassword"
                   type="password"
                   {...form.register("confirmPassword")}
-                  className="w-full p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                  className="w-full p-3 rounded-md border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary/50 focus:border-primary"
                   placeholder="Confirm your new password"
                 />
                 {form.formState.errors.confirmPassword && (
@@ -212,15 +212,15 @@ function ResetPasswordLoading() {
   return (
     <div className="w-full max-w-md text-center">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-light text-gray-900 dark:text-white">
+        <h1 className="text-3xl font-light text-slate-900 dark:text-white">
           Reset your <span className="font-medium text-primary">password</span>
         </h1>
       </div>
-      <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+      <div className="bg-white dark:bg-slate-800 p-8 rounded-lg shadow-md border border-slate-200 dark:border-slate-700">
         <div className="flex items-center justify-center h-20">
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
         </div>
-        <p className="mt-4 text-gray-600 dark:text-gray-300">Loading reset form...</p>
+        <p className="mt-4 text-slate-600 dark:text-slate-300">Loading reset form...</p>
       </div>
     </div>
   );

@@ -54,7 +54,7 @@ export default function RandomShowcaseImage({
   const imageToShow = hasError ? fallbackImage : selectedImage;
 
   return (
-    <div className="relative w-full h-full overflow-hidden bg-gray-100 dark:bg-gray-800">
+    <div className="relative w-full h-full overflow-hidden bg-slate-100 dark:bg-slate-800">
       <Image
         src={imageToShow}
         alt={title}

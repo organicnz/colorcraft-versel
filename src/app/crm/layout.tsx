@@ -10,8 +10,8 @@ export default function CrmLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
-      <div className="w-64 bg-gray-100 border-r border-gray-200 hidden md:block">
-        <div className="p-4 border-b border-gray-200">
+      <div className="w-64 bg-slate-100 border-r border-slate-200 hidden md:block">
+        <div className="p-4 border-b border-slate-200">
           <h2 className="text-xl font-bold">CRM</h2>
         </div>
         <nav className="p-4">
@@ -28,10 +28,10 @@ export default function CrmLayout({ children }: { children: ReactNode }) {
             <NavItem href="/crm/projects">
               Projects
             </NavItem>
-            <li className="mt-6 pt-4 border-t border-gray-200">
+            <li className="mt-6 pt-4 border-t border-slate-200">
               <Link 
                 href="/dashboard" 
-                className="text-gray-600 hover:text-gray-900 text-sm font-medium"
+                className="text-slate-600 hover:text-slate-900 text-sm font-medium"
               >
                 ← Back to Main Dashboard
               </Link>
@@ -41,7 +41,7 @@ export default function CrmLayout({ children }: { children: ReactNode }) {
       </div>
       
       {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-10">
+      <div className="md:hidden fixed top-0 left-0 right-0 bg-white border-b border-slate-200 z-10">
         <div className="flex items-center justify-between p-4">
           <h2 className="text-xl font-bold">CRM</h2>
           <MobileMenu />
@@ -76,7 +76,7 @@ function NavItem({
         className={`block px-2 py-1 rounded text-sm font-medium ${
           isActive
             ? 'bg-blue-50 text-blue-700'
-            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
+            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
         }`}
       >
         {children}
@@ -89,7 +89,7 @@ function MobileMenu() {
   return (
     <div className="relative">
       {/* This would typically be a dropdown menu with JavaScript */}
-      <button className="p-2 rounded-md hover:bg-gray-100">
+      <button className="p-2 rounded-md hover:bg-slate-100">
         <svg 
           xmlns="http://www.w3.org/2000/svg" 
           fill="none" 

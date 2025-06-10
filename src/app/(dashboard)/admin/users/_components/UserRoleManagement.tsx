@@ -119,7 +119,7 @@ export default function UserRoleManagement({ users, currentUserId }: UserRoleMan
                 </TableCell>
                 <TableCell>
                   {user.id === currentUserId ? (
-                    <span className="text-sm text-gray-500">Cannot modify own role</span>
+                    <span className="text-sm text-slate-500">Cannot modify own role</span>
                   ) : (
                     <Button
                       variant="outline"

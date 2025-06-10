@@ -21,9 +21,9 @@ export function PhoneDisplay({
   
   const variantClasses = {
     hero: "text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white drop-shadow-lg text-center leading-tight",
-    header: "text-lg font-semibold text-gray-900 hover:text-[#3ECF8E]",
-    contact: "text-xl font-semibold text-gray-900",
-    footer: "text-base font-medium text-gray-300 hover:text-white"
+    header: "text-lg font-semibold text-slate-900 hover:text-[#3ECF8E]",
+    contact: "text-xl font-semibold text-slate-900",
+    footer: "text-base font-medium text-slate-300 hover:text-white"
   };
 
   const iconClasses = {
@@ -49,7 +49,7 @@ export function PhoneDisplay({
             "flex items-center justify-center rounded-full flex-shrink-0",
             variant === 'hero' ? "bg-white/20 p-2" : 
             variant === 'contact' ? "bg-[#3ECF8E]/20 p-2" : 
-            "bg-gray-700/50 p-2"
+            "bg-slate-700/50 p-2"
           )}>
             <Phone className={cn(iconClasses[variant], "text-current")} />
           </div>
@@ -73,7 +73,7 @@ export function PhoneDisplay({
               "flex items-center justify-center rounded-full flex-shrink-0",
               variant === 'hero' ? "bg-white/20 p-2" : 
               variant === 'contact' ? "bg-[#3ECF8E]/20 p-2" : 
-              "bg-gray-700/50 p-2"
+              "bg-slate-700/50 p-2"
             )}>
               <Mail className={cn(iconClasses[variant], "text-current")} />
             </div>

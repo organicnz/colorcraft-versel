@@ -14,7 +14,7 @@ export default function ThemeSwitcher() {
 
   if (!mounted) {
     return (
-      <button className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+      <button className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center">
         <span className="sr-only">Toggle theme</span>
       </button>
     );
@@ -24,7 +24,7 @@ export default function ThemeSwitcher() {
     <button
       aria-label="Toggle Dark Mode"
       type="button"
-      className="w-10 h-10 p-3 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors"
+      className="w-10 h-10 p-3 rounded-full bg-slate-200 hover:bg-slate-300 transition-colors"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
     >
       {/* Sun icon */}
@@ -50,7 +50,7 @@ export default function ThemeSwitcher() {
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          className="w-4 h-4 text-gray-800"
+          className="w-4 h-4 text-slate-800"
         >
           <path
             strokeLinecap="round"

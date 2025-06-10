@@ -93,7 +93,7 @@ export default function ServicesTable({ services }: ServicesTableProps) {
               </TableCell>
               <TableCell>{service.price_range || 'N/A'}</TableCell>
               <TableCell>
-                <span className={`px-2 py-1 rounded-full text-xs ${service.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                <span className={`px-2 py-1 rounded-full text-xs ${service.is_active ? 'bg-green-100 text-green-800' : 'bg-slate-100 text-slate-800'}`}>
                   {service.is_active ? 'Active' : 'Inactive'}
                 </span>
               </TableCell>

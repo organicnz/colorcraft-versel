@@ -255,7 +255,7 @@ export default function ImageUpload({
       <Card
         className={`
           relative border-2 border-dashed transition-colors cursor-pointer
-          ${dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300 hover:border-gray-400"}
+          ${dragActive ? "border-blue-500 bg-blue-50" : "border-slate-300 hover:border-slate-400"}
         `}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
@@ -264,12 +264,12 @@ export default function ImageUpload({
         onClick={() => inputRef.current?.click()}
       >
         <CardContent className="flex flex-col items-center justify-center py-8">
-          <Upload className="h-10 w-10 text-gray-400 mb-4" />
-          <p className="text-lg font-medium text-gray-900 mb-2">Upload {category} images</p>
-          <p className="text-sm text-gray-500 text-center mb-4">
+          <Upload className="h-10 w-10 text-slate-400 mb-4" />
+          <p className="text-lg font-medium text-slate-900 mb-2">Upload {category} images</p>
+          <p className="text-sm text-slate-500 text-center mb-4">
             Drag and drop files here, or click to select files
           </p>
-          <p className="text-xs text-gray-400 text-center">
+          <p className="text-xs text-slate-400 text-center">
             Supports: JPG, PNG, GIF, WebP | Max size: 50MB | Max files: {maxImages}
           </p>
 
@@ -355,7 +355,7 @@ export default function ImageUpload({
       )}
 
       {/* Info */}
-      <div className="text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
+      <div className="text-xs text-slate-500 bg-slate-50 p-3 rounded-lg">
         <p className="flex items-center gap-2 mb-1">
           <ImageIcon className="h-3 w-3" />
           Images will be stored in: portfolio/{portfolioId}/{category}-*

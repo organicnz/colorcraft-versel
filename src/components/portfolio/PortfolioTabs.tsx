@@ -88,7 +88,7 @@ export default function PortfolioTabs() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <Card glass={true} glassVariant="light" glassIntensity="medium">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Projects</CardTitle>
+            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">Total Projects</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center">
@@ -100,7 +100,7 @@ export default function PortfolioTabs() {
 
         <Card glass={true} glassVariant="light" glassIntensity="medium">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Published</CardTitle>
+            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">Published</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center">
@@ -112,7 +112,7 @@ export default function PortfolioTabs() {
 
         <Card glass={true} glassVariant="light" glassIntensity="medium">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Drafts</CardTitle>
+            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">Drafts</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center">
@@ -124,12 +124,12 @@ export default function PortfolioTabs() {
 
         <Card glass={true} glassVariant="light" glassIntensity="medium">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Archived</CardTitle>
+            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">Archived</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center">
-              <Trash2 className="h-4 w-4 text-gray-600 mr-2" />
-              <span className="text-2xl font-bold text-gray-600">{archivedCount}</span>
+              <Trash2 className="h-4 w-4 text-slate-600 mr-2" />
+              <span className="text-2xl font-bold text-slate-600">{archivedCount}</span>
             </div>
           </CardContent>
         </Card>
@@ -153,10 +153,10 @@ export default function PortfolioTabs() {
                 <FolderOpen className="h-8 w-8 text-orange-600" />
               </div>
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            <h3 className="text-xl font-semibold text-slate-900 mb-2">
               No projects found
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-slate-600 mb-6">
               {emptyMessages[tabType as keyof typeof emptyMessages]}
             </p>
             {(tabType === "active" || tabType === "draft") && (
@@ -188,7 +188,7 @@ export default function PortfolioTabs() {
 
             {/* Creator info */}
             {project.created_by_user && (
-              <div className="mt-2 text-xs text-gray-500">
+              <div className="mt-2 text-xs text-slate-500">
                 Created by: {project.created_by_user.full_name || project.created_by_user.email}
                 {project.updated_by_user && project.updated_by_user.email !== project.created_by_user.email && (
                   <span> • Updated by: {project.updated_by_user.full_name || project.updated_by_user.email}</span>
@@ -218,7 +218,7 @@ export default function PortfolioTabs() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
           <div className="text-center md:text-left">
             <h1 className="text-4xl font-bold mb-2">Portfolio Management</h1>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-slate-600">
               Manage your portfolio projects with status tracking and organization
             </p>
           </div>
@@ -258,7 +258,7 @@ export default function PortfolioTabs() {
         <TabsContent value="active">
           <div className="mb-4">
             <h2 className="text-2xl font-semibold mb-2">Published Projects</h2>
-            <p className="text-gray-600">Live projects visible on your public portfolio</p>
+            <p className="text-slate-600">Live projects visible on your public portfolio</p>
           </div>
           {renderProjectGrid(publishedProjects, "active")}
         </TabsContent>
@@ -266,7 +266,7 @@ export default function PortfolioTabs() {
         <TabsContent value="draft">
           <div className="mb-4">
             <h2 className="text-2xl font-semibold mb-2">Draft Projects</h2>
-            <p className="text-gray-600">Projects in development that are not yet published</p>
+            <p className="text-slate-600">Projects in development that are not yet published</p>
           </div>
           {renderProjectGrid(draftProjects, "draft")}
         </TabsContent>
@@ -274,7 +274,7 @@ export default function PortfolioTabs() {
         <TabsContent value="archived">
           <div className="mb-4">
             <h2 className="text-2xl font-semibold mb-2">Archived Projects</h2>
-            <p className="text-gray-600">Projects that have been archived (soft deleted)</p>
+            <p className="text-slate-600">Projects that have been archived (soft deleted)</p>
           </div>
           {renderProjectGrid(archivedProjects, "archived")}
         </TabsContent>

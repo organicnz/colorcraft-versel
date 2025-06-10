@@ -43,10 +43,10 @@ export default function ForgotPassword() {
     <div className="flex min-h-[70vh] flex-col items-center justify-center px-6 py-12">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-light text-gray-900 dark:text-white">
+          <h1 className="text-3xl font-light text-slate-900 dark:text-white">
             Forgot your <span className="font-medium text-primary">password?</span>
           </h1>
-          <p className="mt-3 text-gray-600 dark:text-gray-300">
+          <p className="mt-3 text-slate-600 dark:text-slate-300">
             Enter your email address and we'll send you a link to reset your password.
           </p>
         </div>
@@ -62,8 +62,8 @@ export default function ForgotPassword() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Check your email</h3>
-              <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+              <h3 className="mt-4 text-lg font-medium text-slate-900 dark:text-white">Check your email</h3>
+              <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
                 We've sent a password reset link to <strong>{email}</strong>.
                 <br />Check your inbox and follow the instructions.
               </p>
@@ -81,14 +81,14 @@ export default function ForgotPassword() {
             
             <div className="relative z-10">
               <div className="mb-6">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label htmlFor="email" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                   Email Address
                 </label>
                 <input
                   id="email"
                   type="email"
                   required
-                  className="w-full p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                  className="w-full p-3 rounded-md border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary/50 focus:border-primary"
                   placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -104,7 +104,7 @@ export default function ForgotPassword() {
                 {isLoading ? 'Sending...' : 'Send Reset Link'}
               </button>
               <div className="mt-4 text-center">
-                <Link href="/login" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary">
+                <Link href="/login" className="text-sm text-slate-600 dark:text-slate-400 hover:text-primary">
                   Return to login
                 </Link>
               </div>

@@ -15,7 +15,7 @@ export default function CustomerList({ initialCustomers }: CustomerListProps) {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold">Customers</h1>
-          <p className="text-gray-600">Manage your customer database</p>
+          <p className="text-slate-600">Manage your customer database</p>
         </div>
         <Link
           href="/crm/customers/new"
@@ -31,8 +31,8 @@ export default function CustomerList({ initialCustomers }: CustomerListProps) {
           <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent dark:from-white/5 pointer-events-none rounded-xl" />
 
           <div className="relative z-10">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No customers yet</h3>
-            <p className="text-gray-500 dark:text-gray-300 mb-4">
+            <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">No customers yet</h3>
+            <p className="text-slate-500 dark:text-slate-300 mb-4">
               Get started by adding your first customer to the database.
             </p>
             <Link
@@ -49,36 +49,36 @@ export default function CustomerList({ initialCustomers }: CustomerListProps) {
           <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent dark:from-white/5 pointer-events-none" />
 
           <div className="relative z-10">
-            <table className="min-w-full divide-y divide-gray-200/50 dark:divide-gray-700/50">
+            <table className="min-w-full divide-y divide-slate-200/50 dark:divide-slate-700/50">
               <thead className="bg-white/20 dark:bg-white/5 backdrop-blur-sm">
                 <tr>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider"
                   >
                     Name
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider"
                   >
                     Email
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider"
                   >
                     Phone
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider"
                   >
                     Status
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider"
                   >
                     Source
                   </th>
@@ -87,19 +87,19 @@ export default function CustomerList({ initialCustomers }: CustomerListProps) {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200/30 dark:divide-gray-700/30">
+              <tbody className="divide-y divide-slate-200/30 dark:divide-slate-700/30">
                 {customers.map((customer) => (
                   <tr key={customer.id} className="hover:bg-white/20 dark:hover:bg-white/5 transition-colors duration-200">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900 dark:text-white">
+                      <div className="text-sm font-medium text-slate-900 dark:text-white">
                         {customer.name}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500 dark:text-gray-300">{customer.email}</div>
+                      <div className="text-sm text-slate-500 dark:text-slate-300">{customer.email}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500 dark:text-gray-300">
+                      <div className="text-sm text-slate-500 dark:text-slate-300">
                         {customer.phone || '-'}
                       </div>
                     </td>
@@ -116,7 +116,7 @@ export default function CustomerList({ initialCustomers }: CustomerListProps) {
                         {customer.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-300">
                       {customer.source || '-'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

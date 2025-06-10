@@ -38,7 +38,7 @@ export default async function CrmDashboard() {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">CRM Dashboard</h1>
-        <p className="text-gray-600">Manage your customers, leads, and projects</p>
+        <p className="text-slate-600">Manage your customers, leads, and projects</p>
       </div>
       
       {/* Stats Cards */}
@@ -113,7 +113,7 @@ export default async function CrmDashboard() {
                 ))}
               </div>
             ) : (
-              <div className="p-6 text-center text-gray-600 dark:text-gray-400">No recent activity</div>
+              <div className="p-6 text-center text-slate-600 dark:text-slate-400">No recent activity</div>
             )}
           </div>
         </div>
@@ -143,8 +143,8 @@ function StatsCard({
         <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent dark:from-white/5 pointer-events-none" />
         
         <div className="relative z-10">
-          <h3 className="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2">{title}</h3>
-          <p className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{value}</p>
+          <h3 className="text-slate-700 dark:text-slate-300 text-sm font-medium mb-2">{title}</h3>
+          <p className="text-3xl font-bold text-slate-900 dark:text-white mb-4">{value}</p>
           <div>
             <Link 
               href={link}
@@ -177,8 +177,8 @@ function QuickLink({
         <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent dark:from-white/5 pointer-events-none rounded-xl" />
         
         <div className="relative z-10">
-          <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{title}</h3>
-          <p className="text-gray-600 dark:text-gray-300 text-sm">{description}</p>
+          <h3 className="font-semibold text-slate-900 dark:text-white mb-2">{title}</h3>
+          <p className="text-slate-600 dark:text-slate-300 text-sm">{description}</p>
         </div>
       </div>
     </Link>
@@ -199,7 +199,7 @@ function ActivityItem({ activity }: { activity: RecentActivity }) {
   });
   
   return (
-    <div className="p-4 hover:bg-gray-50">
+    <div className="p-4 hover:bg-slate-50">
       <div className="flex items-start">
         <div className="flex-1">
           <p>
@@ -208,9 +208,9 @@ function ActivityItem({ activity }: { activity: RecentActivity }) {
             <span className="font-medium">{targetName}</span>
           </p>
           {activity.subject && (
-            <p className="text-sm text-gray-700 mt-1">{activity.subject}</p>
+            <p className="text-sm text-slate-700 mt-1">{activity.subject}</p>
           )}
-          <p className="text-sm text-gray-500 mt-1">{formattedDate}</p>
+          <p className="text-sm text-slate-500 mt-1">{formattedDate}</p>
         </div>
       </div>
     </div>

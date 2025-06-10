@@ -117,7 +117,7 @@ export default async function SupabaseTestPage() {
           </div>
         </div>
 
-        <div className="bg-gray-50 border rounded-lg p-6">
+        <div className="bg-slate-50 border rounded-lg p-6">
           <h2 className="text-xl font-semibold mb-4">Environment Check</h2>
           <div className="space-y-2 text-sm font-mono">
             <div>NEXT_PUBLIC_SUPABASE_URL: {process.env.NEXT_PUBLIC_SUPABASE_URL ? '✓ Set' : '✗ Missing'}</div>

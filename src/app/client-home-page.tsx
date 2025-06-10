@@ -19,8 +19,12 @@ const fadeIn = (delay = 0, duration = 0.8) => ({
   visible: {
     opacity: 1,
     y: 0,
-    transition: { delay, duration, ease: "easeOut" },
-  },
+    transition: {
+      duration,
+      delay,
+      ease: "easeOut"
+    }
+  }
 });
 
 const slideIn = (direction = "left", delay = 0) => ({
@@ -28,18 +32,23 @@ const slideIn = (direction = "left", delay = 0) => ({
   visible: {
     opacity: 1,
     x: 0,
-    transition: { delay, duration: 0.8, ease: "easeOut" },
-  },
+    transition: {
+      duration: 0.6,
+      delay,
+      ease: "easeOut"
+    }
+  }
 });
 
 const staggerContainer = {
-  hidden: { opacity: 0 },
+  hidden: { opacity: 1 },
   visible: {
     opacity: 1,
     transition: {
       staggerChildren: 0.1,
-    },
-  },
+      delayChildren: 0.1
+    }
+  }
 };
 
 // Icon mapping
@@ -168,7 +177,7 @@ export default function ClientHomePage({
         {/* Multi-layered parallax backgrounds */}
         <motion.div
           style={{ y: bgLayer1 }}
-          className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900"
+          className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900"
         />
         <motion.div
           style={{ y: bgLayer2 }}
@@ -190,14 +199,14 @@ export default function ClientHomePage({
         />
 
         <motion.div
-                      style={{ y: heroY, opacity: heroOpacity, scale: heroScale }}
+          style={{ y: heroY, opacity: heroOpacity, scale: heroScale }}
           className="relative z-10 container mx-auto px-4"
         >
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Hero Content */}
             <motion.div
-              initial="hidden"
-              animate="visible"
+              initial={{ opacity: 1 }}
+              animate={{ opacity: 1 }}
               variants={staggerContainer}
               className="order-2 lg:order-1"
             >
@@ -253,7 +262,7 @@ export default function ClientHomePage({
             {/* Featured Project Showcase with Parallax */}
             {currentProject && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
+                initial={{ opacity: 1, scale: 1 }}
                 animate={{ opacity: 1, scale: 1 }}
                 style={{ y: heroProjectY }}
                 transition={{ duration: 0.8, delay: 0.2 }}
@@ -331,8 +340,8 @@ export default function ClientHomePage({
 
         <div className="container relative z-10">
           <motion.div
-            initial="hidden"
-            whileInView="visible"
+            initial={{ opacity: 1 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             variants={staggerContainer}
             className="text-center mb-16"
@@ -361,8 +370,8 @@ export default function ClientHomePage({
           </motion.div>
 
           <motion.div
-            initial="hidden"
-            whileInView="visible"
+            initial={{ opacity: 1 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             variants={staggerContainer}
             className="grid grid-cols-1 md:grid-cols-3 gap-8"
@@ -488,7 +497,7 @@ export default function ClientHomePage({
                   >
                     <CardHeader className="p-0 relative aspect-[4/3] overflow-hidden">
                       <motion.div
-                        className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900"
+                        className="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900"
                         whileHover={{ scale: 1.05 }}
                         transition={{ duration: 0.3 }}
                       >
@@ -573,8 +582,8 @@ export default function ClientHomePage({
 
         <div className="container relative z-10">
           <motion.div
-            initial="hidden"
-            whileInView="visible"
+            initial={{ opacity: 1 }}
+            animate="visible"
             viewport={{ once: true }}
             variants={staggerContainer}
             className="text-center mb-16"
@@ -596,8 +605,8 @@ export default function ClientHomePage({
           </motion.div>
 
           <motion.div
-            initial="hidden"
-            whileInView="visible"
+            initial={{ opacity: 1 }}
+            animate="visible"
             viewport={{ once: true }}
             variants={staggerContainer}
             className="grid grid-cols-1 md:grid-cols-3 gap-8"
@@ -646,8 +655,8 @@ export default function ClientHomePage({
 
         <div className="container relative z-10">
           <motion.div
-            initial="hidden"
-            whileInView="visible"
+            initial={{ opacity: 1 }}
+            animate="visible"
             viewport={{ once: true }}
             variants={staggerContainer}
             className="max-w-5xl mx-auto"

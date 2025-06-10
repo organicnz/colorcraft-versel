@@ -56,7 +56,7 @@ export default function MigrationsPage() {
         <Database className="h-8 w-8 text-blue-600" />
         <div>
           <h1 className="text-3xl font-bold">Database Migrations</h1>
-          <p className="text-gray-600">Manage database schema updates and data migrations</p>
+          <p className="text-slate-600">Manage database schema updates and data migrations</p>
         </div>
       </div>
 
@@ -69,7 +69,7 @@ export default function MigrationsPage() {
                 <ArrowRight className="h-5 w-5" />
                 Portfolio Status Field Migration
               </CardTitle>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm text-slate-600 mt-1">
                 Migrate from boolean fields (is_published, is_draft, is_archived) to a single status field
               </p>
             </div>
@@ -122,7 +122,7 @@ export default function MigrationsPage() {
 
           {/* Migration Results */}
           {migrationResults && (
-            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+            <div className="mt-4 p-4 bg-slate-50 rounded-lg">
               <h4 className="font-medium mb-2">Migration Results:</h4>
               <pre className="text-xs bg-white p-3 rounded border overflow-auto max-h-64">
                 {JSON.stringify(migrationResults, null, 2)}
@@ -136,12 +136,12 @@ export default function MigrationsPage() {
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Available Migrations</CardTitle>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-slate-600">
             Other database migrations that can be run
           </p>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center py-8 text-slate-500">
             <Database className="h-12 w-12 mx-auto mb-3 opacity-50" />
             <p>No additional migrations available at this time</p>
           </div>

@@ -45,7 +45,7 @@ interface PortfolioManagementClientProps {
 const statusColors = {
   published: 'bg-green-100 text-green-800 border-green-200',
   draft: 'bg-orange-100 text-orange-800 border-orange-200',
-  archived: 'bg-gray-100 text-gray-800 border-gray-200',
+  archived: 'bg-slate-100 text-slate-800 border-slate-200',
 };
 
 const statusIcons = {

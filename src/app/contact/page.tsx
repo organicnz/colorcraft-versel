@@ -15,8 +15,8 @@ export default function ContactPage() {
         <div className="mx-auto max-w-6xl">
           {/* Header Section */}
           <div className="mb-12 text-center">
-            <h1 className="mb-4 text-4xl font-bold text-gray-900 md:text-5xl">Contact Us</h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <h1 className="mb-4 text-4xl font-bold text-slate-900 md:text-5xl">Contact Us</h1>
+            <p className="text-xl text-slate-600 max-w-2xl mx-auto">
               Have questions or want to discuss your project? We'd love to hear from you!
             </p>
           </div>
@@ -26,7 +26,7 @@ export default function ContactPage() {
             {/* Contact Form */}
             <div className="lg:col-span-2">
               <div className="bg-white/70 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-white/50">
-                <h2 className="mb-6 text-2xl font-semibold text-gray-900">Send us a message</h2>
+                <h2 className="mb-6 text-2xl font-semibold text-slate-900">Send us a message</h2>
                 <ContactForm />
               </div>
             </div>
@@ -48,8 +48,8 @@ export default function ContactPage() {
                     <MapPin className="w-5 h-5 text-orange-600" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Visit Our Studio</h3>
-                    <p className="text-gray-700 leading-relaxed">
+                    <h3 className="text-lg font-semibold text-slate-900 mb-2">Visit Our Studio</h3>
+                    <p className="text-slate-700 leading-relaxed">
                       23120 Schumann Rd<br />
                       Chatsworth, CA 91311
                     </p>
@@ -64,8 +64,8 @@ export default function ContactPage() {
                     <Clock className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Business Hours</h3>
-                    <div className="space-y-1 text-gray-700">
+                    <h3 className="text-lg font-semibold text-slate-900 mb-3">Business Hours</h3>
+                    <div className="space-y-1 text-slate-700">
                       <div className="flex justify-between">
                         <span>Monday - Friday</span>
                         <span>9:00 AM - 5:00 PM</span>
@@ -85,8 +85,8 @@ export default function ContactPage() {
 
               {/* CTA Card */}
               <div className="bg-gradient-to-br from-[#3ECF8E]/20 to-[#38BC81]/20 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-[#3ECF8E]/30">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Ready to Transform Your Furniture?</h3>
-                <p className="text-gray-700 text-sm mb-4">
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">Ready to Transform Your Furniture?</h3>
+                <p className="text-slate-700 text-sm mb-4">
                   Call us today for a free consultation and quote. We'll help bring your vision to life!
                 </p>
                 <a

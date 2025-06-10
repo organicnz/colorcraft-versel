@@ -81,7 +81,7 @@ export default function CustomerForm({ initialData, onSuccess }: CustomerFormPro
         </label>
         <input
           id="full_name"
-          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none"
+          className="w-full rounded-md border border-slate-300 px-3 py-2 focus:border-primary-500 focus:outline-none"
           {...form.register("full_name")}
         />
         {form.formState.errors.full_name && (
@@ -96,7 +96,7 @@ export default function CustomerForm({ initialData, onSuccess }: CustomerFormPro
         <input
           id="email"
           type="email"
-          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none"
+          className="w-full rounded-md border border-slate-300 px-3 py-2 focus:border-primary-500 focus:outline-none"
           {...form.register("email")}
         />
         {form.formState.errors.email && (
@@ -110,7 +110,7 @@ export default function CustomerForm({ initialData, onSuccess }: CustomerFormPro
         </label>
         <input
           id="phone"
-          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none"
+          className="w-full rounded-md border border-slate-300 px-3 py-2 focus:border-primary-500 focus:outline-none"
           {...form.register("phone")}
         />
         {form.formState.errors.phone && (
@@ -124,7 +124,7 @@ export default function CustomerForm({ initialData, onSuccess }: CustomerFormPro
         </label>
         <input
           id="address"
-          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none"
+          className="w-full rounded-md border border-slate-300 px-3 py-2 focus:border-primary-500 focus:outline-none"
           {...form.register("address")}
         />
         {form.formState.errors.address && (
@@ -139,7 +139,7 @@ export default function CustomerForm({ initialData, onSuccess }: CustomerFormPro
         <textarea
           id="notes"
           rows={4}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none"
+          className="w-full rounded-md border border-slate-300 px-3 py-2 focus:border-primary-500 focus:outline-none"
           {...form.register("notes")}
         />
         {form.formState.errors.notes && (

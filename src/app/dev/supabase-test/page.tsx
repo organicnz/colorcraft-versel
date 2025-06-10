@@ -375,7 +375,7 @@ export default function SupabaseTestPage() {
                 </div>
               )}
               {result.data && (
-                <div className="bg-gray-50 p-3 rounded">
+                <div className="bg-slate-50 p-3 rounded">
                   <pre className="text-sm overflow-auto">
                     {JSON.stringify(result.data, null, 2)}
                   </pre>

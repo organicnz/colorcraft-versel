@@ -5,14 +5,14 @@ import Image from 'next/image';
 
 export default function Footer() {
   return (
-    <footer className="bg-white dark:bg-gray-900">
+    <footer className="bg-white dark:bg-slate-900">
       {/* Main Footer */}
       <div className="container mx-auto py-16 px-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-10">
           {/* Company Info */}
           <div className="md:col-span-2">
-            <h4 className="text-xl font-semibold mb-6 text-gray-800 dark:text-white">Color & Craft</h4>
-            <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-md">
+            <h4 className="text-xl font-semibold mb-6 text-slate-800 dark:text-white">Color & Craft</h4>
+            <p className="text-slate-600 dark:text-slate-300 mb-6 max-w-md">
               Transforming furniture with expert craftsmanship. We breathe new life into treasured pieces through premium painting, restoration, and custom finishes.
             </p>
             <div className="flex space-x-4">
@@ -20,7 +20,7 @@ export default function Footer() {
                 href="https://www.facebook.com/profile.php?id=61557012322783"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-gray-200 dark:bg-gray-800 p-2 rounded-full hover:bg-primary hover:text-white transition-colors"
+                className="bg-slate-200 dark:bg-slate-800 p-2 rounded-full hover:bg-primary hover:text-white transition-colors"
                 aria-label="Follow us on Facebook"
               >
                 <svg
@@ -34,7 +34,7 @@ export default function Footer() {
               </a>
               <a
                 href="#"
-                className="bg-gray-200 dark:bg-gray-800 p-2 rounded-full hover:bg-primary hover:text-white transition-colors"
+                className="bg-slate-200 dark:bg-slate-800 p-2 rounded-full hover:bg-primary hover:text-white transition-colors"
                 aria-label="Follow us on Instagram"
               >
                 <svg
@@ -48,7 +48,7 @@ export default function Footer() {
               </a>
               <a
                 href="#"
-                className="bg-gray-200 dark:bg-gray-800 p-2 rounded-full hover:bg-primary hover:text-white transition-colors"
+                className="bg-slate-200 dark:bg-slate-800 p-2 rounded-full hover:bg-primary hover:text-white transition-colors"
                 aria-label="Follow us on Twitter"
               >
                 <svg
@@ -62,7 +62,7 @@ export default function Footer() {
               </a>
               <a
                 href="#"
-                className="bg-gray-200 dark:bg-gray-800 p-2 rounded-full hover:bg-primary hover:text-white transition-colors"
+                className="bg-slate-200 dark:bg-slate-800 p-2 rounded-full hover:bg-primary hover:text-white transition-colors"
                 aria-label="Connect with us on LinkedIn"
               >
                 <svg
@@ -79,20 +79,20 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h5 className="text-gray-800 dark:text-white font-medium mb-4">Services</h5>
+            <h5 className="text-slate-800 dark:text-white font-medium mb-4">Services</h5>
             <ul className="space-y-3">
               <li>
-                <Link href="/services/custom-painting" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
+                <Link href="/services/custom-painting" className="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">
                   Custom Painting
                 </Link>
               </li>
               <li>
-                <Link href="/services/restoration" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
+                <Link href="/services/restoration" className="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">
                   Furniture Restoration
                 </Link>
               </li>
               <li>
-                <Link href="/services/upcycling" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
+                <Link href="/services/upcycling" className="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">
                   Upcycling & Repurposing
                 </Link>
               </li>
@@ -101,25 +101,25 @@ export default function Footer() {
 
           {/* Learn */}
           <div>
-            <h5 className="text-gray-800 dark:text-white font-medium mb-4">About</h5>
+            <h5 className="text-slate-800 dark:text-white font-medium mb-4">About</h5>
             <ul className="space-y-3">
               <li>
-                <Link href="/about" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
+                <Link href="/about" className="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">
                   Our Story
                 </Link>
               </li>
               <li>
-                <Link href="/about#team" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
+                <Link href="/about#team" className="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">
                   Our Team
                 </Link>
               </li>
               <li>
-                <Link href="/portfolio" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
+                <Link href="/portfolio" className="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">
                   Portfolio
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
+                <Link href="/blog" className="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">
                   Tips & Inspiration
                 </Link>
               </li>
@@ -128,20 +128,20 @@ export default function Footer() {
 
           {/* Support */}
           <div>
-            <h5 className="text-gray-800 dark:text-white font-medium mb-4">Contact</h5>
+            <h5 className="text-slate-800 dark:text-white font-medium mb-4">Contact</h5>
             <ul className="space-y-3">
               <li>
-                <Link href="/services#process" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
+                <Link href="/services#process" className="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">
                   How It Works
                 </Link>
               </li>
               <li>
-                <Link href="/faq" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
+                <Link href="/faq" className="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">
                   FAQ
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
+                <Link href="/contact" className="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">
                   Contact Us
                 </Link>
               </li>
@@ -150,7 +150,7 @@ export default function Footer() {
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
-                  <span className="text-gray-600 dark:text-gray-300 text-sm">+1 747 755 7695</span>
+                  <span className="text-slate-600 dark:text-slate-300 text-sm">+1 747 755 7695</span>
                 </div>
               </li>
             </ul>
@@ -159,25 +159,25 @@ export default function Footer() {
       </div>
 
       {/* Copyright */}
-      <div className="border-t border-gray-200 dark:border-gray-800">
+      <div className="border-t border-slate-200 dark:border-slate-800">
         <div className="container mx-auto py-6 px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-600 dark:text-gray-400 text-sm text-center md:text-left">
+            <p className="text-slate-600 dark:text-slate-400 text-sm text-center md:text-left">
               &copy; {new Date().getFullYear()} Color & Craft. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link href="/privacy" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
+              <Link href="/privacy" className="text-slate-600 dark:text-slate-400 text-sm hover:text-primary transition-colors">
                 Privacy Policy
               </Link>
-              <Link href="/terms" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
+              <Link href="/terms" className="text-slate-600 dark:text-slate-400 text-sm hover:text-primary transition-colors">
                 Terms of Service
               </Link>
-              <Link href="/cookies" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
+              <Link href="/cookies" className="text-slate-600 dark:text-slate-400 text-sm hover:text-primary transition-colors">
                 Cookie Policy
               </Link>
             </div>
           </div>
-          <div className="mt-6 text-xs text-gray-500 dark:text-gray-500 text-center md:text-left max-w-3xl">
+          <div className="mt-6 text-xs text-slate-500 dark:text-slate-500 text-center md:text-left max-w-3xl">
             Color & Craft is committed to providing high-quality furniture painting and restoration services. Our expert craftspeople use premium materials and time-tested techniques to transform your cherished furniture pieces into stunning works of art.
           </div>
         </div>

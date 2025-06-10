@@ -79,7 +79,7 @@ export default function RootLayout({
               <div className="flex h-16 items-center justify-between">
                 {/* Logo */}
                 <Link href="/" className="flex items-center space-x-3">
-                  <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <span className="text-2xl font-bold text-slate-900 dark:text-white">
                     Color & Craft
                   </span>
                 </Link>
@@ -90,7 +90,7 @@ export default function RootLayout({
                     <Link
                       key={link.href}
                       href={link.href}
-                      className="text-gray-700 hover:text-[#3ECF8E] transition-colors duration-300 font-medium text-base"
+                      className="text-slate-700 hover:text-[#3ECF8E] transition-colors duration-300 font-medium text-base"
                     >
                       {link.label}
                     </Link>
@@ -122,7 +122,7 @@ export default function RootLayout({
                 {/* Mobile Menu Button */}
                 <Sheet>
                   <SheetTrigger asChild>
-                    <Button variant="outline" size="icon" className="md:hidden border-gray-300 hover:border-[#3ECF8E]">
+                    <Button variant="outline" size="icon" className="md:hidden border-slate-300 hover:border-[#3ECF8E]">
                       <Menu className="h-5 w-5" />
                       <span className="sr-only">Toggle Menu</span>
                     </Button>
@@ -132,7 +132,7 @@ export default function RootLayout({
                       {/* Mobile Logo */}
                       <Link
                         href="/"
-                        className="flex items-center space-x-2 text-xl font-bold text-gray-900"
+                        className="flex items-center space-x-2 text-xl font-bold text-slate-900"
                       >
                         Color & Craft
                       </Link>
@@ -143,7 +143,7 @@ export default function RootLayout({
                           <Link
                             key={link.href}
                             href={link.href}
-                            className="text-lg font-medium text-gray-700 hover:text-[#3ECF8E] transition-colors py-2 border-b border-gray-100 last:border-0"
+                            className="text-lg font-medium text-slate-700 hover:text-[#3ECF8E] transition-colors py-2 border-b border-slate-100 last:border-0"
                           >
                             {link.label}
                           </Link>
@@ -151,7 +151,7 @@ export default function RootLayout({
                       </nav>
 
                       {/* Mobile Phone Display */}
-                      <div className="pt-4 border-t border-gray-200">
+                      <div className="pt-4 border-t border-slate-200">
                         <PhoneDisplay 
                           phoneNumber="(747) 755-7695"
                           email="contact@colorandcraft.com"

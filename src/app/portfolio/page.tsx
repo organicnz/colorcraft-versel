@@ -142,15 +142,15 @@ export default async function PortfolioPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
           <div className="text-center p-8 bg-white/60 backdrop-blur-md border border-white/30 rounded-2xl shadow-lg hover:shadow-xl hover:bg-white/70 transition-all duration-300">
             <div className="text-4xl font-bold text-orange-600 mb-2">{publishedProjects.length}+</div>
-            <div className="text-gray-600 font-medium">Projects Completed</div>
+            <div className="text-slate-600 font-medium">Projects Completed</div>
           </div>
           <div className="text-center p-8 bg-white/60 backdrop-blur-md border border-white/30 rounded-2xl shadow-lg hover:shadow-xl hover:bg-white/70 transition-all duration-300">
             <div className="text-4xl font-bold text-orange-600 mb-2">100%</div>
-            <div className="text-gray-600 font-medium">Client Satisfaction</div>
+            <div className="text-slate-600 font-medium">Client Satisfaction</div>
           </div>
           <div className="text-center p-8 bg-white/60 backdrop-blur-md border border-white/30 rounded-2xl shadow-lg hover:shadow-xl hover:bg-white/70 transition-all duration-300">
             <div className="text-4xl font-bold text-orange-600 mb-2">5+</div>
-            <div className="text-gray-600 font-medium">Years Experience</div>
+            <div className="text-slate-600 font-medium">Years Experience</div>
           </div>
         </div>
 
@@ -160,8 +160,8 @@ export default async function PortfolioPage() {
             <div className="text-center mb-16">
               <div className="flex flex-col md:flex-row items-center justify-between mb-8">
                 <div className="text-center md:text-left">
-                  <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Transformations</h2>
-                  <p className="text-xl text-gray-600 max-w-2xl">
+                  <h2 className="text-4xl font-bold text-slate-900 mb-4">Featured Transformations</h2>
+                  <p className="text-xl text-slate-600 max-w-2xl">
                     Each piece is carefully restored and transformed with attention to detail and craftsmanship
                   </p>
                 </div>
@@ -204,10 +204,10 @@ export default async function PortfolioPage() {
                   <Palette className="h-12 w-12 text-orange-600" />
                 </div>
               </div>
-              <h3 className="text-3xl font-bold text-gray-900 mb-4">
+              <h3 className="text-3xl font-bold text-slate-900 mb-4">
                 No Published Projects Yet
               </h3>
-              <p className="text-lg text-gray-600 mb-8">
+              <p className="text-lg text-slate-600 mb-8">
                 We're currently working on amazing furniture transformations.
                 Check back soon to see our latest creations!
               </p>
