@@ -11,10 +11,10 @@
   },
   "regions": ["iad1"],
   "github": {
-    "enabled": false
+    "enabled": true
   },
   "git": {
-    "deploymentEnabled": false
+    "deploymentEnabled": true
   },
   "crons": [
     {

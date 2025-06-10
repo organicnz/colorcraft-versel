@@ -8,12 +8,26 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   // Explicitly define path aliases to ensure proper resolution in Vercel
-  webpack: (config) => {
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     config.resolve.alias['@'] = path.join(__dirname, 'src');
-    return config;
+    
+    // Performance optimizations
+    if (!dev && !isServer) {
+      config.optimization.splitChunks = {
+        chunks: 'all',
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            priority: 10,
+            reuseExistingChunk: true,
+          },
+        },
+      }
+    }
+
+    return config
   },
-  // Use standalone for production builds with full Next.js features
-  output: 'standalone',
   trailingSlash: true,
   // Turbopack configuration (moved from experimental.turbo)
   turbopack: {
@@ -84,24 +98,6 @@ const nextConfig = {
   // Environment variables available at build time
   env: {
     CUSTOM_KEY: 'colorcraft-production',
-  },
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    // Performance optimizations
-    if (!dev && !isServer) {
-      config.optimization.splitChunks = {
-        chunks: 'all',
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            priority: 10,
-            reuseExistingChunk: true,
-          },
-        },
-      }
-    }
-
-    return config
   },
 };
 
