@@ -48,27 +48,41 @@ export default function SignInForm() {
 
       if (signInError) {
         console.error('Sign in error:', signInError);
-        throw signInError;
+
+        // Handle specific error messages
+        let errorMessage = signInError.message;
+        if (signInError.message.includes('Invalid login credentials')) {
+          errorMessage = 'Invalid email or password. Please check your credentials and try again.';
+        } else if (signInError.message.includes('Email not confirmed')) {
+          errorMessage = 'Please check your email and click the confirmation link before signing in.';
+        }
+
+        setError(errorMessage);
+        setIsLoading(false); // Reset loading state immediately
+        return; // Don't proceed with redirect
       }
 
       if (!signInData?.user) {
         console.error('No user data returned from sign in');
-        throw new Error("Sign in failed - no user data returned");
+        setError("Sign in failed - no user data returned");
+        setIsLoading(false);
+        return;
       }
 
-      console.log('Sign in successful, redirecting...');
+      console.log('✅ Sign in successful, redirecting...');
       
       // Use replace instead of push to avoid back button issues
       router.replace('/');
       // Force a page refresh to ensure auth state is updated
-      window.location.href = '/';
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 100);
       
     } catch (error: any) {
-      console.error('Sign in failed:', error);
-      setError(error?.message || "Failed to sign in");
-      setIsLoading(false); // Make sure to reset loading state on error
+      console.error('Unexpected sign in error:', error);
+      setError(error?.message || "An unexpected error occurred");
+      setIsLoading(false); // Always reset loading state on catch
     }
-    // Note: Don't set isLoading(false) in finally block since we're redirecting on success
   }
 
   return (
