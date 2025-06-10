@@ -49,10 +49,7 @@
 
   /* Block all possible animation sources */
   [data-framer-motion-initial="true"],
-  [data-framer-motion],
-  .motion-preset-*,
-  .animate-*,
-  .transition-* {
+  [data-framer-motion] {
     transform: none !important;
     opacity: 1 !important;
     animation: none !important;
