@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import Image from 'next/image';
 
 interface RandomShowcaseImageProps {
@@ -27,6 +27,7 @@ export default function RandomShowcaseImage({
   priority = false,
 }: RandomShowcaseImageProps) {
   // Memoize the selected image to prevent unnecessary re-renders
+  // This ensures consistent image selection across server and client
   const selectedImage = useMemo(() => {
     if (afterImages && Array.isArray(afterImages) && afterImages.length > 0) {
       // Filter out any invalid URLs
@@ -42,36 +43,26 @@ export default function RandomShowcaseImage({
     return fallbackImage;
   }, [afterImages, fallbackImage, portfolioId]);
 
-  const [currentImage, setCurrentImage] = useState<string>(selectedImage);
-  const [imageError, setImageError] = useState(false);
-
-  // Update current image when selected image changes
-  useEffect(() => {
-    if (!imageError) {
-      setCurrentImage(selectedImage);
-    }
-  }, [selectedImage, imageError]);
-
+  // Simple error state for fallback handling
+  const [hasError, setHasError] = useState(false);
+  
   const handleImageError = () => {
-    setImageError(true);
-    setCurrentImage(fallbackImage);
+    setHasError(true);
   };
 
-  const handleImageLoad = () => {
-    setImageError(false);
-  };
+  // Use the selected image or fallback if there's an error
+  const imageToShow = hasError ? fallbackImage : selectedImage;
 
   return (
     <div className="relative w-full h-full overflow-hidden bg-gray-100 dark:bg-gray-800">
       <Image
-        src={currentImage}
+        src={imageToShow}
         alt={title}
         fill
         className={className}
         sizes={sizes || "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
         priority={priority}
         onError={handleImageError}
-        onLoad={handleImageLoad}
         placeholder="blur"
         blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
         style={{

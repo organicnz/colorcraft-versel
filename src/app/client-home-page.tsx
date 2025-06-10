@@ -62,9 +62,21 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
   const [email, setEmail] = useState('');
 
-  // Use first 4 projects for display (already randomized from server)
-  const displayProjects = featuredProjects.slice(0, 4);
+  // Debug logging
+  console.log('🔍 ClientHomePage render:', {
+    featuredProjects: featuredProjects?.length || 0,
+    featuredProjectsSample: featuredProjects?.slice(0, 2),
+  });
+
+  // Use first 4 projects for display with safety check
+  const displayProjects = featuredProjects && Array.isArray(featuredProjects) ? featuredProjects.slice(0, 4) : [];
   const currentProject = displayProjects[currentProjectIndex] || displayProjects[0];
+
+  console.log('🔍 Display projects:', {
+    displayProjectsLength: displayProjects.length,
+    currentProjectIndex,
+    currentProject: currentProject?.title,
+  });
 
   // Scroll animations
   const { scrollYProgress } = useScroll({
@@ -316,40 +328,56 @@ export default function ClientHomePage({ featuredProjects, services, testimonial
             variants={staggerContainer}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
           >
-            {displayProjects.map((project, index) => (
-              <motion.div
-                key={project.id}
-                variants={fadeIn(index * 0.1)}
-              >
-                <Card
-                  glass={true}
-                  glassVariant="light"
-                  glassIntensity="medium"
-                  className="group overflow-hidden h-full flex flex-col border-border/50 hover:shadow-glass-heavy transition-all duration-300 hover:scale-[1.02]"
+            {displayProjects.length > 0 ? (
+              displayProjects.map((project, index) => (
+                <motion.div
+                  key={project.id}
+                  variants={fadeIn(index * 0.1)}
                 >
-                  <CardHeader className="p-0 relative aspect-[4/3] overflow-hidden">
-                    <RandomShowcaseImage
-                      portfolioId={project.id}
-                      title={project.title}
-                      afterImages={project.after_images}
-                      fallbackImage={project.image}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </CardHeader>
-                  <CardContent className="p-4 flex-grow flex flex-col relative z-10">
-                    <h3 className="text-lg font-medium text-card-foreground mb-1 line-clamp-1">{project.title}</h3>
-                    <p className="text-sm text-muted-foreground mb-1 line-clamp-1">{project.description}</p>
-                    <p className="text-xs text-muted-foreground/80 mb-3 line-clamp-1">{project.material}</p>
-                    <p className="text-base font-semibold text-primary mt-auto mb-3">{project.price}</p>
-                    <Button variant="outline" size="sm" asChild className="mt-auto w-full bg-white/50 backdrop-blur-sm border-white/30 hover:bg-white/70">
-                      <Link href={`/portfolio/${project.id}`}>View Details</Link>
-                    </Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+                  <Card
+                    glass={true}
+                    glassVariant="light"
+                    glassIntensity="medium"
+                    className="group overflow-hidden h-full flex flex-col border-border/50 hover:shadow-glass-heavy transition-all duration-300 hover:scale-[1.02]"
+                  >
+                    <CardHeader className="p-0 relative aspect-[4/3] overflow-hidden">
+                      <RandomShowcaseImage
+                        portfolioId={project.id}
+                        title={project.title}
+                        afterImages={project.after_images}
+                        fallbackImage={project.image}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </CardHeader>
+                    <CardContent className="p-4 flex-grow flex flex-col relative z-10">
+                      <h3 className="text-lg font-medium text-card-foreground mb-1 line-clamp-1">{project.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-1 line-clamp-1">{project.description}</p>
+                      <p className="text-xs text-muted-foreground/80 mb-3 line-clamp-1">{project.material}</p>
+                      <p className="text-base font-semibold text-primary mt-auto mb-3">{project.price}</p>
+                      <Button variant="outline" size="sm" asChild className="mt-auto w-full bg-white/50 backdrop-blur-sm border-white/30 hover:bg-white/70">
+                        <Link href={`/portfolio/${project.id}`}>View Details</Link>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))
+            ) : (
+              <div className="col-span-full text-center py-12">
+                <div className="bg-white/30 dark:bg-white/10 backdrop-blur-md shadow-glass border border-white/30 dark:border-white/10 rounded-2xl p-8">
+                  <p className="text-muted-foreground">
+                    🔍 Debug: No projects to display (displayProjects.length: {displayProjects.length})
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Featured projects: {featuredProjects?.length || 0}
+                  </p>
+                  <Button asChild className="mt-4">
+                    <Link href="/portfolio">View Portfolio</Link>
+                  </Button>
+                </div>
+              </div>
+            )}
           </motion.div>
 
           <div className="text-center mt-12">
