@@ -75,25 +75,51 @@ export default function RootLayout({
           {`
             // Remove browser extension attributes like bis_skin_checked
             function removeExtensionAttributes() {
-              const attributes = ['bis_skin_checked', 'bis_id', 'bis_size'];
+              const attributes = [
+                'bis_skin_checked',
+                'bis_id',
+                'bis_size',
+                'data-adblock-key',
+                'data-abp',
+                'data-extension-id'
+              ];
+
               attributes.forEach(attr => {
                 const elements = document.querySelectorAll('[' + attr + ']');
-                elements.forEach(el => el.removeAttribute(attr));
+                elements.forEach(el => {
+                  el.removeAttribute(attr);
+                  // Also remove any related class names
+                  if (el.className) {
+                    el.className = el.className
+                      .replace(/\\bbis_[^\\s]+/g, '')
+                      .replace(/\\s+/g, ' ')
+                      .trim();
+                  }
+                });
               });
             }
 
-            // Run immediately
+            // Run immediately and repeatedly
             removeExtensionAttributes();
+
+            // Run every second for the first 10 seconds
+            let counter = 0;
+            const interval = setInterval(() => {
+              removeExtensionAttributes();
+              counter++;
+              if (counter >= 10) clearInterval(interval);
+            }, 1000);
 
             // Run after DOM changes
             const observer = new MutationObserver(() => {
               removeExtensionAttributes();
             });
 
-            observer.observe(document.body, {
+            observer.observe(document.documentElement, {
               childList: true,
               subtree: true,
-              attributes: true
+              attributes: true,
+              attributeFilter: attributes
             });
           `}
         </Script>

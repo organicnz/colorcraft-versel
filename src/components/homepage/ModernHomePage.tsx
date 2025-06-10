@@ -542,42 +542,42 @@ export default function ModernHomePage({
               </p>
             </motion.div>
 
-            {/* Advanced Services Grid with Container Queries */}
-            <motion.div
-              variants={staggerContainer}
-              className="grid grid-cols-1 @md:grid-cols-2 @4xl:grid-cols-4 gap-6"
-            >
+            {/* Fixed Services Grid - Equal Height Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {modernServices.map((service, index) => (
-                <motion.div
+                <div
                   key={index}
-                  variants={fadeInUp}
-                  className="group @container"
+                  className="group h-[280px] flex flex-col"
                 >
-                  <motion.div
-                    className={`relative p-8 rounded-3xl bg-gradient-to-br ${service.bgGradient} border border-white/50 shadow-lg hover:shadow-xl transition-all duration-500 overflow-hidden`}
-                    whileHover={{ y: -5, scale: 1.02 }}
+                  <div
+                    className={`relative p-6 rounded-3xl bg-gradient-to-br ${service.bgGradient} border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden h-full flex flex-col`}
                   >
                     {/* Background gradient effect */}
                     <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${service.gradient} opacity-10 rounded-full blur-2xl transform translate-x-8 -translate-y-8`} />
 
-                    <div className="relative space-y-4">
+                    <div className="relative flex flex-col h-full">
                       {/* Icon with modern styling */}
-                      <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${service.gradient} p-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                      <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${service.gradient} p-3 shadow-lg group-hover:scale-110 transition-transform duration-300 mb-4 flex-shrink-0`}>
                         <service.icon className="w-8 h-8 text-white" />
                       </div>
 
-                      <h3 className="text-xl font-bold text-slate-900 group-hover:text-slate-800 transition-colors">
-                        {service.title}
-                      </h3>
+                      <div className="flex-1 flex flex-col justify-between">
+                        <h3 className="text-lg font-bold text-slate-900 group-hover:text-slate-800 transition-colors mb-3 line-clamp-2">
+                          {service.title}
+                        </h3>
 
-                      <p className="text-slate-600 leading-relaxed">
-                        {service.description}
-                      </p>
+                        <p className="text-slate-600 leading-relaxed text-sm flex-1">
+                          {service.description.length > 65
+                            ? `${service.description.substring(0, 65)}...`
+                            : service.description
+                          }
+                        </p>
+                      </div>
                     </div>
-                  </motion.div>
-                </motion.div>
+                  </div>
+                </div>
               ))}
-            </motion.div>
+            </div>
           </motion.div>
         </div>
       </section>
