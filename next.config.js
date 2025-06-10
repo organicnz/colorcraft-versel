@@ -12,8 +12,8 @@ const nextConfig = {
     config.resolve.alias['@'] = path.join(__dirname, 'src');
     return config;
   },
-  // Use standalone for API routes, export for static pages
-  output: process.env.GITHUB_ACTIONS ? 'standalone' : 'standalone',
+  // Use standalone for production builds with full Next.js features
+  output: 'standalone',
   trailingSlash: true,
   // Turbopack configuration (moved from experimental.turbo)
   turbopack: {
@@ -24,7 +24,7 @@ const nextConfig = {
   // Server external packages (moved from experimental.serverComponentsExternalPackages)
   serverExternalPackages: ["postgres"],
   images: {
-    unoptimized: process.env.GITHUB_ACTIONS === 'true',
+    unoptimized: false,
     domains: [
       'images.unsplash.com',
       'via.placeholder.com',
@@ -47,7 +47,7 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'tydgehnkaszuvcaywwdm.supabase.co',
         port: '',
-        pathname: '/storage/v1/object/public/**',
+        pathname: '/**',
       },
     ],
   },
@@ -66,7 +66,7 @@ const nextConfig = {
     serverActions: {
       allowedOrigins: [process.env.NEXT_PUBLIC_SITE_URL || ""],
     },
-    optimizeCss: true, // Enable CSS optimization
+    optimizeCss: true,
     optimizePackageImports: [
       '@radix-ui/react-dialog',
       '@radix-ui/react-slot',
@@ -83,10 +83,24 @@ const nextConfig = {
   },
   // Environment variables available at build time
   env: {
-    CUSTOM_KEY: 'my-value',
+    CUSTOM_KEY: 'colorcraft-production',
   },
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    // Important: return the modified config
+    // Performance optimizations
+    if (!dev && !isServer) {
+      config.optimization.splitChunks = {
+        chunks: 'all',
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            priority: 10,
+            reuseExistingChunk: true,
+          },
+        },
+      }
+    }
+
     return config
   },
 };
