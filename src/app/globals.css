@@ -218,6 +218,13 @@
     -webkit-box-orient: unset;
     overflow: visible;
   }
+
+  /* Hide browser extension artifacts */
+  [bis_skin_checked] {
+    /* Reset any potential styling from browser extensions */
+    background-image: none !important;
+    background-color: inherit !important;
+  }
 }
 
 @layer components {

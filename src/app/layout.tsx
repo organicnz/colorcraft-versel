@@ -13,6 +13,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Menu, Phone } from "lucide-react"
 import Footer from "@/components/shared/Footer"
 import PhoneDisplay from "@/components/ui/phone-display"
+import Script from 'next/script'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -69,6 +70,34 @@ export default function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <Script id="remove-extension-attributes" strategy="afterInteractive">
+          {`
+            // Remove browser extension attributes like bis_skin_checked
+            function removeExtensionAttributes() {
+              const attributes = ['bis_skin_checked', 'bis_id', 'bis_size'];
+              attributes.forEach(attr => {
+                const elements = document.querySelectorAll('[' + attr + ']');
+                elements.forEach(el => el.removeAttribute(attr));
+              });
+            }
+
+            // Run immediately
+            removeExtensionAttributes();
+
+            // Run after DOM changes
+            const observer = new MutationObserver(() => {
+              removeExtensionAttributes();
+            });
+
+            observer.observe(document.body, {
+              childList: true,
+              subtree: true,
+              attributes: true
+            });
+          `}
+        </Script>
+      </head>
       <body
         className={`min-h-screen bg-background font-sans antialiased ${inter.className}`}
       >
@@ -99,16 +128,16 @@ export default function RootLayout({
 
                 {/* Right Side - Phone Display */}
                 <div className="hidden md:flex items-center space-x-4">
-                  <PhoneDisplay 
+                  <PhoneDisplay
                     phoneNumber="(747) 755-7695"
                     variant="header"
                     showIcons={true}
                     className="hidden lg:flex"
                   />
-                  
+
                   {/* CTA Button */}
-                  <Button 
-                    size="sm" 
+                  <Button
+                    size="sm"
                     className="bg-[#3ECF8E] hover:bg-[#38BC81] text-white font-semibold px-6 py-2 rounded-full transition-all duration-300 hover:shadow-lg"
                     asChild
                   >
@@ -136,7 +165,7 @@ export default function RootLayout({
                       >
                         Color & Craft
                       </Link>
-                      
+
                       {/* Mobile Navigation */}
                       <nav className="flex flex-col space-y-4">
                         {navLinks.map((link) => (
@@ -152,14 +181,14 @@ export default function RootLayout({
 
                       {/* Mobile Phone Display */}
                       <div className="pt-4 border-t border-slate-200">
-                        <PhoneDisplay 
+                        <PhoneDisplay
                           phoneNumber="(747) 755-7695"
                           email="contact@colorandcraft.com"
                           variant="contact"
                           className="mb-4"
                         />
-                        
-                        <Button 
+
+                        <Button
                           className="w-full bg-[#3ECF8E] hover:bg-[#38BC81] text-white font-semibold py-3 rounded-full"
                           asChild
                         >
