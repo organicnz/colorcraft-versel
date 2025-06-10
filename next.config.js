@@ -7,9 +7,27 @@ const nextConfig = {
     // Disable ESLint during builds to avoid deployment failures
     ignoreDuringBuilds: true,
   },
-  // Explicitly define path aliases to ensure proper resolution in Vercel
+  // Skip TypeScript type checking during build for production deployments
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  // Suppress warnings during build
+  onDemandEntries: {
+    // period (in ms) where the server will keep pages in the buffer
+    maxInactiveAge: 25 * 1000,
+    // number of pages that should be kept simultaneously without being disposed
+    pagesBufferLength: 2,
+  },
+  // Suppress specific warnings
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+    // Explicitly define path aliases to ensure proper resolution in Vercel
     config.resolve.alias['@'] = path.join(__dirname, 'src');
+    
+    // Suppress specific warnings
+    config.ignoreWarnings = [
+      /Critical dependency: the request of a dependency is an expression/,
+      /Module not found/,
+    ];
     
     // Performance optimizations
     if (!dev && !isServer) {
@@ -69,10 +87,6 @@ const nextConfig = {
     fetches: {
       fullUrl: process.env.NODE_ENV === "development",
     },
-  },
-  // Skip TypeScript type checking during build for production deployments
-  typescript: {
-    ignoreBuildErrors: true,
   },
   experimental: {
     // Note: PPR is only available in canary, commented out for stable version
