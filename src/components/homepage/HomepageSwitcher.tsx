@@ -15,7 +15,7 @@ export default function HomepageSwitcher({
   classicHomepage,
   modernHomepage
 }: HomepageSwitcherProps) {
-  const [isModern, setIsModern] = useState(false);
+  const [isModern, setIsModern] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
 
   // Load saved preference
@@ -23,6 +23,8 @@ export default function HomepageSwitcher({
     const saved = localStorage.getItem('colorcraft-homepage-modern');
     if (saved === 'true') {
       setIsModern(true);
+    } else if (saved === 'false') {
+      setIsModern(false);
     }
   }, []);
 
@@ -127,31 +129,6 @@ export default function HomepageSwitcher({
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Quick Toggle Floating Action Button */}
-      <motion.div
-        className="fixed bottom-8 right-8 z-40"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 2, duration: 0.5 }}
-      >
-        <Button
-          onClick={toggleHomepage}
-          size="lg"
-          className={`rounded-full h-14 w-14 p-0 shadow-xl border-2 transition-all duration-300 ${
-            isModern 
-              ? 'bg-gradient-to-r from-primary-600 to-accent-600 text-white border-white/20 hover:scale-110' 
-              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:scale-105'
-          }`}
-        >
-          <motion.div
-            animate={{ rotate: isModern ? 180 : 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Sparkles className="w-6 h-6" />
-          </motion.div>
-        </Button>
-      </motion.div>
 
       {/* Homepage Content with Smooth Transition */}
       <AnimatePresence mode="wait">

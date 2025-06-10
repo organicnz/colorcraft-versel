@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 import UserRoleManagement from "./_components/UserRoleManagement";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
@@ -13,7 +13,7 @@ export const metadata = {
 };
 
 export default async function AdminUsersPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   // Get the current user
   const { data: { user: currentUser } } = await supabase.auth.getUser();

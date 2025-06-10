@@ -3,6 +3,11 @@ import { createClient } from '@/lib/supabase/server'
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('Test webhook triggered - simulating portfolio storage changes')
+
+    // Create test portfolio entry
+    const supabase = await createClient()
+
     const { portfolioId, action = 'test' } = await request.json()
 
     if (!portfolioId) {
@@ -13,7 +18,6 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate portfolio exists
-    const supabase = createClient()
     const { data: portfolio, error: portfolioError } = await supabase
       .from('portfolio')
       .select('id, title, before_images, after_images')
