@@ -13,18 +13,16 @@ interface ThemePreferenceProps {
 }
 
 export default function ThemePreference({ onPreferenceChange }: ThemePreferenceProps) {
-  const [homepageStyle, setHomepageStyle] = useState("modern");
-  const [hasLoaded, setHasLoaded] = useState(false);
+  const [homepageStyle, setHomepageStyle] = useState("modern"); // Default to modern to match server render
 
   useEffect(() => {
-    // Load saved preference from localStorage
+    // Load saved preference from localStorage on client side only
     const saved = localStorage.getItem('colorcraft-homepage-modern');
     if (saved === 'false') {
       setHomepageStyle("classic");
     } else {
       setHomepageStyle("modern");
     }
-    setHasLoaded(true);
   }, []);
 
   const handleStyleChange = (value: string) => {
@@ -33,38 +31,14 @@ export default function ThemePreference({ onPreferenceChange }: ThemePreferenceP
     // Save to localStorage
     localStorage.setItem('colorcraft-homepage-modern', value === 'modern' ? 'true' : 'false');
     
-    // Trigger page reload to apply changes
-    if (window.location.pathname === '/') {
-      window.location.reload();
-    }
-    
     // Call callback if provided
     if (onPreferenceChange) {
       onPreferenceChange(value);
     }
-  };
 
-  if (!hasLoaded) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Palette className="h-5 w-5" />
-            Homepage Theme
-          </CardTitle>
-          <CardDescription>
-            Choose your preferred homepage design style
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-20 bg-gray-200 rounded"></div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
+    // Optional: Show a subtle notification instead of reloading
+    // This provides better UX than a jarring page reload
+  };
 
   return (
     <Card>
@@ -74,7 +48,7 @@ export default function ThemePreference({ onPreferenceChange }: ThemePreferenceP
           Homepage Theme
         </CardTitle>
         <CardDescription>
-          Choose your preferred homepage design style. Changes will apply immediately.
+          Choose your preferred homepage design style. Changes will apply on your next visit to the homepage.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -157,7 +131,7 @@ export default function ThemePreference({ onPreferenceChange }: ThemePreferenceP
             <span className="font-medium text-blue-700">Note:</span>
           </div>
           <p className="mt-1 text-blue-600">
-            Theme changes apply instantly. If you're currently on the homepage, the page will refresh to show your new theme.
+            Theme changes are saved automatically and will apply when you navigate to the homepage.
           </p>
         </div>
       </CardContent>
