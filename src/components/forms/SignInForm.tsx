@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,7 +21,56 @@ export default function SignInForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [debugLogs, setDebugLogs] = useState<string[]>([]);
   const supabase = createClient();
+
+  // Simple debug function that always works
+  const debug = (message: string) => {
+    const timestamp = new Date().toLocaleTimeString();
+    const logMessage = `${timestamp}: ${message}`;
+    console.log(`🔍 [Auth Debug] ${logMessage}`);
+    setDebugLogs(prev => [...prev.slice(-5), logMessage]);
+  };
+
+  useEffect(() => {
+    debug("Component mounted - checking auth state");
+    
+    // Check current session
+    const checkSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        debug(`Current session: ${session ? `exists (${session.user.email})` : 'none'}`);
+        
+        if (session && !isLoading) {
+          debug("User already signed in - redirecting to dashboard");
+          router.push('/dashboard');
+        }
+      } catch (err) {
+        debug(`Error checking session: ${err}`);
+      }
+    };
+
+    checkSession();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      debug(`Auth event: ${event} | Session: ${session ? 'exists' : 'none'}`);
+      
+      if (event === 'SIGNED_IN' && session) {
+        debug(`Successful sign-in detected for ${session.user.email}`);
+        setIsLoading(false);
+        router.push('/dashboard');
+      } else if (event === 'SIGNED_OUT') {
+        debug("Sign-out detected");
+        setIsLoading(false);
+      }
+    });
+
+    return () => {
+      debug("Component unmounting");
+      subscription.unsubscribe();
+    };
+  }, [supabase, router, isLoading]);
 
   const form = useForm<SignInValues>({
     resolver: zodResolver(signInSchema),
@@ -32,61 +81,67 @@ export default function SignInForm() {
   });
 
   async function onSubmit(data: SignInValues) {
-    console.log('Sign in attempt started');
+    debug(`Starting sign-in attempt for ${data.email}`);
     setIsLoading(true);
     setError(null);
 
     try {
-      console.log('Attempting to sign in with email:', data.email);
-
-      const { error: signInError, data: signInData } = await supabase.auth.signInWithPassword({
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
       });
 
-      console.log('Sign in response:', { error: signInError, hasUser: !!signInData?.user });
+      debug(`Sign-in response: ${authError ? 'ERROR' : 'SUCCESS'}`);
 
-      if (signInError) {
-        console.error('Sign in error:', signInError);
-
-        // Handle specific error messages
-        let errorMessage = signInError.message;
-        if (signInError.message.includes('Invalid login credentials')) {
-          errorMessage = 'Invalid email or password. Please check your credentials and try again.';
-        } else if (signInError.message.includes('Email not confirmed')) {
-          errorMessage = 'Please check your email and click the confirmation link before signing in.';
-        }
-
-        setError(errorMessage);
-        setIsLoading(false); // Reset loading state immediately
-        return; // Don't proceed with redirect
-      }
-
-      if (!signInData?.user) {
-        console.error('No user data returned from sign in');
-        setError("Sign in failed - no user data returned");
+      if (authError) {
+        debug(`Sign-in error: ${authError.message}`);
+        setError(authError.message.includes('Invalid login credentials') 
+          ? 'Invalid email or password' 
+          : authError.message
+        );
         setIsLoading(false);
         return;
       }
 
-      console.log('✅ Sign in successful, redirecting...');
+      if (!authData.user || !authData.session) {
+        debug("No user or session returned");
+        setError("Sign-in failed - no session created");
+        setIsLoading(false);
+        return;
+      }
+
+      debug(`Sign-in successful for ${authData.user.email}`);
+      // Don't redirect here - let the auth state change handle it
       
-      // Use replace instead of push to avoid back button issues
-      router.replace('/');
-      // Force a page refresh to ensure auth state is updated
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 100);
-      
-    } catch (error: any) {
-      console.error('Unexpected sign in error:', error);
-      setError(error?.message || "An unexpected error occurred");
-      setIsLoading(false); // Always reset loading state on catch
+    } catch (err: any) {
+      debug(`Unexpected error: ${err.message}`);
+      setError(err.message || "An unexpected error occurred");
+      setIsLoading(false);
     }
   }
 
   return (
     <div className="grid gap-6">
+      {/* Debug panel - always visible in dev */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="bg-yellow-50 border border-yellow-200 p-3 rounded-md">
+          <div className="text-sm font-medium text-yellow-800 mb-2">
+            🔍 Auth Debug (Last 5 logs):
+          </div>
+          <div className="space-y-1">
+            {debugLogs.length === 0 ? (
+              <div className="text-xs text-yellow-600">No logs yet...</div>
+            ) : (
+              debugLogs.map((log, i) => (
+                <div key={i} className="text-xs text-yellow-700 font-mono">
+                  {log}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+      
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="grid gap-2">
           <div className="grid gap-1">
@@ -141,6 +196,7 @@ export default function SignInForm() {
           {error && <p className="text-sm text-red-500">{error}</p>}
         </div>
       </form>
+      
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t"></span>
@@ -151,16 +207,16 @@ export default function SignInForm() {
           </span>
         </div>
       </div>
+      
       <button
         type="button"
         className="border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex h-10 w-full items-center justify-center rounded-md border px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
         onClick={async () => {
+          debug("Google OAuth initiated");
           setIsLoading(true);
           setError(null);
           
           try {
-            console.log('Attempting Google OAuth sign in');
-            
             const { error } = await supabase.auth.signInWithOAuth({
               provider: "google",
               options: {
@@ -168,16 +224,12 @@ export default function SignInForm() {
               },
             });
             
-            if (error) {
-              console.error('Google OAuth error:', error);
-              throw error;
-            }
+            if (error) throw error;
+            debug("Google OAuth redirect started");
             
-            // OAuth will redirect, so don't reset loading state
-            console.log('Google OAuth initiated, redirecting...');
-          } catch (error: any) {
-            console.error('Google sign in failed:', error);
-            setError(error?.message || "Failed to sign in with Google");
+          } catch (err: any) {
+            debug(`Google OAuth error: ${err.message}`);
+            setError(err.message || "Failed to sign in with Google");
             setIsLoading(false);
           }
         }}
