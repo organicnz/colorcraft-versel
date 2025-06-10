@@ -32,30 +32,43 @@ export default function SignInForm() {
   });
 
   async function onSubmit(data: SignInValues) {
+    console.log('Sign in attempt started');
     setIsLoading(true);
     setError(null);
 
     try {
+      console.log('Attempting to sign in with email:', data.email);
+
       const { error: signInError, data: signInData } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
       });
 
-      if (signInError) throw signInError;
+      console.log('Sign in response:', { error: signInError, hasUser: !!signInData?.user });
 
-      // Wait a moment for the session to be established
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (signInError) {
+        console.error('Sign in error:', signInError);
+        throw signInError;
+      }
 
-      // Refresh the page to update the session state
-      router.refresh();
+      if (!signInData?.user) {
+        console.error('No user data returned from sign in');
+        throw new Error("Sign in failed - no user data returned");
+      }
 
-      // Navigate to home page using Next.js router
-      router.push('/');
+      console.log('Sign in successful, redirecting...');
+      
+      // Use replace instead of push to avoid back button issues
+      router.replace('/');
+      // Force a page refresh to ensure auth state is updated
+      window.location.href = '/';
+      
     } catch (error: any) {
+      console.error('Sign in failed:', error);
       setError(error?.message || "Failed to sign in");
-    } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Make sure to reset loading state on error
     }
+    // Note: Don't set isLoading(false) in finally block since we're redirecting on success
   }
 
   return (
@@ -105,6 +118,7 @@ export default function SignInForm() {
             )}
           </div>
           <button
+            type="submit"
             className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-10 w-full items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
             disabled={isLoading}
           >
@@ -128,23 +142,34 @@ export default function SignInForm() {
         className="border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex h-10 w-full items-center justify-center rounded-md border px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
         onClick={async () => {
           setIsLoading(true);
+          setError(null);
+          
           try {
+            console.log('Attempting Google OAuth sign in');
+            
             const { error } = await supabase.auth.signInWithOAuth({
               provider: "google",
               options: {
                 redirectTo: `${window.location.origin}/auth/callback`,
               },
             });
-            if (error) throw error;
+            
+            if (error) {
+              console.error('Google OAuth error:', error);
+              throw error;
+            }
+            
+            // OAuth will redirect, so don't reset loading state
+            console.log('Google OAuth initiated, redirecting...');
           } catch (error: any) {
+            console.error('Google sign in failed:', error);
             setError(error?.message || "Failed to sign in with Google");
-          } finally {
             setIsLoading(false);
           }
         }}
         disabled={isLoading}
       >
-        Google
+        {isLoading ? "Redirecting..." : "Google"}
       </button>
     </div>
   );
