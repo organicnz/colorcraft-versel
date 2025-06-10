@@ -89,7 +89,7 @@ export default async function Home() {
     title: project.title,
     description: project.brief_description || project.description,
     material: project.materials?.join(', ') || 'Custom finish',
-    image: project.after_images?.[0] || "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800",
+    image: project.after_images?.[0] || "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80",
     price: "Contact for pricing",
   }));
 
@@ -104,7 +104,7 @@ export default async function Home() {
       title: "Victorian Dresser Revival",
       description: "Antique restoration with modern flair",
       material: "Oak with chalk paint finish",
-      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80",
       price: "Contact for pricing",
     },
   ];

@@ -88,6 +88,10 @@ export default function ModernHomePage({
     setEmail("");
   };
 
+  // Debug logging
+  console.log('🔍 ModernHomePage featuredProjects:', featuredProjects);
+  console.log('🔍 First project image:', featuredProjects?.[0]?.image);
+
   // Enhanced team members with modern design
   const teamMembers = [
     {
@@ -304,10 +308,10 @@ export default function ModernHomePage({
                   transition={{ duration: 0.4 }}
                 >
                                      <Image
-                     src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=700&h=800&fit=crop&auto=format&q=80"
+                     src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80"
                      alt="Beautiful transformed vintage dresser showcasing expert furniture painting"
-                     width={700}
-                     height={800}
+                     width={800}
+                     height={600}
                      className="object-cover"
                      priority
                    />
@@ -447,7 +451,7 @@ export default function ModernHomePage({
                     {/* Project Image - Fixed Height */}
                     <div className="relative h-48 overflow-hidden flex-shrink-0">
                       <Image
-                        src={project.image || "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=700&h=800&fit=crop&auto=format&q=80"}
+                        src={project.image || "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80"}
                         alt={project.title || "Furniture transformation"}
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
