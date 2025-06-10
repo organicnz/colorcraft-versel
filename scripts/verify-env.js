@@ -11,7 +11,13 @@ const path = require('path');
 // Fallback chalk functions if chalk is not available
 const chalk = (() => {
   try {
-    return require('chalk');
+    const chalkModule = require('chalk');
+    // Check if it's the actual chalk module with methods
+    if (chalkModule && typeof chalkModule.green === 'function') {
+      return chalkModule;
+    }
+    // Fallback if chalk is not properly loaded
+    return { green: s => s, red: s => s, yellow: s => s, blue: s => s, bold: s => s };
   } catch (e) {
     return { green: s => s, red: s => s, yellow: s => s, blue: s => s, bold: s => s };
   }
