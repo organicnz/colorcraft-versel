@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   description: 'Manage customer chat conversations and support requests',
 }
 
+// Force dynamic rendering to prevent SSG issues with Supabase
+export const dynamic = 'force-dynamic'
+
 export default function ChatPage() {
   return (
     <div className="space-y-6">
