@@ -156,8 +156,8 @@ function main() {
   displayRulesHeader();
   
   const args = process.argv.slice(2);
-  let commitMessage = args[0];
-  let commitType = args[1];
+  const commitMessage = args[0];
+  const commitType = args[1];
   
   // If commit message and type are provided as args, use them directly
   if (commitMessage && commitType && VALID_TYPES.includes(commitType)) {

@@ -23,10 +23,25 @@ const nextConfig = {
     // Explicitly define path aliases to ensure proper resolution in Vercel
     config.resolve.alias['@'] = path.join(__dirname, 'src');
     
+    // Exclude test files and problematic directories from compilation
+    config.module.rules.push({
+      test: /\.(ts|tsx)$/,
+      exclude: [
+        /\.test\.(ts|tsx)$/,
+        /\.spec\.(ts|tsx)$/,
+        /src\/lib\/db\/config\.test\.ts$/,
+        /src\/lib\/rate-limit\.test\.ts$/,
+        /src\/lib\/features\/features\.test\.ts$/,
+        /node_modules/,
+        /supabase\/functions/
+      ],
+    });
+    
     // Suppress specific warnings
     config.ignoreWarnings = [
       /Critical dependency: the request of a dependency is an expression/,
       /Module not found/,
+      /Can't resolve.*supabase.*functions/,
     ];
     
     // Performance optimizations

@@ -37,8 +37,8 @@ function verifyEnvironment() {
   console.log('------------------------\n');
   
   let hasErrors = false;
-  let missingRequired = [];
-  let missingOptional = [];
+  const missingRequired = [];
+  const missingOptional = [];
   
   // Verify required variables
   console.log(chalk.bold('Required Variables:'));
