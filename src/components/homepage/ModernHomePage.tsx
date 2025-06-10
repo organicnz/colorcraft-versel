@@ -2,11 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+
 import { Badge } from "@/components/ui/badge";
 import {
   ArrowRight,
@@ -437,78 +436,67 @@ export default function ModernHomePage({
               </p>
             </motion.div>
 
-            {/* Advanced Grid with Container Queries */}
-            <motion.div
-              variants={staggerContainer}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
-            >
+            {/* Fixed Grid - No Flickering, Consistent Sizing */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {featuredProjects.slice(0, 4).map((project, index) => (
-                <motion.div
-                  key={`${project.id}-${index}`}
-                  variants={fadeInUp}
-                  className="group"
+                <div
+                  key={project.id || index}
+                  className="group h-[420px] flex flex-col"
                 >
-                  <motion.div
-                    className="relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 h-full flex flex-col"
-                    whileHover={{ y: -8 }}
-                  >
-                    {/* Project Image with Advanced Effects */}
-                    <div className="relative h-64 overflow-hidden">
+                  <div className="relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all duration-300 h-full flex flex-col">
+                    {/* Project Image - Fixed Height */}
+                    <div className="relative h-48 overflow-hidden flex-shrink-0">
                       <Image
-                        src={project.image}
-                        alt={project.title}
+                        src={project.image || "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=700&h=800&fit=crop&auto=format&q=80"}
+                        alt={project.title || "Furniture transformation"}
                         fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                       />
 
-                      {/* Gradient overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      {/* Simple overlay - no flickering */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                       {/* Featured badge */}
-                      <div className="absolute top-4 left-4">
-                        <Badge className="bg-gradient-to-r from-violet-500 to-purple-500 text-white border-0 px-3 py-1 shadow-lg">
+                      <div className="absolute top-3 left-3">
+                        <Badge className="bg-violet-600 text-white text-xs px-2 py-1 rounded-lg shadow-md">
                           Featured
                         </Badge>
                       </div>
-
-                      {/* View Details Button */}
-                      <div className="absolute bottom-4 left-4 right-4">
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          className="w-full bg-white/90 backdrop-blur-sm text-slate-900 hover:bg-white opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-xl"
-                        >
-                          View Details
-                          <ArrowRight className="ml-2 h-4 w-4" />
-                        </Button>
-                      </div>
                     </div>
 
-                    {/* Project Details with Modern Styling */}
-                    <div className="p-6 space-y-4 flex-1 flex flex-col">
-                      <div className="flex items-start justify-between">
-                        <h3 className="font-bold text-lg text-slate-900 group-hover:text-violet-600 transition-colors duration-300 line-clamp-2">
-                          {project.title}
-                        </h3>
-                        <div className="text-right ml-2 flex-shrink-0">
-                          <div className="text-xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">$2,500</div>
-                          <div className="text-xs text-slate-500">Starting</div>
+                    {/* Project Details - Fixed Layout */}
+                    <div className="p-5 flex-1 flex flex-col justify-between">
+                      <div className="space-y-3">
+                        <div className="flex items-start justify-between gap-3">
+                          <h3 className="font-bold text-lg text-slate-900 line-clamp-2 leading-tight">
+                            {project.title || "Furniture Transformation"}
+                          </h3>
+                          <div className="text-right flex-shrink-0">
+                            <div className="text-lg font-bold text-violet-600">$2,500</div>
+                            <div className="text-xs text-slate-500">Starting</div>
+                          </div>
                         </div>
+
+                        <p className="text-slate-600 text-sm line-clamp-3 leading-relaxed">
+                          {project.description?.length > 80
+                            ? `${project.description.substring(0, 80)}...`
+                            : project.description || "Professional furniture transformation with attention to detail and premium materials."
+                          }
+                        </p>
                       </div>
 
-                      <p className="text-slate-600 leading-relaxed text-sm line-clamp-3 flex-1">
-                        {project.description || "Professional furniture transformation with attention to detail and quality craftsmanship."}
-                      </p>
-
-                      <div className="flex items-center justify-between pt-2 border-t border-slate-100 mt-auto">
-                        <span className="text-xs text-slate-500 font-medium">{project.material || "Premium Materials"}</span>
+                      <div className="flex items-center justify-between pt-3 border-t border-slate-100 mt-3">
+                        <span className="text-xs text-slate-500 font-medium">
+                          {project.material?.substring(0, 15) || "Premium Materials"}
+                        </span>
                         <span className="text-xs text-slate-500 font-medium">2-3 weeks</span>
                       </div>
                     </div>
-                  </motion.div>
-                </motion.div>
+                  </div>
+                </div>
               ))}
-            </motion.div>
+            </div>
 
             {/* Modern CTA Button */}
             <motion.div variants={fadeInUp} className="text-center">
