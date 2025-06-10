@@ -1,25 +1,8 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": ".next",
   "framework": "nextjs",
-  "installCommand": "npm ci",
-  "devCommand": "npm run dev",
   "functions": {
     "src/app/api/**/*.ts": {
-      "maxDuration": 30
+      "runtime": "nodejs18.x"
     }
-  },
-  "regions": ["iad1"],
-  "github": {
-    "enabled": true
-  },
-  "git": {
-    "deploymentEnabled": true
-  },
-  "crons": [
-    {
-      "path": "/api/cron/portfolio-sync",
-      "schedule": "0 2 * * *"
-    }
-  ]
+  }
 } 
