@@ -123,7 +123,9 @@ export default function RootLayout({
                     'html { background-color: ' + (theme === 'dark' ? '#0f172a' : '#ffffff') + ' !important; }' +
                     'body { background-color: ' + (theme === 'dark' ? '#0f172a' : '#ffffff') + ' !important; }' +
                     '.bg-white { background-color: ' + (theme === 'dark' ? '#0f172a' : '#ffffff') + ' !important; }' +
-                    '.dark\\\\:bg-slate-900 { background-color: ' + (theme === 'dark' ? '#0f172a' : '#ffffff') + ' !important; }';
+                    '.dark\\\\:bg-slate-900 { background-color: ' + (theme === 'dark' ? '#0f172a' : '#ffffff') + ' !important; }' +
+                    '.text-slate-900 { color: #0f172a !important; }' +
+                    'html.dark .dark\\\\:text-white { color: #ffffff !important; }';
 
                   document.head.appendChild(antiFlashStyle);
 

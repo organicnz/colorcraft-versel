@@ -161,7 +161,23 @@
     --primary-light: hsl(210, 20%, 88%);
   }
 
+  /* Ensure text colors are properly applied */
+  .text-slate-900 {
+    color: #0f172a !important;
+  }
 
+  html.dark .dark\:text-white {
+    color: #ffffff !important;
+  }
+
+  /* Ensure slate text colors work correctly */
+  .text-slate-700 {
+    color: #334155 !important;
+  }
+
+  html.dark .dark\:text-slate-300 {
+    color: #cbd5e1 !important;
+  }
 
   /* Apply theme variables to elements */
   body {
