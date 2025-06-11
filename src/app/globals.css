@@ -27,36 +27,64 @@
 }
 
 @layer base {
-  /* ENHANCED ANTI-FLASH CSS - Reliable theme switching */
+  /* ENHANCED ANTI-FLASH CSS - Prevents color flickering */
 
   /* Ensure proper background colors are applied immediately */
   html {
-    background: white;
-    transition: none;
+    background: white !important;
+    transition: none !important;
   }
 
   html.dark {
-    background: #0f172a;
-    transition: none;
+    background: #0f172a !important;
+    transition: none !important;
+  }
+
+  /* Force stable backgrounds during initial load */
+  body {
+    background-color: white !important;
+    transition: none !important;
+  }
+
+  html.dark body {
+    background-color: #0f172a !important;
+    transition: none !important;
+  }
+
+  /* Prevent any flash for common background classes */
+  .bg-white {
+    background-color: white !important;
+  }
+
+  html.dark .bg-white {
+    background-color: #0f172a !important;
+  }
+
+  .dark\:bg-slate-900 {
+    background-color: white !important;
+  }
+
+  html.dark .dark\:bg-slate-900 {
+    background-color: #0f172a !important;
   }
 
   /* Only enable transitions after the anti-flash script enables them */
   .transitions-enabled * {
-    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out !important;
   }
 
   .transitions-enabled button,
   .transitions-enabled a,
   .transitions-enabled input,
   .transitions-enabled select {
-    transition: all 0.15s ease-in-out;
+    transition: all 0.15s ease-in-out !important;
   }
 
-  /* Ensure smooth transitions for theme changes */
-  .transitions-enabled .dark:bg-slate-900,
+  /* Re-enable smooth transitions only when ready */
+  .transitions-enabled .dark\:bg-slate-900,
   .transitions-enabled .bg-white,
   .transitions-enabled [data-theme] {
-    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out !important;
   }
 
   /* Theme variables */
@@ -133,20 +161,7 @@
     --primary-light: hsl(210, 20%, 88%);
   }
 
-  /* Smooth theme transitions only when enabled */
-  .transitions-enabled .dark\:bg-slate-900,
-  .transitions-enabled .bg-white,
-  .transitions-enabled [data-theme] {
-    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
-  }
 
-  /* Interactive elements get faster transitions */
-  .transitions-enabled button,
-  .transitions-enabled a,
-  .transitions-enabled input,
-  .transitions-enabled select {
-    transition: all 0.15s ease-in-out;
-  }
 
   /* Apply theme variables to elements */
   body {

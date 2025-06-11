@@ -81,35 +81,31 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              // ENHANCED ANTI-FLASH - More reliable, less aggressive
+              // ENHANCED ANTI-FLASH - Prevents color flickering
               (function() {
                 try {
-                  // 1. IMMEDIATE THEME APPLICATION - Set theme class before any rendering
+                  // 1. IMMEDIATE THEME APPLICATION
                   var theme = 'light';
                   try {
                     var stored = localStorage.getItem('theme');
-                    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
                     
                     if (stored === 'dark') {
                       theme = 'dark';
                     } else if (stored === 'system' && prefersDark) {
                       theme = 'dark';
                     } else if (!stored && prefersDark) {
-                      // If no preference is stored, respect system preference
                       theme = 'dark';
                     }
                   } catch(e) {
-                    // Fallback: check system preference if localStorage fails
                     try {
-                      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
                         theme = 'dark';
                       }
-                    } catch(e2) {
-                      // Final fallback to light
-                    }
+                    } catch(e2) {}
                   }
 
-                  // Apply theme immediately to prevent flash
+                  // Apply theme immediately
                   var html = document.documentElement;
                   if (theme === 'dark') {
                     html.classList.add('dark');
@@ -119,16 +115,19 @@ export default function RootLayout({
                     html.style.colorScheme = 'light';
                   }
 
-                  // 2. MINIMAL FLASH PREVENTION - Only disable transitions initially
+                  // 2. COMPREHENSIVE FLASH PREVENTION
                   var antiFlashStyle = document.createElement('style');
                   antiFlashStyle.id = 'anti-flash-style';
                   antiFlashStyle.textContent =
                     '*, *::before, *::after { transition: none !important; animation-duration: 0.01ms !important; animation-delay: -1ms !important; }' +
-                    'html { background-color: ' + (theme === 'dark' ? '#0f172a' : '#ffffff') + ' !important; }';
+                    'html { background-color: ' + (theme === 'dark' ? '#0f172a' : '#ffffff') + ' !important; }' +
+                    'body { background-color: ' + (theme === 'dark' ? '#0f172a' : '#ffffff') + ' !important; }' +
+                    '.bg-white { background-color: ' + (theme === 'dark' ? '#0f172a' : '#ffffff') + ' !important; }' +
+                    '.dark\\\\:bg-slate-900 { background-color: ' + (theme === 'dark' ? '#0f172a' : '#ffffff') + ' !important; }';
 
                   document.head.appendChild(antiFlashStyle);
 
-                  // 3. ENABLE TRANSITIONS AFTER HYDRATION
+                  // 3. STABLE TRANSITIONS ENABLEMENT
                   var enableTransitions = function() {
                     try {
                       var style = document.getElementById('anti-flash-style');
@@ -138,92 +137,42 @@ export default function RootLayout({
 
                       // Add ready classes
                       html.classList.add('ready');
-                      document.body.classList.add('loaded', 'transitions-enabled');
+                      if (document.body) {
+                        document.body.classList.add('loaded', 'transitions-enabled');
+                      }
 
                       // Mark as complete
                       window.__antiFlashComplete = true;
                     } catch(e) {
-                      // Fallback: just remove the style
                       try {
-                        document.getElementById('anti-flash-style')?.remove();
+                        var style = document.getElementById('anti-flash-style');
+                        if (style) style.remove();
                       } catch(e2) {}
                     }
                   };
 
-                  // 4. MULTIPLE TRIGGER POINTS FOR RELIABILITY
-                  // Immediate if DOM is already ready
+                  // 4. MULTIPLE ACTIVATION POINTS
                   if (document.readyState !== 'loading') {
-                    setTimeout(enableTransitions, 16); // Next frame
+                    setTimeout(enableTransitions, 32); // Two frames delay
                   }
 
-                  // DOM ready fallback
-                  document.addEventListener('DOMContentLoaded', enableTransitions);
+                  document.addEventListener('DOMContentLoaded', function() {
+                    setTimeout(enableTransitions, 16);
+                  });
 
-                  // Backup timer - ensure it always runs
-                  setTimeout(enableTransitions, 100);
+                  // Failsafe timer
+                  setTimeout(enableTransitions, 150);
 
                 } catch(e) {
-                  // Emergency fallback - just show everything normally
                   try {
-                    document.getElementById('anti-flash-style')?.remove();
+                    var style = document.getElementById('anti-flash-style');
+                    if (style) style.remove();
                   } catch(e2) {}
                 }
               })();
             `,
           }}
         />
-        <Script id="remove-extension-attributes" strategy="afterInteractive">
-          {`
-            // Remove browser extension attributes like bis_skin_checked
-            function removeExtensionAttributes() {
-              const attributes = [
-                'bis_skin_checked',
-                'bis_id',
-                'bis_size',
-                'data-adblock-key',
-                'data-abp',
-                'data-extension-id'
-              ];
-
-              attributes.forEach(attr => {
-                const elements = document.querySelectorAll('[' + attr + ']');
-                elements.forEach(el => {
-                  el.removeAttribute(attr);
-                  // Also remove any related class names
-                  if (el.className) {
-                    el.className = el.className
-                      .replace(/\\bbis_[^\\s]+/g, '')
-                      .replace(/\\s+/g, ' ')
-                      .trim();
-                  }
-                });
-              });
-            }
-
-            // Run immediately and repeatedly
-            removeExtensionAttributes();
-
-            // Run every second for the first 10 seconds
-            let counter = 0;
-            const interval = setInterval(() => {
-              removeExtensionAttributes();
-              counter++;
-              if (counter >= 10) clearInterval(interval);
-            }, 1000);
-
-            // Run after DOM changes
-            const observer = new MutationObserver(() => {
-              removeExtensionAttributes();
-            });
-
-            observer.observe(document.documentElement, {
-              childList: true,
-              subtree: true,
-              attributes: true,
-              attributeFilter: attributes
-            });
-          `}
-        </Script>
       </head>
       <body
         className={`min-h-screen bg-background font-sans antialiased ${inter.className}`}
