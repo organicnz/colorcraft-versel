@@ -266,32 +266,36 @@ export default function AboutPage() {
 
       {/* Meet Our Team Section - Enhanced with glassmorphism and horizontal layout */}
       {displayTeamMembers.length > 0 && (
-        <section className="py-24 relative">
-          {/* Background with glassmorphism effect */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 via-pink-50/30 to-blue-50/50 dark:from-purple-900/20 dark:via-pink-900/10 dark:to-blue-900/20" />
+        <section className="py-28 relative overflow-hidden">
+          {/* Enhanced Background with multiple layers */}
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-50/60 via-pink-50/40 to-blue-50/60 dark:from-purple-900/30 dark:via-pink-900/20 dark:to-blue-900/30" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-amber-100/40 via-transparent to-orange-100/40 dark:from-amber-900/25 dark:via-transparent dark:to-orange-900/25" />
           
           <div className="container mx-auto px-6 relative z-10">
-            <div className="space-y-16">
-              {/* Section Header with glassmorphism */}
-              <GlassPanel className="text-center space-y-6 bg-white/40 dark:bg-white/10 backdrop-blur-xl border-white/40 dark:border-white/20">
-                <Badge className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-200 text-amber-800 px-4 py-2">
+            <div className="space-y-20">
+              {/* Enhanced Section Header with glassmorphism */}
+              <GlassPanel className="text-center space-y-8 bg-white/50 dark:bg-white/15 backdrop-blur-xl border-white/50 dark:border-white/25 shadow-2xl">
+                <Badge className="bg-gradient-to-r from-amber-500/20 to-orange-500/20 border-amber-300/50 text-amber-800 dark:text-amber-200 px-6 py-2">
                   <Users className="w-4 h-4 mr-2" />
                   Meet Our Team
                 </Badge>
-                <h2 className="text-4xl lg:text-5xl font-bold text-slate-900">
+                <h2 className="text-4xl lg:text-6xl font-bold text-slate-900 dark:text-white">
                   The artisans behind
-                  <span className="text-gradient bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent"> the magic</span>
+                  <span className="bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 bg-clip-text text-transparent"> the magic</span>
                 </h2>
-                <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
-                  Meet the talented individuals who bring passion, expertise, and creativity to every project.
+                <p className="text-xl text-slate-600 dark:text-slate-300 max-w-4xl mx-auto leading-relaxed">
+                  Meet the talented individuals who bring passion, expertise, and creativity to every project, 
+                  transforming ordinary pieces into extraordinary works of art.
                 </p>
               </GlassPanel>
 
-              {/* Team Members - Horizontal Layout */}
-              <div className="space-y-6">
+              {/* Team Members - Enhanced Beautiful Horizontal Layout */}
+              <div className="space-y-10">
                 {displayTeamMembers.map((member, index) => {
                   // Trim bio to ensure consistent card heights
-                  const trimmedBio = member.bio && member.bio.length > 180 ? `${member.bio.substring(0, 180)}...` : member.bio;
+                  const trimmedBio = member.bio && member.bio.length > 160 ? `${member.bio.substring(0, 160)}...` : member.bio;
+                  const isEven = index % 2 === 0;
+                  
                   return (
                     <GlassCard 
                       key={member.id} 
@@ -299,54 +303,70 @@ export default function AboutPage() {
                       intensity="strong" 
                       blur="lg"
                       shadow="heavy"
-                      className={`group transition-all duration-500 hover:scale-[1.01] hover:shadow-glass-heavy border-white/30 dark:border-white/20 ${
-                        index % 2 === 0 ? 'ml-0 mr-8' : 'ml-8 mr-0'
+                      className={`group transition-all duration-700 hover:scale-[1.02] hover:shadow-glass-heavy border-white/40 dark:border-white/25 overflow-hidden ${
+                        isEven ? 'ml-0 mr-16' : 'ml-16 mr-0'
                       }`}
                     >
-                      <div className={`flex items-center gap-8 h-full p-4 ${
-                        index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'
+                      <div className={`flex items-center gap-10 h-full p-8 ${
+                        isEven ? 'flex-row' : 'flex-row-reverse'
                       }`}>
-                        {/* Avatar */}
+                        {/* Enhanced Avatar Section */}
                         <div className="relative flex-shrink-0">
-                          <div className="w-32 h-32 rounded-3xl overflow-hidden ring-4 ring-white/30 shadow-xl">
+                          {/* Glow effect behind avatar */}
+                          <div className="absolute inset-0 bg-gradient-to-br from-amber-400/30 via-orange-500/30 to-red-500/30 rounded-3xl blur-xl transform group-hover:scale-110 transition-transform duration-700"></div>
+                          
+                          <div className="relative w-36 h-36 rounded-3xl overflow-hidden ring-4 ring-white/40 shadow-2xl transform group-hover:ring-white/60 transition-all duration-500">
                             <Image
                               src={member.image}
                               alt={member.name}
-                              width={128}
-                              height={128}
-                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                              width={144}
+                              height={144}
+                              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                               sizes="(max-width: 768px) 100vw, 50vw"
                             />
+                            
+                            {/* Overlay gradient for depth */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent"></div>
                           </div>
                           
-                          {/* Achievement badge */}
-                          <div className="absolute -bottom-2 -right-2">
-                            <Badge variant="secondary" className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 shadow-lg backdrop-blur-sm">
-                              <Star className="w-3 h-3 mr-1" />
+                          {/* Enhanced Achievement badge */}
+                          <div className="absolute -bottom-3 -right-3">
+                            <Badge className="bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 text-white border-0 shadow-xl backdrop-blur-sm px-4 py-2 transform group-hover:scale-110 transition-transform duration-300">
+                              <Star className="w-4 h-4 mr-1" />
                               {member.achievement}
                             </Badge>
                           </div>
+
+                          {/* Sparkles animation */}
+                          <div className="absolute -top-3 -left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                            <Sparkles className="w-7 h-7 text-amber-400 animate-pulse" />
+                          </div>
                         </div>
 
-                        {/* Content */}
-                        <div className="flex-1 min-w-0 space-y-4">
-                          {/* Name and Role */}
-                          <div className={`space-y-2 ${index % 2 === 0 ? 'text-left' : 'text-right'}`}>
-                            <h3 className="text-2xl font-bold text-slate-900">{member.name}</h3>
-                            <p className="text-violet-600 font-medium text-lg">{member.role}</p>
+                        {/* Enhanced Content Section */}
+                        <div className={`flex-1 min-w-0 space-y-6 ${isEven ? 'text-left' : 'text-right'}`}>
+                          {/* Enhanced Name and Role */}
+                          <div className="space-y-3">
+                            <h3 className="text-3xl font-bold bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-white dark:via-gray-100 dark:to-white bg-clip-text text-transparent">
+                              {member.name}
+                            </h3>
+                            <p className="text-violet-600 dark:text-violet-400 font-semibold text-xl tracking-wide">
+                              {member.role}
+                            </p>
                           </div>
 
-                          {/* Bio */}
-                          <p className={`text-slate-600 leading-relaxed ${index % 2 === 0 ? 'text-left' : 'text-right'}`}>
+                          {/* Enhanced Bio */}
+                          <p className={`text-slate-600 dark:text-slate-300 leading-relaxed font-medium text-base ${isEven ? 'text-left' : 'text-right'}`}>
                             {trimmedBio}
                           </p>
 
-                          {/* Specialty */}
-                          <div className={`flex ${index % 2 === 0 ? 'justify-start' : 'justify-end'}`}>
+                          {/* Enhanced Specialty Badge */}
+                          <div className={`flex ${isEven ? 'justify-start' : 'justify-end'}`}>
                             <Badge 
                               variant="outline" 
-                              className="bg-white/60 dark:bg-gray-800/60 border-violet-200/50 text-violet-700 backdrop-blur-sm px-4 py-2"
+                              className="bg-gradient-to-r from-white/70 to-white/50 dark:from-gray-800/70 dark:to-gray-800/50 border-violet-200/60 dark:border-violet-700/60 text-violet-700 dark:text-violet-300 backdrop-blur-sm px-6 py-3 text-sm font-medium hover:scale-105 transition-transform duration-200"
                             >
+                              <Sparkles className="w-4 h-4 mr-2" />
                               {member.specialty}
                             </Badge>
                           </div>

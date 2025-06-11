@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Mail, Phone, ExternalLink, Linkedin, Instagram, Twitter, Facebook } from "lucide-react";
+import { Mail, Phone, ExternalLink, Linkedin, Instagram, Twitter, Facebook, Star, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { GlassCard, GlassPanel } from "@/components/ui/glass-card";
@@ -19,9 +19,10 @@ const socialIcons = {
 
 interface TeamCardProps {
   member: TeamMember;
+  index: number;
 }
 
-function TeamCard({ member }: TeamCardProps) {
+function TeamCard({ member, index }: TeamCardProps) {
   const {
     full_name,
     position,
@@ -35,7 +36,8 @@ function TeamCard({ member }: TeamCardProps) {
   } = member;
 
   // Trim bio to ensure consistent card heights
-  const trimmedBio = bio && bio.length > 120 ? `${bio.substring(0, 120)}...` : bio;
+  const trimmedBio = bio && bio.length > 140 ? `${bio.substring(0, 140)}...` : bio;
+  const isEven = index % 2 === 0;
 
   return (
     <GlassCard 
@@ -43,133 +45,148 @@ function TeamCard({ member }: TeamCardProps) {
       intensity="strong" 
       blur="lg"
       shadow="heavy"
-      className="group transition-all duration-500 hover:scale-[1.02] hover:shadow-glass-heavy h-full border-white/30 dark:border-white/20"
+      className={`group transition-all duration-700 hover:scale-[1.03] hover:shadow-glass-heavy border-white/40 dark:border-white/25 overflow-hidden ${
+        isEven ? 'ml-0 mr-12' : 'ml-12 mr-0'
+      }`}
     >
-      <div className="flex items-center gap-6 h-full p-2">
-        {/* Avatar */}
+      <div className={`flex items-center gap-8 h-full p-6 ${
+        isEven ? 'flex-row' : 'flex-row-reverse'
+      }`}>
+        {/* Avatar Section */}
         <div className="relative flex-shrink-0">
-          <div className="w-24 h-24 rounded-2xl overflow-hidden ring-4 ring-white/30 shadow-lg">
+          {/* Glow effect behind avatar */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-400/30 to-purple-500/30 rounded-3xl blur-xl transform group-hover:scale-110 transition-transform duration-700"></div>
+          
+          <div className="relative w-32 h-32 rounded-3xl overflow-hidden ring-4 ring-white/40 shadow-2xl transform group-hover:ring-white/60 transition-all duration-500">
             {avatar_url ? (
               <Image
                 src={avatar_url}
                 alt={full_name}
-                width={96}
-                height={96}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                width={128}
+                height={128}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white text-lg font-bold">
+              <div className="w-full h-full bg-gradient-to-br from-primary-400 via-primary-500 to-primary-600 flex items-center justify-center text-white text-2xl font-bold">
                 {full_name.split(' ').map(n => n[0]).join('')}
               </div>
             )}
+            
+            {/* Overlay gradient for depth */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent"></div>
           </div>
           
-          {/* Experience badge */}
+          {/* Experience badge with animation */}
           {years_experience && (
-            <div className="absolute -bottom-1 -right-1">
-              <Badge variant="secondary" className="bg-primary-500/90 backdrop-blur-sm text-white border-0 shadow-lg text-xs px-2 py-1">
+            <div className="absolute -bottom-3 -right-3">
+              <Badge className="bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 text-white border-0 shadow-xl backdrop-blur-sm px-3 py-1.5 transform group-hover:scale-110 transition-transform duration-300">
+                <Star className="w-3 h-3 mr-1" />
                 {years_experience}+ yrs
               </Badge>
             </div>
           )}
+
+          {/* Sparkles animation */}
+          <div className="absolute -top-2 -left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+            <Sparkles className="w-6 h-6 text-primary-400 animate-pulse" />
+          </div>
         </div>
 
-        {/* Content */}
-        <div className="flex-1 min-w-0">
-          <div className="space-y-3">
-            {/* Name and Position */}
-            <div className="space-y-1">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate">
-                {full_name}
-              </h3>
-              <p className="text-primary-600 dark:text-primary-400 font-medium text-sm">
-                {position}
-              </p>
-            </div>
+        {/* Content Section */}
+        <div className={`flex-1 min-w-0 space-y-4 ${isEven ? 'text-left' : 'text-right'}`}>
+          {/* Name and Position with enhanced typography */}
+          <div className="space-y-2">
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:from-white dark:via-gray-100 dark:to-white bg-clip-text text-transparent">
+              {full_name}
+            </h3>
+            <p className="text-primary-600 dark:text-primary-400 font-semibold text-lg tracking-wide">
+              {position}
+            </p>
+          </div>
 
-            {/* Bio */}
-            {trimmedBio && (
-              <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed line-clamp-2">
-                {trimmedBio}
-              </p>
+          {/* Bio with better typography */}
+          {trimmedBio && (
+            <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed font-medium">
+              {trimmedBio}
+            </p>
+          )}
+
+          {/* Enhanced Specialties */}
+          {specialties && specialties.length > 0 && (
+            <div className={`flex flex-wrap gap-2 ${isEven ? 'justify-start' : 'justify-end'}`}>
+              {specialties.slice(0, 3).map((specialty, i) => (
+                <Badge 
+                  key={specialty} 
+                  variant="outline" 
+                  className="bg-gradient-to-r from-white/70 to-white/50 dark:from-gray-800/70 dark:to-gray-800/50 border-primary-200/60 dark:border-primary-700/60 backdrop-blur-sm text-xs font-medium px-3 py-1.5 hover:scale-105 transition-transform duration-200"
+                >
+                  {specialty}
+                </Badge>
+              ))}
+              {specialties.length > 3 && (
+                <Badge 
+                  variant="outline" 
+                  className="bg-gradient-to-r from-primary-50/80 to-primary-100/60 dark:from-primary-900/60 dark:to-primary-800/80 border-primary-300/60 text-primary-700 dark:text-primary-300 backdrop-blur-sm text-xs px-3 py-1.5"
+                >
+                  +{specialties.length - 3} more
+                </Badge>
+              )}
+            </div>
+          )}
+
+          {/* Enhanced Contact and Social Section */}
+          <div className={`flex items-center gap-3 ${isEven ? 'justify-start' : 'justify-end'}`}>
+            {/* Contact Buttons */}
+            {email && (
+              <Button
+                variant="ghost"
+                size="sm"
+                asChild
+                className="h-9 w-9 p-0 hover:bg-gradient-to-r hover:from-blue-500/20 hover:to-blue-600/20 dark:hover:from-blue-400/20 dark:hover:to-blue-500/20 backdrop-blur-sm border border-white/30 dark:border-white/20 hover:border-blue-300/60 transition-all duration-300 hover:scale-110"
+              >
+                <a href={`mailto:${email}`} title={`Email ${full_name}`}>
+                  <Mail className="h-4 w-4" />
+                </a>
+              </Button>
+            )}
+            
+            {phone && (
+              <Button
+                variant="ghost"
+                size="sm"
+                asChild
+                className="h-9 w-9 p-0 hover:bg-gradient-to-r hover:from-green-500/20 hover:to-green-600/20 dark:hover:from-green-400/20 dark:hover:to-green-500/20 backdrop-blur-sm border border-white/30 dark:border-white/20 hover:border-green-300/60 transition-all duration-300 hover:scale-110"
+              >
+                <a href={`tel:${phone}`} title={`Call ${full_name}`}>
+                  <Phone className="h-4 w-4" />
+                </a>
+              </Button>
             )}
 
-            {/* Specialties and Contact Row */}
-            <div className="flex items-center justify-between gap-4">
-              {/* Specialties */}
-              {specialties && specialties.length > 0 && (
-                <div className="flex flex-wrap gap-1 flex-1">
-                  {specialties.slice(0, 2).map((specialty) => (
-                    <Badge 
-                      key={specialty} 
-                      variant="outline" 
-                      className="text-xs bg-white/60 dark:bg-gray-800/60 border-primary-200/50 dark:border-primary-700/50 backdrop-blur-sm"
-                    >
-                      {specialty}
-                    </Badge>
-                  ))}
-                  {specialties.length > 2 && (
-                    <Badge variant="outline" className="text-xs bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm">
-                      +{specialties.length - 2}
-                    </Badge>
-                  )}
-                </div>
-              )}
-
-              {/* Contact and Social */}
-              <div className="flex items-center gap-1 flex-shrink-0">
-                {email && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    asChild
-                    className="h-7 w-7 p-0 hover:bg-white/30 dark:hover:bg-white/20 backdrop-blur-sm"
+            {/* Enhanced Social Links */}
+            {social_links && Object.entries(social_links as SocialLinks).slice(0, 2).map(([platform, url]) => {
+              if (!url) return null;
+              const IconComponent = socialIcons[platform as keyof typeof socialIcons] || ExternalLink;
+              
+              return (
+                <Button
+                  key={platform}
+                  variant="ghost"
+                  size="sm"
+                  asChild
+                  className="h-9 w-9 p-0 hover:bg-gradient-to-r hover:from-purple-500/20 hover:to-pink-500/20 dark:hover:from-purple-400/20 dark:hover:to-pink-400/20 backdrop-blur-sm border border-white/30 dark:border-white/20 hover:border-purple-300/60 transition-all duration-300 hover:scale-110"
+                >
+                  <a 
+                    href={url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    title={`${full_name} on ${platform}`}
                   >
-                    <a href={`mailto:${email}`} title={`Email ${full_name}`}>
-                      <Mail className="h-3.5 w-3.5" />
-                    </a>
-                  </Button>
-                )}
-                
-                {phone && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    asChild
-                    className="h-7 w-7 p-0 hover:bg-white/30 dark:hover:bg-white/20 backdrop-blur-sm"
-                  >
-                    <a href={`tel:${phone}`} title={`Call ${full_name}`}>
-                      <Phone className="h-3.5 w-3.5" />
-                    </a>
-                  </Button>
-                )}
-
-                {/* Social Links */}
-                {social_links && Object.entries(social_links as SocialLinks).slice(0, 2).map(([platform, url]) => {
-                  if (!url) return null;
-                  const IconComponent = socialIcons[platform as keyof typeof socialIcons] || ExternalLink;
-                  
-                  return (
-                    <Button
-                      key={platform}
-                      variant="ghost"
-                      size="sm"
-                      asChild
-                      className="h-7 w-7 p-0 hover:bg-white/30 dark:hover:bg-white/20 backdrop-blur-sm"
-                    >
-                      <a 
-                        href={url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        title={`${full_name} on ${platform}`}
-                      >
-                        <IconComponent className="h-3.5 w-3.5" />
-                      </a>
-                    </Button>
-                  );
-                })}
-              </div>
-            </div>
+                    <IconComponent className="h-4 w-4" />
+                  </a>
+                </Button>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -189,20 +206,28 @@ export default async function TeamSection() {
   }
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 relative">
-      {/* Background with glassmorphism effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-purple-50/30 to-pink-50/50 dark:from-blue-900/20 dark:via-purple-900/10 dark:to-pink-900/20" />
+    <section className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Enhanced Background with multiple layers */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/60 via-purple-50/40 to-pink-50/60 dark:from-blue-900/30 dark:via-purple-900/20 dark:to-pink-900/30" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary-100/30 via-transparent to-secondary-100/30 dark:from-primary-900/20 dark:via-transparent dark:to-secondary-900/20" />
       
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Section Header with enhanced glassmorphism */}
-        <GlassPanel className="text-center mb-12 bg-white/40 dark:bg-white/10 backdrop-blur-xl border-white/40 dark:border-white/20">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl mb-4">
-            Meet Our Expert Team
-          </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Our passionate team of craftspeople and artists bring decades of experience 
-            to every project, ensuring your furniture receives the care and attention it deserves.
-          </p>
+        {/* Enhanced Section Header */}
+        <GlassPanel className="text-center mb-16 bg-white/50 dark:bg-white/15 backdrop-blur-xl border-white/50 dark:border-white/25 shadow-2xl">
+          <div className="space-y-6">
+            <Badge className="bg-gradient-to-r from-primary-500/20 to-secondary-500/20 border-primary-300/50 text-primary-800 dark:text-primary-200 px-6 py-2">
+              <Star className="w-4 h-4 mr-2" />
+              Meet Our Experts
+            </Badge>
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white sm:text-5xl mb-4">
+              Our Talented
+              <span className="bg-gradient-to-r from-primary-600 via-secondary-600 to-primary-600 bg-clip-text text-transparent"> Artisans</span>
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+              Meet the passionate craftspeople and designers who bring decades of experience 
+              to every project, ensuring your furniture receives the expert care it deserves.
+            </p>
+          </div>
         </GlassPanel>
 
         {/* Error State */}
@@ -212,11 +237,11 @@ export default async function TeamSection() {
           </GlassCard>
         )}
 
-        {/* Team Grid - Horizontal Layout */}
+        {/* Enhanced Team Grid - Beautiful Horizontal Layout */}
         {teamMembers.length > 0 && (
-          <div className="space-y-4">
-            {teamMembers.map((member) => (
-              <TeamCard key={member.id} member={member} />
+          <div className="space-y-8">
+            {teamMembers.map((member, index) => (
+              <TeamCard key={member.id} member={member} index={index} />
             ))}
           </div>
         )}
@@ -230,13 +255,18 @@ export default async function TeamSection() {
           </GlassCard>
         )}
 
-        {/* Call to Action with glassmorphism */}
+        {/* Enhanced Call to Action */}
         {teamMembers.length > 0 && (
-          <div className="text-center mt-12">
-            <GlassCard variant="primary" intensity="medium" className="inline-block p-0 overflow-hidden">
-              <Button asChild size="lg" className="bg-primary-600/90 hover:bg-primary-700/90 backdrop-blur-sm border-0 shadow-none">
-                <Link href="/contact">
-                  Get in Touch with Our Team
+          <div className="text-center mt-16">
+            <GlassCard 
+              variant="primary" 
+              intensity="strong" 
+              className="inline-block p-0 overflow-hidden border-white/40 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-105"
+            >
+              <Button asChild size="lg" className="bg-gradient-to-r from-primary-600 via-primary-700 to-primary-600 hover:from-primary-700 hover:via-primary-800 hover:to-primary-700 backdrop-blur-sm border-0 shadow-none text-white px-8 py-4 font-semibold">
+                <Link href="/contact" className="flex items-center">
+                  Connect with Our Team
+                  <Sparkles className="ml-2 w-5 h-5" />
                 </Link>
               </Button>
             </GlassCard>
