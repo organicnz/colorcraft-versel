@@ -11,7 +11,7 @@ export async function getTeamMembers(
   filters: TeamFilters = {},
   sort: TeamSortOptions = { field: 'display_order', direction: 'asc' }
 ): Promise<TeamMember[]> {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   let query = supabase
     .from('team')
@@ -51,7 +51,7 @@ export async function getFeaturedTeamMembers(): Promise<TeamMember[]> {
 }
 
 export async function getTeamMemberById(id: string): Promise<TeamMember | null> {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   const { data, error } = await supabase
     .from('team')
@@ -68,7 +68,7 @@ export async function getTeamMemberById(id: string): Promise<TeamMember | null> 
 }
 
 export async function createTeamMember(memberData: CreateTeamMemberData): Promise<TeamMember> {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   const { data, error } = await supabase
     .from('team')
@@ -85,7 +85,7 @@ export async function createTeamMember(memberData: CreateTeamMemberData): Promis
 }
 
 export async function updateTeamMember(memberData: UpdateTeamMemberData): Promise<TeamMember> {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   const { id, ...updateData } = memberData;
   
@@ -105,7 +105,7 @@ export async function updateTeamMember(memberData: UpdateTeamMemberData): Promis
 }
 
 export async function deleteTeamMember(id: string): Promise<void> {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   const { error } = await supabase
     .from('team')
@@ -127,7 +127,7 @@ export async function toggleTeamMemberFeatured(id: string, is_featured: boolean)
 }
 
 export async function reorderTeamMembers(memberIds: string[]): Promise<void> {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   // Update display_order for each member
   const updates = memberIds.map((id, index) => 
