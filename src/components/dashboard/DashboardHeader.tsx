@@ -4,11 +4,7 @@ interface DashboardHeaderProps {
   children?: React.ReactNode;
 }
 
-export function DashboardHeader({
-  heading,
-  text,
-  children,
-}: DashboardHeaderProps) {
+export function DashboardHeader({ heading, text, children }: DashboardHeaderProps) {
   return (
     <div className="flex items-center justify-between px-2">
       <div className="grid gap-1">
@@ -18,4 +14,4 @@ export function DashboardHeader({
       {children}
     </div>
   );
-} 
+}

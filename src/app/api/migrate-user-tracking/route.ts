@@ -1,55 +1,61 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 
 export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient();
 
     // Check if we have admin access
-    const { data: { session } } = await supabase.auth.getSession();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
     if (!session) {
-      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+      return NextResponse.json({ error: "Authentication required" }, { status: 401 });
     }
 
     // Get user role
     const { data: userData } = await supabase
-      .from('users')
-      .select('role')
-      .eq('id', session.user.id)
+      .from("users")
+      .select("role")
+      .eq("id", session.user.id)
       .single();
 
-    if (!userData || userData.role !== 'admin') {
-      return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
+    if (!userData || userData.role !== "admin") {
+      return NextResponse.json({ error: "Admin access required" }, { status: 403 });
     }
 
     // Check if columns already exist
     const checkColumnsSQL = `
-      SELECT column_name 
-      FROM information_schema.columns 
-      WHERE table_name = 'portfolio' 
+      SELECT column_name
+      FROM information_schema.columns
+      WHERE table_name = 'portfolio'
       AND column_name IN ('created_by', 'updated_by', 'is_archived')
       AND table_schema = 'public';
     `;
 
-    const { data: existingColumns, error: checkError } = await supabase
-      .rpc('exec_sql', { sql: checkColumnsSQL });
+    const { data: existingColumns, error: checkError } = await supabase.rpc("exec_sql", {
+      sql: checkColumnsSQL,
+    });
 
     if (checkError) {
-      return NextResponse.json({ 
-        error: 'Failed to check existing columns', 
-        details: checkError.message 
-      }, { status: 500 });
+      return NextResponse.json(
+        {
+          error: "Failed to check existing columns",
+          details: checkError.message,
+        },
+        { status: 500 }
+      );
     }
 
-    const hasCreatedBy = existingColumns?.some((row: any) => row.column_name === 'created_by');
-    const hasUpdatedBy = existingColumns?.some((row: any) => row.column_name === 'updated_by');
-    const hasIsArchived = existingColumns?.some((row: any) => row.column_name === 'is_archived');
+    const hasCreatedBy = existingColumns?.some((row: any) => row.column_name === "created_by");
+    const hasUpdatedBy = existingColumns?.some((row: any) => row.column_name === "updated_by");
+    const hasIsArchived = existingColumns?.some((row: any) => row.column_name === "is_archived");
 
     if (hasCreatedBy && hasUpdatedBy && hasIsArchived) {
       return NextResponse.json({
         success: true,
-        message: 'User tracking columns already exist - migration not needed',
-        columnsExist: { created_by: true, updated_by: true, is_archived: true }
+        message: "User tracking columns already exist - migration not needed",
+        columnsExist: { created_by: true, updated_by: true, is_archived: true },
       });
     }
 
@@ -59,30 +65,30 @@ export async function POST(request: NextRequest) {
       -- This migration adds created_by, updated_by, and is_archived fields
 
       -- Add created_by, updated_by, and is_archived columns to portfolio table
-      DO $$ 
+      DO $$
       BEGIN
         IF NOT EXISTS (
-          SELECT 1 FROM information_schema.columns 
-          WHERE table_name = 'portfolio' 
-          AND column_name = 'created_by' 
+          SELECT 1 FROM information_schema.columns
+          WHERE table_name = 'portfolio'
+          AND column_name = 'created_by'
           AND table_schema = 'public'
         ) THEN
           ALTER TABLE portfolio ADD COLUMN created_by uuid REFERENCES auth.users(id);
         END IF;
 
         IF NOT EXISTS (
-          SELECT 1 FROM information_schema.columns 
-          WHERE table_name = 'portfolio' 
-          AND column_name = 'updated_by' 
+          SELECT 1 FROM information_schema.columns
+          WHERE table_name = 'portfolio'
+          AND column_name = 'updated_by'
           AND table_schema = 'public'
         ) THEN
           ALTER TABLE portfolio ADD COLUMN updated_by uuid REFERENCES auth.users(id);
         END IF;
 
         IF NOT EXISTS (
-          SELECT 1 FROM information_schema.columns 
-          WHERE table_name = 'portfolio' 
-          AND column_name = 'is_archived' 
+          SELECT 1 FROM information_schema.columns
+          WHERE table_name = 'portfolio'
+          AND column_name = 'is_archived'
           AND table_schema = 'public'
         ) THEN
           ALTER TABLE portfolio ADD COLUMN is_archived boolean DEFAULT false NOT NULL;
@@ -97,7 +103,7 @@ export async function POST(request: NextRequest) {
 
       -- Update existing records to set created_by for historical data
       -- This will set created_by to the first admin user for existing records
-      UPDATE portfolio 
+      UPDATE portfolio
       SET created_by = (
         SELECT id FROM users WHERE role = 'admin' ORDER BY created_at LIMIT 1
       )
@@ -193,49 +199,55 @@ export async function POST(request: NextRequest) {
         );
     `;
 
-    const { error: migrationError } = await supabase.rpc('exec_sql', {
-      sql: migrationSQL
+    const { error: migrationError } = await supabase.rpc("exec_sql", {
+      sql: migrationSQL,
     });
 
     if (migrationError) {
-      return NextResponse.json({ 
-        error: 'Migration failed', 
-        details: migrationError.message 
-      }, { status: 500 });
+      return NextResponse.json(
+        {
+          error: "Migration failed",
+          details: migrationError.message,
+        },
+        { status: 500 }
+      );
     }
 
     // Verify the migration was successful
     const verifySQL = `
       SELECT column_name, data_type, is_nullable, column_default
-      FROM information_schema.columns 
-      WHERE table_name = 'portfolio' 
+      FROM information_schema.columns
+      WHERE table_name = 'portfolio'
       AND column_name IN ('created_by', 'updated_by', 'is_archived')
       AND table_schema = 'public'
       ORDER BY column_name;
     `;
 
-    const { data: verificationData, error: verificationError } = await supabase
-      .rpc('exec_sql', { sql: verifySQL });
+    const { data: verificationData, error: verificationError } = await supabase.rpc("exec_sql", {
+      sql: verifySQL,
+    });
 
     if (verificationError) {
-      console.warn('Verification failed:', verificationError);
+      console.warn("Verification failed:", verificationError);
     }
 
     // Get count of updated records
     const { data: counts } = await supabase
-      .from('portfolio')
-      .select('is_published, is_draft, is_archived')
-      .then(result => {
+      .from("portfolio")
+      .select("is_published, is_draft, is_archived")
+      .then((result) => {
         if (result.error) return { data: null };
-        const published = result.data?.filter(item => item.is_published && !item.is_archived).length || 0;
-        const drafts = result.data?.filter(item => item.is_draft && !item.is_archived).length || 0;
-        const archived = result.data?.filter(item => item.is_archived).length || 0;
+        const published =
+          result.data?.filter((item) => item.is_published && !item.is_archived).length || 0;
+        const drafts =
+          result.data?.filter((item) => item.is_draft && !item.is_archived).length || 0;
+        const archived = result.data?.filter((item) => item.is_archived).length || 0;
         return { data: { published, drafts, archived, total: result.data?.length || 0 } };
       });
 
     return NextResponse.json({
       success: true,
-      message: 'Portfolio user tracking and archive migration completed successfully',
+      message: "Portfolio user tracking and archive migration completed successfully",
       verification: verificationData || null,
       counts: counts || null,
       appliedChanges: {
@@ -243,16 +255,18 @@ export async function POST(request: NextRequest) {
         createdIndexes: true,
         addedTriggers: true,
         updatedPolicies: true,
-        updatedRecords: true
-      }
+        updatedRecords: true,
+      },
     });
-
   } catch (error: any) {
-    console.error('Migration error:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'Server error during migration',
-      message: error.message
-    }, { status: 500 });
+    console.error("Migration error:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Server error during migration",
+        message: error.message,
+      },
+      { status: 500 }
+    );
   }
-} 
+}

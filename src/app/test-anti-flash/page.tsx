@@ -1,42 +1,42 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import ThemeSwitcher from '@/components/shared/ThemeSwitcher';
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import ThemeSwitcher from "@/components/shared/ThemeSwitcher";
 
 export default function TestAntiFlashPage() {
   const [refreshCount, setRefreshCount] = useState(0);
   const [hydrationTime, setHydrationTime] = useState<number | null>(null);
   const [isClient, setIsClient] = useState(false);
 
-    useEffect(() => {
+  useEffect(() => {
     setIsClient(true);
 
     // Track hydration time
     const start = performance.now();
     setHydrationTime(start);
-    
+
     // Get refresh count from localStorage
-    const count = parseInt(localStorage.getItem('refresh-count') || '0');
+    const count = parseInt(localStorage.getItem("refresh-count") || "0");
     setRefreshCount(count);
   }, []);
 
   const handleRefresh = () => {
     if (!isClient) return;
     const newCount = refreshCount + 1;
-    localStorage.setItem('refresh-count', newCount.toString());
+    localStorage.setItem("refresh-count", newCount.toString());
     window.location.reload();
   };
 
   const handleNavigateHome = () => {
     if (!isClient) return;
-    window.location.href = '/';
+    window.location.href = "/";
   };
 
   const clearCount = () => {
     if (!isClient) return;
-    localStorage.removeItem('refresh-count');
+    localStorage.removeItem("refresh-count");
     setRefreshCount(0);
   };
 
@@ -104,10 +104,7 @@ export default function TestAntiFlashPage() {
               <Button onClick={handleNavigateHome} variant="default">
                 Navigate to Home
               </Button>
-              <Button 
-                onClick={() => window.location.href = '/portfolio'} 
-                variant="outline"
-              >
+              <Button onClick={() => (window.location.href = "/portfolio")} variant="outline">
                 Navigate to Portfolio
               </Button>
             </div>
@@ -122,26 +119,25 @@ export default function TestAntiFlashPage() {
           <CardContent className="space-y-2">
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <strong>Anti-Flash Complete:</strong> {
-                  typeof window !== 'undefined' && (window as any).__antiFlashComplete ? '✅ Yes' : '❌ No'
-                }
+                <strong>Anti-Flash Complete:</strong>{" "}
+                {typeof window !== "undefined" && (window as any).__antiFlashComplete
+                  ? "✅ Yes"
+                  : "❌ No"}
               </div>
               <div>
-                <strong>Theme System:</strong> {isClient ? '✅ Ready' : '❌ Not Ready'}
+                <strong>Theme System:</strong> {isClient ? "✅ Ready" : "❌ Not Ready"}
               </div>
               <div>
-                <strong>Transitions Enabled:</strong> {
-                  isClient && document.body.classList.contains('transitions-enabled') 
-                    ? '✅ Yes' 
-                    : '❌ No'
-                }
+                <strong>Transitions Enabled:</strong>{" "}
+                {isClient && document.body.classList.contains("transitions-enabled")
+                  ? "✅ Yes"
+                  : "❌ No"}
               </div>
               <div>
-                <strong>Ready Class:</strong> {
-                  isClient && document.documentElement.classList.contains('ready') 
-                    ? '✅ Applied' 
-                    : '❌ Not Applied'
-                }
+                <strong>Ready Class:</strong>{" "}
+                {isClient && document.documentElement.classList.contains("ready")
+                  ? "✅ Applied"
+                  : "❌ Not Applied"}
               </div>
             </div>
             {hydrationTime && (
@@ -171,4 +167,4 @@ export default function TestAntiFlashPage() {
       </div>
     </div>
   );
-} 
+}

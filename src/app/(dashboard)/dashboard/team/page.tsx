@@ -12,8 +12,8 @@ export default async function TeamManagementPage() {
   try {
     teamMembers = await getTeamMembers();
   } catch (err) {
-    console.error('Error loading team members:', err);
-    error = 'Failed to load team members.';
+    console.error("Error loading team members:", err);
+    error = "Failed to load team members.";
   }
 
   return (
@@ -66,4 +66,4 @@ export default async function TeamManagementPage() {
       </div>
     </div>
   );
-} 
+}

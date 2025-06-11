@@ -1,6 +1,6 @@
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
-import { NextRequest, NextResponse } from 'next/server';
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 
 export const createClient = (request: NextRequest) => {
   const response = NextResponse.next();
@@ -23,7 +23,7 @@ export const createClient = (request: NextRequest) => {
         remove(name, options) {
           response.cookies.set({
             name,
-            value: '',
+            value: "",
             ...options,
             maxAge: 0,
           });
@@ -33,4 +33,4 @@ export const createClient = (request: NextRequest) => {
   );
 
   return { supabase, response };
-}; 
+};

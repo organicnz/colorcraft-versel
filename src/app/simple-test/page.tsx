@@ -5,5 +5,5 @@ export default function SimpleTestPage() {
       <p className="text-lg mt-4">This page has no external dependencies.</p>
       <p className="mt-2">Current time: {new Date().toISOString()}</p>
     </div>
-  )
-} 
+  );
+}

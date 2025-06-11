@@ -1,34 +1,40 @@
-import { redirect } from 'next/navigation';
-import { createClient } from '@/lib/supabase/server';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import Link from 'next/link';
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
 
 export const metadata = {
-  title: 'Admin Dashboard | Color & Craft',
-  description: 'Admin dashboard for Color & Craft furniture restoration service',
+  title: "Admin Dashboard | Color & Craft",
+  description: "Admin dashboard for Color & Craft furniture restoration service",
 };
 
 export default async function AdminPage() {
   const supabase = await createClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
   if (!session) {
-    redirect('/signin');
+    redirect("/signin");
   }
-  
+
   // Check if user has admin role
-  const { data: user } = await supabase.from('users').select('role').eq('id', session.user.id).single();
-  const isAdmin = user?.role === 'admin';
-  
+  const { data: user } = await supabase
+    .from("users")
+    .select("role")
+    .eq("id", session.user.id)
+    .single();
+  const isAdmin = user?.role === "admin";
+
   if (!isAdmin) {
-    redirect('/dashboard');
+    redirect("/dashboard");
   }
 
   return (
     <div className="container py-10">
       <h1 className="text-4xl font-bold mb-6">Admin Dashboard</h1>
-      
+
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader>
@@ -41,7 +47,7 @@ export default async function AdminPage() {
             </Button>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader>
             <CardTitle>Portfolio Projects</CardTitle>
@@ -53,7 +59,7 @@ export default async function AdminPage() {
             </Button>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader>
             <CardTitle>Customer Inquiries</CardTitle>
@@ -65,7 +71,7 @@ export default async function AdminPage() {
             </Button>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader>
             <CardTitle>Site Settings</CardTitle>
@@ -77,7 +83,7 @@ export default async function AdminPage() {
             </Button>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader>
             <CardTitle>Analytics</CardTitle>
@@ -92,4 +98,4 @@ export default async function AdminPage() {
       </div>
     </div>
   );
-} 
+}

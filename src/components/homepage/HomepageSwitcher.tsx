@@ -13,7 +13,7 @@ interface HomepageSwitcherProps {
 
 export default function HomepageSwitcher({
   classicHomepage,
-  modernHomepage
+  modernHomepage,
 }: HomepageSwitcherProps) {
   const [isModern, setIsModern] = useState(true); // Default to modern to match server
   const [isVisible, setIsVisible] = useState(false);
@@ -21,8 +21,8 @@ export default function HomepageSwitcher({
 
   // Load saved preference once after hydration
   useEffect(() => {
-    const saved = localStorage.getItem('colorcraft-homepage-modern');
-    if (saved === 'false') {
+    const saved = localStorage.getItem("colorcraft-homepage-modern");
+    if (saved === "false") {
       setIsModern(false);
     }
     setIsHydrated(true);
@@ -31,7 +31,7 @@ export default function HomepageSwitcher({
   // Save preference when changed
   const handleToggle = (newValue: boolean) => {
     setIsModern(newValue);
-    localStorage.setItem('colorcraft-homepage-modern', newValue.toString());
+    localStorage.setItem("colorcraft-homepage-modern", newValue.toString());
   };
 
   const toggleSwitcherVisibility = () => {
@@ -64,18 +64,16 @@ export default function HomepageSwitcher({
                   <EyeOff className="w-4 h-4" />
                 </Button>
               </div>
-              
+
               <div className="space-y-2">
-                <div className="text-xs text-slate-600">
-                  Choose your preferred homepage design
-                </div>
-                
+                <div className="text-xs text-slate-600">Choose your preferred homepage design</div>
+
                 <div className="grid grid-cols-2 gap-2">
                   <Button
                     variant={!isModern ? "default" : "outline"}
                     size="sm"
                     onClick={() => handleToggle(false)}
-                    className={`text-xs h-8 ${!isModern ? 'bg-primary-600 text-white' : 'text-slate-700'}`}
+                    className={`text-xs h-8 ${!isModern ? "bg-primary-600 text-white" : "text-slate-700"}`}
                   >
                     Classic
                   </Button>
@@ -83,19 +81,21 @@ export default function HomepageSwitcher({
                     variant={isModern ? "default" : "outline"}
                     size="sm"
                     onClick={() => handleToggle(true)}
-                    className={`text-xs h-8 ${isModern ? 'bg-primary-600 text-white' : 'text-slate-700'}`}
+                    className={`text-xs h-8 ${isModern ? "bg-primary-600 text-white" : "text-slate-700"}`}
                   >
                     <Sparkles className="w-3 h-3 mr-1" />
                     Modern
                   </Button>
                 </div>
               </div>
-              
+
               <div className="pt-2 border-t border-slate-200">
                 <div className="text-xs text-slate-500 leading-relaxed">
                   {isModern ? (
                     <>
-                      <Badge variant="secondary" className="text-xs mb-1">NEW</Badge>
+                      <Badge variant="secondary" className="text-xs mb-1">
+                        NEW
+                      </Badge>
                       <br />
                       Clean, modern design inspired by premium brands
                     </>
@@ -135,7 +135,7 @@ export default function HomepageSwitcher({
       {isHydrated ? (
         <AnimatePresence mode="wait">
           <motion.div
-            key={isModern ? 'modern' : 'classic'}
+            key={isModern ? "modern" : "classic"}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -177,4 +177,4 @@ export default function HomepageSwitcher({
       )}
     </div>
   );
-} 
+}

@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import Link from "next/link";
 
 // Force dynamic rendering for authentication checks
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Admin Dashboard | Color & Craft",
@@ -14,18 +14,24 @@ export const metadata = {
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient();
-  
+
   try {
-    const { data: { session } } = await supabase.auth.getSession();
-    
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
     if (!session) {
       redirect("/signin");
     }
-    
+
     // Check if user has admin role
-    const { data: user } = await supabase.from("users").select("role").eq("id", session.user.id).single();
+    const { data: user } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", session.user.id)
+      .single();
     const isAdmin = user?.role === "admin";
-    
+
     if (!isAdmin) {
       redirect("/dashboard");
     }
@@ -37,7 +43,7 @@ export default async function AdminDashboardPage() {
   return (
     <div className="container py-10">
       <h1 className="text-4xl font-bold mb-6">Admin Dashboard</h1>
-      
+
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader>
@@ -50,7 +56,7 @@ export default async function AdminDashboardPage() {
             </Button>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader>
             <CardTitle>Portfolio Projects</CardTitle>
@@ -62,7 +68,7 @@ export default async function AdminDashboardPage() {
             </Button>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader>
             <CardTitle>Customer Inquiries</CardTitle>
@@ -74,7 +80,7 @@ export default async function AdminDashboardPage() {
             </Button>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader>
             <CardTitle>Site Settings</CardTitle>
@@ -86,7 +92,7 @@ export default async function AdminDashboardPage() {
             </Button>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader>
             <CardTitle>Analytics</CardTitle>
@@ -101,4 +107,4 @@ export default async function AdminDashboardPage() {
       </div>
     </div>
   );
-} 
+}

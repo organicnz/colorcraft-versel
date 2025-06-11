@@ -1,104 +1,94 @@
-"use client"
+"use client";
 
-import { useState, useRef, useEffect } from 'react'
-import { useChat } from '@/hooks/useChat'
-import { ChatMessage, ChatConversationWithDetails } from '@/types/chat'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { 
-  MessageCircle, 
-  X, 
-  Minus, 
-  Send, 
-  Phone, 
-  User,
-  Clock,
-  CheckCheck,
-  Plus
-} from 'lucide-react'
+import { useState, useRef, useEffect } from "react";
+import { useChat } from "@/hooks/useChat";
+import { ChatMessage, ChatConversationWithDetails } from "@/types/chat";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { MessageCircle, X, Minus, Send, Phone, User, Clock, CheckCheck, Plus } from "lucide-react";
 
 export default function ChatWidget() {
-  const { state, actions } = useChat()
-  const [newMessage, setNewMessage] = useState('')
-  const [customerName, setCustomerName] = useState('')
-  const [customerEmail, setCustomerEmail] = useState('')
-  const [showContactForm, setShowContactForm] = useState(false)
-  const [isStartingChat, setIsStartingChat] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const { state, actions } = useChat();
+  const [newMessage, setNewMessage] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [showContactForm, setShowContactForm] = useState(false);
+  const [isStartingChat, setIsStartingChat] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  console.log('🎯 ChatWidget state:', {
+  console.warn("🎯 ChatWidget state:", {
     isOpen: state.isOpen,
     currentConversation: state.currentConversation?.id,
     conversations: state.conversations.length,
     showContactForm,
     isLoading: state.isLoading,
-    error
-  })
+    error,
+  });
 
   // Scroll to bottom when new messages arrive
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [state.currentConversation?.messages])
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [state.currentConversation?.messages]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    if (!newMessage.trim() || !state.currentConversation) return
+    if (!newMessage.trim() || !state.currentConversation) return;
 
     try {
-      console.log('📤 Sending message:', newMessage)
+      console.warn("📤 Sending message:", newMessage);
       await actions.sendMessage({
         conversation_id: state.currentConversation.id,
-        content: newMessage.trim()
-      })
-      setNewMessage('')
-      console.log('✅ Message sent successfully')
+        content: newMessage.trim(),
+      });
+      setNewMessage("");
+      console.warn("✅ Message sent successfully");
     } catch (error) {
-      console.error('❌ Error sending message:', error)
-      setError('Failed to send message. Please try again.')
+      console.error("❌ Error sending message:", error);
+      setError("Failed to send message. Please try again.");
     }
-  }
+  };
 
   const handleStartNewChat = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    console.log('🚀 Starting new chat with:', { customerName, customerEmail })
-    
+    e.preventDefault();
+
+    console.warn("🚀 Starting new chat with:", { customerName, customerEmail });
+
     if (!customerName.trim()) {
-      setError('Please enter your name')
-      return
-    }
-    
-    if (!customerEmail.trim()) {
-      setError('Please enter your email')
-      return
+      setError("Please enter your name");
+      return;
     }
 
-    setIsStartingChat(true)
-    setError(null)
+    if (!customerEmail.trim()) {
+      setError("Please enter your email");
+      return;
+    }
+
+    setIsStartingChat(true);
+    setError(null);
 
     try {
-      console.log('🔄 Calling startNewChat action...')
-      await actions.startNewChat(customerName, customerEmail)
-      console.log('✅ Chat started successfully')
-      setShowContactForm(false)
-      setCustomerName('')
-      setCustomerEmail('')
+      console.warn("🔄 Calling startNewChat action...");
+      await actions.startNewChat(customerName, customerEmail);
+      console.warn("✅ Chat started successfully");
+      setShowContactForm(false);
+      setCustomerName("");
+      setCustomerEmail("");
     } catch (error) {
-      console.error('❌ Error starting chat:', error)
-      setError(error instanceof Error ? error.message : 'Failed to start chat. Please try again.')
+      console.error("❌ Error starting chat:", error);
+      setError(error instanceof Error ? error.message : "Failed to start chat. Please try again.");
     } finally {
-      setIsStartingChat(false)
+      setIsStartingChat(false);
     }
-  }
+  };
 
   const formatTime = (timestamp: string) => {
-    return new Date(timestamp).toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit'
-    })
-  }
+    return new Date(timestamp).toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   // Chat button (when closed)
   if (!state.isOpen) {
@@ -112,26 +102,27 @@ export default function ChatWidget() {
           <MessageCircle className="h-6 w-6 text-white" />
           {state.unreadCount > 0 && (
             <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-              {state.unreadCount > 9 ? '9+' : state.unreadCount}
+              {state.unreadCount > 9 ? "9+" : state.unreadCount}
             </span>
           )}
         </Button>
       </div>
-    )
+    );
   }
 
   // Chat widget (when open)
   return (
-    <div className={`fixed bottom-6 right-6 z-50 transition-all duration-200 ${
-      state.isMinimized ? 'h-16' : 'h-96'
-    } w-80 bg-white rounded-lg shadow-xl border border-gray-200`}>
-      
+    <div
+      className={`fixed bottom-6 right-6 z-50 transition-all duration-200 ${
+        state.isMinimized ? "h-16" : "h-96"
+      } w-80 bg-white rounded-lg shadow-xl border border-gray-200`}
+    >
       {/* Header */}
       <div className="flex items-center justify-between p-4 bg-primary-600 text-white rounded-t-lg">
         <div className="flex items-center space-x-2">
           <MessageCircle className="h-5 w-5" />
           <span className="font-medium">
-            {state.currentConversation ? state.currentConversation.title : 'ColorCraft Support'}
+            {state.currentConversation ? state.currentConversation.title : "ColorCraft Support"}
           </span>
         </div>
         <div className="flex items-center space-x-1">
@@ -158,7 +149,6 @@ export default function ChatWidget() {
         <>
           {/* Content Area */}
           <div className="flex flex-col h-80">
-            
             {/* No conversation selected */}
             {!state.currentConversation && !showContactForm && (
               <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
@@ -167,14 +157,11 @@ export default function ChatWidget() {
                 <p className="text-sm text-gray-500 mb-4">
                   Get help with your furniture painting project
                 </p>
-                <Button
-                  onClick={() => setShowContactForm(true)}
-                  className="w-full"
-                >
+                <Button onClick={() => setShowContactForm(true)} className="w-full">
                   <Plus className="h-4 w-4 mr-2" />
                   Start Chat
                 </Button>
-                
+
                 {/* Show recent conversations if any */}
                 {state.conversations.length > 0 && (
                   <div className="w-full mt-4">
@@ -215,8 +202,8 @@ export default function ChatWidget() {
                       id="name"
                       value={customerName}
                       onChange={(e) => {
-                        setCustomerName(e.target.value)
-                        setError(null) // Clear error when user starts typing
+                        setCustomerName(e.target.value);
+                        setError(null); // Clear error when user starts typing
                       }}
                       placeholder="Enter your name"
                       required
@@ -232,8 +219,8 @@ export default function ChatWidget() {
                       type="email"
                       value={customerEmail}
                       onChange={(e) => {
-                        setCustomerEmail(e.target.value)
-                        setError(null) // Clear error when user starts typing
+                        setCustomerEmail(e.target.value);
+                        setError(null); // Clear error when user starts typing
                       }}
                       placeholder="Enter your email"
                       required
@@ -242,14 +229,14 @@ export default function ChatWidget() {
                   </div>
                   <div className="flex space-x-2">
                     <Button type="submit" className="flex-1" disabled={isStartingChat}>
-                      {isStartingChat ? 'Starting Chat...' : 'Start Chat'}
+                      {isStartingChat ? "Starting Chat..." : "Start Chat"}
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => {
-                        setShowContactForm(false)
-                        setError(null)
+                        setShowContactForm(false);
+                        setError(null);
                       }}
                       disabled={isStartingChat}
                     >
@@ -265,11 +252,7 @@ export default function ChatWidget() {
               <>
                 <div className="flex-1 overflow-y-auto p-4 space-y-3">
                   {state.currentConversation.messages?.map((message) => (
-                    <MessageBubble
-                      key={message.id}
-                      message={message}
-                      formatTime={formatTime}
-                    />
+                    <MessageBubble key={message.id} message={message} formatTime={formatTime} />
                   ))}
                   <div ref={messagesEndRef} />
                 </div>
@@ -294,19 +277,19 @@ export default function ChatWidget() {
         </>
       )}
     </div>
-  )
+  );
 }
 
 // Message bubble component
-function MessageBubble({ 
-  message, 
-  formatTime 
-}: { 
-  message: ChatMessage
-  formatTime: (timestamp: string) => string 
+function MessageBubble({
+  message,
+  formatTime,
+}: {
+  message: ChatMessage;
+  formatTime: (timestamp: string) => string;
 }) {
-  const isSystem = message.message_type === 'system'
-  const isCurrentUser = message.sender_id === 'current_user' // This would need proper user context
+  const isSystem = message.message_type === "system";
+  const isCurrentUser = message.sender_id === "current_user"; // This would need proper user context
 
   if (isSystem) {
     return (
@@ -315,31 +298,28 @@ function MessageBubble({
           {message.content}
         </div>
       </div>
-    )
+    );
   }
 
   return (
-    <div className={`flex ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
-      <div className={`max-w-xs lg:max-w-md px-3 py-2 rounded-lg ${
-        isCurrentUser 
-          ? 'bg-primary-600 text-white' 
-          : 'bg-gray-100 text-gray-900'
-      }`}>
-        {!isCurrentUser && (
-          <div className="text-xs font-medium mb-1">{message.sender_name}</div>
-        )}
+    <div className={`flex ${isCurrentUser ? "justify-end" : "justify-start"}`}>
+      <div
+        className={`max-w-xs lg:max-w-md px-3 py-2 rounded-lg ${
+          isCurrentUser ? "bg-primary-600 text-white" : "bg-gray-100 text-gray-900"
+        }`}
+      >
+        {!isCurrentUser && <div className="text-xs font-medium mb-1">{message.sender_name}</div>}
         <div className="text-sm">{message.content}</div>
-                 <div className={`text-xs mt-1 flex items-center space-x-1 ${
-           isCurrentUser ? 'text-primary-100' : 'text-gray-500'
-         }`}>
-           <Clock className="h-3 w-3" />
-           <span>{formatTime(message.created_at)}</span>
-           {isCurrentUser && message.is_read && (
-             <CheckCheck className="h-3 w-3" />
-           )}
-         </div>
-       </div>
-     </div>
-   )
- }
- 
+        <div
+          className={`text-xs mt-1 flex items-center space-x-1 ${
+            isCurrentUser ? "text-primary-100" : "text-gray-500"
+          }`}
+        >
+          <Clock className="h-3 w-3" />
+          <span>{formatTime(message.created_at)}</span>
+          {isCurrentUser && message.is_read && <CheckCheck className="h-3 w-3" />}
+        </div>
+      </div>
+    </div>
+  );
+}

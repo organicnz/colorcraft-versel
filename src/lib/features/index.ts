@@ -1,17 +1,17 @@
-import { db } from '@/lib/db';
-import { feature_flags, FeatureFlag } from './schema';
-import { eq, and } from 'drizzle-orm';
-import { apiLogger } from '@/lib/logger';
-import { errorMonitor } from '@/lib/errors/monitoring';
-import { cache } from 'react';
-import { FeatureDefinition } from './feature-list';
-import { hashString } from '../utils';
-import { logger } from '../logger';
+import { db } from "@/lib/db";
+import { feature_flags, FeatureFlag } from "./schema";
+import { eq, and } from "drizzle-orm";
+import { apiLogger } from "@/lib/logger";
+import { errorMonitor } from "@/lib/errors/monitoring";
+import { cache } from "react";
+import { FeatureDefinition } from "./feature-list";
+import { hashString } from "../utils";
+import { logger } from "../logger";
 
 /**
  * Feature flag environment types
  */
-export type Environment = 'development' | 'staging' | 'production' | 'all';
+export type Environment = "development" | "staging" | "production" | "all";
 
 /**
  * Feature flag configuration
@@ -77,14 +77,14 @@ function isUserInRollout(userId: string, percentage: number): boolean {
   if (percentage <= 0) return false;
 
   const hash = hashString(userId);
-  return (hash % 100) < percentage;
+  return hash % 100 < percentage;
 }
 
 /**
  * Check if feature is enabled for current environment
  */
 function isEnvironmentMatch(environment?: string): boolean {
-  if (!environment || environment === 'all') return true;
+  if (!environment || environment === "all") return true;
   return process.env.NODE_ENV === environment || process.env.VERCEL_ENV === environment;
 }
 
@@ -97,14 +97,14 @@ export function isFeatureEnabled(
   context?: Record<string, any>
 ): boolean {
   // Check cache first
-  const cacheKey = `${flagName}_${userId || 'anonymous'}`;
+  const cacheKey = `${flagName}_${userId || "anonymous"}`;
   const cached = featureFlagCache.get(cacheKey);
   if (cached !== null) {
     return cached;
   }
 
   const config = FEATURE_FLAGS[flagName];
-  
+
   // Feature doesn't exist
   if (!config) {
     logger.warn(`Feature flag '${flagName}' not found`);
@@ -148,7 +148,7 @@ export function isFeatureEnabled(
  */
 export function getAllFeatureFlags(userId?: string): Record<string, boolean> {
   const flags: Record<string, boolean> = {};
-  
+
   for (const flagName in FEATURE_FLAGS) {
     flags[flagName] = isFeatureEnabled(flagName, userId);
   }
@@ -161,7 +161,7 @@ export function getAllFeatureFlags(userId?: string): Record<string, boolean> {
  */
 export function clearFeatureFlagCache(): void {
   featureFlagCache.clear();
-  logger.debug('Feature flag cache cleared');
+  logger.debug("Feature flag cache cleared");
 }
 
 /**
@@ -241,27 +241,27 @@ export const FEATURE_FLAGS: Record<string, FeatureConfig> = {
     enabled: true,
   },
 
-  'portfolio-management-v2': {
+  "portfolio-management-v2": {
     enabled: true,
-    description: 'New portfolio management interface',
-    environment: 'all',
+    description: "New portfolio management interface",
+    environment: "all",
   },
-  'enhanced-chat-system': {
+  "enhanced-chat-system": {
     enabled: true,
     rolloutPercentage: 100,
-    description: 'Enhanced chat system with real-time messaging',
-    environment: 'all',
+    description: "Enhanced chat system with real-time messaging",
+    environment: "all",
   },
-  'advanced-analytics': {
+  "advanced-analytics": {
     enabled: false,
     rolloutPercentage: 25,
-    description: 'Advanced analytics dashboard',
-    environment: 'production',
+    description: "Advanced analytics dashboard",
+    environment: "production",
   },
-  'beta-features': {
-    enabled: process.env.NODE_ENV === 'development',
-    description: 'Beta features for testing',
-    environment: 'development',
+  "beta-features": {
+    enabled: process.env.NODE_ENV === "development",
+    description: "Beta features for testing",
+    environment: "development",
   },
 };
 
@@ -269,20 +269,19 @@ export const FEATURE_FLAGS: Record<string, FeatureConfig> = {
  * Checks if a feature flag is enabled based on environment only
  * A simplified version for quick checks without database lookup
  * For use in server components or API routes
- * 
+ *
  * @param feature The feature flag to check
  * @returns boolean indicating if the feature is enabled based on environment
  */
 export function isFeatureEnabledByEnvironment(feature: FeatureConfig): boolean {
   // Determine current environment
-  const environment = process.env.NODE_ENV === "production" 
-    ? "production"
-    : process.env.VERCEL_ENV === "preview" 
-      ? "staging" 
-      : "development";
-  
+  const environment =
+    process.env.NODE_ENV === "production"
+      ? "production"
+      : process.env.VERCEL_ENV === "preview"
+        ? "staging"
+        : "development";
+
   // Check if feature is enabled for current environment
-  return feature.environments.includes(environment as any) 
-    ? feature.defaultValue 
-    : false;
+  return feature.environments.includes(environment as any) ? feature.defaultValue : false;
 }

@@ -3,10 +3,10 @@
  * Consolidates and optimizes Supabase queries with intelligent caching and batching
  */
 
-import { createClient } from './client';
-import { createClient as createServerClient } from './server';
-import { logger, dbLogger } from '../logger';
-import { retry } from '../utils';
+import { createClient } from "./client";
+import { createClient as createServerClient } from "./server";
+import { logger, dbLogger } from "../logger";
+import { retry } from "../utils";
 
 // Query optimization configuration
 const OPTIMIZATION_CONFIG = {
@@ -62,13 +62,13 @@ class BatchQueryManager {
 
   async batchQuery<T>(
     batchKey: string,
-    queryFn: (batchedParams: any[]) => Promise<T[]>,
+    queryFn: (batchedParams: unknown[]) => Promise<T[]>,
     params: any
   ): Promise<T> {
     return new Promise((resolve, reject) => {
       if (!this.batches.has(batchKey)) {
         this.batches.set(batchKey, []);
-        
+
         // Process batch after delay
         setTimeout(() => {
           this.processBatch(batchKey, queryFn);
@@ -79,21 +79,24 @@ class BatchQueryManager {
     });
   }
 
-  private async processBatch<T>(batchKey: string, queryFn: (batchedParams: any[]) => Promise<T[]>) {
+  private async processBatch<T>(
+    batchKey: string,
+    queryFn: (batchedParams: unknown[]) => Promise<T[]>
+  ) {
     const batch = this.batches.get(batchKey);
     if (!batch) return;
 
     this.batches.delete(batchKey);
 
     try {
-      const batchedParams = batch.map(item => item.params);
+      const batchedParams = batch.map((item) => item.params);
       const results = await queryFn(batchedParams);
 
       batch.forEach((item, index) => {
         item.resolve(results[index]);
       });
     } catch (error) {
-      batch.forEach(item => {
+      batch.forEach((item) => {
         item.reject(error);
       });
     }
@@ -113,12 +116,14 @@ export class DatabaseQueryOptimizer {
   /**
    * Optimized portfolio queries with intelligent caching
    */
-  async getPortfolioItems(options: {
-    limit?: number;
-    featured?: boolean;
-    status?: string;
-    useCache?: boolean;
-  } = {}) {
+  async getPortfolioItems(
+    options: {
+      limit?: number;
+      featured?: boolean;
+      status?: string;
+      useCache?: boolean;
+    } = {}
+  ) {
     const { limit = 50, featured, status, useCache = true } = options;
     const cacheKey = `portfolio_${limit}_${featured}_${status}`;
 
@@ -132,10 +137,12 @@ export class DatabaseQueryOptimizer {
     }
 
     try {
-      const result = await retry(async () => {
-        let query = this.supabase
-          .from('portfolio')
-          .select(`
+      const result = await retry(
+        async () => {
+          let query = this.supabase
+            .from("portfolio")
+            .select(
+              `
             id,
             title,
             brief_description,
@@ -145,17 +152,21 @@ export class DatabaseQueryOptimizer {
             materials,
             is_featured,
             created_at
-          `)
-          .order('created_at', { ascending: false });
+          `
+            )
+            .order("created_at", { ascending: false });
 
-        if (limit) query = query.limit(limit);
-        if (featured !== undefined) query = query.eq('is_featured', featured);
-        if (status) query = query.eq('status', status);
+          if (limit) query = query.limit(limit);
+          if (featured !== undefined) query = query.eq("is_featured", featured);
+          if (status) query = query.eq("status", status);
 
-        const { data, error } = await query;
-        if (error) throw error;
-        return data;
-      }, OPTIMIZATION_CONFIG.retryAttempts, OPTIMIZATION_CONFIG.retryDelay);
+          const { data, error } = await query;
+          if (error) throw error;
+          return data;
+        },
+        OPTIMIZATION_CONFIG.retryAttempts,
+        OPTIMIZATION_CONFIG.retryDelay
+      );
 
       // Cache successful results
       if (useCache && result) {
@@ -165,7 +176,7 @@ export class DatabaseQueryOptimizer {
       dbLogger.debug(`Portfolio query completed: ${result?.length || 0} items`);
       return result;
     } catch (error) {
-      dbLogger.error('Portfolio query failed', { metadata: error });
+      dbLogger.error("Portfolio query failed", { metadata: error });
       throw error;
     }
   }
@@ -173,14 +184,16 @@ export class DatabaseQueryOptimizer {
   /**
    * Optimized customer queries with pagination and search
    */
-  async getCustomers(options: {
-    limit?: number;
-    offset?: number;
-    search?: string;
-    useCache?: boolean;
-  } = {}) {
+  async getCustomers(
+    options: {
+      limit?: number;
+      offset?: number;
+      search?: string;
+      useCache?: boolean;
+    } = {}
+  ) {
     const { limit = 50, offset = 0, search, useCache = true } = options;
-    const cacheKey = `customers_${limit}_${offset}_${search || 'all'}`;
+    const cacheKey = `customers_${limit}_${offset}_${search || "all"}`;
 
     if (useCache) {
       const cached = queryCache.get(cacheKey);
@@ -191,28 +204,34 @@ export class DatabaseQueryOptimizer {
     }
 
     try {
-      const result = await retry(async () => {
-        let query = this.supabase
-          .from('customers')
-          .select(`
+      const result = await retry(
+        async () => {
+          let query = this.supabase
+            .from("customers")
+            .select(
+              `
             id,
             full_name,
             email,
             phone,
             customer_since,
             created_at
-          `)
-          .order('created_at', { ascending: false })
-          .range(offset, offset + limit - 1);
+          `
+            )
+            .order("created_at", { ascending: false })
+            .range(offset, offset + limit - 1);
 
-        if (search) {
-          query = query.or(`full_name.ilike.%${search}%,email.ilike.%${search}%`);
-        }
+          if (search) {
+            query = query.or(`full_name.ilike.%${search}%,email.ilike.%${search}%`);
+          }
 
-        const { data, error } = await query;
-        if (error) throw error;
-        return data;
-      }, OPTIMIZATION_CONFIG.retryAttempts, OPTIMIZATION_CONFIG.retryDelay);
+          const { data, error } = await query;
+          if (error) throw error;
+          return data;
+        },
+        OPTIMIZATION_CONFIG.retryAttempts,
+        OPTIMIZATION_CONFIG.retryDelay
+      );
 
       if (useCache && result) {
         queryCache.set(cacheKey, result, OPTIMIZATION_CONFIG.cacheTimeout);
@@ -221,7 +240,7 @@ export class DatabaseQueryOptimizer {
       dbLogger.debug(`Customers query completed: ${result?.length || 0} items`);
       return result;
     } catch (error) {
-      dbLogger.error('Customers query failed', { metadata: error });
+      dbLogger.error("Customers query failed", { metadata: error });
       throw error;
     }
   }
@@ -231,20 +250,17 @@ export class DatabaseQueryOptimizer {
    */
   async getPortfolioItemsByIds(ids: string[]): Promise<any[]> {
     return batchManager.batchQuery(
-      'portfolio_by_ids',
+      "portfolio_by_ids",
       async (batchedIds: string[][]) => {
         const allIds = Array.from(new Set(batchedIds.flat()));
-        
-        const { data, error } = await this.supabase
-          .from('portfolio')
-          .select('*')
-          .in('id', allIds);
+
+        const { data, error } = await this.supabase.from("portfolio").select("*").in("id", allIds);
 
         if (error) throw error;
 
         // Return results in the same order as requested
-        return batchedIds.map(idBatch => 
-          idBatch.map(id => data?.find(item => item.id === id))
+        return batchedIds.map((idBatch) =>
+          idBatch.map((id) => data?.find((item) => item.id === id))
         );
       },
       ids
@@ -255,12 +271,12 @@ export class DatabaseQueryOptimizer {
    * Get dashboard statistics with optimized parallel queries
    */
   async getDashboardStats(useCache: boolean = true) {
-    const cacheKey = 'dashboard_stats';
+    const cacheKey = "dashboard_stats";
 
     if (useCache) {
       const cached = queryCache.get(cacheKey);
       if (cached) {
-        dbLogger.debug('Cache hit for dashboard stats');
+        dbLogger.debug("Cache hit for dashboard stats");
         return cached;
       }
     }
@@ -268,9 +284,9 @@ export class DatabaseQueryOptimizer {
     try {
       // Run multiple queries in parallel for better performance
       const [portfolioCount, customersCount, inquiriesCount] = await Promise.all([
-        this.supabase.from('portfolio').select('id', { count: 'exact', head: true }),
-        this.supabase.from('customers').select('id', { count: 'exact', head: true }),
-        this.supabase.from('inquiries').select('id', { count: 'exact', head: true }),
+        this.supabase.from("portfolio").select("id", { count: "exact", head: true }),
+        this.supabase.from("customers").select("id", { count: "exact", head: true }),
+        this.supabase.from("inquiries").select("id", { count: "exact", head: true }),
       ]);
 
       const stats = {
@@ -284,10 +300,10 @@ export class DatabaseQueryOptimizer {
         queryCache.set(cacheKey, stats, 10 * 60 * 1000); // Cache for 10 minutes
       }
 
-      dbLogger.debug('Dashboard stats query completed', { metadata: stats });
+      dbLogger.debug("Dashboard stats query completed", { metadata: stats });
       return stats;
     } catch (error) {
-      dbLogger.error('Dashboard stats query failed', { metadata: error });
+      dbLogger.error("Dashboard stats query failed", { metadata: error });
       throw error;
     }
   }
@@ -295,13 +311,16 @@ export class DatabaseQueryOptimizer {
   /**
    * Optimized search across multiple tables
    */
-  async globalSearch(searchTerm: string, options: {
-    tables?: string[];
-    limit?: number;
-    useCache?: boolean;
-  } = {}) {
-    const { tables = ['portfolio', 'customers'], limit = 20, useCache = true } = options;
-    const cacheKey = `global_search_${searchTerm}_${tables.join('_')}_${limit}`;
+  async globalSearch(
+    searchTerm: string,
+    options: {
+      tables?: string[];
+      limit?: number;
+      useCache?: boolean;
+    } = {}
+  ) {
+    const { tables = ["portfolio", "customers"], limit = 20, useCache = true } = options;
+    const cacheKey = `global_search_${searchTerm}_${tables.join("_")}_${limit}`;
 
     if (useCache) {
       const cached = queryCache.get(cacheKey);
@@ -314,21 +333,21 @@ export class DatabaseQueryOptimizer {
     try {
       const searchPromises = tables.map(async (table) => {
         switch (table) {
-          case 'portfolio':
+          case "portfolio":
             const { data: portfolioData } = await this.supabase
-              .from('portfolio')
-              .select('id, title, brief_description')
+              .from("portfolio")
+              .select("id, title, brief_description")
               .or(`title.ilike.%${searchTerm}%,brief_description.ilike.%${searchTerm}%`)
               .limit(limit);
-            return portfolioData?.map(item => ({ ...item, type: 'portfolio' })) || [];
+            return portfolioData?.map((item) => ({ ...item, type: "portfolio" })) || [];
 
-          case 'customers':
+          case "customers":
             const { data: customerData } = await this.supabase
-              .from('customers')
-              .select('id, full_name, email')
+              .from("customers")
+              .select("id, full_name, email")
               .or(`full_name.ilike.%${searchTerm}%,email.ilike.%${searchTerm}%`)
               .limit(limit);
-            return customerData?.map(item => ({ ...item, type: 'customer' })) || [];
+            return customerData?.map((item) => ({ ...item, type: "customer" })) || [];
 
           default:
             return [];
@@ -342,10 +361,12 @@ export class DatabaseQueryOptimizer {
         queryCache.set(cacheKey, combinedResults, 2 * 60 * 1000); // Cache for 2 minutes
       }
 
-      dbLogger.debug(`Global search completed: ${combinedResults.length} results for "${searchTerm}"`);
+      dbLogger.debug(
+        `Global search completed: ${combinedResults.length} results for "${searchTerm}"`
+      );
       return combinedResults;
     } catch (error) {
-      dbLogger.error('Global search failed', { metadata: error });
+      dbLogger.error("Global search failed", { metadata: error });
       throw error;
     }
   }
@@ -355,7 +376,7 @@ export class DatabaseQueryOptimizer {
    */
   invalidateCache(pattern?: string): void {
     queryCache.invalidate(pattern);
-    dbLogger.debug(`Cache invalidated: ${pattern || 'all'}`);
+    dbLogger.debug(`Cache invalidated: ${pattern || "all"}`);
   }
 
   getCacheStats(): { size: number; config: typeof OPTIMIZATION_CONFIG } {
@@ -370,7 +391,7 @@ export class DatabaseQueryOptimizer {
    */
   async executeRawQuery(
     query: string,
-    params: any[] = [],
+    params: unknown[] = [],
     options: { useCache?: boolean; cacheKey?: string; cacheTtl?: number } = {}
   ) {
     const { useCache = false, cacheKey, cacheTtl = OPTIMIZATION_CONFIG.cacheTimeout } = options;
@@ -384,23 +405,27 @@ export class DatabaseQueryOptimizer {
     }
 
     try {
-      const result = await retry(async () => {
-        const { data, error } = await this.supabase.rpc('execute_sql', {
-          query,
-          params,
-        });
-        if (error) throw error;
-        return data;
-      }, OPTIMIZATION_CONFIG.retryAttempts, OPTIMIZATION_CONFIG.retryDelay);
+      const result = await retry(
+        async () => {
+          const { data, error } = await this.supabase.rpc("execute_sql", {
+            query,
+            params,
+          });
+          if (error) throw error;
+          return data;
+        },
+        OPTIMIZATION_CONFIG.retryAttempts,
+        OPTIMIZATION_CONFIG.retryDelay
+      );
 
       if (useCache && cacheKey && result) {
         queryCache.set(cacheKey, result, cacheTtl);
       }
 
-      dbLogger.debug('Raw query executed successfully');
+      dbLogger.debug("Raw query executed successfully");
       return result;
     } catch (error) {
-      dbLogger.error('Raw query failed', { metadata: { query, error } });
+      dbLogger.error("Raw query failed", { metadata: { query, error } });
       throw error;
     }
   }
@@ -418,4 +443,4 @@ export const cacheUtils = {
     config: OPTIMIZATION_CONFIG,
   }),
   clear: () => queryCache.invalidate(),
-}; 
+};

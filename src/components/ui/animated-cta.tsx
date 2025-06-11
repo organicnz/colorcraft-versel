@@ -49,7 +49,7 @@ export function AnimatedCta({
   // Define glow effect if enabled
   const getGlowEffect = () => {
     if (!glowEffect) return "";
-    
+
     switch (variant) {
       case "secondary":
         return "after:bg-secondary-500/20";
@@ -67,7 +67,8 @@ export function AnimatedCta({
         "bg-gradient-to-r",
         getGradient(),
         getHoverGradient(),
-        glowEffect && "after:absolute after:inset-0 after:z-[-1] after:opacity-0 after:transition-opacity after:duration-500 group-hover:after:opacity-100 after:blur-xl",
+        glowEffect &&
+          "after:absolute after:inset-0 after:z-[-1] after:opacity-0 after:transition-opacity after:duration-500 group-hover:after:opacity-100 after:blur-xl",
         getGlowEffect(),
         className
       )}

@@ -1,12 +1,13 @@
 "use client";
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState, type ReactNode } from 'react';
-import dynamic from 'next/dynamic';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState, type ReactNode } from "react";
+import dynamic from "next/dynamic";
 
 // Dynamically import React Query Devtools to avoid including in production bundle
 const ReactQueryDevtools = dynamic(
-  () => import('@tanstack/react-query-devtools').then((mod) => ({ default: mod.ReactQueryDevtools })),
+  () =>
+    import("@tanstack/react-query-devtools").then((mod) => ({ default: mod.ReactQueryDevtools })),
   { ssr: false }
 );
 
@@ -21,7 +22,7 @@ const createQueryClient = () => {
         staleTime: 5 * 60 * 1000, // 5 minutes - data is fresh for 5 minutes
         gcTime: 10 * 60 * 1000, // 10 minutes - cache for 10 minutes
         refetchOnWindowFocus: false, // Don't refetch on focus by default
-        refetchOnReconnect: 'always', // Refetch when reconnecting to internet
+        refetchOnReconnect: "always", // Refetch when reconnecting to internet
         retry: (failureCount, error: any) => {
           // Smart retry logic
           if (error?.status === 404 || error?.status === 403) {
@@ -31,19 +32,19 @@ const createQueryClient = () => {
         },
         retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
         // Enable background refetching for better UX
-        refetchOnMount: 'always',
+        refetchOnMount: "always",
         // Optimize for mobile users
-        networkMode: 'offlineFirst',
+        networkMode: "offlineFirst",
       },
       mutations: {
         // Optimize mutations
         retry: 1,
         retryDelay: 1000,
-        networkMode: 'offlineFirst',
+        networkMode: "offlineFirst",
         // Global mutation error handling
         onError: (error: any) => {
-          if (process.env.NODE_ENV === 'development') {
-            console.error('Mutation error:', error);
+          if (process.env.NODE_ENV === "development") {
+            console.error("Mutation error:", error);
           }
           // You can add global error handling here (toast, error tracking, etc.)
         },
@@ -52,18 +53,14 @@ const createQueryClient = () => {
   });
 };
 
-export function ReactQueryProvider({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export function ReactQueryProvider({ children }: { children: ReactNode }) {
   // Use singleton pattern to avoid recreating client on every render
   const [queryClient] = useState(() => {
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       // Server-side: create a new client for each request
       return createQueryClient();
     }
-    
+
     // Client-side: use singleton pattern
     if (!globalQueryClient) {
       globalQueryClient = createQueryClient();
@@ -75,10 +72,10 @@ export function ReactQueryProvider({
     <QueryClientProvider client={queryClient}>
       {children}
       {/* Only include React Query Devtools in development */}
-      {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
+      {process.env.NODE_ENV === "development" && <ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
   );
 }
 
 // Export the query client for use in server components and other places
-export { createQueryClient }; 
+export { createQueryClient };

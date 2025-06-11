@@ -106,7 +106,7 @@ export default function ImageUpload({
       // Provide more helpful error messages
       if (error.message.includes("row-level security policy")) {
         throw new Error(
-          `Upload failed: You don't have permission to upload images. Please make sure you're logged in as an admin.`
+          `Upload failed: You don&apos;t have permission to upload images. Please make sure you're logged in as an admin.`
         );
       } else if (error.message.includes("duplicate")) {
         throw new Error(`Upload failed: A file with this name already exists. Please try again.`);

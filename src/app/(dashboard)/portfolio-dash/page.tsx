@@ -144,7 +144,12 @@ export default async function PortfolioDashboardPage() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card glass={true} glassVariant="light" glassIntensity="medium" className="border-blue-200/50 dark:border-blue-800/50">
+          <Card
+            glass={true}
+            glassVariant="light"
+            glassIntensity="medium"
+            className="border-blue-200/50 dark:border-blue-800/50"
+          >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-300">
                 Total Projects
@@ -159,7 +164,12 @@ export default async function PortfolioDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card glass={true} glassVariant="light" glassIntensity="medium" className="border-yellow-200/50 dark:border-yellow-800/50">
+          <Card
+            glass={true}
+            glassVariant="light"
+            glassIntensity="medium"
+            className="border-yellow-200/50 dark:border-yellow-800/50"
+          >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-yellow-700 dark:text-yellow-300">
                 Featured Projects
@@ -176,7 +186,12 @@ export default async function PortfolioDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card glass={true} glassVariant="light" glassIntensity="medium" className="border-purple-200/50 dark:border-purple-800/50">
+          <Card
+            glass={true}
+            glassVariant="light"
+            glassIntensity="medium"
+            className="border-purple-200/50 dark:border-purple-800/50"
+          >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-purple-700 dark:text-purple-300">
                 Recent Projects
@@ -227,7 +242,11 @@ export default async function PortfolioDashboardPage() {
                   Start building your portfolio by adding your first project. Showcase your best
                   work and attract new clients.
                 </p>
-                <Button asChild size="lg" className="bg-[#3ECF8E] hover:bg-[#38BC81] text-white border border-[#3ECF8E]/30 transition-all duration-300 hover:shadow-xl">
+                <Button
+                  asChild
+                  size="lg"
+                  className="bg-[#3ECF8E] hover:bg-[#38BC81] text-white border border-[#3ECF8E]/30 transition-all duration-300 hover:shadow-xl"
+                >
                   <Link href="/portfolio-dash/new" className="flex items-center gap-2">
                     <PlusCircle className="w-5 h-5" />
                     Add Your First Project

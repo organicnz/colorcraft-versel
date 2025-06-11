@@ -15,12 +15,12 @@ export const metadata: Metadata = {
 export default async function ServicesManagementPage() {
   const cookieStore = cookies();
   const supabase = await createClient();
-  
+
   // Get the current user
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  
+
   if (!user) {
     return (
       <div className="max-w-5xl mx-auto py-8 px-4">
@@ -29,22 +29,15 @@ export default async function ServicesManagementPage() {
       </div>
     );
   }
-  
+
   // Fetch user role
-  const { data: userData } = await supabase
-    .from("users")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-    
+  const { data: userData } = await supabase.from("users").select("role").eq("id", user.id).single();
+
   const isAdmin = userData?.role === "admin";
-  
+
   // Fetch services
-  const { data: services, error } = await supabase
-    .from("services")
-    .select("*")
-    .order("title");
-    
+  const { data: services, error } = await supabase.from("services").select("*").order("title");
+
   if (error) {
     console.error("Error fetching services:", error);
     return (
@@ -60,11 +53,9 @@ export default async function ServicesManagementPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold">Services Management</h1>
-          <p className="text-muted-foreground mt-2">
-            Manage the services you offer to clients
-          </p>
+          <p className="text-muted-foreground mt-2">Manage the services you offer to clients</p>
         </div>
-        
+
         {isAdmin && (
           <Link href="/dashboard/services-management/new" passHref>
             <Button>
@@ -74,13 +65,11 @@ export default async function ServicesManagementPage() {
           </Link>
         )}
       </div>
-      
+
       {services.length === 0 ? (
         <div className="bg-muted/40 rounded-lg p-8 text-center">
           <h3 className="text-lg font-medium">No services found</h3>
-          <p className="text-muted-foreground mt-2">
-            Get started by adding your first service.
-          </p>
+          <p className="text-muted-foreground mt-2">Get started by adding your first service.</p>
           {isAdmin && (
             <Link href="/dashboard/services-management/new" passHref>
               <Button className="mt-4">
@@ -95,4 +84,4 @@ export default async function ServicesManagementPage() {
       )}
     </div>
   );
-} 
+}

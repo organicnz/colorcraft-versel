@@ -20,7 +20,7 @@ export const createClient = async () => {
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR5ZGdlaG5rYXN6dXZjYXl3d2RtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI0NDg0OTcsImV4cCI6MjA1ODAyNDQ5N30.YpQdD8zSpel_JmAVS3oL_esnNRSUY5mNVhPomZWCYQI";
   }
 
-  console.log("Creating Supabase client with:", {
+  console.warn("Creating Supabase client with:", {
     url: supabaseUrl,
     keyLength: supabaseAnonKey?.length,
     keyStart: supabaseAnonKey?.substring(0, 20),

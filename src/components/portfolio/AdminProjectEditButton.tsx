@@ -37,7 +37,9 @@ export default function AdminProjectEditButton({
       const supabase = createClient();
 
       // Get current user
-      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      const {
+        data: { user: currentUser },
+      } = await supabase.auth.getUser();
 
       if (!currentUser) {
         setIsAdmin(false);
@@ -80,12 +82,7 @@ export default function AdminProjectEditButton({
 
   if (variant === "icon") {
     return (
-      <Button
-        asChild
-        size="sm"
-        variant="outline"
-        className={`h-8 w-8 p-0 ${className}`}
-      >
+      <Button asChild size="sm" variant="outline" className={`h-8 w-8 p-0 ${className}`}>
         <Link href={`/portfolio-dash/${projectId}/edit`}>
           <Pencil className="h-4 w-4" />
         </Link>
@@ -154,4 +151,4 @@ export default function AdminProjectEditButton({
   }
 
   return null;
-} 
+}

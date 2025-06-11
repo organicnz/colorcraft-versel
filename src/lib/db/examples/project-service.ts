@@ -13,10 +13,7 @@ export const ProjectService = {
   async getProjects(userId?: string) {
     try {
       if (userId) {
-        return await db
-          .select()
-          .from(projects)
-          .where(eq(projects.user_id, userId));
+        return await db.select().from(projects).where(eq(projects.user_id, userId));
       }
       return await db.select().from(projects);
     } catch (error) {
@@ -28,11 +25,7 @@ export const ProjectService = {
   // Get a single project by ID
   async getProjectById(id: string) {
     try {
-      const result = await db
-        .select()
-        .from(projects)
-        .where(eq(projects.id, id))
-        .limit(1);
+      const result = await db.select().from(projects).where(eq(projects.id, id)).limit(1);
       return result[0];
     } catch (error) {
       console.error(`Error getting project ${id}:`, error);

@@ -19,7 +19,7 @@ import {
   Filter,
   Grid3X3,
   Search,
-  Loader2
+  Loader2,
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
@@ -31,8 +31,8 @@ const fadeInUp = {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { type: "spring", stiffness: 100, damping: 15, duration: 0.8 }
-  }
+    transition: { type: "spring", stiffness: 100, damping: 15, duration: 0.8 },
+  },
 };
 
 const staggerContainer = {
@@ -41,18 +41,18 @@ const staggerContainer = {
     opacity: 1,
     transition: {
       staggerChildren: 0.1,
-      delayChildren: 0.2
-    }
-  }
+      delayChildren: 0.2,
+    },
+  },
 };
 
 const scaleOnHover = {
   scale: 1.02,
-  transition: { type: "spring", stiffness: 400, damping: 25 }
+  transition: { type: "spring", stiffness: 400, damping: 25 },
 };
 
 // Force dynamic rendering for authentication checks
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 // Updated interface to match the database schema
 interface ProjectType {
@@ -62,7 +62,7 @@ interface ProjectType {
   brief_description: string;
   before_images: string[];
   after_images: string[];
-  status: 'published' | 'draft' | 'archived';
+  status: "published" | "draft" | "archived";
   is_featured: boolean;
   techniques?: string[];
   materials?: string[];
@@ -80,34 +80,42 @@ interface ProjectType {
 // Fallback sample data function
 const getSampleProjects = (): ProjectType[] => [
   {
-    id: 'sample-1',
-    title: 'Victorian Dresser Revival',
-    description: 'Elegant restoration with chalk paint and brass accents.',
-    brief_description: 'Elegant restoration with chalk paint and brass accents.',
-    before_images: ['https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80'],
-    after_images: ['https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80'],
-    status: 'published' as const,
+    id: "sample-1",
+    title: "Victorian Dresser Revival",
+    description: "Elegant restoration with chalk paint and brass accents.",
+    brief_description: "Elegant restoration with chalk paint and brass accents.",
+    before_images: [
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80",
+    ],
+    after_images: [
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80",
+    ],
+    status: "published" as const,
     is_featured: true,
-    category: 'restoration',
-    completion_time: '3 weeks',
-    techniques: ['Chalk Paint', 'Distressing', 'Hardware Upgrade'],
-    price_range: '$800-1200',
+    category: "restoration",
+    completion_time: "3 weeks",
+    techniques: ["Chalk Paint", "Distressing", "Hardware Upgrade"],
+    price_range: "$800-1200",
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   },
   {
-    id: 'sample-2',
-    title: 'Modern Coffee Table Makeover',
-    description: 'Sleek transformation with geometric design.',
-    brief_description: 'Sleek transformation with geometric design.',
-    before_images: ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop&auto=format&q=80'],
-    after_images: ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop&auto=format&q=80'],
-    status: 'published' as const,
+    id: "sample-2",
+    title: "Modern Coffee Table Makeover",
+    description: "Sleek transformation with geometric design.",
+    brief_description: "Sleek transformation with geometric design.",
+    before_images: [
+      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop&auto=format&q=80",
+    ],
+    after_images: [
+      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop&auto=format&q=80",
+    ],
+    status: "published" as const,
     is_featured: true,
-    category: 'modern',
-    completion_time: '2 weeks',
-    techniques: ['Geometric Design', 'Premium Lacquer', 'Metal Accents'],
-    price_range: '$600-900',
+    category: "modern",
+    completion_time: "2 weeks",
+    techniques: ["Geometric Design", "Premium Lacquer", "Metal Accents"],
+    price_range: "$600-900",
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   },
@@ -117,23 +125,27 @@ const getSampleProjects = (): ProjectType[] => [
     title: `Project ${i + 3}`,
     description: `Sample project ${i + 3} description`,
     brief_description: `Sample project ${i + 3} brief description`,
-    before_images: [`https://images.unsplash.com/photo-${1586023492125 + i}?w=800&h=600&fit=crop&auto=format&q=80`],
-    after_images: [`https://images.unsplash.com/photo-${1586023492125 + i}?w=800&h=600&fit=crop&auto=format&q=80`],
-    status: 'published' as const,
+    before_images: [
+      `https://images.unsplash.com/photo-${1586023492125 + i}?w=800&h=600&fit=crop&auto=format&q=80`,
+    ],
+    after_images: [
+      `https://images.unsplash.com/photo-${1586023492125 + i}?w=800&h=600&fit=crop&auto=format&q=80`,
+    ],
+    status: "published" as const,
     is_featured: i < 5,
-    category: ['restoration', 'modern', 'vintage', 'industrial'][i % 4],
+    category: ["restoration", "modern", "vintage", "industrial"][i % 4],
     completion_time: `${Math.floor(Math.random() * 5) + 1} weeks`,
-    techniques: ['Technique 1', 'Technique 2'],
-    price_range: '$400-800',
+    techniques: ["Technique 1", "Technique 2"],
+    price_range: "$400-800",
     created_at: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
     updated_at: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
-  }))
+  })),
 ];
 
 export default function PortfolioPage() {
   // Initialize with sample data to prevent empty state during SSR
   const initialProjects = getSampleProjects();
-  
+
   const [isLoading, setIsLoading] = useState(true);
   const [projects, setProjects] = useState<ProjectType[]>(initialProjects);
   const [displayedProjects, setDisplayedProjects] = useState<ProjectType[]>(
@@ -155,30 +167,30 @@ export default function PortfolioPage() {
 
         // Fetch published projects only for public view
         const fetchedProjects = await getPortfolioProjects({
-          status: 'published',
+          status: "published",
           orderBy: [
-            { column: 'is_featured', ascending: false },
-            { column: 'created_at', ascending: false }
-          ]
+            { column: "is_featured", ascending: false },
+            { column: "created_at", ascending: false },
+          ],
         });
 
         // Transform projects to match UI requirements
         const transformedProjects = fetchedProjects.map((project: any) => ({
           ...project,
           // Add computed properties for backward compatibility
-          category: project.techniques?.[0]?.toLowerCase() || 'general',
+          category: project.techniques?.[0]?.toLowerCase() || "general",
           completion_time: project.completion_date
             ? `${Math.ceil(Math.abs(new Date().getTime() - new Date(project.completion_date).getTime()) / (1000 * 3600 * 24 * 7))} weeks`
-            : '2-4 weeks',
-          price_range: '$500-1500' // Default range, could be added to database later
+            : "2-4 weeks",
+          price_range: "$500-1500", // Default range, could be added to database later
         }));
 
         setProjects(transformedProjects);
         // Initialize displayed projects with first page
         setDisplayedProjects(transformedProjects.slice(0, projectsPerPage));
       } catch (err) {
-        console.error('Error fetching portfolio projects:', err);
-        setError('Failed to load portfolio projects. Please try again later.');
+        console.error("Error fetching portfolio projects:", err);
+        setError("Failed to load portfolio projects. Please try again later.");
         // Fallback to sample data on error
         const fallbackProjects = getSampleProjects();
         setProjects(fallbackProjects);
@@ -193,32 +205,32 @@ export default function PortfolioPage() {
 
   // Update displayed projects when filter changes
   useEffect(() => {
-    const filtered = filterType === "all"
-      ? projects
-      : projects.filter(project => project.category === filterType);
+    const filtered =
+      filterType === "all"
+        ? projects
+        : projects.filter((project) => project.category === filterType);
 
     setDisplayedProjects(filtered.slice(0, projectsPerPage));
     setCurrentPage(1);
   }, [filterType, projects]);
 
-  const filteredProjects = filterType === "all"
-    ? projects
-    : projects.filter(project => project.category === filterType);
+  const filteredProjects =
+    filterType === "all" ? projects : projects.filter((project) => project.category === filterType);
 
   const hasMoreProjects = displayedProjects.length < filteredProjects.length;
 
   const loadMoreProjects = useCallback(() => {
-    console.log('loadMoreProjects called', {
+    console.warn("loadMoreProjects called", {
       isLoadingMore,
       hasMoreProjects,
       displayedLength: displayedProjects.length,
       filteredLength: filteredProjects.length,
       currentPage,
-      filterType
+      filterType,
     });
 
     if (isLoadingMore || !hasMoreProjects) {
-      console.log('Early return:', { isLoadingMore, hasMoreProjects });
+      console.warn("Early return:", { isLoadingMore, hasMoreProjects });
       return;
     }
 
@@ -226,30 +238,40 @@ export default function PortfolioPage() {
 
     // Simulate loading delay for better UX
     setTimeout(() => {
-      const filtered = filterType === "all"
-        ? projects
-        : projects.filter(project => project.category === filterType);
+      const filtered =
+        filterType === "all"
+          ? projects
+          : projects.filter((project) => project.category === filterType);
 
       const nextPage = currentPage + 1;
       const startIndex = 0;
       const endIndex = nextPage * projectsPerPage;
       const newProjects = filtered.slice(startIndex, endIndex);
 
-      console.log('Loading more projects:', {
+      console.warn("Loading more projects:", {
         currentPage,
         nextPage,
         filtered: filtered.length,
         displayed: displayedProjects.length,
         newProjects: newProjects.length,
         endIndex,
-        projectsPerPage
+        projectsPerPage,
       });
 
       setDisplayedProjects(newProjects);
       setCurrentPage(nextPage);
       setIsLoadingMore(false);
     }, 300);
-  }, [isLoadingMore, hasMoreProjects, displayedProjects.length, filteredProjects.length, currentPage, filterType, projects, projectsPerPage]);
+  }, [
+    isLoadingMore,
+    hasMoreProjects,
+    displayedProjects.length,
+    filteredProjects.length,
+    currentPage,
+    filterType,
+    projects,
+    projectsPerPage,
+  ]);
 
   const stats = [
     {
@@ -257,42 +279,42 @@ export default function PortfolioPage() {
       number: `${projects.length}+`,
       label: "Projects Completed",
       gradient: "from-violet-500 to-purple-600",
-      bgGradient: "from-violet-50 to-purple-50"
+      bgGradient: "from-violet-50 to-purple-50",
     },
     {
       icon: Award,
       number: "100%",
       label: "Client Satisfaction",
       gradient: "from-amber-500 to-orange-600",
-      bgGradient: "from-amber-50 to-orange-50"
+      bgGradient: "from-amber-50 to-orange-50",
     },
     {
       icon: Users,
       number: `${Math.ceil(projects.length * 0.8)}+`,
       label: "Happy Clients",
       gradient: "from-emerald-500 to-teal-600",
-      bgGradient: "from-emerald-50 to-teal-50"
+      bgGradient: "from-emerald-50 to-teal-50",
     },
     {
       icon: Calendar,
       number: "5+",
       label: "Years Experience",
       gradient: "from-blue-500 to-cyan-600",
-      bgGradient: "from-blue-50 to-cyan-50"
-    }
+      bgGradient: "from-blue-50 to-cyan-50",
+    },
   ];
 
   const getUniqueCategories = () => {
-    const categories = projects.map(p => p.category).filter(Boolean);
+    const categories = projects.map((p) => p.category).filter(Boolean);
     const uniqueCategories = [...new Set(categories)];
 
     return [
       { id: "all", label: "All Projects", count: projects.length },
-      ...uniqueCategories.map(category => ({
+      ...uniqueCategories.map((category) => ({
         id: category!,
         label: category!.charAt(0).toUpperCase() + category!.slice(1),
-        count: projects.filter(p => p.category === category).length
-      }))
+        count: projects.filter((p) => p.category === category).length,
+      })),
     ];
   };
 
@@ -335,9 +357,7 @@ export default function PortfolioPage() {
       {error && projects.length > 0 && (
         <div className="bg-yellow-50 border-b border-yellow-200 px-6 py-3">
           <div className="container mx-auto">
-            <p className="text-yellow-800 text-sm">
-              ⚠️ {error} Showing sample data.
-            </p>
+            <p className="text-yellow-800 text-sm">⚠️ {error} Showing sample data.</p>
           </div>
         </div>
       )}
@@ -368,25 +388,30 @@ export default function PortfolioPage() {
               </Badge>
 
               <h1 className="text-6xl lg:text-8xl font-bold bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 bg-clip-text text-transparent leading-tight">
-                Furniture<br />
+                Furniture
+                <br />
                 <span className="bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
                   Transformations
                 </span>
               </h1>
 
               <p className="text-2xl lg:text-3xl text-slate-600 leading-relaxed max-w-4xl mx-auto font-light">
-                Discover the artistry behind each piece. From vintage restorations to modern makeovers,
-                every transformation tells a unique story of craftsmanship and creativity.
+                Discover the artistry behind each piece. From vintage restorations to modern
+                makeovers, every transformation tells a unique story of craftsmanship and
+                creativity.
               </p>
 
-              <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-6 justify-center pt-8">
+              <motion.div
+                variants={fadeInUp}
+                className="flex flex-col sm:flex-row gap-6 justify-center pt-8"
+              >
                 <motion.div whileHover={scaleOnHover}>
                   <Button
                     size="lg"
                     className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl text-lg font-semibold"
                     onClick={() => {
-                      document.getElementById('portfolio-section')?.scrollIntoView({
-                        behavior: 'smooth'
+                      document.getElementById("portfolio-section")?.scrollIntoView({
+                        behavior: "smooth",
                       });
                     }}
                   >
@@ -400,8 +425,8 @@ export default function PortfolioPage() {
                     size="lg"
                     className="border-2 border-slate-200 text-slate-700 hover:bg-slate-50 px-8 py-4 rounded-2xl backdrop-blur-sm bg-white/50 text-lg font-semibold"
                     onClick={() => {
-                      document.getElementById('categories-section')?.scrollIntoView({
-                        behavior: 'smooth'
+                      document.getElementById("categories-section")?.scrollIntoView({
+                        behavior: "smooth",
                       });
                     }}
                   >
@@ -455,19 +480,19 @@ export default function PortfolioPage() {
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
             >
               {stats.map((stat, index) => (
-                <motion.div
-                  key={index}
-                  variants={fadeInUp}
-                  className="group"
-                >
+                <motion.div key={index} variants={fadeInUp} className="group">
                   <motion.div
                     className={`relative p-8 rounded-3xl bg-gradient-to-br ${stat.bgGradient} border border-white/50 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden text-center`}
                     whileHover={{ y: -8, scale: 1.02 }}
                   >
-                    <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${stat.gradient} opacity-10 rounded-full blur-2xl transform translate-x-8 -translate-y-8`} />
+                    <div
+                      className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${stat.gradient} opacity-10 rounded-full blur-2xl transform translate-x-8 -translate-y-8`}
+                    />
 
                     <div className="relative space-y-4">
-                      <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${stat.gradient} p-4 shadow-lg group-hover:scale-110 transition-transform duration-300 mx-auto`}>
+                      <div
+                        className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${stat.gradient} p-4 shadow-lg group-hover:scale-110 transition-transform duration-300 mx-auto`}
+                      >
                         <stat.icon className="w-8 h-8 text-white" />
                       </div>
                       <div className="text-4xl font-bold text-slate-900">{stat.number}</div>
@@ -511,9 +536,10 @@ export default function PortfolioPage() {
                   variant={filterType === category.id ? "default" : "outline"}
                   className={`
                     px-6 py-3 rounded-full transition-all duration-300 text-sm font-medium
-                    ${filterType === category.id
-                      ? "bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-lg"
-                      : "hover:bg-slate-50 hover:border-slate-300"
+                    ${
+                      filterType === category.id
+                        ? "bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-lg"
+                        : "hover:bg-slate-50 hover:border-slate-300"
                     }
                   `}
                   onClick={() => setFilterType(category.id)}
@@ -547,12 +573,7 @@ export default function PortfolioPage() {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
             {displayedProjects.map((project, index) => (
-              <motion.div
-                key={project.id}
-                variants={fadeInUp}
-                custom={index}
-                className="group"
-              >
+              <motion.div key={project.id} variants={fadeInUp} custom={index} className="group">
                 <motion.div
                   className="relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 h-full"
                   whileHover={{ y: -8 }}
@@ -566,7 +587,8 @@ export default function PortfolioPage() {
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         onError={(e) => {
                           // Fallback to a placeholder if image fails to load
-                          (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80";
+                          (e.target as HTMLImageElement).src =
+                            "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80";
                         }}
                       />
                     )}
@@ -584,7 +606,11 @@ export default function PortfolioPage() {
                     {/* Hover Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end">
                       <div className="p-6 w-full">
-                        <Button variant="secondary" size="sm" className="w-full bg-white/90 hover:bg-white text-slate-900">
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          className="w-full bg-white/90 hover:bg-white text-slate-900"
+                        >
                           <ArrowRight className="ml-2 h-3 w-3" />
                           View Project
                         </Button>
@@ -605,7 +631,7 @@ export default function PortfolioPage() {
                     <div className="flex items-center justify-between text-xs text-slate-500">
                       <span className="flex items-center">
                         <Calendar className="w-3 h-3 mr-1" />
-                        {project.completion_time || '2-4 weeks'}
+                        {project.completion_time || "2-4 weeks"}
                       </span>
                       <span className="flex items-center">
                         <Award className="w-3 h-3 mr-1" />
@@ -615,7 +641,11 @@ export default function PortfolioPage() {
 
                     <div className="pt-4 border-t border-slate-100">
                       <Link href={`/portfolio/${project.id}`}>
-                        <Button variant="outline" size="sm" className="w-full group-hover:bg-violet-50 group-hover:border-violet-200 group-hover:text-violet-600 transition-colors">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full group-hover:bg-violet-50 group-hover:border-violet-200 group-hover:text-violet-600 transition-colors"
+                        >
                           View Details
                           <ArrowRight className="ml-2 h-3 w-3" />
                         </Button>
@@ -642,7 +672,7 @@ export default function PortfolioPage() {
                   variant="outline"
                   className="border-2 border-slate-200 text-slate-700 hover:bg-slate-50 px-8 py-4 rounded-2xl backdrop-blur-sm bg-white/50"
                   onClick={() => {
-                    console.log('Load More button clicked');
+                    console.warn("Load More button clicked");
                     loadMoreProjects();
                   }}
                   disabled={isLoadingMore}
@@ -655,12 +685,13 @@ export default function PortfolioPage() {
                   ) : (
                     <>
                       <Grid3X3 className="mr-2 h-5 w-5" />
-                      Load More Projects ({filteredProjects.length - displayedProjects.length} remaining)
+                      Load More Projects ({filteredProjects.length - displayedProjects.length}{" "}
+                      remaining)
                     </>
                   )}
                 </Button>
               </motion.div>
-              
+
               {/* Debug Information - Remove this in production */}
               <div className="mt-4 text-xs text-gray-500 space-y-1">
                 <div>Total Projects: {projects.length}</div>
@@ -668,8 +699,8 @@ export default function PortfolioPage() {
                 <div>Displayed Projects: {displayedProjects.length}</div>
                 <div>Current Page: {currentPage}</div>
                 <div>Projects Per Page: {projectsPerPage}</div>
-                <div>Has More: {hasMoreProjects ? 'Yes' : 'No'}</div>
-                <div>Is Loading: {isLoadingMore ? 'Yes' : 'No'}</div>
+                <div>Has More: {hasMoreProjects ? "Yes" : "No"}</div>
+                <div>Is Loading: {isLoadingMore ? "Yes" : "No"}</div>
                 <div>Filter: {filterType}</div>
               </div>
             </motion.div>
@@ -689,8 +720,7 @@ export default function PortfolioPage() {
               <p className="text-slate-600 mb-6">
                 {filterType === "all"
                   ? "No portfolio projects are available at the moment."
-                  : `No projects found in the "${filterType}" category.`
-                }
+                  : `No projects found in the "${filterType}" category.`}
               </p>
               {filterType !== "all" && (
                 <Button

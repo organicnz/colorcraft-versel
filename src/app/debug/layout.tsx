@@ -4,18 +4,16 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Shield } from "lucide-react";
 
 // Force dynamic rendering for authentication checks
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
-export default async function DebugLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function DebugLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
 
   try {
     // Check if user is authenticated
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
     if (!user) {
       redirect("/auth/signin?message=Please sign in to access debug tools");
@@ -38,9 +36,8 @@ export default async function DebugLayout({
           <Shield className="h-4 w-4 text-blue-600" />
           <AlertTitle className="text-blue-800">Admin Debug Area</AlertTitle>
           <AlertDescription className="text-blue-700">
-            Welcome {userData.full_name || user.email}. You have admin access to
-            debug tools. These pages are protected and only visible to admin
-            users.
+            Welcome {userData.full_name || user.email}. You have admin access to debug tools. These
+            pages are protected and only visible to admin users.
           </AlertDescription>
         </Alert>
         {children}
@@ -50,4 +47,4 @@ export default async function DebugLayout({
     console.error("Error in debug layout:", error);
     redirect("/auth/signin?message=Authentication error");
   }
-} 
+}

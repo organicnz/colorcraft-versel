@@ -1,25 +1,28 @@
-import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { createClient as createServiceClient } from '@supabase/supabase-js'
+import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { createClient as createServiceClient } from "@supabase/supabase-js";
 
 export async function POST() {
   try {
-    const supabase = await createClient()
+    const supabase = await createClient();
 
     // Check if user is admin
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
     if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { data: userData, error: userError } = await supabase
-      .from('users')
-      .select('role')
-      .eq('id', user.id)
-      .single()
+      .from("users")
+      .select("role")
+      .eq("id", user.id)
+      .single();
 
-    if (userError || userData?.role !== 'admin') {
-      return NextResponse.json({ error: 'Admin access required' }, { status: 403 })
+    if (userError || userData?.role !== "admin") {
+      return NextResponse.json({ error: "Admin access required" }, { status: 403 });
     }
 
     // Use service role client to bypass RLS
@@ -29,51 +32,60 @@ export async function POST() {
       {
         auth: {
           autoRefreshToken: false,
-          persistSession: false
-        }
+          persistSession: false,
+        },
       }
-    )
+    );
 
     // Step 1: Create/update the portfolio bucket using service role
-    const { data: buckets, error: listError } = await serviceClient.storage.listBuckets()
+    const { data: buckets, error: listError } = await serviceClient.storage.listBuckets();
     if (listError) {
-      console.error('Error listing buckets:', listError)
-      return NextResponse.json({ 
-        error: 'Failed to check existing buckets',
-        details: listError.message 
-      }, { status: 500 })
+      console.error("Error listing buckets:", listError);
+      return NextResponse.json(
+        {
+          error: "Failed to check existing buckets",
+          details: listError.message,
+        },
+        { status: 500 }
+      );
     }
 
-    const portfolioBucketExists = buckets?.some(bucket => bucket.id === 'portfolio')
-    
+    const portfolioBucketExists = buckets?.some((bucket) => bucket.id === "portfolio");
+
     if (!portfolioBucketExists) {
-      const { data: bucketData, error: bucketError } = await serviceClient.storage.createBucket('portfolio', {
-        public: true,
-        allowedMimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
-        fileSizeLimit: 52428800 // 50MB
-      })
-      
+      const { data: bucketData, error: bucketError } = await serviceClient.storage.createBucket(
+        "portfolio",
+        {
+          public: true,
+          allowedMimeTypes: ["image/jpeg", "image/png", "image/webp", "image/gif"],
+          fileSizeLimit: 52428800, // 50MB
+        }
+      );
+
       if (bucketError) {
-        console.error('Error creating bucket:', bucketError)
-        return NextResponse.json({ 
-          error: 'Failed to create storage bucket',
-          details: bucketError.message 
-        }, { status: 500 })
+        console.error("Error creating bucket:", bucketError);
+        return NextResponse.json(
+          {
+            error: "Failed to create storage bucket",
+            details: bucketError.message,
+          },
+          { status: 500 }
+        );
       }
     }
 
     // Step 2: Apply storage policies using service role and individual SQL queries
     const policies = [
       {
-        name: 'Portfolio images are publicly viewable',
+        name: "Portfolio images are publicly viewable",
         sql: `
           CREATE POLICY IF NOT EXISTS "Portfolio images are publicly viewable"
           ON storage.objects FOR SELECT
           USING (bucket_id = 'portfolio');
-        `
+        `,
       },
       {
-        name: 'Admins can upload portfolio images',
+        name: "Admins can upload portfolio images",
         sql: `
           CREATE POLICY IF NOT EXISTS "Admins can upload portfolio images"
           ON storage.objects FOR INSERT
@@ -84,10 +96,10 @@ export async function POST() {
               WHERE users.id = auth.uid() AND users.role = 'admin'
             )
           );
-        `
+        `,
       },
       {
-        name: 'Admins can update portfolio images',
+        name: "Admins can update portfolio images",
         sql: `
           CREATE POLICY IF NOT EXISTS "Admins can update portfolio images"
           ON storage.objects FOR UPDATE
@@ -98,10 +110,10 @@ export async function POST() {
               WHERE users.id = auth.uid() AND users.role = 'admin'
             )
           );
-        `
+        `,
       },
       {
-        name: 'Admins can delete portfolio images',
+        name: "Admins can delete portfolio images",
         sql: `
           CREATE POLICY IF NOT EXISTS "Admins can delete portfolio images"
           ON storage.objects FOR DELETE
@@ -112,51 +124,51 @@ export async function POST() {
               WHERE users.id = auth.uid() AND users.role = 'admin'
             )
           );
-        `
-      }
-    ]
+        `,
+      },
+    ];
 
     // First, drop existing policies
     const dropPolicies = [
       'DROP POLICY IF EXISTS "Portfolio images are publicly viewable" ON storage.objects;',
       'DROP POLICY IF EXISTS "Admins can upload portfolio images" ON storage.objects;',
       'DROP POLICY IF EXISTS "Admins can update portfolio images" ON storage.objects;',
-      'DROP POLICY IF EXISTS "Admins can delete portfolio images" ON storage.objects;'
-    ]
+      'DROP POLICY IF EXISTS "Admins can delete portfolio images" ON storage.objects;',
+    ];
 
-    const policyResults = []
+    const policyResults = [];
 
     // Drop existing policies first
     for (const dropSql of dropPolicies) {
       try {
-        const { error } = await serviceClient.rpc('exec', { sql: dropSql })
-        if (error && !error.message.includes('does not exist')) {
-          console.error('Error dropping policy:', error)
+        const { error } = await serviceClient.rpc("exec", { sql: dropSql });
+        if (error && !error.message.includes("does not exist")) {
+          console.error("Error dropping policy:", error);
         }
       } catch (e) {
-        console.log('Drop policy failed (expected):', e)
+        console.warn("Drop policy failed (expected):", e);
       }
     }
 
     // Try different approaches to create policies
     for (const policy of policies) {
-      let success = false
-      let errorMsg = ''
+      let success = false;
+      let errorMsg = "";
 
       // Approach 1: Try using rpc with different function names
-      const rpcFunctions = ['exec', 'sql', 'execute_sql', 'run_sql']
-      
+      const rpcFunctions = ["exec", "sql", "execute_sql", "run_sql"];
+
       for (const rpcFunc of rpcFunctions) {
         try {
-          const { error } = await serviceClient.rpc(rpcFunc, { sql: policy.sql })
+          const { error } = await serviceClient.rpc(rpcFunc, { sql: policy.sql });
           if (!error) {
-            success = true
-            break
+            success = true;
+            break;
           } else {
-            errorMsg = error.message
+            errorMsg = error.message;
           }
         } catch (e) {
-          errorMsg = String(e)
+          errorMsg = String(e);
         }
       }
 
@@ -164,104 +176,108 @@ export async function POST() {
       if (!success) {
         try {
           const { error } = await serviceClient
-            .from('information_schema.tables')
-            .select('table_name')
-            .limit(1)
+            .from("information_schema.tables")
+            .select("table_name")
+            .limit(1);
 
           if (!error) {
             // If we can query, try to use a different approach
-            console.log('Direct query works, but policy creation failed')
+            console.warn("Direct query works, but policy creation failed");
           }
         } catch (e) {
-          console.log('Direct query failed too')
+          console.warn("Direct query failed too");
         }
       }
 
       policyResults.push({
         name: policy.name,
         success,
-        error: success ? null : errorMsg
-      })
+        error: success ? null : errorMsg,
+      });
     }
 
     // Step 3: Create directories for existing portfolio items with before/after structure
     const { data: portfolioItems, error: portfolioError } = await serviceClient
-      .from('portfolio')
-      .select('id')
+      .from("portfolio")
+      .select("id");
 
     if (portfolioError) {
-      console.error('Portfolio fetch error:', portfolioError)
-      return NextResponse.json({ 
-        error: 'Failed to fetch portfolio items',
-        details: portfolioError.message 
-      }, { status: 500 })
+      console.error("Portfolio fetch error:", portfolioError);
+      return NextResponse.json(
+        {
+          error: "Failed to fetch portfolio items",
+          details: portfolioError.message,
+        },
+        { status: 500 }
+      );
     }
 
     // Create directories using service client with before/after structure
-    const directoryResults = []
+    const directoryResults = [];
     for (const item of portfolioItems || []) {
       const itemResult = {
         id: item.id,
-        before: { success: false, error: '' },
-        after: { success: false, error: '' },
-        success: false
-      }
+        before: { success: false, error: "" },
+        after: { success: false, error: "" },
+        success: false,
+      };
 
       // Create before/ directory
       try {
         const { error: beforeError } = await serviceClient.storage
-          .from('portfolio')
-          .upload(`${item.id}/before_images/.gitkeep`, new Blob([''], { type: 'text/plain' }), {
-            upsert: true
-          })
+          .from("portfolio")
+          .upload(`${item.id}/before_images/.gitkeep`, new Blob([""], { type: "text/plain" }), {
+            upsert: true,
+          });
 
-        if (beforeError && !beforeError.message.includes('already exists')) {
-          console.error(`Failed to create before_images directory for ${item.id}:`, beforeError)
-          itemResult.before = { success: false, error: beforeError.message }
+        if (beforeError && !beforeError.message.includes("already exists")) {
+          console.error(`Failed to create before_images directory for ${item.id}:`, beforeError);
+          itemResult.before = { success: false, error: beforeError.message };
         } else {
-          itemResult.before = { success: true, error: '' }
+          itemResult.before = { success: true, error: "" };
         }
       } catch (error) {
-        console.error(`Error creating before_images directory for ${item.id}:`, error)
-        itemResult.before = { success: false, error: String(error) }
+        console.error(`Error creating before_images directory for ${item.id}:`, error);
+        itemResult.before = { success: false, error: String(error) };
       }
 
       // Create after/ directory
       try {
         const { error: afterError } = await serviceClient.storage
-          .from('portfolio')
-          .upload(`${item.id}/after_images/.gitkeep`, new Blob([''], { type: 'text/plain' }), {
-            upsert: true
-          })
+          .from("portfolio")
+          .upload(`${item.id}/after_images/.gitkeep`, new Blob([""], { type: "text/plain" }), {
+            upsert: true,
+          });
 
-        if (afterError && !afterError.message.includes('already exists')) {
-          console.error(`Failed to create after_images directory for ${item.id}:`, afterError)
-          itemResult.after = { success: false, error: afterError.message }
+        if (afterError && !afterError.message.includes("already exists")) {
+          console.error(`Failed to create after_images directory for ${item.id}:`, afterError);
+          itemResult.after = { success: false, error: afterError.message };
         } else {
-          itemResult.after = { success: true, error: '' }
+          itemResult.after = { success: true, error: "" };
         }
       } catch (error) {
-        console.error(`Error creating after_images directory for ${item.id}:`, error)
-        itemResult.after = { success: false, error: String(error) }
+        console.error(`Error creating after_images directory for ${item.id}:`, error);
+        itemResult.after = { success: false, error: String(error) };
       }
 
       // Overall success if both directories were created
-      itemResult.success = itemResult.before.success && itemResult.after.success
-      directoryResults.push(itemResult)
+      itemResult.success = itemResult.before.success && itemResult.after.success;
+      directoryResults.push(itemResult);
     }
 
-    const allPoliciesSuccessful = policyResults.every(p => p.success)
+    const allPoliciesSuccessful = policyResults.every((p) => p.success);
 
     if (allPoliciesSuccessful) {
       return NextResponse.json({
         success: true,
-        message: 'Storage bucket and policies created successfully with before_images/after_images directory structure!',
+        message:
+          "Storage bucket and policies created successfully with before_images/after_images directory structure!",
         directoryResults,
         portfolioItemsProcessed: portfolioItems?.length || 0,
-        bucketStatus: portfolioBucketExists ? 'already existed' : 'created',
+        bucketStatus: portfolioBucketExists ? "already existed" : "created",
         policyResults,
-        directoryStructure: 'before_images/after_images subdirectories created'
-      })
+        directoryStructure: "before_images/after_images subdirectories created",
+      });
     } else {
       // Provide SQL for manual execution if programmatic approach fails
       const manualSQL = `
@@ -316,7 +332,7 @@ BEGIN
   -- Create the directory paths
   before_path := portfolio_uuid::TEXT || '/before_images/';
   after_path := portfolio_uuid::TEXT || '/after_images/';
-  
+
   -- Insert placeholder files to create the directory structure
   INSERT INTO storage.objects (bucket_id, name, owner_id, path_tokens)
   VALUES (
@@ -326,7 +342,7 @@ BEGIN
     ARRAY[portfolio_uuid::TEXT, 'before_images', '.gitkeep']
   )
   ON CONFLICT (bucket_id, name) DO NOTHING;
-  
+
   INSERT INTO storage.objects (bucket_id, name, owner_id, path_tokens)
   VALUES (
     'portfolio',
@@ -335,11 +351,11 @@ BEGIN
     ARRAY[portfolio_uuid::TEXT, 'after_images', '.gitkeep']
   )
   ON CONFLICT (bucket_id, name) DO NOTHING;
-  
+
   RETURN TRUE;
 EXCEPTION
   WHEN OTHERS THEN
-    -- Log the error but don't fail the portfolio creation
+    -- Log the error but don&apos;t fail the portfolio creation
     RAISE WARNING 'Failed to create portfolio directories for %: %', portfolio_uuid, SQLERRM;
     RETURN FALSE;
 END;
@@ -361,26 +377,29 @@ CREATE TRIGGER create_portfolio_directory_on_insert
   AFTER INSERT ON portfolio
   FOR EACH ROW
   EXECUTE FUNCTION create_portfolio_directory_trigger();
-      `
+      `;
 
       return NextResponse.json({
         success: false,
-        message: 'Storage bucket created with before_images/after_images directories, but policies need manual setup',
-        note: 'Programmatic policy creation failed. Please run the SQL manually.',
+        message:
+          "Storage bucket created with before_images/after_images directories, but policies need manual setup",
+        note: "Programmatic policy creation failed. Please run the SQL manually.",
         sqlToRun: manualSQL,
         directoryResults,
         portfolioItemsProcessed: portfolioItems?.length || 0,
-        bucketStatus: portfolioBucketExists ? 'already existed' : 'created',
+        bucketStatus: portfolioBucketExists ? "already existed" : "created",
         policyResults,
-        directoryStructure: 'before_images/after_images subdirectories created'
-      })
+        directoryStructure: "before_images/after_images subdirectories created",
+      });
     }
-
   } catch (error) {
-    console.error('Storage policies application error:', error)
-    return NextResponse.json({
-      error: 'Failed to apply storage policies',
-      details: String(error)
-    }, { status: 500 })
+    console.error("Storage policies application error:", error);
+    return NextResponse.json(
+      {
+        error: "Failed to apply storage policies",
+        details: String(error),
+      },
+      { status: 500 }
+    );
   }
-} 
+}

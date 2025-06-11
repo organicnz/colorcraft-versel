@@ -1,25 +1,27 @@
-import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 
 export async function POST() {
   try {
     const supabase = await createClient();
 
     // Check if we have admin access
-    const { data: { session } } = await supabase.auth.getSession();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
     if (!session) {
-      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+      return NextResponse.json({ error: "Authentication required" }, { status: 401 });
     }
 
     // Get user role
     const { data: userData } = await supabase
-      .from('users')
-      .select('role')
-      .eq('id', session.user.id)
+      .from("users")
+      .select("role")
+      .eq("id", session.user.id)
       .single();
 
-    if (!userData || userData.role !== 'admin') {
-      return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
+    if (!userData || userData.role !== "admin") {
+      return NextResponse.json({ error: "Admin access required" }, { status: 403 });
     }
 
     // Execute portfolio table creation
@@ -46,57 +48,54 @@ export async function POST() {
       ALTER TABLE portfolio ENABLE ROW LEVEL SECURITY;
     `;
 
-    const { error: tableError } = await supabase.rpc('exec_sql', {
-      sql: portfolioTableSQL
+    const { error: tableError } = await supabase.rpc("exec_sql", {
+      sql: portfolioTableSQL,
     });
 
     if (tableError) {
-      console.error('Table creation error:', tableError);
+      console.error("Table creation error:", tableError);
 
       // Try alternative approach using individual operations
       const results = [];
 
-              // Try to create table using direct insert/upsert approach
-        try {
-          // Test if table exists by trying to select from it
-          const { error: testError } = await supabase
-            .from('portfolio')
-            .select('id')
-            .limit(1);
+      // Try to create table using direct insert/upsert approach
+      try {
+        // Test if table exists by trying to select from it
+        const { error: testError } = await supabase.from("portfolio").select("id").limit(1);
 
-          if (testError && testError.code === '42P01') {
-            // Table doesn't exist
-            results.push({
-              action: 'table_check',
-              status: 'table_missing',
-              error: testError.message
-            });
-          } else {
-            // Table exists
-            results.push({
-              action: 'table_check',
-              status: 'table_exists'
-            });
-          }
-        } catch (error: any) {
+        if (testError && testError.code === "42P01") {
+          // Table doesn't exist
           results.push({
-            action: 'table_check',
-            status: 'error',
-            error: error.message
+            action: "table_check",
+            status: "table_missing",
+            error: testError.message,
+          });
+        } else {
+          // Table exists
+          results.push({
+            action: "table_check",
+            status: "table_exists",
           });
         }
+      } catch (error: any) {
+        results.push({
+          action: "table_check",
+          status: "error",
+          error: error.message,
+        });
+      }
 
       return NextResponse.json({
         success: false,
-        error: 'Cannot create table directly through Supabase client',
+        error: "Cannot create table directly through Supabase client",
         details: tableError.message,
         suggestions: [
-          'The table needs to be created through Supabase dashboard SQL editor',
-          'Or apply migrations through Supabase CLI',
-          'Current error indicates insufficient permissions for DDL operations'
+          "The table needs to be created through Supabase dashboard SQL editor",
+          "Or apply migrations through Supabase CLI",
+          "Current error indicates insufficient permissions for DDL operations",
         ],
         results,
-        sql: portfolioTableSQL
+        sql: portfolioTableSQL,
       });
     }
 
@@ -136,23 +135,25 @@ export async function POST() {
         );
     `;
 
-    const { error: policiesError } = await supabase.rpc('exec_sql', {
-      sql: policiesSQL
+    const { error: policiesError } = await supabase.rpc("exec_sql", {
+      sql: policiesSQL,
     });
 
     return NextResponse.json({
       success: true,
-      message: 'Portfolio table and policies created successfully',
+      message: "Portfolio table and policies created successfully",
       tableError: tableError?.message || null,
-      policiesError: policiesError?.message || null
+      policiesError: policiesError?.message || null,
     });
-
   } catch (error: any) {
-    console.error('Fix Supabase error:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'Server error',
-      message: error.message
-    }, { status: 500 });
+    console.error("Fix Supabase error:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Server error",
+        message: error.message,
+      },
+      { status: 500 }
+    );
   }
 }

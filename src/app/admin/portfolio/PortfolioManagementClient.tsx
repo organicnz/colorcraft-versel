@@ -1,25 +1,25 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Input } from '@/components/ui/input';
-import { 
-  Search, 
-  Calendar, 
-  User, 
-  Eye, 
-  Pencil, 
-  Trash2, 
-  Archive, 
+import React, { useState, useMemo } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import {
+  Search,
+  Calendar,
+  User,
+  Eye,
+  Pencil,
+  Trash2,
+  Archive,
   Star,
   MoreHorizontal,
-  Filter
-} from 'lucide-react';
+  Filter,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,9 +27,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import RandomShowcaseImage from '@/components/portfolio/RandomShowcaseImage';
-import { PortfolioProject } from '@/types/crm';
+} from "@/components/ui/dropdown-menu";
+import RandomShowcaseImage from "@/components/portfolio/RandomShowcaseImage";
+import { PortfolioProject } from "@/types/crm";
 
 interface PortfolioManagementClientProps {
   projects: PortfolioProject[];
@@ -43,9 +43,9 @@ interface PortfolioManagementClientProps {
 }
 
 const statusColors = {
-  published: 'bg-green-100 text-green-800 border-green-200',
-  draft: 'bg-orange-100 text-orange-800 border-orange-200',
-  archived: 'bg-slate-100 text-slate-800 border-slate-200',
+  published: "bg-green-100 text-green-800 border-green-200",
+  draft: "bg-orange-100 text-orange-800 border-orange-200",
+  archived: "bg-slate-100 text-slate-800 border-slate-200",
 };
 
 const statusIcons = {
@@ -54,13 +54,13 @@ const statusIcons = {
   archived: Archive,
 };
 
-export default function PortfolioManagementClient({ 
-  projects, 
-  isAdmin, 
-  stats 
+export default function PortfolioManagementClient({
+  projects,
+  isAdmin,
+  stats,
 }: PortfolioManagementClientProps) {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState('active');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeTab, setActiveTab] = useState("active");
 
   // Filter projects based on search and tab
   const filteredProjects = useMemo(() => {
@@ -68,19 +68,20 @@ export default function PortfolioManagementClient({
 
     // Apply search filter
     if (searchTerm) {
-      filtered = filtered.filter(project =>
-        project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        project.brief_description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        project.client_name?.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        (project) =>
+          project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          project.brief_description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          project.client_name?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     // Apply tab filter (admin only)
     if (isAdmin) {
-      if (activeTab === 'active') {
-        filtered = filtered.filter(p => p.status !== 'archived');
-      } else if (activeTab === 'archived') {
-        filtered = filtered.filter(p => p.status === 'archived');
+      if (activeTab === "active") {
+        filtered = filtered.filter((p) => p.status !== "archived");
+      } else if (activeTab === "archived") {
+        filtered = filtered.filter((p) => p.status === "archived");
       }
     }
 
@@ -107,7 +108,10 @@ export default function PortfolioManagementClient({
         {/* Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.map((project) => (
-            <Card key={project.id} className="overflow-hidden group hover:shadow-lg transition-shadow">
+            <Card
+              key={project.id}
+              className="overflow-hidden group hover:shadow-lg transition-shadow"
+            >
               <div className="relative aspect-[4/3] bg-muted">
                 <RandomShowcaseImage
                   portfolioId={project.id}
@@ -127,7 +131,7 @@ export default function PortfolioManagementClient({
                   </div>
                 )}
               </div>
-              
+
               <CardHeader>
                 <CardTitle className="line-clamp-1 group-hover:text-primary">
                   {project.title}
@@ -136,16 +140,16 @@ export default function PortfolioManagementClient({
                   {project.brief_description}
                 </p>
               </CardHeader>
-              
+
               <CardContent className="pt-0">
                 <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
                   {project.completion_date && (
                     <div className="flex items-center gap-1">
                       <Calendar className="h-3 w-3" />
                       <span>
-                        {new Date(project.completion_date).toLocaleDateString('en-US', {
-                          month: 'short',
-                          year: 'numeric'
+                        {new Date(project.completion_date).toLocaleDateString("en-US", {
+                          month: "short",
+                          year: "numeric",
                         })}
                       </span>
                     </div>
@@ -157,11 +161,9 @@ export default function PortfolioManagementClient({
                     </div>
                   )}
                 </div>
-                
+
                 <Button asChild variant="outline" className="w-full">
-                  <Link href={`/portfolio/${project.id}`}>
-                    View Project
-                  </Link>
+                  <Link href={`/portfolio/${project.id}`}>View Project</Link>
                 </Button>
               </CardContent>
             </Card>
@@ -200,12 +202,8 @@ export default function PortfolioManagementClient({
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
-          <TabsTrigger value="active">
-            Active ({stats.published + stats.drafts})
-          </TabsTrigger>
-          <TabsTrigger value="archived">
-            Archived ({stats.archived})
-          </TabsTrigger>
+          <TabsTrigger value="active">Active ({stats.published + stats.drafts})</TabsTrigger>
+          <TabsTrigger value="archived">Archived ({stats.archived})</TabsTrigger>
         </TabsList>
 
         <TabsContent value="active" className="space-y-4">
@@ -215,7 +213,7 @@ export default function PortfolioManagementClient({
               Published projects and drafts that are currently active
             </p>
           </div>
-          
+
           <ProjectsList projects={filteredProjects} isAdmin={true} />
         </TabsContent>
 
@@ -226,7 +224,7 @@ export default function PortfolioManagementClient({
               Projects that have been archived and are no longer active
             </p>
           </div>
-          
+
           <ProjectsList projects={filteredProjects} isAdmin={true} />
         </TabsContent>
       </Tabs>
@@ -247,9 +245,12 @@ function ProjectsList({ projects, isAdmin }: { projects: PortfolioProject[]; isA
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {projects.map((project) => {
         const StatusIcon = statusIcons[project.status as keyof typeof statusIcons] || Eye;
-        
+
         return (
-          <Card key={project.id} className="overflow-hidden group hover:shadow-lg transition-shadow">
+          <Card
+            key={project.id}
+            className="overflow-hidden group hover:shadow-lg transition-shadow"
+          >
             <div className="relative aspect-[4/3] bg-muted">
               <RandomShowcaseImage
                 portfolioId={project.id}
@@ -260,7 +261,7 @@ function ProjectsList({ projects, isAdmin }: { projects: PortfolioProject[]; isA
                 height={300}
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
-              
+
               {/* Status Badge */}
               <div className="absolute top-2 left-2">
                 <Badge className={statusColors[project.status as keyof typeof statusColors]}>
@@ -268,7 +269,7 @@ function ProjectsList({ projects, isAdmin }: { projects: PortfolioProject[]; isA
                   {project.status}
                 </Badge>
               </div>
-              
+
               {/* Featured Badge */}
               {project.is_featured && (
                 <div className="absolute top-2 right-2">
@@ -313,7 +314,7 @@ function ProjectsList({ projects, isAdmin }: { projects: PortfolioProject[]; isA
                 </div>
               )}
             </div>
-            
+
             <CardHeader>
               <CardTitle className="line-clamp-1 group-hover:text-primary">
                 {project.title}
@@ -322,16 +323,16 @@ function ProjectsList({ projects, isAdmin }: { projects: PortfolioProject[]; isA
                 {project.brief_description}
               </p>
             </CardHeader>
-            
+
             <CardContent className="pt-0">
               <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
                 {project.completion_date && (
                   <div className="flex items-center gap-1">
                     <Calendar className="h-3 w-3" />
                     <span>
-                      {new Date(project.completion_date).toLocaleDateString('en-US', {
-                        month: 'short',
-                        year: 'numeric'
+                      {new Date(project.completion_date).toLocaleDateString("en-US", {
+                        month: "short",
+                        year: "numeric",
                       })}
                     </span>
                   </div>
@@ -343,7 +344,7 @@ function ProjectsList({ projects, isAdmin }: { projects: PortfolioProject[]; isA
                   </div>
                 )}
               </div>
-              
+
               <div className="flex gap-2">
                 <Button asChild variant="outline" size="sm" className="flex-1">
                   <Link href={`/portfolio/${project.id}`}>
@@ -366,4 +367,4 @@ function ProjectsList({ projects, isAdmin }: { projects: PortfolioProject[]; isA
       })}
     </div>
   );
-} 
+}

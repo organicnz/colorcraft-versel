@@ -1,5 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
@@ -52,7 +59,9 @@ export default function ComponentsPage() {
               <Button size="lg">Large</Button>
               <Button>Default</Button>
               <Button size="sm">Small</Button>
-              <Button size="icon"><Info className="h-4 w-4" /></Button>
+              <Button size="icon">
+                <Info className="h-4 w-4" />
+              </Button>
             </div>
           </section>
 
@@ -63,8 +72,12 @@ export default function ComponentsPage() {
             <div className="flex flex-wrap gap-4">
               <Button disabled>Disabled</Button>
               <Button className="bg-primary-600 hover:bg-primary-700">Custom Color</Button>
-              <Button className="bg-secondary-500 hover:bg-secondary-600 text-white">Teal Button</Button>
-              <Button className="bg-accent-500 hover:bg-accent-600 text-white">Accent Button</Button>
+              <Button className="bg-secondary-500 hover:bg-secondary-600 text-white">
+                Teal Button
+              </Button>
+              <Button className="bg-accent-500 hover:bg-accent-600 text-white">
+                Accent Button
+              </Button>
             </div>
           </section>
         </TabsContent>
@@ -90,13 +103,19 @@ export default function ComponentsPage() {
               <Card className="border-secondary-200 bg-secondary-50/50">
                 <CardHeader className="text-secondary-800">
                   <CardTitle>Teal Theme Card</CardTitle>
-                  <CardDescription className="text-secondary-600">Secondary color themed card</CardDescription>
+                  <CardDescription className="text-secondary-600">
+                    Secondary color themed card
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-secondary-700">Custom styled card using our secondary color palette.</p>
+                  <p className="text-secondary-700">
+                    Custom styled card using our secondary color palette.
+                  </p>
                 </CardContent>
                 <CardFooter className="flex justify-between">
-                  <Button variant="outline" className="border-secondary-300 text-secondary-700">Cancel</Button>
+                  <Button variant="outline" className="border-secondary-300 text-secondary-700">
+                    Cancel
+                  </Button>
                   <Button className="bg-secondary-500 hover:bg-secondary-600">Save</Button>
                 </CardFooter>
               </Card>
@@ -104,13 +123,19 @@ export default function ComponentsPage() {
               <Card className="border-accent-200 bg-accent-50/50">
                 <CardHeader className="text-accent-800">
                   <CardTitle>Accent Theme Card</CardTitle>
-                  <CardDescription className="text-accent-600">Accent color themed card</CardDescription>
+                  <CardDescription className="text-accent-600">
+                    Accent color themed card
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-accent-700">Custom styled card using our accent color palette.</p>
+                  <p className="text-accent-700">
+                    Custom styled card using our accent color palette.
+                  </p>
                 </CardContent>
                 <CardFooter className="flex justify-between">
-                  <Button variant="outline" className="border-accent-300 text-accent-700">Cancel</Button>
+                  <Button variant="outline" className="border-accent-300 text-accent-700">
+                    Cancel
+                  </Button>
                   <Button className="bg-accent-500 hover:bg-accent-600">Save</Button>
                 </CardFooter>
               </Card>
@@ -174,40 +199,49 @@ export default function ComponentsPage() {
                   <Label htmlFor="name">Name</Label>
                   <Input id="name" placeholder="Enter your name" />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <Input id="email" type="email" placeholder="Enter your email" />
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
                   <Switch id="notifications" />
                   <Label htmlFor="notifications">Enable notifications</Label>
                 </div>
               </div>
-              
+
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="custom-input" className="text-primary-700">Custom Input</Label>
-                  <Input 
-                    id="custom-input" 
-                    placeholder="Primary themed input" 
-                    className="border-primary-200 focus:border-primary-400 focus:ring-primary-300" 
+                  <Label htmlFor="custom-input" className="text-primary-700">
+                    Custom Input
+                  </Label>
+                  <Input
+                    id="custom-input"
+                    placeholder="Primary themed input"
+                    className="border-primary-200 focus:border-primary-400 focus:ring-primary-300"
                   />
                 </div>
-                
+
                 <div className="space-y-2">
-                  <Label htmlFor="secondary-input" className="text-secondary-700">Secondary Input</Label>
-                  <Input 
-                    id="secondary-input" 
-                    placeholder="Secondary themed input" 
-                    className="border-secondary-200 focus:border-secondary-400 focus:ring-secondary-300" 
+                  <Label htmlFor="secondary-input" className="text-secondary-700">
+                    Secondary Input
+                  </Label>
+                  <Input
+                    id="secondary-input"
+                    placeholder="Secondary themed input"
+                    className="border-secondary-200 focus:border-secondary-400 focus:ring-secondary-300"
                   />
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
-                  <Switch id="custom-switch" className="bg-accent-200 data-[state=checked]:bg-accent-500" />
-                  <Label htmlFor="custom-switch" className="text-accent-700">Accent themed switch</Label>
+                  <Switch
+                    id="custom-switch"
+                    className="bg-accent-200 data-[state=checked]:bg-accent-500"
+                  />
+                  <Label htmlFor="custom-switch" className="text-accent-700">
+                    Accent themed switch
+                  </Label>
                 </div>
               </div>
             </div>
@@ -222,7 +256,7 @@ export default function ComponentsPage() {
               <Badge variant="secondary">Secondary</Badge>
               <Badge variant="destructive">Destructive</Badge>
               <Badge variant="outline">Outline</Badge>
-              
+
               <Badge className="bg-primary-500 hover:bg-primary-600">Primary</Badge>
               <Badge className="bg-secondary-500 hover:bg-secondary-600">Teal</Badge>
               <Badge className="bg-accent-500 hover:bg-accent-600">Accent</Badge>
@@ -237,29 +271,45 @@ export default function ComponentsPage() {
       <section className="mt-16">
         <h2 className="text-2xl font-semibold mb-6">Custom Gradient Elements</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="p-8 rounded-lg" style={{ background: "linear-gradient(135deg, #D3A273 0%, #C08A5A 100%)" }}>
+          <div
+            className="p-8 rounded-lg"
+            style={{ background: "linear-gradient(135deg, #D3A273 0%, #C08A5A 100%)" }}
+          >
             <h3 className="text-white text-xl font-bold mb-2">Primary Gradient</h3>
             <p className="text-white/90">This element uses our primary gradient background</p>
           </div>
-          
-          <div className="p-8 rounded-lg" style={{ background: "linear-gradient(135deg, #40BAA9 0%, #297A70 100%)" }}>
+
+          <div
+            className="p-8 rounded-lg"
+            style={{ background: "linear-gradient(135deg, #40BAA9 0%, #297A70 100%)" }}
+          >
             <h3 className="text-white text-xl font-bold mb-2">Secondary Gradient</h3>
             <p className="text-white/90">This element uses our secondary gradient background</p>
           </div>
-          
-          <div className="p-8 rounded-lg" style={{ background: "linear-gradient(135deg, #E67A91 0%, #BA3D5D 100%)" }}>
+
+          <div
+            className="p-8 rounded-lg"
+            style={{ background: "linear-gradient(135deg, #E67A91 0%, #BA3D5D 100%)" }}
+          >
             <h3 className="text-white text-xl font-bold mb-2">Accent Gradient</h3>
             <p className="text-white/90">This element uses our accent gradient background</p>
           </div>
-          
-          <div className="p-8 rounded-lg border border-border/30 relative overflow-hidden" 
-               style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.3) 100%)" }}>
+
+          <div
+            className="p-8 rounded-lg border border-border/30 relative overflow-hidden"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.3) 100%)",
+            }}
+          >
             <div className="absolute inset-0 -z-10 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_60%,transparent_100%)]"></div>
             <h3 className="text-black text-xl font-bold mb-2">Glass Effect</h3>
-            <p className="text-black/70">This element uses our glass gradient with a pattern background</p>
+            <p className="text-black/70">
+              This element uses our glass gradient with a pattern background
+            </p>
           </div>
         </div>
       </section>
     </div>
   );
-} 
+}

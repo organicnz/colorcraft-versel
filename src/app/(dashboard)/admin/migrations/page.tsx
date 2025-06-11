@@ -5,14 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { 
-  Database, 
-  Play, 
-  CheckCircle, 
-  AlertCircle, 
-  Info,
-  ArrowRight 
-} from "lucide-react";
+import { Database, Play, CheckCircle, AlertCircle, Info, ArrowRight } from "lucide-react";
 
 export default function MigrationsPage() {
   const [isRunning, setIsRunning] = useState(false);
@@ -23,10 +16,10 @@ export default function MigrationsPage() {
     setMigrationResults(null);
 
     try {
-      const response = await fetch('/api/migrate-portfolio-status', {
-        method: 'POST',
+      const response = await fetch("/api/migrate-portfolio-status", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
 
@@ -36,14 +29,14 @@ export default function MigrationsPage() {
       if (result.success) {
         toast.success(result.message);
       } else {
-        toast.error(result.error || 'Migration failed');
+        toast.error(result.error || "Migration failed");
       }
     } catch (error) {
-      console.error('Migration error:', error);
-      toast.error('Failed to run migration');
+      console.error("Migration error:", error);
+      toast.error("Failed to run migration");
       setMigrationResults({
         success: false,
-        error: 'Network error occurred'
+        error: "Network error occurred",
       });
     } finally {
       setIsRunning(false);
@@ -70,7 +63,8 @@ export default function MigrationsPage() {
                 Portfolio Status Field Migration
               </CardTitle>
               <p className="text-sm text-slate-600 mt-1">
-                Migrate from boolean fields (is_published, is_draft, is_archived) to a single status field
+                Migrate from boolean fields (is_published, is_draft, is_archived) to a single status
+                field
               </p>
             </div>
             <Badge variant="outline" className="bg-blue-50 text-blue-700">
@@ -85,7 +79,10 @@ export default function MigrationsPage() {
               <div className="text-sm">
                 <p className="font-medium text-blue-900 mb-1">What this migration does:</p>
                 <ul className="text-blue-800 space-y-1">
-                  <li>• Adds a new <code className="bg-blue-100 px-1 rounded">status</code> field with values: published, draft, archived</li>
+                  <li>
+                    • Adds a new <code className="bg-blue-100 px-1 rounded">status</code> field with
+                    values: published, draft, archived
+                  </li>
                   <li>• Migrates existing data from boolean fields to the status field</li>
                   <li>• Creates performance indexes for better query speed</li>
                   <li>• Maintains backward compatibility during transition</li>
@@ -95,15 +92,15 @@ export default function MigrationsPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <Button 
+            <Button
               onClick={runPortfolioStatusMigration}
               disabled={isRunning}
               className="flex items-center gap-2"
             >
               <Play className="h-4 w-4" />
-              {isRunning ? 'Running Migration...' : 'Run Portfolio Status Migration'}
+              {isRunning ? "Running Migration..." : "Run Portfolio Status Migration"}
             </Button>
-            
+
             {migrationResults && (
               <div className="flex items-center gap-2">
                 {migrationResults.success ? (
@@ -111,10 +108,12 @@ export default function MigrationsPage() {
                 ) : (
                   <AlertCircle className="h-5 w-5 text-red-600" />
                 )}
-                <span className={`text-sm font-medium ${
-                  migrationResults.success ? 'text-green-700' : 'text-red-700'
-                }`}>
-                  {migrationResults.success ? 'Migration Completed' : 'Migration Failed'}
+                <span
+                  className={`text-sm font-medium ${
+                    migrationResults.success ? "text-green-700" : "text-red-700"
+                  }`}
+                >
+                  {migrationResults.success ? "Migration Completed" : "Migration Failed"}
                 </span>
               </div>
             )}
@@ -136,9 +135,7 @@ export default function MigrationsPage() {
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Available Migrations</CardTitle>
-          <p className="text-sm text-slate-600">
-            Other database migrations that can be run
-          </p>
+          <p className="text-sm text-slate-600">Other database migrations that can be run</p>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8 text-slate-500">
@@ -149,4 +146,4 @@ export default function MigrationsPage() {
       </Card>
     </div>
   );
-} 
+}

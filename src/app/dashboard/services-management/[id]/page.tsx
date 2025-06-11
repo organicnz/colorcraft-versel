@@ -26,7 +26,9 @@ export default async function ServicePage({ params }: ServicePageProps) {
   const supabase = await createClient();
 
   // Get current session (middleware already checks auth, but we need user info)
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
   if (!session) {
     redirect("/auth/signin");
@@ -41,9 +43,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Error</AlertTitle>
-          <AlertDescription>
-            {error || "Service not found"}
-          </AlertDescription>
+          <AlertDescription>{error || "Service not found"}</AlertDescription>
         </Alert>
       </div>
     );
@@ -70,14 +70,10 @@ export default async function ServicePage({ params }: ServicePageProps) {
             )}
             <div className="flex gap-4">
               <Button asChild>
-                <Link href={`/dashboard/services-management/${id}/edit`}>
-                  Edit Service
-                </Link>
+                <Link href={`/dashboard/services-management/${id}/edit`}>Edit Service</Link>
               </Button>
               <Button variant="outline" asChild>
-                <Link href="/dashboard/services-management">
-                  Back to Services
-                </Link>
+                <Link href="/dashboard/services-management">Back to Services</Link>
               </Button>
             </div>
           </div>
@@ -85,4 +81,4 @@ export default async function ServicePage({ params }: ServicePageProps) {
       </Card>
     </div>
   );
-} 
+}

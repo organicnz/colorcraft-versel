@@ -159,7 +159,7 @@ export default function PortfolioTable({ projects }: PortfolioTableProps) {
       <div className="rounded-lg border-0 shadow-sm overflow-hidden bg-white/30 dark:bg-white/10 backdrop-blur-md shadow-glass border border-white/30 dark:border-white/10 transition-all duration-300 hover:shadow-glass-heavy">
         {/* Glass gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent dark:from-white/5 pointer-events-none" />
-        
+
         <div className="relative z-10">
           <Table>
             <TableHeader>
@@ -350,8 +350,8 @@ export default function PortfolioTable({ projects }: PortfolioTableProps) {
                             <AlertDialogHeader>
                               <AlertDialogTitle>Delete Project</AlertDialogTitle>
                               <AlertDialogDescription>
-                                Are you sure you want to delete "{project.title}"? This action cannot
-                                be undone.
+                                Are you sure you want to delete "{project.title}"? This action
+                                cannot be undone.
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>

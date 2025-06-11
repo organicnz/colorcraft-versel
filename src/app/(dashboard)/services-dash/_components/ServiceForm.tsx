@@ -31,7 +31,7 @@ export default function ServiceForm({ service }: ServiceFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isEditing = !!service?.id;
-  
+
   const form = useForm({
     resolver: zodResolver(serviceSchema),
     defaultValues: service || {
@@ -40,37 +40,37 @@ export default function ServiceForm({ service }: ServiceFormProps) {
       brief_description: "",
       price_range: "",
       image_url: "",
-      is_active: true
-    }
+      is_active: true,
+    },
   });
-  
+
   async function onSubmit(values: any) {
     try {
       setIsSubmitting(true);
-      
+
       if (isEditing) {
         // Update existing service
         const { error } = await updateService({
           ...values,
-          id: service.id
+          id: service.id,
         });
-        
+
         if (error) {
           throw new Error(error);
         }
-        
+
         toast.success("Service updated successfully");
       } else {
         // Create new service
         const { error } = await createService(values);
-        
+
         if (error) {
           throw new Error(error);
         }
-        
+
         toast.success("Service created successfully");
       }
-      
+
       router.push("/services-dash");
       router.refresh();
     } catch (error) {
@@ -79,7 +79,7 @@ export default function ServiceForm({ service }: ServiceFormProps) {
       setIsSubmitting(false);
     }
   }
-  
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -96,7 +96,7 @@ export default function ServiceForm({ service }: ServiceFormProps) {
             </FormItem>
           )}
         />
-        
+
         <FormField
           control={form.control}
           name="brief_description"
@@ -104,16 +104,13 @@ export default function ServiceForm({ service }: ServiceFormProps) {
             <FormItem>
               <FormLabel>Brief Description</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Brief description for service listings"
-                  {...field}
-                />
+                <Input placeholder="Brief description for service listings" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        
+
         <FormField
           control={form.control}
           name="description"
@@ -121,26 +118,9 @@ export default function ServiceForm({ service }: ServiceFormProps) {
             <FormItem>
               <FormLabel>Full Description</FormLabel>
               <FormControl>
-                <Textarea 
+                <Textarea
                   placeholder="Describe this service in detail"
                   className="min-h-32"
-                  {...field} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <FormField
-          control={form.control}
-          name="price_range"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Price Range</FormLabel>
-              <FormControl>
-                <Input 
-                  placeholder="e.g. $250 - $500"
                   {...field}
                 />
               </FormControl>
@@ -148,7 +128,21 @@ export default function ServiceForm({ service }: ServiceFormProps) {
             </FormItem>
           )}
         />
-        
+
+        <FormField
+          control={form.control}
+          name="price_range"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Price Range</FormLabel>
+              <FormControl>
+                <Input placeholder="e.g. $250 - $500" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name="image_url"
@@ -162,7 +156,7 @@ export default function ServiceForm({ service }: ServiceFormProps) {
             </FormItem>
           )}
         />
-        
+
         <FormField
           control={form.control}
           name="is_active"
@@ -171,25 +165,18 @@ export default function ServiceForm({ service }: ServiceFormProps) {
               <div className="space-y-0.5">
                 <FormLabel className="text-base">Active Status</FormLabel>
                 <FormDescription>
-                  Inactive services won't be displayed on the public site.
+                  Inactive services won&apos;t be displayed on the public site.
                 </FormDescription>
               </div>
               <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
+                <Switch checked={field.value} onCheckedChange={field.onChange} />
               </FormControl>
             </FormItem>
           )}
         />
-        
+
         <div className="flex justify-end gap-4">
-          <Button 
-            type="button" 
-            variant="outline" 
-            onClick={() => router.push("/services-dash")}
-          >
+          <Button type="button" variant="outline" onClick={() => router.push("/services-dash")}>
             Cancel
           </Button>
           <Button type="submit" disabled={isSubmitting}>
@@ -199,4 +186,4 @@ export default function ServiceForm({ service }: ServiceFormProps) {
       </form>
     </Form>
   );
-} 
+}

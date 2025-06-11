@@ -1,7 +1,7 @@
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import { getDatabaseConfig, getClientOptions } from './config';
-import { logger } from '@/lib/logger';
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+import { getDatabaseConfig, getClientOptions } from "./config";
+import { logger } from "@/lib/logger";
 
 // Database instance state tracker
 let isConnected = false;
@@ -16,17 +16,17 @@ let db: ReturnType<typeof drizzle>;
  */
 function initializeDatabase() {
   if (isConnected) return;
-  
+
   try {
     const dbConfig = getDatabaseConfig();
     client = postgres(dbConfig.connectionString, getClientOptions());
     db = drizzle(client);
     isConnected = true;
-    
-    logger.info('Database connection initialized successfully');
+
+    logger.info("Database connection initialized successfully");
   } catch (error) {
-    logger.error('Failed to initialize database client: ' + String(error));
-    
+    logger.error("Failed to initialize database client: " + String(error));
+
     // Create a minimal fallback that will throw errors when methods are called
     // This prevents startup errors but will fail gracefully when accessed
     client = {} as any;
@@ -35,7 +35,7 @@ function initializeDatabase() {
 }
 
 // Initialize connection immediately in production, lazily in development
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === "production") {
   initializeDatabase();
 }
 
@@ -58,13 +58,13 @@ export { db };
  * Useful for cleanup in tests and serverless environments
  */
 export async function closeDb() {
-  if (isConnected && client && typeof client.end === 'function') {
+  if (isConnected && client && typeof client.end === "function") {
     try {
       await client.end();
       isConnected = false;
-      logger.info('Database connection closed successfully');
+      logger.info("Database connection closed successfully");
     } catch (error) {
-      logger.error('Error closing database connection: ' + String(error));
+      logger.error("Error closing database connection: " + String(error));
     }
   }
 }

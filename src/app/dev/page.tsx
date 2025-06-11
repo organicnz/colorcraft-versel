@@ -2,7 +2,14 @@
 
 import Link from "next/link";
 import { Code, Palette, Settings, Wrench, LayoutDashboard } from "lucide-react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 interface DevTool {
@@ -51,8 +58,8 @@ export default function DevToolsIndex() {
       <div className="mb-10">
         <h1 className="text-3xl font-bold mb-3">Developer Tools</h1>
         <p className="text-muted-foreground">
-          Welcome to the Color & Craft developer tools. Here you'll find resources
-          to help you build and maintain the application.
+          Welcome to the Color & Craft developer tools. Here you&apos;ll find resources to help you
+          build and maintain the application.
         </p>
       </div>
 
@@ -60,9 +67,7 @@ export default function DevToolsIndex() {
         {devTools.map((tool) => (
           <Card key={tool.href} className="overflow-hidden">
             <CardHeader className="pb-4">
-              <div className="flex items-start justify-between">
-                {tool.icon}
-              </div>
+              <div className="flex items-start justify-between">{tool.icon}</div>
               <CardTitle className="mt-3">{tool.label}</CardTitle>
               <CardDescription>{tool.description}</CardDescription>
             </CardHeader>
@@ -76,4 +81,4 @@ export default function DevToolsIndex() {
       </div>
     </div>
   );
-} 
+}

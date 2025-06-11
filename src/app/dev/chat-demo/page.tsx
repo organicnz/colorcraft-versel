@@ -1,27 +1,18 @@
-import { Metadata } from 'next'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { 
-  MessageCircle, 
-  Database,
-  Users, 
-  Zap, 
-  Shield,
-  Clock,
-  CheckCircle
-} from 'lucide-react'
+import { Metadata } from "next";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { MessageCircle, Database, Users, Zap, Shield, Clock, CheckCircle } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: 'Chat System Demo - ColorCraft',
-  description: 'Interactive demo of the live chat system with Supabase integration',
-}
+  title: "Chat System Demo - ColorCraft",
+  description: "Interactive demo of the live chat system with Supabase integration",
+};
 
 export default function ChatDemoPage() {
   return (
     <div className="container mx-auto py-12 px-4">
       <div className="max-w-6xl mx-auto space-y-8">
-        
         {/* Header */}
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold">🚀 Live Chat System Demo</h1>
@@ -51,9 +42,7 @@ export default function ChatDemoPage() {
               <Database className="w-5 h-5 mr-2" />
               Quick Setup
             </CardTitle>
-            <CardDescription>
-              Follow these steps to get the chat system running
-            </CardDescription>
+            <CardDescription>Follow these steps to get the chat system running</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -81,7 +70,6 @@ export default function ChatDemoPage() {
 
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          
           {/* Real-time Messaging */}
           <Card>
             <CardHeader>
@@ -189,7 +177,6 @@ export default function ChatDemoPage() {
               </ul>
             </CardContent>
           </Card>
-
         </div>
 
         {/* Technical Details */}
@@ -205,21 +192,41 @@ export default function ChatDemoPage() {
               <div>
                 <h4 className="font-semibold mb-3">Frontend Stack</h4>
                 <ul className="space-y-1 text-sm">
-                  <li>• <strong>Next.js 15</strong> - React framework</li>
-                  <li>• <strong>TypeScript</strong> - Type safety</li>
-                  <li>• <strong>Tailwind CSS</strong> - Styling</li>
-                  <li>• <strong>React Query</strong> - Data fetching</li>
-                  <li>• <strong>Zustand</strong> - State management</li>
+                  <li>
+                    • <strong>Next.js 15</strong> - React framework
+                  </li>
+                  <li>
+                    • <strong>TypeScript</strong> - Type safety
+                  </li>
+                  <li>
+                    • <strong>Tailwind CSS</strong> - Styling
+                  </li>
+                  <li>
+                    • <strong>React Query</strong> - Data fetching
+                  </li>
+                  <li>
+                    • <strong>Zustand</strong> - State management
+                  </li>
                 </ul>
               </div>
               <div>
                 <h4 className="font-semibold mb-3">Backend Stack</h4>
                 <ul className="space-y-1 text-sm">
-                  <li>• <strong>Supabase</strong> - Backend as a Service</li>
-                  <li>• <strong>PostgreSQL</strong> - Database</li>
-                  <li>• <strong>Row Level Security</strong> - Data protection</li>
-                  <li>• <strong>Real-time</strong> - Live updates</li>
-                  <li>• <strong>REST API</strong> - HTTP endpoints</li>
+                  <li>
+                    • <strong>Supabase</strong> - Backend as a Service
+                  </li>
+                  <li>
+                    • <strong>PostgreSQL</strong> - Database
+                  </li>
+                  <li>
+                    • <strong>Row Level Security</strong> - Data protection
+                  </li>
+                  <li>
+                    • <strong>Real-time</strong> - Live updates
+                  </li>
+                  <li>
+                    • <strong>REST API</strong> - HTTP endpoints
+                  </li>
                 </ul>
               </div>
             </div>
@@ -240,18 +247,19 @@ export default function ChatDemoPage() {
               <li>Click to open the chat widget</li>
               <li>Fill in your name and email to start a conversation</li>
               <li>Send a message and see real-time updates</li>
-              <li>Admins can access the dashboard at <code>/dashboard/chat</code></li>
+              <li>
+                Admins can access the dashboard at <code>/dashboard/chat</code>
+              </li>
             </ol>
             <div className="mt-4 p-4 bg-blue-100 rounded-lg">
               <p className="text-sm">
-                <strong>💡 Pro Tip:</strong> Open multiple browser windows to simulate 
-                different users and see real-time messaging in action!
+                <strong>💡 Pro Tip:</strong> Open multiple browser windows to simulate different
+                users and see real-time messaging in action!
               </p>
             </div>
           </CardContent>
         </Card>
-
       </div>
     </div>
-  )
-} 
+  );
+}

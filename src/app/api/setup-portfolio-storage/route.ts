@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
       };
     }
 
-    // Step 2: Manual policy setup instructions (since we can't use exec_sql)
+    // Step 2: Manual policy setup instructions (since we can&apos;t use exec_sql)
     results.policySetup = {
       success: true,
       message:

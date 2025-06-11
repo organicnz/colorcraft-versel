@@ -1,32 +1,34 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('🚀 Setting up chat system...')
-    
+    console.warn("🚀 Setting up chat system...");
+
     // Check if user is authenticated and is admin
-    const supabase = await createClient()
-    const { data: { session } } = await supabase.auth.getSession()
+    const supabase = await createClient();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
 
     if (!session) {
-      console.log('❌ No session found')
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      console.warn("❌ No session found");
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     // Check if user is admin
     const { data: user } = await supabase
-      .from('users')
-      .select('role')
-      .eq('id', session.user.id)
-      .single()
+      .from("users")
+      .select("role")
+      .eq("id", session.user.id)
+      .single();
 
-    if (!user || user.role !== 'admin') {
-      console.log('❌ Admin access required')
-      return NextResponse.json({ error: 'Admin access required' }, { status: 403 })
+    if (!user || user.role !== "admin") {
+      console.warn("❌ Admin access required");
+      return NextResponse.json({ error: "Admin access required" }, { status: 403 });
     }
 
-    console.log('✅ Admin user verified')
+    console.warn("✅ Admin user verified");
 
     // SQL to create chat system tables using the correct schema
     const setupSQL = `
@@ -91,7 +93,7 @@ export async function POST(request: NextRequest) {
       CREATE POLICY IF NOT EXISTS "Admins can view all conversations" ON public.chat_conversations
         FOR SELECT USING (
           EXISTS (
-            SELECT 1 FROM public.users 
+            SELECT 1 FROM public.users
             WHERE users.id = auth.uid() AND users.role = 'admin'
           )
         );
@@ -99,8 +101,8 @@ export async function POST(request: NextRequest) {
       CREATE POLICY IF NOT EXISTS "Users can view their own conversations" ON public.chat_conversations
         FOR SELECT USING (
           EXISTS (
-            SELECT 1 FROM public.chat_participants 
-            WHERE chat_participants.conversation_id = chat_conversations.id 
+            SELECT 1 FROM public.chat_participants
+            WHERE chat_participants.conversation_id = chat_conversations.id
             AND chat_participants.user_id = auth.uid()
           )
         );
@@ -111,7 +113,7 @@ export async function POST(request: NextRequest) {
       CREATE POLICY IF NOT EXISTS "Admins can update all conversations" ON public.chat_conversations
         FOR UPDATE USING (
           EXISTS (
-            SELECT 1 FROM public.users 
+            SELECT 1 FROM public.users
             WHERE users.id = auth.uid() AND users.role = 'admin'
           )
         );
@@ -121,7 +123,7 @@ export async function POST(request: NextRequest) {
         FOR SELECT USING (
           user_id = auth.uid() OR
           EXISTS (
-            SELECT 1 FROM public.users 
+            SELECT 1 FROM public.users
             WHERE users.id = auth.uid() AND users.role = 'admin'
           )
         );
@@ -136,12 +138,12 @@ export async function POST(request: NextRequest) {
       CREATE POLICY IF NOT EXISTS "Conversation participants can view messages" ON public.chat_messages
         FOR SELECT USING (
           EXISTS (
-            SELECT 1 FROM public.chat_participants 
-            WHERE chat_participants.conversation_id = chat_messages.conversation_id 
+            SELECT 1 FROM public.chat_participants
+            WHERE chat_participants.conversation_id = chat_messages.conversation_id
             AND chat_participants.user_id = auth.uid()
           ) OR
           EXISTS (
-            SELECT 1 FROM public.users 
+            SELECT 1 FROM public.users
             WHERE users.id = auth.uid() AND users.role = 'admin'
           )
         );
@@ -149,60 +151,56 @@ export async function POST(request: NextRequest) {
       CREATE POLICY IF NOT EXISTS "Conversation participants can send messages" ON public.chat_messages
         FOR INSERT WITH CHECK (
           EXISTS (
-            SELECT 1 FROM public.chat_participants 
-            WHERE chat_participants.conversation_id = chat_messages.conversation_id 
+            SELECT 1 FROM public.chat_participants
+            WHERE chat_participants.conversation_id = chat_messages.conversation_id
             AND chat_participants.user_id = auth.uid()
           ) OR sender_id = auth.uid()
         );
-    `
+    `;
 
-    console.log('🔄 Executing SQL setup...')
+    console.warn("🔄 Executing SQL setup...");
 
     // Execute the SQL using direct query
     const { error: tableError } = await supabase
-      .from('information_schema.tables')
-      .select('table_name')
-      .eq('table_name', 'chat_conversations')
-      .single()
+      .from("information_schema.tables")
+      .select("table_name")
+      .eq("table_name", "chat_conversations")
+      .single();
 
     if (tableError) {
-      console.log('🔄 Tables do not exist, creating them...')
-      // Since we can't execute raw SQL directly, let's try creating through Supabase client
-      console.log('⚠️ Need to run migration SQL manually in Supabase dashboard')
+      console.warn("🔄 Tables do not exist, creating them...");
+      // Since we can&apos;t execute raw SQL directly, let's try creating through Supabase client
+      console.warn("⚠️ Need to run migration SQL manually in Supabase dashboard");
     }
 
     // Test if we can access the tables
     const { data: testData, error: testError } = await supabase
-      .from('chat_conversations')
-      .select('id')
-      .limit(1)
+      .from("chat_conversations")
+      .select("id")
+      .limit(1);
 
     if (testError) {
-      console.error('❌ Cannot access chat_conversations table:', testError)
+      console.error("❌ Cannot access chat_conversations table:", testError);
       return NextResponse.json({
         success: false,
-        error: 'Chat tables do not exist. Please run the SQL migration in Supabase dashboard.',
-        sql: setupSQL
-      })
+        error: "Chat tables do not exist. Please run the SQL migration in Supabase dashboard.",
+        sql: setupSQL,
+      });
     }
 
-    console.log('✅ Chat system setup completed!')
+    console.warn("✅ Chat system setup completed!");
 
     return NextResponse.json({
       success: true,
-      message: 'Chat system setup completed successfully',
+      message: "Chat system setup completed successfully",
       tables: {
-        chat_conversations: 'verified',
-        chat_participants: 'verified',
-        chat_messages: 'verified'
-      }
-    })
-
+        chat_conversations: "verified",
+        chat_participants: "verified",
+        chat_messages: "verified",
+      },
+    });
   } catch (error) {
-    console.error('💥 Setup error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error', details: error },
-      { status: 500 }
-    )
+    console.error("💥 Setup error:", error);
+    return NextResponse.json({ error: "Internal server error", details: error }, { status: 500 });
   }
-} 
+}

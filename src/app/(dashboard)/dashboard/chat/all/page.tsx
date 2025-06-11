@@ -1,32 +1,39 @@
-import { Metadata } from 'next'
-import { Suspense } from 'react'
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
-import { DashboardHeader } from '@/components/dashboard/DashboardHeader'
-import { DashboardShell } from '@/components/dashboard/DashboardShell'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { MessageSquare, Search, Filter, Eye, Archive, Trash2, Plus, ArrowLeft } from 'lucide-react'
-import Link from 'next/link'
+import { Metadata } from "next";
+import { Suspense } from "react";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { DashboardShell } from "@/components/dashboard/DashboardShell";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { MessageSquare, Search, Filter, Eye, Archive, Trash2, Plus, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: 'All Conversations - ColorCraft Chat Dashboard',
-  description: 'View and manage all customer chat conversations',
-}
+  title: "All Conversations - ColorCraft Chat Dashboard",
+  description: "View and manage all customer chat conversations",
+};
 
 // Force dynamic rendering
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 async function AllConversationsTable() {
-  const supabase = await createClient()
-  
+  const supabase = await createClient();
+
   try {
     const { data: conversations, error } = await supabase
-      .from('chat_conversations')
-      .select(`
+      .from("chat_conversations")
+      .select(
+        `
         *,
         chat_messages (
           id,
@@ -35,11 +42,12 @@ async function AllConversationsTable() {
           sender_name,
           is_read
         )
-      `)
-      .order('last_message_at', { ascending: false })
+      `
+      )
+      .order("last_message_at", { ascending: false });
 
     if (error) {
-      throw error
+      throw error;
     }
 
     return (
@@ -106,28 +114,32 @@ async function AllConversationsTable() {
                 </thead>
                 <tbody>
                   {conversations.map((conversation: any) => {
-                    const messages = conversation.chat_messages || []
-                    const unreadCount = messages.filter((m: any) => !m.is_read).length
-                    const lastMessage = messages.sort((a: any, b: any) =>
-                      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-                    )[0]
-                    
+                    const messages = conversation.chat_messages || [];
+                    const unreadCount = messages.filter((m: any) => !m.is_read).length;
+                    const lastMessage = messages.sort(
+                      (a: any, b: any) =>
+                        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+                    )[0];
+
                     return (
-                      <tr key={conversation.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                      <tr
+                        key={conversation.id}
+                        className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                      >
                         <td className="py-4 px-4">
                           <div className="flex flex-col">
                             <span className="font-medium text-gray-900">
-                              {conversation.customer_name || 'Unknown Customer'}
+                              {conversation.customer_name || "Unknown Customer"}
                             </span>
                             <span className="text-sm text-gray-500">
-                              {conversation.customer_email || 'No email'}
+                              {conversation.customer_email || "No email"}
                             </span>
                           </div>
                         </td>
                         <td className="py-4 px-4">
                           <div className="flex flex-col">
                             <span className="font-medium text-gray-900 max-w-48 truncate">
-                              {conversation.title || 'Untitled Conversation'}
+                              {conversation.title || "Untitled Conversation"}
                             </span>
                             {lastMessage && (
                               <span className="text-sm text-gray-500 max-w-48 truncate">
@@ -137,19 +149,30 @@ async function AllConversationsTable() {
                           </div>
                         </td>
                         <td className="py-4 px-4">
-                          <Badge 
-                            variant={conversation.status === 'active' ? 'default' : 
-                                   conversation.status === 'closed' ? 'secondary' : 'outline'}
+                          <Badge
+                            variant={
+                              conversation.status === "active"
+                                ? "default"
+                                : conversation.status === "closed"
+                                  ? "secondary"
+                                  : "outline"
+                            }
                             className="capitalize"
                           >
                             {conversation.status}
                           </Badge>
                         </td>
                         <td className="py-4 px-4">
-                          <Badge 
-                            variant={conversation.priority === 'urgent' ? 'destructive' :
-                                   conversation.priority === 'high' ? 'destructive' :
-                                   conversation.priority === 'normal' ? 'default' : 'secondary'}
+                          <Badge
+                            variant={
+                              conversation.priority === "urgent"
+                                ? "destructive"
+                                : conversation.priority === "high"
+                                  ? "destructive"
+                                  : conversation.priority === "normal"
+                                    ? "default"
+                                    : "secondary"
+                            }
                             className="capitalize"
                           >
                             {conversation.priority}
@@ -157,9 +180,7 @@ async function AllConversationsTable() {
                         </td>
                         <td className="py-4 px-4">
                           <div className="flex items-center space-x-2">
-                            <span className="text-sm text-gray-600">
-                              {messages.length}
-                            </span>
+                            <span className="text-sm text-gray-600">{messages.length}</span>
                             {unreadCount > 0 && (
                               <Badge variant="destructive" className="text-xs">
                                 {unreadCount} new
@@ -169,7 +190,9 @@ async function AllConversationsTable() {
                         </td>
                         <td className="py-4 px-4">
                           <span className="text-sm text-gray-500">
-                            {new Date(conversation.last_message_at || conversation.created_at).toLocaleDateString()}
+                            {new Date(
+                              conversation.last_message_at || conversation.created_at
+                            ).toLocaleDateString()}
                           </span>
                         </td>
                         <td className="py-4 px-4">
@@ -188,7 +211,7 @@ async function AllConversationsTable() {
                           </div>
                         </td>
                       </tr>
-                    )
+                    );
                   })}
                 </tbody>
               </table>
@@ -210,9 +233,9 @@ async function AllConversationsTable() {
           )}
         </CardContent>
       </Card>
-    )
+    );
   } catch (error) {
-    console.error('Error fetching all conversations:', error)
+    console.error("Error fetching all conversations:", error);
     return (
       <Card>
         <CardHeader>
@@ -224,7 +247,7 @@ async function AllConversationsTable() {
             <MessageSquare className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">Error Loading Conversations</h3>
             <p className="text-sm text-red-500 mb-6">
-              {error instanceof Error ? error.message : 'Unknown error occurred'}
+              {error instanceof Error ? error.message : "Unknown error occurred"}
             </p>
             <Button variant="outline" asChild>
               <Link href="/dashboard/chat">
@@ -235,29 +258,31 @@ async function AllConversationsTable() {
           </div>
         </CardContent>
       </Card>
-    )
+    );
   }
 }
 
 export default async function AllConversationsPage() {
-  const supabase = await createClient()
-  
+  const supabase = await createClient();
+
   // Check if user is authenticated and is admin
-  const { data: { session } } = await supabase.auth.getSession()
-  
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
   if (!session) {
-    redirect('/auth/signin')
+    redirect("/auth/signin");
   }
 
   // Check if user is admin
   const { data: user } = await supabase
-    .from('users')
-    .select('role')
-    .eq('id', session.user.id)
-    .single()
+    .from("users")
+    .select("role")
+    .eq("id", session.user.id)
+    .single();
 
-  if (!user || user.role !== 'admin') {
-    redirect('/dashboard')
+  if (!user || user.role !== "admin") {
+    redirect("/dashboard");
   }
 
   return (
@@ -275,16 +300,18 @@ export default async function AllConversationsPage() {
       </DashboardHeader>
 
       <div className="space-y-6">
-        <Suspense fallback={
-          <Card>
-            <CardContent className="flex items-center justify-center py-12">
-              <div className="animate-pulse bg-gray-200 h-64 w-full rounded" />
-            </CardContent>
-          </Card>
-        }>
+        <Suspense
+          fallback={
+            <Card>
+              <CardContent className="flex items-center justify-center py-12">
+                <div className="animate-pulse bg-gray-200 h-64 w-full rounded" />
+              </CardContent>
+            </Card>
+          }
+        >
           <AllConversationsTable />
         </Suspense>
       </div>
     </DashboardShell>
-  )
-} 
+  );
+}

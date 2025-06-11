@@ -2,15 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { 
-  Home, 
-  Settings, 
-  Users, 
-  Briefcase, 
-  Palette, 
-  MessageSquare, 
-  FileText, 
-  BookOpen
+import {
+  Home,
+  Settings,
+  Users,
+  Briefcase,
+  Palette,
+  MessageSquare,
+  FileText,
+  BookOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -26,24 +26,13 @@ interface SidebarNavProps {
   isAdmin: boolean;
 }
 
-export function SidebarNav({
-  className,
-  items,
-  isAdmin,
-  ...props
-}: SidebarNavProps) {
+export function SidebarNav({ className, items, isAdmin, ...props }: SidebarNavProps) {
   const pathname = usePathname();
 
   return (
-    <nav 
-      className={cn(
-        "flex flex-col gap-1",
-        className
-      )}
-      {...props}
-    >
+    <nav className={cn("flex flex-col gap-1", className)} {...props}>
       {items
-        .filter(item => !item.admin || isAdmin)
+        .filter((item) => !item.admin || isAdmin)
         .map((item) => {
           const Icon = item.icon || FileText;
           return (
@@ -82,13 +71,13 @@ export const sidebarNavItems = [
     title: "Services",
     href: "/dashboard/services-dash",
     icon: Briefcase,
-    admin: true
+    admin: true,
   },
   {
     title: "Clients",
     href: "/dashboard/clients",
     icon: Users,
-    admin: true
+    admin: true,
   },
   {
     title: "Inquiries",
@@ -99,17 +88,17 @@ export const sidebarNavItems = [
     title: "Chat Support",
     href: "/dashboard/chat",
     icon: MessageSquare,
-    admin: true
+    admin: true,
   },
   {
     title: "Content",
     href: "/dashboard/content",
     icon: BookOpen,
-    admin: true
+    admin: true,
   },
   {
     title: "Settings",
     href: "/dashboard/settings",
     icon: Settings,
   },
-]; 
+];

@@ -14,13 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { createClient } from "@/lib/supabase/client";
-import { 
-  User, 
-  Settings, 
-  LogOut, 
-  Shield, 
-  Loader2,
-} from "lucide-react";
+import { User, Settings, LogOut, Shield, Loader2 } from "lucide-react";
 
 interface UserData {
   id: string;
@@ -40,31 +34,33 @@ export function CircularProfileButton() {
   useEffect(() => {
     const getSession = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
         setUser(session?.user || null);
-        
+
         if (session?.user) {
           // Fetch additional user data
           const { data: profile } = await supabase
-            .from('users')
-            .select('id, email, full_name, avatar_url, role')
-            .eq('id', session.user.id)
+            .from("users")
+            .select("id, email, full_name, avatar_url, role")
+            .eq("id", session.user.id)
             .single();
-          
+
           const userProfile = profile || {
             id: session.user.id,
-            email: session.user.email || '',
+            email: session.user.email || "",
             full_name: session.user.user_metadata?.full_name,
             avatar_url: session.user.user_metadata?.avatar_url,
-            role: 'customer'
+            role: "customer",
           };
-          
+
           setUserData(userProfile);
         } else {
           setUserData(null);
         }
       } catch (error) {
-        console.error('Error getting session:', error);
+        console.error("Error getting session:", error);
         setUser(null);
         setUserData(null);
       } finally {
@@ -75,35 +71,37 @@ export function CircularProfileButton() {
     getSession();
 
     // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setUser(session?.user || null);
-        
-        if (session?.user) {
-          const { data: profile } = await supabase
-            .from('users')
-            .select('id, email, full_name, avatar_url, role')
-            .eq('id', session.user.id)
-            .single();
-          
-          setUserData(profile || {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setUser(session?.user || null);
+
+      if (session?.user) {
+        const { data: profile } = await supabase
+          .from("users")
+          .select("id, email, full_name, avatar_url, role")
+          .eq("id", session.user.id)
+          .single();
+
+        setUserData(
+          profile || {
             id: session.user.id,
-            email: session.user.email || '',
+            email: session.user.email || "",
             full_name: session.user.user_metadata?.full_name,
             avatar_url: session.user.user_metadata?.avatar_url,
-            role: 'customer'
-          });
-        } else {
-          setUserData(null);
-        }
-        
-        setLoading(false);
-        
-        if (event === 'SIGNED_IN') {
-          router.refresh();
-        }
+            role: "customer",
+          }
+        );
+      } else {
+        setUserData(null);
       }
-    );
+
+      setLoading(false);
+
+      if (event === "SIGNED_IN") {
+        router.refresh();
+      }
+    });
 
     return () => {
       subscription.unsubscribe();
@@ -116,20 +114,25 @@ export function CircularProfileButton() {
       setUser(null);
       setUserData(null);
       router.refresh();
-      router.push('/');
+      router.push("/");
     } catch (error) {
-      console.error('Error signing out:', error);
+      console.error("Error signing out:", error);
     }
   };
 
   const getInitials = (name?: string, email?: string) => {
     if (name) {
-      return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+      return name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2);
     }
     if (email) {
       return email.slice(0, 2).toUpperCase();
     }
-    return 'U';
+    return "U";
   };
 
   if (loading) {
@@ -144,19 +147,19 @@ export function CircularProfileButton() {
     return null; // Don't show anything if not logged in
   }
 
-  const isAdmin = userData?.role === 'admin';
+  const isAdmin = userData?.role === "admin";
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           className="rounded-full w-10 h-10 p-0 hover:scale-105 transition-transform duration-200"
           title={userData.full_name || userData.email}
         >
           <Avatar className="h-9 w-9 ring-2 ring-white shadow-lg">
-            <AvatarImage 
-              src={userData.avatar_url} 
+            <AvatarImage
+              src={userData.avatar_url}
               alt={userData.full_name || userData.email}
               className="object-cover"
             />
@@ -166,16 +169,12 @@ export function CircularProfileButton() {
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      
+
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">
-              {userData.full_name || 'User'}
-            </p>
-            <p className="text-xs leading-none text-muted-foreground">
-              {userData.email}
-            </p>
+            <p className="text-sm font-medium leading-none">{userData.full_name || "User"}</p>
+            <p className="text-xs leading-none text-muted-foreground">{userData.email}</p>
             {isAdmin && (
               <div className="flex items-center gap-1 text-xs text-amber-600">
                 <Shield className="h-3 w-3" />
@@ -184,23 +183,23 @@ export function CircularProfileButton() {
             )}
           </div>
         </DropdownMenuLabel>
-        
+
         <DropdownMenuSeparator />
-        
+
         <DropdownMenuItem asChild>
           <Link href="/account/profile" className="cursor-pointer">
             <User className="mr-2 h-4 w-4" />
             Profile
           </Link>
         </DropdownMenuItem>
-        
+
         <DropdownMenuItem asChild>
           <Link href="/account/settings" className="cursor-pointer">
             <Settings className="mr-2 h-4 w-4" />
             Settings
           </Link>
         </DropdownMenuItem>
-        
+
         {isAdmin && (
           <>
             <DropdownMenuSeparator />
@@ -212,10 +211,10 @@ export function CircularProfileButton() {
             </DropdownMenuItem>
           </>
         )}
-        
+
         <DropdownMenuSeparator />
-        
-        <DropdownMenuItem 
+
+        <DropdownMenuItem
           onClick={handleSignOut}
           className="cursor-pointer text-red-600 focus:text-red-600"
         >
@@ -225,4 +224,4 @@ export function CircularProfileButton() {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-} 
+}

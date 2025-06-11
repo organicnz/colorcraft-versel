@@ -2,19 +2,19 @@ import { createClient } from "@/lib/supabase/server";
 
 /**
  * Server-side function to get random after image (for use in server components)
- * @param portfolioId - The UUID of the portfolio item  
+ * @param portfolioId - The UUID of the portfolio item
  * @returns Promise<string | null> - The public URL of a random after image, or null if none found
  */
 export async function getRandomAfterImageServer(portfolioId: string): Promise<string | null> {
   try {
     const supabase = await createClient();
-    
+
     // List all files in the after_images directory
     const { data: files, error } = await supabase.storage
-      .from('portfolio')
+      .from("portfolio")
       .list(`${portfolioId}/after_images`, {
         limit: 100,
-        sortBy: { column: 'name', order: 'asc' }
+        sortBy: { column: "name", order: "asc" },
       });
 
     if (error) {
@@ -27,9 +27,9 @@ export async function getRandomAfterImageServer(portfolioId: string): Promise<st
     }
 
     // Filter out .gitkeep and other non-image files
-    const imageFiles = files.filter(file => {
-      const extension = file.name.toLowerCase().split('.').pop();
-      return extension && ['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(extension);
+    const imageFiles = files.filter((file) => {
+      const extension = file.name.toLowerCase().split(".").pop();
+      return extension && ["jpg", "jpeg", "png", "webp", "gif"].includes(extension);
     });
 
     if (imageFiles.length === 0) {
@@ -39,10 +39,10 @@ export async function getRandomAfterImageServer(portfolioId: string): Promise<st
     // Randomly select one image
     const randomIndex = Math.floor(Math.random() * imageFiles.length);
     const selectedFile = imageFiles[randomIndex];
-    
+
     // Get the public URL
     const { data: urlData } = supabase.storage
-      .from('portfolio')
+      .from("portfolio")
       .getPublicUrl(`${portfolioId}/after_images/${selectedFile.name}`);
 
     return urlData.publicUrl;
@@ -60,13 +60,13 @@ export async function getRandomAfterImageServer(portfolioId: string): Promise<st
 export async function getAllAfterImagesServer(portfolioId: string): Promise<string[]> {
   try {
     const supabase = await createClient();
-    
+
     // List all files in the after_images directory
     const { data: files, error } = await supabase.storage
-      .from('portfolio')
+      .from("portfolio")
       .list(`${portfolioId}/after_images`, {
         limit: 100,
-        sortBy: { column: 'name', order: 'asc' }
+        sortBy: { column: "name", order: "asc" },
       });
 
     if (error) {
@@ -79,15 +79,15 @@ export async function getAllAfterImagesServer(portfolioId: string): Promise<stri
     }
 
     // Filter out .gitkeep and other non-image files
-    const imageFiles = files.filter(file => {
-      const extension = file.name.toLowerCase().split('.').pop();
-      return extension && ['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(extension);
+    const imageFiles = files.filter((file) => {
+      const extension = file.name.toLowerCase().split(".").pop();
+      return extension && ["jpg", "jpeg", "png", "webp", "gif"].includes(extension);
     });
 
     // Get public URLs for all images
-    return imageFiles.map(file => {
+    return imageFiles.map((file) => {
       const { data: urlData } = supabase.storage
-        .from('portfolio')
+        .from("portfolio")
         .getPublicUrl(`${portfolioId}/after_images/${file.name}`);
       return urlData.publicUrl;
     });
@@ -105,13 +105,13 @@ export async function getAllAfterImagesServer(portfolioId: string): Promise<stri
 export async function getAllBeforeImagesServer(portfolioId: string): Promise<string[]> {
   try {
     const supabase = await createClient();
-    
+
     // List all files in the before_images directory
     const { data: files, error } = await supabase.storage
-      .from('portfolio')
+      .from("portfolio")
       .list(`${portfolioId}/before_images`, {
         limit: 100,
-        sortBy: { column: 'name', order: 'asc' }
+        sortBy: { column: "name", order: "asc" },
       });
 
     if (error) {
@@ -124,15 +124,15 @@ export async function getAllBeforeImagesServer(portfolioId: string): Promise<str
     }
 
     // Filter out .gitkeep and other non-image files
-    const imageFiles = files.filter(file => {
-      const extension = file.name.toLowerCase().split('.').pop();
-      return extension && ['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(extension);
+    const imageFiles = files.filter((file) => {
+      const extension = file.name.toLowerCase().split(".").pop();
+      return extension && ["jpg", "jpeg", "png", "webp", "gif"].includes(extension);
     });
 
     // Get public URLs for all images
-    return imageFiles.map(file => {
+    return imageFiles.map((file) => {
       const { data: urlData } = supabase.storage
-        .from('portfolio')
+        .from("portfolio")
         .getPublicUrl(`${portfolioId}/before_images/${file.name}`);
       return urlData.publicUrl;
     });
@@ -140,4 +140,4 @@ export async function getAllBeforeImagesServer(portfolioId: string): Promise<str
     console.error(`Unexpected error getting all before images for ${portfolioId}:`, error);
     return [];
   }
-} 
+}

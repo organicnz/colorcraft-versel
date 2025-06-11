@@ -8,19 +8,21 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/client";
 import { createUserProfile } from "@/lib/hooks/useCreateUserProfile";
 
-const signUpSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters",
-  }),
-  email: z.string().email({ message: "Please enter a valid email address" }),
-  password: z.string().min(8, {
-    message: "Password must be at least 8 characters",
-  }),
-  confirmPassword: z.string(),
-}).refine(data => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+const signUpSchema = z
+  .object({
+    name: z.string().min(2, {
+      message: "Name must be at least 2 characters",
+    }),
+    email: z.string().email({ message: "Please enter a valid email address" }),
+    password: z.string().min(8, {
+      message: "Password must be at least 8 characters",
+    }),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don&apos;t match",
+    path: ["confirmPassword"],
+  });
 
 type SignUpValues = z.infer<typeof signUpSchema>;
 
@@ -57,7 +59,7 @@ export default function SignUpForm() {
       });
 
       if (error) throw error;
-      
+
       // If we have a user ID, create the profile
       if (authData?.user?.id) {
         const { success, error: profileError } = await createUserProfile(
@@ -65,24 +67,24 @@ export default function SignUpForm() {
           data.name,
           data.email
         );
-        
+
         if (!success && profileError) {
           throw new Error(profileError.message || "Failed to create user profile");
         }
       } else {
         // Wait briefly for auth to complete
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+
         // Try to get the user again
         const { data: userData } = await supabase.auth.getUser();
-        
+
         if (userData?.user?.id) {
           const { success, error: profileError } = await createUserProfile(
             userData.user.id,
             data.name,
             data.email
           );
-          
+
           if (!success && profileError) {
             throw new Error(profileError.message || "Failed to create user profile");
           }
@@ -118,9 +120,7 @@ export default function SignUpForm() {
               disabled={isLoading}
             />
             {form.formState.errors.name && (
-              <p className="text-sm text-red-500">
-                {form.formState.errors.name.message}
-              </p>
+              <p className="text-sm text-red-500">{form.formState.errors.name.message}</p>
             )}
           </div>
           <div className="grid gap-1">
@@ -135,9 +135,7 @@ export default function SignUpForm() {
               disabled={isLoading}
             />
             {form.formState.errors.email && (
-              <p className="text-sm text-red-500">
-                {form.formState.errors.email.message}
-              </p>
+              <p className="text-sm text-red-500">{form.formState.errors.email.message}</p>
             )}
           </div>
           <div className="grid gap-1">
@@ -152,9 +150,7 @@ export default function SignUpForm() {
               disabled={isLoading}
             />
             {form.formState.errors.password && (
-              <p className="text-sm text-red-500">
-                {form.formState.errors.password.message}
-              </p>
+              <p className="text-sm text-red-500">{form.formState.errors.password.message}</p>
             )}
           </div>
           <div className="grid gap-1">
@@ -188,9 +184,7 @@ export default function SignUpForm() {
           <span className="w-full border-t"></span>
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
-            Or continue with
-          </span>
+          <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
         </div>
       </div>
       <button
@@ -218,4 +212,4 @@ export default function SignUpForm() {
       </button>
     </div>
   );
-} 
+}

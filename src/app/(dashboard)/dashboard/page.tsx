@@ -5,29 +5,32 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 export default async function DashboardPage() {
   const supabase = await createClient();
-  
+
   // Get the current user session
-  const { data: { session } } = await supabase.auth.getSession();
-  
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
   if (!session) {
-    redirect('/auth/signin');
+    redirect("/auth/signin");
   }
 
   // Get user data from the users table
   const { data: userData } = await supabase
-    .from('users')
-    .select('*')
-    .eq('id', session.user.id)
+    .from("users")
+    .select("*")
+    .eq("id", session.user.id)
     .single();
 
-  const isAdmin = userData?.role === 'admin';
+  const isAdmin = userData?.role === "admin";
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Welcome to your Dashboard</h1>
         <p className="text-muted-foreground">
-          Hello {userData?.full_name || session.user.email}! Here&apos;s an overview of your account.
+          Hello {userData?.full_name || session.user.email}! Here&apos;s an overview of your
+          account.
         </p>
       </div>
 
@@ -43,10 +46,10 @@ export default async function DashboardPage() {
                 <span className="font-medium">Email:</span> {session.user.email}
               </div>
               <div>
-                <span className="font-medium">Role:</span> {userData?.role || 'Customer'}
+                <span className="font-medium">Role:</span> {userData?.role || "Customer"}
               </div>
               <div>
-                <span className="font-medium">Member since:</span>{' '}
+                <span className="font-medium">Member since:</span>{" "}
                 {new Date(userData?.created_at || session.user.created_at).toLocaleDateString()}
               </div>
             </div>
@@ -121,21 +124,29 @@ export default async function DashboardPage() {
       </div>
 
       {/* Debug info for development */}
-      {process.env.NODE_ENV === 'development' && (
+      {process.env.NODE_ENV === "development" && (
         <Card className="bg-yellow-50 border-yellow-200">
           <CardHeader>
             <CardTitle className="text-yellow-800">🔍 Debug Information</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-2 text-sm text-yellow-700">
-              <div><strong>User ID:</strong> {session.user.id}</div>
-              <div><strong>Session valid:</strong> {session ? 'Yes' : 'No'}</div>
-              <div><strong>User role:</strong> {userData?.role || 'None'}</div>
-              <div><strong>Dashboard loaded:</strong> Successfully</div>
+              <div>
+                <strong>User ID:</strong> {session.user.id}
+              </div>
+              <div>
+                <strong>Session valid:</strong> {session ? "Yes" : "No"}
+              </div>
+              <div>
+                <strong>User role:</strong> {userData?.role || "None"}
+              </div>
+              <div>
+                <strong>Dashboard loaded:</strong> Successfully
+              </div>
             </div>
           </CardContent>
         </Card>
       )}
     </div>
   );
-} 
+}

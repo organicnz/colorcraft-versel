@@ -51,11 +51,11 @@ export default function ServicesTable({ services }: ServicesTableProps) {
     try {
       setIsDeleting(true);
       const result = await deleteService(id);
-      
+
       if (result.error) {
         throw new Error(result.error);
       }
-      
+
       toast.success("Service deleted successfully");
       router.refresh();
     } catch (error) {
@@ -88,18 +88,16 @@ export default function ServicesTable({ services }: ServicesTableProps) {
           {services.map((service) => (
             <TableRow key={service.id}>
               <TableCell className="font-medium">{service.name}</TableCell>
-              <TableCell className="max-w-xs truncate">
-                {service.brief_description}
-              </TableCell>
-              <TableCell>{service.price_range || 'N/A'}</TableCell>
+              <TableCell className="max-w-xs truncate">{service.brief_description}</TableCell>
+              <TableCell>{service.price_range || "N/A"}</TableCell>
               <TableCell>
-                <span className={`px-2 py-1 rounded-full text-xs ${service.is_active ? 'bg-green-100 text-green-800' : 'bg-slate-100 text-slate-800'}`}>
-                  {service.is_active ? 'Active' : 'Inactive'}
+                <span
+                  className={`px-2 py-1 rounded-full text-xs ${service.is_active ? "bg-green-100 text-green-800" : "bg-slate-100 text-slate-800"}`}
+                >
+                  {service.is_active ? "Active" : "Inactive"}
                 </span>
               </TableCell>
-              <TableCell>
-                {new Date(service.created_at).toLocaleDateString()}
-              </TableCell>
+              <TableCell>{new Date(service.created_at).toLocaleDateString()}</TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end space-x-2">
                   <Button
@@ -148,4 +146,4 @@ export default function ServicesTable({ services }: ServicesTableProps) {
       </AlertDialog>
     </div>
   );
-} 
+}

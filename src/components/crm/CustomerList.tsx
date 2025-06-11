@@ -1,10 +1,10 @@
 "use client";
 
-import React from 'react';
-import Link from 'next/link';
+import React from "react";
+import Link from "next/link";
 
 interface CustomerListProps {
-  initialCustomers: any[]; // You may want to define a proper type here
+  initialCustomers: unknown[]; // You may want to define a proper type here
 }
 
 export default function CustomerList({ initialCustomers }: CustomerListProps) {
@@ -31,7 +31,9 @@ export default function CustomerList({ initialCustomers }: CustomerListProps) {
           <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent dark:from-white/5 pointer-events-none rounded-xl" />
 
           <div className="relative z-10">
-            <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">No customers yet</h3>
+            <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
+              No customers yet
+            </h3>
             <p className="text-slate-500 dark:text-slate-300 mb-4">
               Get started by adding your first customer to the database.
             </p>
@@ -89,35 +91,40 @@ export default function CustomerList({ initialCustomers }: CustomerListProps) {
               </thead>
               <tbody className="divide-y divide-slate-200/30 dark:divide-slate-700/30">
                 {customers.map((customer) => (
-                  <tr key={customer.id} className="hover:bg-white/20 dark:hover:bg-white/5 transition-colors duration-200">
+                  <tr
+                    key={customer.id}
+                    className="hover:bg-white/20 dark:hover:bg-white/5 transition-colors duration-200"
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-slate-900 dark:text-white">
                         {customer.name}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-slate-500 dark:text-slate-300">{customer.email}</div>
+                      <div className="text-sm text-slate-500 dark:text-slate-300">
+                        {customer.email}
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-slate-500 dark:text-slate-300">
-                        {customer.phone || '-'}
+                        {customer.phone || "-"}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          customer.status === 'active'
-                            ? 'bg-green-100 text-green-800'
-                            : customer.status === 'inactive'
-                            ? 'bg-red-100 text-red-800'
-                            : 'bg-yellow-100 text-yellow-800'
+                          customer.status === "active"
+                            ? "bg-green-100 text-green-800"
+                            : customer.status === "inactive"
+                              ? "bg-red-100 text-red-800"
+                              : "bg-yellow-100 text-yellow-800"
                         }`}
                       >
                         {customer.status}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-300">
-                      {customer.source || '-'}
+                      {customer.source || "-"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <Link
@@ -142,4 +149,4 @@ export default function CustomerList({ initialCustomers }: CustomerListProps) {
       )}
     </>
   );
-} 
+}

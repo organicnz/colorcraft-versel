@@ -1,69 +1,72 @@
 "use client";
 
-import { useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
+import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 export default function AuthTestPage() {
-  const [status, setStatus] = useState<string>('Ready to test');
+  const [status, setStatus] = useState<string>("Ready to test");
   const [logs, setLogs] = useState<string[]>([]);
   const supabase = createClient();
 
   const addLog = (message: string) => {
-    console.log(message);
-    setLogs(prev => [...prev, `${new Date().toLocaleTimeString()}: ${message}`]);
+    console.warn(message);
+    setLogs((prev) => [...prev, `${new Date().toLocaleTimeString()}: ${message}`]);
   };
 
   const testSupabaseConnection = async () => {
-    setStatus('Testing Supabase connection...');
-    addLog('Starting Supabase connection test');
-    
+    setStatus("Testing Supabase connection...");
+    addLog("Starting Supabase connection test");
+
     try {
       // Test 1: Check if client is created
-      addLog('✓ Supabase client created successfully');
-      
+      addLog("✓ Supabase client created successfully");
+
       // Test 2: Check auth state
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
       if (sessionError) {
         addLog(`❌ Session error: ${sessionError.message}`);
       } else {
         addLog(`✓ Session check complete. Logged in: ${!!session}`);
       }
-      
+
       // Test 3: Test a simple database query
       const { data: testData, error: dbError } = await supabase
-        .from('users')
-        .select('count(*)')
+        .from("users")
+        .select("count(*)")
         .limit(1);
-      
+
       if (dbError) {
         addLog(`❌ Database error: ${dbError.message}`);
       } else {
-        addLog('✓ Database connection successful');
+        addLog("✓ Database connection successful");
       }
-      
-      setStatus('Connection test complete');
+
+      setStatus("Connection test complete");
     } catch (error: any) {
       addLog(`❌ Unexpected error: ${error.message}`);
-      setStatus('Connection test failed');
+      setStatus("Connection test failed");
     }
   };
 
   const testSignIn = async () => {
-    setStatus('Testing sign in...');
-    addLog('Starting sign in test');
-    
-    const testEmail = prompt('Enter your email:');
-    const testPassword = prompt('Enter your password:');
-    
+    setStatus("Testing sign in...");
+    addLog("Starting sign in test");
+
+    const testEmail = prompt("Enter your email:");
+    const testPassword = prompt("Enter your password:");
+
     if (!testEmail || !testPassword) {
-      addLog('❌ Email or password not provided');
-      setStatus('Sign in test cancelled');
+      addLog("❌ Email or password not provided");
+      setStatus("Sign in test cancelled");
       return;
     }
 
     try {
       addLog(`Attempting to sign in with email: ${testEmail}`);
-      
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email: testEmail,
         password: testPassword,
@@ -72,32 +75,32 @@ export default function AuthTestPage() {
       addLog(`Sign in response received`);
       addLog(`Has user: ${!!data?.user}`);
       addLog(`Has session: ${!!data?.session}`);
-      
+
       if (error) {
         addLog(`❌ Sign in error: ${error.message}`);
-        setStatus('Sign in failed');
+        setStatus("Sign in failed");
       } else if (data?.user) {
         addLog(`✓ Sign in successful! User ID: ${data.user.id}`);
-        setStatus('Sign in successful');
+        setStatus("Sign in successful");
       } else {
-        addLog('❌ Sign in returned no user data');
-        setStatus('Sign in returned no data');
+        addLog("❌ Sign in returned no user data");
+        setStatus("Sign in returned no data");
       }
     } catch (error: any) {
       addLog(`❌ Unexpected sign in error: ${error.message}`);
-      setStatus('Sign in test failed');
+      setStatus("Sign in test failed");
     }
   };
 
   const clearLogs = () => {
     setLogs([]);
-    setStatus('Ready to test');
+    setStatus("Ready to test");
   };
 
   return (
     <div className="container mx-auto py-8 max-w-4xl">
       <h1 className="text-3xl font-bold mb-6">Authentication Debug Test</h1>
-      
+
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
         <h2 className="text-xl font-semibold mb-4">Current Status</h2>
         <p className="text-lg p-3 bg-gray-100 rounded">{status}</p>
@@ -154,4 +157,4 @@ export default function AuthTestPage() {
       </div>
     </div>
   );
-} 
+}

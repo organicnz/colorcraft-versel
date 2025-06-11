@@ -43,28 +43,16 @@ export default function Header() {
 
           {/* Desktop Menu */}
           <nav className="hidden md:flex space-x-8">
-            <Link
-              href="/"
-              className="text-slate-600 hover:text-primary transition-colors"
-            >
+            <Link href="/" className="text-slate-600 hover:text-primary transition-colors">
               Home
             </Link>
-            <Link
-              href="/portfolio"
-              className="text-slate-600 hover:text-primary transition-colors"
-            >
+            <Link href="/portfolio" className="text-slate-600 hover:text-primary transition-colors">
               Portfolio
             </Link>
-            <Link
-              href="/services"
-              className="text-slate-600 hover:text-primary transition-colors"
-            >
+            <Link href="/services" className="text-slate-600 hover:text-primary transition-colors">
               Services
             </Link>
-            <Link
-              href="/contact"
-              className="text-slate-600 hover:text-primary transition-colors"
-            >
+            <Link href="/contact" className="text-slate-600 hover:text-primary transition-colors">
               Contact
             </Link>
           </nav>
@@ -178,4 +166,4 @@ export default function Header() {
       </div>
     </header>
   );
-} 
+}

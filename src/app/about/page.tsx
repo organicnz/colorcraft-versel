@@ -16,7 +16,7 @@ import {
   Palette,
   Shield,
   TreePine,
-  Star
+  Star,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import type { TeamMember } from "@/types/team";
@@ -31,19 +31,19 @@ export default function AboutPage() {
       try {
         const supabase = createClient();
         const { data, error } = await supabase
-          .from('team')
-          .select('*')
-          .eq('is_featured', true)
-          .eq('is_active', true)
-          .order('display_order');
+          .from("team")
+          .select("*")
+          .eq("is_featured", true)
+          .eq("is_active", true)
+          .order("display_order");
 
         if (error) {
-          console.error('Error fetching team members:', error);
+          console.error("Error fetching team members:", error);
         } else {
           setTeamMembers(data || []);
         }
       } catch (error) {
-        console.error('Error fetching team members:', error);
+        console.error("Error fetching team members:", error);
       } finally {
         setLoading(false);
       }
@@ -61,35 +61,39 @@ export default function AboutPage() {
       specialty: "Vintage Restoration",
       achievement: "Master Craftsperson",
       bio: "Sarah brings over 15 years of experience in furniture restoration and color theory. She specializes in bringing antique and vintage pieces back to their original glory while preserving their historical character.",
-      image: "https://images.unsplash.com/photo-1494790108755-2616b612b05c?w=400&h=400&fit=crop&auto=format&q=80"
+      image:
+        "https://images.unsplash.com/photo-1494790108755-2616b612b05c?w=400&h=400&fit=crop&auto=format&q=80",
     },
     {
-      id: "james-wilson-fallback", 
+      id: "james-wilson-fallback",
       name: "James Wilson",
       role: "Custom Finish Specialist",
       specialty: "Modern Techniques",
       achievement: "Innovation Award",
       bio: "James is our go-to expert for contemporary finishes and modern paint techniques. His innovative approach has revolutionized how we approach furniture makeovers for modern homes.",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&auto=format&q=80"
+      image:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&auto=format&q=80",
     },
     {
       id: "emma-rodriguez-fallback",
-      name: "Emma Rodriguez", 
+      name: "Emma Rodriguez",
       role: "Design Consultant",
       specialty: "Color Coordination",
       achievement: "Design Excellence",
       bio: "Emma's keen eye for color and design helps clients envision the perfect finish for their furniture. She bridges the gap between artistic vision and practical application.",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&auto=format&q=80"
+      image:
+        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&auto=format&q=80",
     },
     {
       id: "michael-chen-fallback",
       name: "Michael Chen",
-      role: "Workshop Manager", 
+      role: "Workshop Manager",
       specialty: "Quality Control",
       achievement: "Excellence Award",
       bio: "Michael ensures every project meets our exacting standards. His attention to detail and quality control processes guarantee exceptional results for every client.",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&auto=format&q=80"
-    }
+      image:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&auto=format&q=80",
+    },
   ];
 
   // Display real team members if available, otherwise show fallback
@@ -124,13 +128,20 @@ export default function AboutPage() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+              >
                 <Link href="/portfolio" className="flex items-center">
                   View Our Work
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-2 border-violet-200 text-violet-700 hover:bg-violet-50 px-8 py-4 rounded-full transition-all duration-300">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-2 border-violet-200 text-violet-700 hover:bg-violet-50 px-8 py-4 rounded-full transition-all duration-300"
+              >
                 <Link href="/contact" className="flex items-center">
                   Start Your Project
                   <Heart className="ml-2 w-5 h-5" />
@@ -154,35 +165,45 @@ export default function AboutPage() {
                   </Badge>
                   <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 leading-tight">
                     Breathing life into
-                    <span className="text-gradient bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent"> forgotten treasures</span>
+                    <span className="text-gradient bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                      {" "}
+                      forgotten treasures
+                    </span>
                   </h2>
                 </div>
 
                 <div className="space-y-6 text-lg text-slate-600 leading-relaxed">
                   <p>
-                    Founded in 2018, Color & Craft began as a passion project in a small garage workshop.
-                    Our founder, inspired by the beauty hidden within worn and weathered furniture,
-                    started with a simple mission: to rescue discarded pieces and transform them into stunning centerpieces.
+                    Founded in 2018, Color & Craft began as a passion project in a small garage
+                    workshop. Our founder, inspired by the beauty hidden within worn and weathered
+                    furniture, started with a simple mission: to rescue discarded pieces and
+                    transform them into stunning centerpieces.
                   </p>
                   <p>
-                    Today, we've grown into a team of dedicated artisans, each bringing unique expertise
-                    in restoration techniques, color theory, and design innovation. We've helped over
-                    1,000 families rediscover the beauty in their cherished pieces.
+                    Today, we've grown into a team of dedicated artisans, each bringing unique
+                    expertise in restoration techniques, color theory, and design innovation. We've
+                    helped over 1,000 families rediscover the beauty in their cherished pieces.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-3 gap-8 py-8">
                   <div className="text-center">
                     <div className="text-3xl font-bold text-violet-600">1000+</div>
-                    <div className="text-sm text-slate-500 uppercase tracking-wide">Projects Completed</div>
+                    <div className="text-sm text-slate-500 uppercase tracking-wide">
+                      Projects Completed
+                    </div>
                   </div>
                   <div className="text-center">
                     <div className="text-3xl font-bold text-violet-600">5</div>
-                    <div className="text-sm text-slate-500 uppercase tracking-wide">Years Experience</div>
+                    <div className="text-sm text-slate-500 uppercase tracking-wide">
+                      Years Experience
+                    </div>
                   </div>
                   <div className="text-center">
                     <div className="text-3xl font-bold text-violet-600">100%</div>
-                    <div className="text-sm text-slate-500 uppercase tracking-wide">Satisfaction</div>
+                    <div className="text-sm text-slate-500 uppercase tracking-wide">
+                      Satisfaction
+                    </div>
                   </div>
                 </div>
               </div>
@@ -215,7 +236,10 @@ export default function AboutPage() {
               </Badge>
               <h2 className="text-4xl lg:text-5xl font-bold text-slate-900">
                 What drives us
-                <span className="text-gradient bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent"> every day</span>
+                <span className="text-gradient bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                  {" "}
+                  every day
+                </span>
               </h2>
               <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
                 Our core values shape every project we undertake and every relationship we build.
@@ -227,23 +251,26 @@ export default function AboutPage() {
                 {
                   icon: Palette,
                   title: "Artistry",
-                  description: "Every piece is a canvas for creative expression and masterful craftsmanship."
+                  description:
+                    "Every piece is a canvas for creative expression and masterful craftsmanship.",
                 },
                 {
                   icon: Heart,
                   title: "Passion",
-                  description: "We pour our hearts into every restoration, treating each piece as our own."
+                  description:
+                    "We pour our hearts into every restoration, treating each piece as our own.",
                 },
                 {
                   icon: Shield,
                   title: "Quality",
-                  description: "Premium materials and meticulous attention to detail in every project."
+                  description:
+                    "Premium materials and meticulous attention to detail in every project.",
                 },
                 {
                   icon: TreePine,
                   title: "Sustainability",
-                  description: "Giving new life to furniture while protecting our environment."
-                }
+                  description: "Giving new life to furniture while protecting our environment.",
+                },
               ].map((value, index) => (
                 <div key={value.title} className="group cursor-pointer">
                   <div className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-slate-100 h-full">
@@ -270,7 +297,7 @@ export default function AboutPage() {
           {/* Enhanced Background with multiple layers */}
           <div className="absolute inset-0 bg-gradient-to-br from-purple-50/60 via-pink-50/40 to-blue-50/60 dark:from-purple-900/30 dark:via-pink-900/20 dark:to-blue-900/30" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-amber-100/40 via-transparent to-orange-100/40 dark:from-amber-900/25 dark:via-transparent dark:to-orange-900/25" />
-          
+
           <div className="container mx-auto px-6 relative z-10">
             <div className="space-y-20">
               {/* Enhanced Section Header with glassmorphism */}
@@ -281,11 +308,14 @@ export default function AboutPage() {
                 </Badge>
                 <h2 className="text-4xl lg:text-6xl font-bold text-slate-900 dark:text-white">
                   The artisans behind
-                  <span className="bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 bg-clip-text text-transparent"> the magic</span>
+                  <span className="bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 bg-clip-text text-transparent">
+                    {" "}
+                    the magic
+                  </span>
                 </h2>
                 <p className="text-xl text-slate-600 dark:text-slate-300 max-w-4xl mx-auto leading-relaxed">
-                  Meet the talented individuals who bring passion, expertise, and creativity to every project, 
-                  transforming ordinary pieces into extraordinary works of art.
+                  Meet the talented individuals who bring passion, expertise, and creativity to
+                  every project, transforming ordinary pieces into extraordinary works of art.
                 </p>
               </GlassPanel>
 
@@ -293,28 +323,33 @@ export default function AboutPage() {
               <div className="space-y-10">
                 {displayTeamMembers.map((member, index) => {
                   // Trim bio to ensure consistent card heights
-                  const trimmedBio = member.bio && member.bio.length > 160 ? `${member.bio.substring(0, 160)}...` : member.bio;
+                  const trimmedBio =
+                    member.bio && member.bio.length > 160
+                      ? `${member.bio.substring(0, 160)}...`
+                      : member.bio;
                   const isEven = index % 2 === 0;
-                  
+
                   return (
-                    <GlassCard 
-                      key={member.id} 
-                      variant="light" 
-                      intensity="strong" 
+                    <GlassCard
+                      key={member.id}
+                      variant="light"
+                      intensity="strong"
                       blur="lg"
                       shadow="heavy"
                       className={`group transition-all duration-700 hover:scale-[1.02] hover:shadow-glass-heavy border-white/40 dark:border-white/25 overflow-hidden ${
-                        isEven ? 'ml-0 mr-16' : 'ml-16 mr-0'
+                        isEven ? "ml-0 mr-16" : "ml-16 mr-0"
                       }`}
                     >
-                      <div className={`flex items-center gap-10 h-full p-8 ${
-                        isEven ? 'flex-row' : 'flex-row-reverse'
-                      }`}>
+                      <div
+                        className={`flex items-center gap-10 h-full p-8 ${
+                          isEven ? "flex-row" : "flex-row-reverse"
+                        }`}
+                      >
                         {/* Enhanced Avatar Section */}
                         <div className="relative flex-shrink-0">
                           {/* Glow effect behind avatar */}
                           <div className="absolute inset-0 bg-gradient-to-br from-amber-400/30 via-orange-500/30 to-red-500/30 rounded-3xl blur-xl transform group-hover:scale-110 transition-transform duration-700"></div>
-                          
+
                           <div className="relative w-36 h-36 rounded-3xl overflow-hidden ring-4 ring-white/40 shadow-2xl transform group-hover:ring-white/60 transition-all duration-500">
                             <Image
                               src={member.image}
@@ -324,11 +359,11 @@ export default function AboutPage() {
                               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                               sizes="(max-width: 768px) 100vw, 50vw"
                             />
-                            
+
                             {/* Overlay gradient for depth */}
                             <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent"></div>
                           </div>
-                          
+
                           {/* Enhanced Achievement badge */}
                           <div className="absolute -bottom-3 -right-3">
                             <Badge className="bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 text-white border-0 shadow-xl backdrop-blur-sm px-4 py-2 transform group-hover:scale-110 transition-transform duration-300">
@@ -344,7 +379,9 @@ export default function AboutPage() {
                         </div>
 
                         {/* Enhanced Content Section */}
-                        <div className={`flex-1 min-w-0 space-y-6 ${isEven ? 'text-left' : 'text-right'}`}>
+                        <div
+                          className={`flex-1 min-w-0 space-y-6 ${isEven ? "text-left" : "text-right"}`}
+                        >
                           {/* Enhanced Name and Role */}
                           <div className="space-y-3">
                             <h3 className="text-3xl font-bold bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-white dark:via-gray-100 dark:to-white bg-clip-text text-transparent">
@@ -356,14 +393,16 @@ export default function AboutPage() {
                           </div>
 
                           {/* Enhanced Bio */}
-                          <p className={`text-slate-600 dark:text-slate-300 leading-relaxed font-medium text-base ${isEven ? 'text-left' : 'text-right'}`}>
+                          <p
+                            className={`text-slate-600 dark:text-slate-300 leading-relaxed font-medium text-base ${isEven ? "text-left" : "text-right"}`}
+                          >
                             {trimmedBio}
                           </p>
 
                           {/* Enhanced Specialty Badge */}
-                          <div className={`flex ${isEven ? 'justify-start' : 'justify-end'}`}>
-                            <Badge 
-                              variant="outline" 
+                          <div className={`flex ${isEven ? "justify-start" : "justify-end"}`}>
+                            <Badge
+                              variant="outline"
                               className="bg-gradient-to-r from-white/70 to-white/50 dark:from-gray-800/70 dark:to-gray-800/50 border-violet-200/60 dark:border-violet-700/60 text-violet-700 dark:text-violet-300 backdrop-blur-sm px-6 py-3 text-sm font-medium hover:scale-105 transition-transform duration-200"
                             >
                               <Sparkles className="w-4 h-4 mr-2" />
@@ -389,16 +428,24 @@ export default function AboutPage() {
               Ready to transform your furniture?
             </h2>
             <p className="text-xl opacity-90 max-w-2xl mx-auto leading-relaxed">
-              Let's discuss your vision and create something beautiful together. Every great transformation starts with a conversation.
+              Let's discuss your vision and create something beautiful together. Every great
+              transformation starts with a conversation.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-white text-violet-700 hover:bg-gray-50 px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
+              <Button
+                size="lg"
+                className="bg-white text-violet-700 hover:bg-gray-50 px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+              >
                 <Link href="/contact" className="flex items-center">
                   Get Free Consultation
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-violet-700 px-8 py-4 rounded-full transition-all duration-300">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-2 border-white text-white hover:bg-white hover:text-violet-700 px-8 py-4 rounded-full transition-all duration-300"
+              >
                 <Link href="/portfolio" className="flex items-center">
                   View Portfolio
                   <Sparkles className="ml-2 w-5 h-5" />

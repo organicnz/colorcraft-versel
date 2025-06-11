@@ -1,12 +1,12 @@
 "use client";
 
-import { useMemo, useState } from 'react';
-import Image from 'next/image';
+import { useMemo, useState } from "react";
+import Image from "next/image";
 
 interface RandomShowcaseImageProps {
   portfolioId: string;
   title: string;
-  afterImages?: string[];  // Now receives full URLs from server
+  afterImages?: string[]; // Now receives full URLs from server
   fallbackImage?: string;
   className?: string;
   width?: number;
@@ -19,8 +19,8 @@ export default function RandomShowcaseImage({
   portfolioId,
   title,
   afterImages,
-  fallbackImage = '/placeholder-image.jpg',
-  className = 'w-full h-full object-cover',
+  fallbackImage = "/placeholder-image.jpg",
+  className = "w-full h-full object-cover",
   width = 500,
   height = 500,
   sizes,
@@ -31,11 +31,13 @@ export default function RandomShowcaseImage({
   const selectedImage = useMemo(() => {
     if (afterImages && Array.isArray(afterImages) && afterImages.length > 0) {
       // Filter out any invalid URLs
-      const validImages = afterImages.filter(img => img && typeof img === 'string' && img.trim() !== '');
+      const validImages = afterImages.filter(
+        (img) => img && typeof img === "string" && img.trim() !== ""
+      );
 
       if (validImages.length > 0) {
         // Use portfolio ID as seed for consistent randomization per card
-        const seed = portfolioId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        const seed = portfolioId.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
         const randomIndex = seed % validImages.length;
         return validImages[randomIndex];
       }
@@ -45,7 +47,7 @@ export default function RandomShowcaseImage({
 
   // Simple error state for fallback handling
   const [hasError, setHasError] = useState(false);
-  
+
   const handleImageError = () => {
     setHasError(true);
   };
@@ -66,10 +68,10 @@ export default function RandomShowcaseImage({
         placeholder="blur"
         blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
         style={{
-          objectFit: 'cover',
-          objectPosition: 'center',
+          objectFit: "cover",
+          objectPosition: "center",
         }}
       />
     </div>
   );
-} 
+}

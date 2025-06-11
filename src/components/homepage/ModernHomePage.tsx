@@ -22,14 +22,14 @@ import {
   TrendingUp,
   Shield,
   Heart,
-  Lightbulb
+  Lightbulb,
 } from "lucide-react";
 
 interface ModernHomePageProps {
-  featuredProjects: any[];
-  services: any[];
-  testimonials: any[];
-  teamMembers: any[];
+  featuredProjects: unknown[];
+  services: unknown[];
+  testimonials: unknown[];
+  teamMembers: unknown[];
 }
 
 // Modern animation variants with advanced spring physics
@@ -41,8 +41,8 @@ const fadeInUp = {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { ...springTransition, duration: 0.8 }
-  }
+    transition: { ...springTransition, duration: 0.8 },
+  },
 };
 
 const staggerContainer = {
@@ -51,14 +51,14 @@ const staggerContainer = {
     opacity: 1,
     transition: {
       staggerChildren: 0.15,
-      delayChildren: 0.1
-    }
-  }
+      delayChildren: 0.1,
+    },
+  },
 };
 
 const scaleOnHover = {
   scale: 1.02,
-  transition: { type: "spring", stiffness: 300, damping: 20 }
+  transition: { type: "spring", stiffness: 300, damping: 20 },
 };
 
 export default function ModernHomePage({
@@ -86,22 +86,28 @@ export default function ModernHomePage({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Newsletter signup:", email);
+    console.warn("Newsletter signup:", email);
     setEmail("");
   };
 
   // Transform team members from database for display with fallback
-  const displayTeamMembers = teamMembers && teamMembers.length > 0 ? teamMembers.map(member => ({
-    name: member.full_name,
-    role: member.position,
-    image: member.avatar_url || `https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face`,
-    description: member.bio || `Expert in ${member.specialties?.[0] || 'furniture restoration'}`,
-    specialty: member.specialties?.[0] || 'Furniture Expert',
-    achievement: member.years_experience ? `${member.years_experience}+ years` : 'Expert',
-    email: member.email,
-    phone: member.phone,
-    social_links: member.social_links
-  })) : [];
+  const displayTeamMembers =
+    teamMembers && teamMembers.length > 0
+      ? teamMembers.map((member) => ({
+          name: member.full_name,
+          role: member.position,
+          image:
+            member.avatar_url ||
+            `https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face`,
+          description:
+            member.bio || `Expert in ${member.specialties?.[0] || "furniture restoration"}`,
+          specialty: member.specialties?.[0] || "Furniture Expert",
+          achievement: member.years_experience ? `${member.years_experience}+ years` : "Expert",
+          email: member.email,
+          phone: member.phone,
+          social_links: member.social_links,
+        }))
+      : [];
 
   // Enhanced services with modern icons and colors
   const modernServices = [
@@ -110,57 +116,57 @@ export default function ModernHomePage({
       title: "Custom Painting",
       description: "Premium finishes with P3 wide gamut color precision",
       gradient: "from-violet-500 to-purple-600",
-      bgGradient: "from-violet-50 to-purple-50"
+      bgGradient: "from-violet-50 to-purple-50",
     },
     {
       icon: Settings,
       title: "Furniture Restoration",
       description: "Bring antiques back to life with modern techniques",
       gradient: "from-blue-500 to-indigo-600",
-      bgGradient: "from-blue-50 to-indigo-50"
+      bgGradient: "from-blue-50 to-indigo-50",
     },
     {
       icon: Sparkles,
       title: "Creative Upcycling",
       description: "Sustainable design updates for the modern home",
       gradient: "from-emerald-500 to-teal-600",
-      bgGradient: "from-emerald-50 to-teal-50"
+      bgGradient: "from-emerald-50 to-teal-50",
     },
     {
       icon: Award,
       title: "Design Consultation",
       description: "Professional guidance from industry experts",
       gradient: "from-amber-500 to-orange-600",
-      bgGradient: "from-amber-50 to-orange-50"
+      bgGradient: "from-amber-50 to-orange-50",
     },
     {
       icon: CheckCircle,
       title: "Color Matching",
       description: "Perfect color coordination with digital precision",
       gradient: "from-rose-500 to-pink-600",
-      bgGradient: "from-rose-50 to-pink-50"
+      bgGradient: "from-rose-50 to-pink-50",
     },
     {
       icon: Shield,
       title: "Quality Guarantee",
       description: "Lifetime warranty on all premium finishes",
       gradient: "from-cyan-500 to-blue-600",
-      bgGradient: "from-cyan-50 to-blue-50"
+      bgGradient: "from-cyan-50 to-blue-50",
     },
     {
       icon: Heart,
       title: "Eco-Friendly",
       description: "Sustainable materials and practices",
       gradient: "from-green-500 to-emerald-600",
-      bgGradient: "from-green-50 to-emerald-50"
+      bgGradient: "from-green-50 to-emerald-50",
     },
     {
       icon: Lightbulb,
       title: "Innovation Lab",
       description: "Cutting-edge techniques and materials",
       gradient: "from-yellow-500 to-amber-600",
-      bgGradient: "from-yellow-50 to-amber-50"
-    }
+      bgGradient: "from-yellow-50 to-amber-50",
+    },
   ];
 
   return (
@@ -197,7 +203,7 @@ export default function ModernHomePage({
             transition={{
               duration: 20,
               repeat: Infinity,
-              ease: "linear"
+              ease: "linear",
             }}
           />
           <motion.div
@@ -209,7 +215,7 @@ export default function ModernHomePage({
             transition={{
               duration: 25,
               repeat: Infinity,
-              ease: "linear"
+              ease: "linear",
             }}
           />
         </div>
@@ -231,26 +237,40 @@ export default function ModernHomePage({
 
                 <h1 className="text-5xl lg:text-7xl font-bold leading-[0.9] bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 bg-clip-text text-transparent">
                   Crafting sanctuaries that embrace
-                  <span className="bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent"> warmth</span> and
-                  <span className="bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent"> tranquility</span>
+                  <span className="bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+                    {" "}
+                    warmth
+                  </span>{" "}
+                  and
+                  <span className="bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                    {" "}
+                    tranquility
+                  </span>
                 </h1>
 
                 <p className="text-xl lg:text-2xl text-slate-600 leading-relaxed font-light">
-                  Every piece is a canvas for cherished memories, where comfort and connection thrive.
-                  Transform your furniture into heirloom pieces that tell your story.
+                  Every piece is a canvas for cherished memories, where comfort and connection
+                  thrive. Transform your furniture into heirloom pieces that tell your story.
                 </p>
               </motion.div>
 
               <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4">
                 <motion.div whileHover={scaleOnHover}>
-                  <Button size="lg" className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300">
+                  <Button
+                    size="lg"
+                    className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  >
                     <Play className="mr-2 h-5 w-5" />
                     View Our Work
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </motion.div>
                 <motion.div whileHover={scaleOnHover}>
-                  <Button size="lg" variant="outline" className="border-2 border-slate-200 text-slate-700 hover:bg-slate-50 px-8 py-4 rounded-2xl backdrop-blur-sm bg-white/50">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-2 border-slate-200 text-slate-700 hover:bg-slate-50 px-8 py-4 rounded-2xl backdrop-blur-sm bg-white/50"
+                  >
                     Get Free Quote
                   </Button>
                 </motion.div>
@@ -261,7 +281,7 @@ export default function ModernHomePage({
                 {[
                   { number: "200+", label: "Pieces Transformed", icon: Award },
                   { number: "15+", label: "Years Experience", icon: TrendingUp },
-                  { number: "5.0", label: "Client Rating", icon: Star }
+                  { number: "5.0", label: "Client Rating", icon: Star },
                 ].map((stat, index) => (
                   <motion.div
                     key={index}
@@ -269,7 +289,9 @@ export default function ModernHomePage({
                     whileHover={{ y: -5, transition: { duration: 0.2 } }}
                   >
                     <stat.icon className="w-6 h-6 mx-auto mb-2 text-violet-600" />
-                    <div className="text-2xl font-bold bg-gradient-to-br from-slate-900 to-slate-700 bg-clip-text text-transparent">{stat.number}</div>
+                    <div className="text-2xl font-bold bg-gradient-to-br from-slate-900 to-slate-700 bg-clip-text text-transparent">
+                      {stat.number}
+                    </div>
                     <div className="text-sm text-slate-600 font-medium">{stat.label}</div>
                   </motion.div>
                 ))}
@@ -290,14 +312,14 @@ export default function ModernHomePage({
                   whileHover={{ scale: 1.02, rotateY: 5 }}
                   transition={{ duration: 0.4 }}
                 >
-                                     <Image
-                     src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80"
-                     alt="Beautiful transformed vintage dresser showcasing expert furniture painting"
-                     width={800}
-                     height={600}
-                     className="object-cover"
-                     priority
-                   />
+                  <Image
+                    src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80"
+                    alt="Beautiful transformed vintage dresser showcasing expert furniture painting"
+                    width={800}
+                    height={600}
+                    className="object-cover"
+                    priority
+                  />
 
                   {/* Glassmorphism overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
@@ -311,9 +333,13 @@ export default function ModernHomePage({
                     whileHover={{ scale: 1.05 }}
                   >
                     <div className="space-y-2">
-                      <Badge className="bg-gradient-to-r from-violet-500 to-purple-500 text-white">Featured</Badge>
+                      <Badge className="bg-gradient-to-r from-violet-500 to-purple-500 text-white">
+                        Featured
+                      </Badge>
                       <div className="font-semibold text-slate-900">Victorian Dresser Revival</div>
-                      <div className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">$2,500</div>
+                      <div className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+                        $2,500
+                      </div>
                       <div className="text-sm text-slate-600">Starting from</div>
                     </div>
                   </motion.div>
@@ -356,8 +382,8 @@ export default function ModernHomePage({
                 </h2>
                 <p className="text-xl lg:text-2xl text-slate-600 leading-relaxed max-w-4xl mx-auto font-light">
                   At ColorCraft, we believe that furniture is more than just functional pieces;
-                  they're the foundation of your sanctuary where cherished memories are crafted,
-                  and where warmth and tranquility thrive.
+                  they're the foundation of your sanctuary where cherished memories are crafted, and
+                  where warmth and tranquility thrive.
                 </p>
               </motion.div>
 
@@ -369,16 +395,18 @@ export default function ModernHomePage({
                 {[
                   {
                     title: "Mission",
-                    content: "At ColorCraft, our mission is to help you transform your furniture pieces into beautiful, functional art that perfectly aligns with your lifestyle and aspirations. We're committed to making the restoration and transformation process seamless and inspiring.",
+                    content:
+                      "At ColorCraft, our mission is to help you transform your furniture pieces into beautiful, functional art that perfectly aligns with your lifestyle and aspirations. We're committed to making the restoration and transformation process seamless and inspiring.",
                     icon: Heart,
-                    gradient: "from-rose-500 to-pink-600"
+                    gradient: "from-rose-500 to-pink-600",
                   },
                   {
                     title: "Values",
-                    content: "Integrity, craftsmanship, and client satisfaction drive us. We uphold the highest quality standards, deliver exceptional results, and offer personalized guidance tailored to your unique vision and needs.",
+                    content:
+                      "Integrity, craftsmanship, and client satisfaction drive us. We uphold the highest quality standards, deliver exceptional results, and offer personalized guidance tailored to your unique vision and needs.",
                     icon: Shield,
-                    gradient: "from-blue-500 to-indigo-600"
-                  }
+                    gradient: "from-blue-500 to-indigo-600",
+                  },
                 ].map((item, index) => (
                   <motion.div
                     key={index}
@@ -386,7 +414,9 @@ export default function ModernHomePage({
                     className="p-8 rounded-3xl bg-white/60 backdrop-blur-sm border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300"
                     whileHover={{ y: -5 }}
                   >
-                    <div className={`w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${item.gradient} p-4 shadow-lg`}>
+                    <div
+                      className={`w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${item.gradient} p-4 shadow-lg`}
+                    >
                       <item.icon className="w-8 h-8 text-white" />
                     </div>
                     <h3 className="text-2xl font-bold text-slate-900 mb-4">{item.title}</h3>
@@ -418,23 +448,23 @@ export default function ModernHomePage({
                 Stunning transformations that inspire
               </h2>
               <p className="text-xl lg:text-2xl text-slate-600 leading-relaxed max-w-3xl mx-auto font-light">
-                Discover our portfolio of stunning furniture transformations that showcase
-                our expertise and attention to detail.
+                Discover our portfolio of stunning furniture transformations that showcase our
+                expertise and attention to detail.
               </p>
             </motion.div>
 
             {/* Fixed Grid - No Flickering, Consistent Sizing */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {featuredProjects.slice(0, 4).map((project, index) => (
-                <div
-                  key={project.id || index}
-                  className="group h-[420px] flex flex-col"
-                >
+                <div key={project.id || index} className="group h-[420px] flex flex-col">
                   <div className="relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all duration-300 h-full flex flex-col">
                     {/* Project Image - Fixed Height */}
                     <div className="relative h-48 overflow-hidden flex-shrink-0">
                       <Image
-                        src={project.image || "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80"}
+                        src={
+                          project.image ||
+                          "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80"
+                        }
                         alt={project.title || "Furniture transformation"}
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -468,8 +498,8 @@ export default function ModernHomePage({
                         <p className="text-slate-600 text-sm line-clamp-3 leading-relaxed">
                           {project.description?.length > 45
                             ? `${project.description.substring(0, 45)}...`
-                            : project.description || "Expert furniture transformation with premium materials."
-                          }
+                            : project.description ||
+                              "Expert furniture transformation with premium materials."}
                         </p>
                       </div>
 
@@ -489,7 +519,11 @@ export default function ModernHomePage({
             <motion.div variants={fadeInUp} className="text-center">
               <motion.div whileHover={scaleOnHover}>
                 <Link href="/portfolio">
-                  <Button size="lg" variant="outline" className="border-2 border-slate-200 text-slate-700 hover:bg-slate-50 px-8 py-4 rounded-2xl backdrop-blur-sm bg-white/50">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-2 border-slate-200 text-slate-700 hover:bg-slate-50 px-8 py-4 rounded-2xl backdrop-blur-sm bg-white/50"
+                  >
                     View All Transformations
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
@@ -525,26 +559,28 @@ export default function ModernHomePage({
                 Comprehensive transformation services
               </h2>
               <p className="text-xl lg:text-2xl text-slate-600 leading-relaxed max-w-3xl mx-auto font-light">
-                From concept to completion, we offer every service needed to bring your vision to life.
+                From concept to completion, we offer every service needed to bring your vision to
+                life.
               </p>
             </motion.div>
 
             {/* Fixed Services Grid - Equal Height Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {modernServices.map((service, index) => (
-                <div
-                  key={index}
-                  className="group h-[280px] flex flex-col"
-                >
+                <div key={index} className="group h-[280px] flex flex-col">
                   <div
                     className={`relative p-6 rounded-3xl bg-gradient-to-br ${service.bgGradient} border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden h-full flex flex-col`}
                   >
                     {/* Background gradient effect */}
-                    <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${service.gradient} opacity-10 rounded-full blur-2xl transform translate-x-8 -translate-y-8`} />
+                    <div
+                      className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${service.gradient} opacity-10 rounded-full blur-2xl transform translate-x-8 -translate-y-8`}
+                    />
 
                     <div className="relative flex flex-col h-full">
                       {/* Icon with modern styling */}
-                      <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${service.gradient} p-3 shadow-lg group-hover:scale-110 transition-transform duration-300 mb-4 flex-shrink-0`}>
+                      <div
+                        className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${service.gradient} p-3 shadow-lg group-hover:scale-110 transition-transform duration-300 mb-4 flex-shrink-0`}
+                      >
                         <service.icon className="w-8 h-8 text-white" />
                       </div>
 
@@ -556,8 +592,7 @@ export default function ModernHomePage({
                         <p className="text-slate-600 leading-relaxed text-sm flex-1">
                           {service.description.length > 50
                             ? `${service.description.substring(0, 50)}...`
-                            : service.description
-                          }
+                            : service.description}
                         </p>
                       </div>
                     </div>
@@ -589,7 +624,8 @@ export default function ModernHomePage({
                   Meet the artisans behind every transformation
                 </h2>
                 <p className="text-xl lg:text-2xl text-slate-600 leading-relaxed max-w-3xl mx-auto font-light">
-                  Our passionate team of experts brings decades of combined experience to every project.
+                  Our passionate team of experts brings decades of combined experience to every
+                  project.
                 </p>
               </motion.div>
 
@@ -609,10 +645,7 @@ export default function ModernHomePage({
                     >
                       {/* Member Image */}
                       <div className="relative h-80 overflow-hidden">
-                        <motion.div
-                          whileHover={{ scale: 1.1 }}
-                          transition={{ duration: 0.6 }}
-                        >
+                        <motion.div whileHover={{ scale: 1.1 }} transition={{ duration: 0.6 }}>
                           <Image
                             src={member.image}
                             alt={member.name}
@@ -637,7 +670,9 @@ export default function ModernHomePage({
                       <div className="p-8 space-y-4">
                         <div>
                           <h3 className="text-2xl font-bold text-slate-900 mb-1">{member.name}</h3>
-                          <p className="text-lg font-medium bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">{member.role}</p>
+                          <p className="text-lg font-medium bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+                            {member.role}
+                          </p>
                         </div>
 
                         <div className="space-y-2">
@@ -695,35 +730,35 @@ export default function ModernHomePage({
                     icon: MapPin,
                     title: "Visit Our Studio",
                     content: "123 Artisan Lane\nCreative District, CD 12345",
-                    gradient: "from-violet-500 to-purple-600"
+                    gradient: "from-violet-500 to-purple-600",
                   },
                   {
                     icon: Phone,
                     title: "Call Us",
                     content: "(555) 123-4567\nMon-Sat: 9AM-6PM",
-                    gradient: "from-blue-500 to-cyan-600"
+                    gradient: "from-blue-500 to-cyan-600",
                   },
                   {
                     icon: Mail,
                     title: "Email Us",
                     content: "hello@colorcraft.com\nQuick response guaranteed",
-                    gradient: "from-emerald-500 to-teal-600"
-                  }
+                    gradient: "from-emerald-500 to-teal-600",
+                  },
                 ].map((contact, index) => (
-                  <motion.div
-                    key={index}
-                    variants={fadeInUp}
-                    className="group"
-                  >
+                  <motion.div key={index} variants={fadeInUp} className="group">
                     <motion.div
                       className="p-8 rounded-3xl bg-white/5 backdrop-blur-sm border border-white/10 shadow-lg hover:shadow-xl transition-all duration-500 text-center"
                       whileHover={{ y: -5, scale: 1.02 }}
                     >
-                      <div className={`w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${contact.gradient} p-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                      <div
+                        className={`w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${contact.gradient} p-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                      >
                         <contact.icon className="w-8 h-8 text-white" />
                       </div>
                       <h3 className="text-xl font-bold text-white mb-4">{contact.title}</h3>
-                      <p className="text-slate-300 leading-relaxed whitespace-pre-line">{contact.content}</p>
+                      <p className="text-slate-300 leading-relaxed whitespace-pre-line">
+                        {contact.content}
+                      </p>
                     </motion.div>
                   </motion.div>
                 ))}
@@ -733,7 +768,10 @@ export default function ModernHomePage({
               <motion.div variants={fadeInUp} className="text-center">
                 <motion.div whileHover={scaleOnHover}>
                   <Link href="/contact">
-                    <Button size="lg" className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-12 py-4 rounded-2xl shadow-xl">
+                    <Button
+                      size="lg"
+                      className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-12 py-4 rounded-2xl shadow-xl"
+                    >
                       Start Your Transformation
                       <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>

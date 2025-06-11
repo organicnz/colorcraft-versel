@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+import { colors as customColors } from './src/styles/colors'
 
 const config: Config = {
   darkMode: "class",
@@ -23,34 +24,48 @@ const config: Config = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         
-        // Primary theme colors
+        // Primary theme colors - using our consistent wood tones
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
-          50: '#F5F9FF',
-          100: '#E0EEFF',
-          200: '#B8D1F5',
-          300: '#8AB1E4',
-          400: '#5C91D3',
-          500: '#3A75BE', // Main primary color
-          600: '#2E5A88',
-          700: '#254B72',
-          800: '#1D3C5C',
-          900: '#152D46',
+          50: customColors.primary[50],
+          100: customColors.primary[100],
+          200: customColors.primary[200],
+          300: customColors.primary[300],
+          400: customColors.primary[400],
+          500: customColors.primary[500], // Main primary color - D3A273
+          600: customColors.primary[600],
+          700: customColors.primary[700],
+          800: customColors.primary[800],
+          900: customColors.primary[900],
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
-          50: '#FEF9F3',
-          100: '#FAEBD2',
-          200: '#F5D7A6',
-          300: '#EFC379',
-          400: '#D6A35C', // Main secondary color
-          500: '#C48A3A',
-          600: '#A37232',
-          700: '#825A28',
-          800: '#61421E',
-          900: '#412C14',
+          50: customColors.secondary[50],
+          100: customColors.secondary[100],
+          200: customColors.secondary[200],
+          300: customColors.secondary[300],
+          400: customColors.secondary[400],
+          500: customColors.secondary[500], // Main secondary color - 40BAA9
+          600: customColors.secondary[600],
+          700: customColors.secondary[700],
+          800: customColors.secondary[800],
+          900: customColors.secondary[900],
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+          50: customColors.accent[50],
+          100: customColors.accent[100],
+          200: customColors.accent[200],
+          300: customColors.accent[300],
+          400: customColors.accent[400],
+          500: customColors.accent[500], // Blush accent - E67A91
+          600: customColors.accent[600],
+          700: customColors.accent[700],
+          800: customColors.accent[800],
+          900: customColors.accent[900],
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -59,10 +74,6 @@ const config: Config = {
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -127,26 +138,64 @@ const config: Config = {
           950: '#0c0a09',
         },
         
-        // Color scheme specific colors
+        // Use our custom neutral colors
         neutral: {
-          DEFAULT: '#E9EBF0',
-          50: '#FFFFFF',
-          100: '#F9FAFC',
-          200: '#E9EBF0',
-          300: '#D8DCE4',
-          400: '#BEC5D2',
-          500: '#A4AFBF',
-          600: '#8A97AC',
-          700: '#707F98',
-          800: '#586579',
-          900: '#3F4A59',
+          DEFAULT: customColors.neutral[200],
+          50: customColors.neutral[50],
+          100: customColors.neutral[100],
+          200: customColors.neutral[200],
+          300: customColors.neutral[300],
+          400: customColors.neutral[400],
+          500: customColors.neutral[500],
+          600: customColors.neutral[600],
+          700: customColors.neutral[700],
+          800: customColors.neutral[800],
+          900: customColors.neutral[900],
+        },
+
+        // Semantic colors with proper dark mode support - using complete scales
+        success: {
+          50: customColors.success[50],
+          100: customColors.success[100],
+          200: customColors.success[200],
+          300: customColors.success[300],
+          400: customColors.success[400],
+          500: customColors.success[500],
+          600: customColors.success[600],
+          700: customColors.success[700],
+          800: customColors.success[800],
+          900: customColors.success[900],
+        },
+        warning: {
+          50: customColors.warning[50],
+          100: customColors.warning[100],
+          200: customColors.warning[200],
+          300: customColors.warning[300],
+          400: customColors.warning[400],
+          500: customColors.warning[500],
+          600: customColors.warning[600],
+          700: customColors.warning[700],
+          800: customColors.warning[800],
+          900: customColors.warning[900],
+        },
+        danger: {
+          50: customColors.danger[50],
+          100: customColors.danger[100],
+          200: customColors.danger[200],
+          300: customColors.danger[300],
+          400: customColors.danger[400],
+          500: customColors.danger[500],
+          600: customColors.danger[600],
+          700: customColors.danger[700],
+          800: customColors.danger[800],
+          900: customColors.danger[900],
         },
         
-        // Brand specific colors
+        // Brand specific colors - consistent with main palette
         brand: {
-          primary: '#3ECF8E', // Green CTA color
-          secondary: '#2E5A88', // Dark blue
-          accent: '#D6A35C', // Gold accent
+          primary: customColors.primary[500], // D3A273
+          secondary: customColors.secondary[500], // 40BAA9
+          accent: customColors.accent[500], // E67A91
         },
         
         // Standard color scales - TailwindCSS v4 compatible
@@ -385,55 +434,32 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ['var(--font-dmSans)', 'system-ui', 'sans-serif'],
-        heading: ['var(--font-poppins)', 'system-ui', 'sans-serif'],
-      },
-      // Enhanced glassmorphism utilities
-      backdropBlur: {
-        xs: '2px',
-        sm: '4px',
-        DEFAULT: '8px',
-        md: '12px',
-        lg: '16px',
-        xl: '24px',
-        '2xl': '40px',
-        '3xl': '64px',
-      },
-      backgroundImage: {
-        'glass-gradient': 'linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))',
-        'glass-gradient-dark': 'linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))',
-        'glass-border': 'linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1))',
-        'glass-border-dark': 'linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))',
-      },
-      boxShadow: {
-        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
-        'glass-light': '0 4px 16px 0 rgba(31, 38, 135, 0.25)',
-        'glass-heavy': '0 12px 48px 0 rgba(31, 38, 135, 0.5)',
-        'glass-inset': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.1)',
-        'glass-border': '0 0 0 1px rgba(255, 255, 255, 0.1)',
+        sans: ['var(--font-sans)'],
+        serif: ['var(--font-serif)'],
+        display: ['var(--font-display)'],
       },
       keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
-        },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
-        },
         "glass-shimmer": {
-          "0%": { backgroundPosition: "-200% 0" },
-          "100%": { backgroundPosition: "200% 0" },
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(100%)" },
+        },
+        "fade-in": {
+          "0%": { opacity: "0", transform: "translateY(20px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
         },
       },
       animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-        "glass-shimmer": "glass-shimmer 2s ease-in-out infinite",
+        "glass-shimmer": "glass-shimmer 2s infinite",
+        "fade-in": "fade-in 0.6s ease-out forwards",
+      },
+      boxShadow: {
+        "glass-light": "0 4px 16px 0 rgba(31, 38, 135, 0.15)",
+        "glass": "0 8px 32px 0 rgba(31, 38, 135, 0.25)",
+        "glass-heavy": "0 12px 48px 0 rgba(31, 38, 135, 0.4)",
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [],
 }
 
 export default config 

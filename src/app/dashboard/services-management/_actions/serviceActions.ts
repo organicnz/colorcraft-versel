@@ -56,7 +56,7 @@ export async function createService(formData: ServiceFormData) {
 
     // Check if user has admin or contributor role
     if (userData.role !== "admin" && userData.role !== "contributor") {
-      return { error: "You don't have permission to create services" };
+      return { error: "You don&apos;t have permission to create services" };
     }
 
     // Insert service
@@ -118,7 +118,7 @@ export async function updateService(formData: ServiceFormData) {
 
     // Check if user has admin or contributor role
     if (userData.role !== "admin" && userData.role !== "contributor") {
-      return { error: "You don't have permission to update services" };
+      return { error: "You don&apos;t have permission to update services" };
     }
 
     // Update service
@@ -174,7 +174,7 @@ export async function deleteService(id: string) {
 
     // Check if user has admin role (only admins can delete)
     if (userData.role !== "admin") {
-      return { error: "You don't have permission to delete services" };
+      return { error: "You don&apos;t have permission to delete services" };
     }
 
     // Delete service
@@ -238,4 +238,4 @@ export async function getServices() {
     console.error("Services fetch error:", error);
     return { error: "An unexpected error occurred" };
   }
-} 
+}

@@ -9,7 +9,19 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { GlassPanel, GlassCard } from "@/components/ui/glass-card";
-import { ArrowRight, Award, Palette, Send, Settings, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  Award,
+  Palette,
+  Send,
+  Settings,
+  Sparkles,
+  Star,
+  Phone,
+  Mail,
+  MapPin,
+  Clock,
+} from "lucide-react";
 import RandomShowcaseImage from "@/components/portfolio/RandomShowcaseImage";
 import PhoneDisplay from "@/components/ui/phone-display";
 
@@ -22,9 +34,9 @@ const fadeIn = (delay = 0, duration = 0.8) => ({
     transition: {
       duration,
       delay,
-      ease: "easeOut"
-    }
-  }
+      ease: "easeOut",
+    },
+  },
 });
 
 const slideIn = (direction = "left", delay = 0) => ({
@@ -35,9 +47,9 @@ const slideIn = (direction = "left", delay = 0) => ({
     transition: {
       duration: 0.6,
       delay,
-      ease: "easeOut"
-    }
-  }
+      ease: "easeOut",
+    },
+  },
 });
 
 const staggerContainer = {
@@ -46,9 +58,9 @@ const staggerContainer = {
     opacity: 1,
     transition: {
       staggerChildren: 0.1,
-      delayChildren: 0.1
-    }
-  }
+      delayChildren: 0.1,
+    },
+  },
 };
 
 // Icon mapping
@@ -59,27 +71,121 @@ const iconMap = {
   Award: Award,
 };
 
-interface ClientHomePageProps {
-  featuredProjects: any[];
-  services: any[];
-  testimonials: any[];
-  teamMembers: any[];
-  properties: any[];
+// Type definitions
+interface Project {
+  id: string;
+  title: string;
+  description: string;
+  material: string;
+  image: string;
+  price: string;
 }
 
+interface Service {
+  icon: string;
+  title: string;
+  description: string;
+  features: string[];
+}
+
+interface Testimonial {
+  name: string;
+  text: string;
+  rating: number;
+  image: string;
+}
+
+interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  bio: string;
+  image: string;
+}
+
+interface ClientHomePageProps {
+  featuredProjects?: Project[];
+  services?: Service[];
+  testimonials?: Testimonial[];
+  teamMembers?: TeamMember[];
+  properties?: unknown[];
+}
+
+const defaultServices: Service[] = [
+  {
+    icon: "Palette",
+    title: "Custom Painting",
+    description:
+      "Transform your furniture with our expert painting techniques and premium finishes.",
+    features: ["Chalk Paint", "Milk Paint", "Custom Colors", "Distressing"],
+  },
+  {
+    icon: "Settings",
+    title: "Restoration",
+    description:
+      "Bring antique and vintage pieces back to their former glory with careful restoration.",
+    features: [
+      "Wood Repair",
+      "Hardware Restoration",
+      "Period-Accurate Finishes",
+      "Structural Repairs",
+    ],
+  },
+  {
+    icon: "Sparkles",
+    title: "Upcycling",
+    description:
+      "Give new life to old furniture with creative upcycling and modern design touches.",
+    features: [
+      "Design Consultation",
+      "Modern Updates",
+      "Eco-Friendly Materials",
+      "Custom Hardware",
+    ],
+  },
+];
+
+const defaultTestimonials: Testimonial[] = [
+  {
+    name: "Sarah Johnson",
+    text: "Color & Craft transformed my grandmother&apos;s old dresser into a stunning centerpiece. The attention to detail is incredible!",
+    rating: 5,
+    image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150",
+  },
+  {
+    name: "Michael Chen",
+    text: "Professional service and amazing results. They turned our dated dining set into something we absolutely love.",
+    rating: 5,
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
+  },
+];
+
+const defaultProjects: Project[] = [
+  {
+    id: "sample-1",
+    title: "Victorian Dresser Revival",
+    description: "Antique restoration with modern flair",
+    material: "Oak with chalk paint finish",
+    image:
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80",
+    price: "Contact for pricing",
+  },
+];
+
 export default function ClientHomePage({
-  featuredProjects,
-  services,
-  testimonials,
-  teamMembers,
-  properties,
+  featuredProjects = defaultProjects,
+  services = defaultServices,
+  testimonials = defaultTestimonials,
 }: ClientHomePageProps) {
   const heroRef = useRef<HTMLElement>(null);
   const featuredRef = useRef<HTMLElement>(null);
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
 
   // Scroll progress tracking
   const { scrollYProgress } = useScroll();
@@ -118,7 +224,7 @@ export default function ClientHomePage({
   const floatingElement2Y = useTransform(scrollYProgress, [0, 1], [0, -120]);
 
   // Debug logging
-  console.log("🔍 ClientHomePage render:", {
+  console.warn("🔍 ClientHomePage render:", {
     featuredProjects: featuredProjects?.length || 0,
     featuredProjectsSample: featuredProjects?.slice(0, 2),
   });
@@ -128,7 +234,7 @@ export default function ClientHomePage({
     featuredProjects && Array.isArray(featuredProjects) ? featuredProjects.slice(0, 4) : [];
   const currentProject = displayProjects[currentProjectIndex] || displayProjects[0];
 
-  console.log("🔍 Display projects:", {
+  console.warn("🔍 Display projects:", {
     displayProjectsLength: displayProjects.length,
     currentProjectIndex,
     currentProject: currentProject?.title,
@@ -165,8 +271,19 @@ export default function ClientHomePage({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Newsletter signup:", email);
+    console.warn("Newsletter signup:", email);
     setEmail("");
+  };
+
+  const handleContactSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle form submission
+    console.warn("Contact form submitted:", { name, email, message });
+  };
+
+  const getIconComponent = (iconName: string) => {
+    const icons = { Palette, Settings, Sparkles };
+    return icons[iconName as keyof typeof icons] || Palette;
   };
 
   return (
@@ -271,10 +388,7 @@ export default function ClientHomePage({
                 className="order-1 lg:order-2 relative"
               >
                 <div className="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-2xl">
-                  <motion.div
-                    style={{ scale: heroProjectScale }}
-                    className="w-full h-full"
-                  >
+                  <motion.div style={{ scale: heroProjectScale }} className="w-full h-full">
                     <Image
                       src={currentProject.image}
                       alt={currentProject.title}
@@ -379,7 +493,7 @@ export default function ClientHomePage({
             className="grid grid-cols-1 md:grid-cols-3 gap-8"
           >
             {services.map((service, index) => {
-              const IconComponent = iconMap[service.icon as keyof typeof iconMap] || Palette;
+              const IconComponent = getIconComponent(service.icon);
               return (
                 <motion.div key={index} variants={fadeIn(index * 0.1)}>
                   <GlassCard
@@ -746,7 +860,11 @@ export default function ClientHomePage({
                 Get the latest furniture transformation tips and project showcases delivered to your
                 inbox.
               </p>
-              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
+              <form
+                ref={formRef}
+                onSubmit={handleContactSubmit}
+                className="flex flex-col sm:flex-row gap-4"
+              >
                 <Input
                   type="email"
                   placeholder="Enter your email"

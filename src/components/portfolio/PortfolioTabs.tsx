@@ -6,15 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PortfolioItem from "./PortfolioItem";
 import { fetchPortfolioProjects } from "@/actions/portfolioActions";
-import { 
-  Loader2, 
-  Archive, 
-  Eye, 
-  EyeOff,
-  FolderOpen,
-  Trash2,
-  Plus
-} from "lucide-react";
+import { Loader2, Archive, Eye, EyeOff, FolderOpen, Trash2, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -32,7 +24,7 @@ type PortfolioProject = {
   client_name?: string;
   client_testimonial?: string;
   is_featured: boolean;
-  status: 'published' | 'draft' | 'archived';
+  status: "published" | "draft" | "archived";
   created_by?: string;
   updated_by?: string;
   created_at: string;
@@ -52,17 +44,17 @@ export default function PortfolioTabs() {
     setIsLoading(true);
     try {
       // Fetch active projects (published + drafts)
-      const activeResult = await fetchPortfolioProjects('active');
+      const activeResult = await fetchPortfolioProjects("active");
       if (activeResult.success && activeResult.data) {
         // Separate published and draft projects
-        const published = activeResult.data.filter(p => p.status === 'published');
-        const drafts = activeResult.data.filter(p => p.status === 'draft');
+        const published = activeResult.data.filter((p) => p.status === "published");
+        const drafts = activeResult.data.filter((p) => p.status === "draft");
         setPublishedProjects(published);
         setDraftProjects(drafts);
       }
 
       // Fetch archived projects
-      const archivedResult = await fetchPortfolioProjects('archived');
+      const archivedResult = await fetchPortfolioProjects("archived");
       if (archivedResult.success && archivedResult.data) {
         setArchivedProjects(archivedResult.data);
       }
@@ -88,7 +80,9 @@ export default function PortfolioTabs() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <Card glass={true} glassVariant="light" glassIntensity="medium">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">Total Projects</CardTitle>
+            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">
+              Total Projects
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center">
@@ -100,7 +94,9 @@ export default function PortfolioTabs() {
 
         <Card glass={true} glassVariant="light" glassIntensity="medium">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">Published</CardTitle>
+            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">
+              Published
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center">
@@ -112,7 +108,9 @@ export default function PortfolioTabs() {
 
         <Card glass={true} glassVariant="light" glassIntensity="medium">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">Drafts</CardTitle>
+            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">
+              Drafts
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center">
@@ -124,7 +122,9 @@ export default function PortfolioTabs() {
 
         <Card glass={true} glassVariant="light" glassIntensity="medium">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">Archived</CardTitle>
+            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">
+              Archived
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center">
@@ -142,7 +142,7 @@ export default function PortfolioTabs() {
       const emptyMessages = {
         active: "No published projects yet. Publish some draft projects to see them here!",
         draft: "No draft projects yet. Create your first draft project to get started!",
-        archived: "No archived projects yet."
+        archived: "No archived projects yet.",
       };
 
       return (
@@ -153,9 +153,7 @@ export default function PortfolioTabs() {
                 <FolderOpen className="h-8 w-8 text-orange-600" />
               </div>
             </div>
-            <h3 className="text-xl font-semibold text-slate-900 mb-2">
-              No projects found
-            </h3>
+            <h3 className="text-xl font-semibold text-slate-900 mb-2">No projects found</h3>
             <p className="text-slate-600 mb-6">
               {emptyMessages[tabType as keyof typeof emptyMessages]}
             </p>
@@ -180,19 +178,20 @@ export default function PortfolioTabs() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.map((project) => (
           <div key={project.id} className="relative">
-            <PortfolioItem 
-              project={project} 
-              showAdminControls={true}
-              onUpdate={loadProjects}
-            />
+            <PortfolioItem project={project} showAdminControls={true} onUpdate={loadProjects} />
 
             {/* Creator info */}
             {project.created_by_user && (
               <div className="mt-2 text-xs text-slate-500">
                 Created by: {project.created_by_user.full_name || project.created_by_user.email}
-                {project.updated_by_user && project.updated_by_user.email !== project.created_by_user.email && (
-                  <span> • Updated by: {project.updated_by_user.full_name || project.updated_by_user.email}</span>
-                )}
+                {project.updated_by_user &&
+                  project.updated_by_user.email !== project.created_by_user.email && (
+                    <span>
+                      {" "}
+                      • Updated by:{" "}
+                      {project.updated_by_user.full_name || project.updated_by_user.email}
+                    </span>
+                  )}
               </div>
             )}
           </div>
@@ -281,4 +280,4 @@ export default function PortfolioTabs() {
       </Tabs>
     </div>
   );
-} 
+}

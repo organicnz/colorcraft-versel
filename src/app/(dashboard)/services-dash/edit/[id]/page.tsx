@@ -9,15 +9,17 @@ import { getServiceById } from "@/actions/servicesActions";
 export const dynamic = "force-dynamic";
 
 interface EditServicePageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function EditServicePage({ params }: EditServicePageProps) {
-  const { id } = params;
+  const { id } = await params;
   const supabase = await createClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
   if (!session) {
     redirect("/auth/signin");
@@ -36,9 +38,7 @@ export default async function EditServicePage({ params }: EditServicePageProps) 
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
           <AlertTitle>Unauthorized</AlertTitle>
-          <AlertDescription>
-            You don't have permission to access this page.
-          </AlertDescription>
+          <AlertDescription>You don&apos;t have permission to access this page.</AlertDescription>
         </Alert>
       </div>
     );
@@ -53,9 +53,7 @@ export default async function EditServicePage({ params }: EditServicePageProps) 
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
           <AlertTitle>Error</AlertTitle>
-          <AlertDescription>
-            {error || "Service not found"}
-          </AlertDescription>
+          <AlertDescription>{error || "Service not found"}</AlertDescription>
         </Alert>
       </div>
     );
@@ -67,10 +65,10 @@ export default async function EditServicePage({ params }: EditServicePageProps) 
         <h1 className="text-3xl font-bold mb-2">Edit Service</h1>
         <p className="text-muted-foreground">Update the details of your service offering.</p>
       </div>
-      
+
       <div className="max-w-2xl mx-auto bg-card p-6 rounded-lg shadow">
         <ServiceForm service={service} />
       </div>
     </div>
   );
-} 
+}

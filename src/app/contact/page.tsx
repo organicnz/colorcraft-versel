@@ -1,12 +1,13 @@
-import { Metadata } from "next"
-import ContactForm from "@/components/forms/ContactForm"
-import PhoneDisplay from "@/components/ui/phone-display"
-import { MapPin, Clock } from "lucide-react"
+import { Metadata } from "next";
+import ContactForm from "@/components/forms/ContactForm";
+import PhoneDisplay from "@/components/ui/phone-display";
+import { MapPin, Clock } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Contact Us | Color & Craft Furniture Painting",
-  description: "Get in touch with us for custom furniture painting services, quotes, or any questions you might have.",
-}
+  description:
+    "Get in touch with us for custom furniture painting services, quotes, or any questions you might have.",
+};
 
 export default function ContactPage() {
   return (
@@ -50,7 +51,8 @@ export default function ContactPage() {
                   <div>
                     <h3 className="text-lg font-semibold text-slate-900 mb-2">Visit Our Studio</h3>
                     <p className="text-slate-700 leading-relaxed">
-                      23120 Schumann Rd<br />
+                      23120 Schumann Rd
+                      <br />
                       Chatsworth, CA 91311
                     </p>
                   </div>
@@ -85,9 +87,12 @@ export default function ContactPage() {
 
               {/* CTA Card */}
               <div className="bg-gradient-to-br from-[#3ECF8E]/20 to-[#38BC81]/20 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-[#3ECF8E]/30">
-                <h3 className="text-lg font-semibold text-slate-900 mb-2">Ready to Transform Your Furniture?</h3>
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">
+                  Ready to Transform Your Furniture?
+                </h3>
                 <p className="text-slate-700 text-sm mb-4">
-                  Call us today for a free consultation and quote. We'll help bring your vision to life!
+                  Call us today for a free consultation and quote. We'll help bring your vision to
+                  life!
                 </p>
                 <a
                   href="tel:+17477557695"
@@ -101,5 +106,5 @@ export default function ContactPage() {
         </div>
       </div>
     </div>
-  )
-} 
+  );
+}

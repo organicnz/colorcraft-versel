@@ -32,16 +32,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { 
-  MoreHorizontal, 
-  Edit, 
-  Trash2, 
-  Star, 
-  Eye, 
+import {
+  MoreHorizontal,
+  Edit,
+  Trash2,
+  Star,
+  Eye,
   EyeOff,
   ArrowUpDown,
   Mail,
-  Phone
+  Phone,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import type { TeamMember } from "@/types/team";
@@ -54,15 +54,17 @@ export default function TeamManagementTable({ initialData }: TeamManagementTable
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>(initialData);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [memberToDelete, setMemberToDelete] = useState<TeamMember | null>(null);
-  const [sortField, setSortField] = useState<'display_order' | 'full_name' | 'position'>('display_order');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [sortField, setSortField] = useState<"display_order" | "full_name" | "position">(
+    "display_order"
+  );
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
   // Sort team members
   const sortedMembers = [...teamMembers].sort((a, b) => {
     const aValue = a[sortField];
     const bValue = b[sortField];
-    
-    if (sortDirection === 'asc') {
+
+    if (sortDirection === "asc") {
       return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
     } else {
       return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
@@ -71,31 +73,29 @@ export default function TeamManagementTable({ initialData }: TeamManagementTable
 
   const handleSort = (field: typeof sortField) => {
     if (sortField === field) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
       setSortField(field);
-      setSortDirection('asc');
+      setSortDirection("asc");
     }
   };
 
   const handleToggleActive = async (member: TeamMember) => {
     try {
       const response = await fetch(`/api/team/${member.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ is_active: !member.is_active }),
       });
 
-      if (!response.ok) throw new Error('Failed to update member');
+      if (!response.ok) throw new Error("Failed to update member");
 
       const updatedMember = await response.json();
-      setTeamMembers(prev => 
-        prev.map(m => m.id === member.id ? updatedMember : m)
-      );
+      setTeamMembers((prev) => prev.map((m) => (m.id === member.id ? updatedMember : m)));
 
       toast({
         title: "Success",
-        description: `${member.full_name} has been ${updatedMember.is_active ? 'activated' : 'deactivated'}.`,
+        description: `${member.full_name} has been ${updatedMember.is_active ? "activated" : "deactivated"}.`,
       });
     } catch (error) {
       toast({
@@ -109,21 +109,19 @@ export default function TeamManagementTable({ initialData }: TeamManagementTable
   const handleToggleFeatured = async (member: TeamMember) => {
     try {
       const response = await fetch(`/api/team/${member.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ is_featured: !member.is_featured }),
       });
 
-      if (!response.ok) throw new Error('Failed to update member');
+      if (!response.ok) throw new Error("Failed to update member");
 
       const updatedMember = await response.json();
-      setTeamMembers(prev => 
-        prev.map(m => m.id === member.id ? updatedMember : m)
-      );
+      setTeamMembers((prev) => prev.map((m) => (m.id === member.id ? updatedMember : m)));
 
       toast({
         title: "Success",
-        description: `${member.full_name} has been ${updatedMember.is_featured ? 'featured' : 'unfeatured'}.`,
+        description: `${member.full_name} has been ${updatedMember.is_featured ? "featured" : "unfeatured"}.`,
       });
     } catch (error) {
       toast({
@@ -139,13 +137,13 @@ export default function TeamManagementTable({ initialData }: TeamManagementTable
 
     try {
       const response = await fetch(`/api/team/${memberToDelete.id}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
 
-      if (!response.ok) throw new Error('Failed to delete member');
+      if (!response.ok) throw new Error("Failed to delete member");
 
-      setTeamMembers(prev => prev.filter(m => m.id !== memberToDelete.id));
-      
+      setTeamMembers((prev) => prev.filter((m) => m.id !== memberToDelete.id));
+
       toast({
         title: "Success",
         description: `${memberToDelete.full_name} has been deleted.`,
@@ -163,7 +161,12 @@ export default function TeamManagementTable({ initialData }: TeamManagementTable
   };
 
   const getInitials = (name: string) => {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
   };
 
   return (
@@ -176,7 +179,7 @@ export default function TeamManagementTable({ initialData }: TeamManagementTable
               <TableHead>
                 <Button
                   variant="ghost"
-                  onClick={() => handleSort('full_name')}
+                  onClick={() => handleSort("full_name")}
                   className="h-auto p-0 font-semibold hover:bg-transparent"
                 >
                   Name
@@ -186,7 +189,7 @@ export default function TeamManagementTable({ initialData }: TeamManagementTable
               <TableHead>
                 <Button
                   variant="ghost"
-                  onClick={() => handleSort('position')}
+                  onClick={() => handleSort("position")}
                   className="h-auto p-0 font-semibold hover:bg-transparent"
                 >
                   Position
@@ -198,7 +201,7 @@ export default function TeamManagementTable({ initialData }: TeamManagementTable
               <TableHead>
                 <Button
                   variant="ghost"
-                  onClick={() => handleSort('display_order')}
+                  onClick={() => handleSort("display_order")}
                   className="h-auto p-0 font-semibold hover:bg-transparent"
                 >
                   Order
@@ -300,16 +303,16 @@ export default function TeamManagementTable({ initialData }: TeamManagementTable
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      
+
                       <DropdownMenuItem asChild>
                         <Link href={`/dashboard/team/${member.id}/edit`}>
                           <Edit className="mr-2 h-4 w-4" />
                           Edit
                         </Link>
                       </DropdownMenuItem>
-                      
+
                       <DropdownMenuSeparator />
-                      
+
                       <DropdownMenuItem onClick={() => handleToggleActive(member)}>
                         {member.is_active ? (
                           <>
@@ -323,14 +326,14 @@ export default function TeamManagementTable({ initialData }: TeamManagementTable
                           </>
                         )}
                       </DropdownMenuItem>
-                      
+
                       <DropdownMenuItem onClick={() => handleToggleFeatured(member)}>
                         <Star className="mr-2 h-4 w-4" />
-                        {member.is_featured ? 'Unfeature' : 'Feature'}
+                        {member.is_featured ? "Unfeature" : "Feature"}
                       </DropdownMenuItem>
-                      
+
                       <DropdownMenuSeparator />
-                      
+
                       <DropdownMenuItem
                         className="text-red-600"
                         onClick={() => {
@@ -362,8 +365,8 @@ export default function TeamManagementTable({ initialData }: TeamManagementTable
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete {memberToDelete?.full_name} from your team.
-              This action cannot be undone.
+              This will permanently delete {memberToDelete?.full_name} from your team. This action
+              cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -376,4 +379,4 @@ export default function TeamManagementTable({ initialData }: TeamManagementTable
       </AlertDialog>
     </>
   );
-} 
+}

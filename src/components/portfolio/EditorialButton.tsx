@@ -1,37 +1,27 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { createClient } from '@/lib/supabase/client';
-import { Button } from '@/components/ui/button';
-import { 
-  Edit3, 
-  Settings, 
-  Plus,
-  Eye,
-  EyeOff,
-  Loader2
-} from 'lucide-react';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Edit3, Settings, Plus, Eye, EyeOff, Loader2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Badge } from '@/components/ui/badge';
-import { motion, AnimatePresence } from 'framer-motion';
-import { cn } from '@/lib/utils';
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface EditorialButtonProps {
   className?: string;
-  variant?: 'floating' | 'inline' | 'fixed';
+  variant?: "floating" | "inline" | "fixed";
 }
 
-export default function EditorialButton({ 
-  className, 
-  variant = 'floating' 
-}: EditorialButtonProps) {
+export default function EditorialButton({ className, variant = "floating" }: EditorialButtonProps) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -44,30 +34,32 @@ export default function EditorialButton({
   const checkAdminStatus = async () => {
     try {
       const supabase = createClient();
-      
+
       // Get current user
-      const { data: { user: currentUser } } = await supabase.auth.getUser();
-      
+      const {
+        data: { user: currentUser },
+      } = await supabase.auth.getUser();
+
       if (!currentUser) {
         setIsAdmin(false);
         setUser(null);
         return;
       }
-      
+
       setUser(currentUser);
-      
+
       // Check if user is admin
       const { data: userData, error } = await supabase
-        .from('users')
-        .select('role')
-        .eq('id', currentUser.id)
+        .from("users")
+        .select("role")
+        .eq("id", currentUser.id)
         .single();
-      
-      if (!error && userData?.role === 'admin') {
+
+      if (!error && userData?.role === "admin") {
         setIsAdmin(true);
       }
     } catch (error) {
-      console.error('Error checking admin status:', error);
+      console.error("Error checking admin status:", error);
     } finally {
       setIsLoading(false);
     }
@@ -75,7 +67,7 @@ export default function EditorialButton({
 
   // Don't render anything if not admin or still loading
   if (isLoading) {
-    return variant === 'floating' ? (
+    return variant === "floating" ? (
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -117,23 +109,26 @@ export default function EditorialButton({
                   <div className="h-2 w-2 bg-green-500 rounded-full"></div>
                   <span className="text-sm font-medium">Admin Mode</span>
                 </div>
-                
+
                 <Link href="/portfolio-dash/manage">
                   <Button variant="ghost" className="w-full justify-start h-9 text-sm">
                     <Settings className="h-4 w-4 mr-2" />
                     Manage Portfolio
                   </Button>
                 </Link>
-                
+
                 <Link href="/portfolio-dash/new">
-                  <Button variant="ghost" className="w-full justify-start h-9 text-sm hover:bg-[#3ECF8E]/10 hover:text-[#3ECF8E] transition-colors">
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start h-9 text-sm hover:bg-[#3ECF8E]/10 hover:text-[#3ECF8E] transition-colors"
+                  >
                     <Plus className="h-4 w-4 mr-2" />
                     Add New Project
                   </Button>
                 </Link>
-                
-                <Button 
-                  variant="ghost" 
+
+                <Button
+                  variant="ghost"
                   className="w-full justify-start h-9 text-sm"
                   onClick={() => {
                     const baseUrl = window.location.origin;
@@ -149,18 +144,14 @@ export default function EditorialButton({
         </AnimatePresence>
 
         {/* Main floating button */}
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="relative"
-        >
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="relative">
           <Button
             size="lg"
             className="rounded-full h-14 w-14 shadow-lg bg-primary/90 hover:bg-primary border-2 border-primary-foreground/10 backdrop-blur-sm"
           >
             <Edit3 className="h-6 w-6" />
           </Button>
-          
+
           {/* Animated pulse ring */}
           <motion.div
             className="absolute inset-0 rounded-full border-2 border-primary/30"
@@ -197,31 +188,31 @@ export default function EditorialButton({
           </Badge>
         </Button>
       </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56">
+      <DropdownMenuContent align="end" className="w-56">
         <div className="flex items-center gap-2 p-2">
           <div className="h-2 w-2 bg-green-500 rounded-full"></div>
           <span className="text-sm font-medium">Admin Panel</span>
         </div>
-        
+
         <DropdownMenuSeparator />
-        
+
         <DropdownMenuItem asChild>
           <Link href="/portfolio-dash/manage" className="cursor-pointer">
             <Settings className="h-4 w-4 mr-2" />
             Manage All Projects
           </Link>
         </DropdownMenuItem>
-        
+
         <DropdownMenuItem asChild>
           <Link href="/portfolio-dash/new" className="cursor-pointer">
             <Plus className="h-4 w-4 mr-2" />
             Add New Project
           </Link>
         </DropdownMenuItem>
-        
+
         <DropdownMenuSeparator />
-        
-        <DropdownMenuItem 
+
+        <DropdownMenuItem
           onClick={() => {
             const baseUrl = window.location.origin;
             window.location.href = `${baseUrl}/portfolio-dash/manage`;
@@ -252,21 +243,21 @@ export default function EditorialButton({
               <Edit3 className="h-5 w-5" />
             </Button>
           </DropdownMenuTrigger>
-                        <DropdownMenuContent side="left" align="center" className="w-56">
+          <DropdownMenuContent side="left" align="center" className="w-56">
             <div className="flex items-center gap-2 p-2">
               <div className="h-2 w-2 bg-green-500 rounded-full"></div>
               <span className="text-sm font-medium">Portfolio Editor</span>
             </div>
-            
+
             <DropdownMenuSeparator />
-            
+
             <DropdownMenuItem asChild>
               <Link href="/portfolio-dash/manage" className="cursor-pointer">
                 <Settings className="h-4 w-4 mr-2" />
                 Manage Portfolio
               </Link>
             </DropdownMenuItem>
-            
+
             <DropdownMenuItem asChild>
               <Link href="/portfolio-dash/new" className="cursor-pointer">
                 <Plus className="h-4 w-4 mr-2" />
@@ -280,11 +271,11 @@ export default function EditorialButton({
   );
 
   switch (variant) {
-    case 'inline':
+    case "inline":
       return <InlineVariant />;
-    case 'fixed':
+    case "fixed":
       return <FixedVariant />;
     default:
       return <FloatingVariant />;
   }
-} 
+}

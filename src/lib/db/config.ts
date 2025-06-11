@@ -1,4 +1,4 @@
-import { env } from '@/lib/config/env';
+import { env } from "@/lib/config/env";
 
 /**
  * Database configuration utils for Supabase PostgreSQL
@@ -7,7 +7,7 @@ export const getDatabaseConfig = () => {
   try {
     const url = env.NEXT_PUBLIC_SUPABASE_URL;
     if (!url) {
-      throw new Error('NEXT_PUBLIC_SUPABASE_URL is not defined');
+      throw new Error("NEXT_PUBLIC_SUPABASE_URL is not defined");
     }
 
     const match = url.match(/https:\/\/([^.]+)\.supabase\.co/);
@@ -17,21 +17,21 @@ export const getDatabaseConfig = () => {
 
     const projectId = match[1];
     const host = `db.${projectId}.supabase.co`;
-    
+
     if (!env.SUPABASE_SERVICE_ROLE_KEY) {
-      throw new Error('SUPABASE_SERVICE_ROLE_KEY is not defined');
+      throw new Error("SUPABASE_SERVICE_ROLE_KEY is not defined");
     }
 
     return {
       host,
       port: 5432,
       projectId,
-      database: 'postgres',
+      database: "postgres",
       connectionString: `postgres://postgres.${projectId}:${env.SUPABASE_SERVICE_ROLE_KEY}@${host}:5432/postgres`,
       ssl: { rejectUnauthorized: false } as const,
     };
   } catch (error) {
-    console.error('Database configuration error:', error);
+    console.error("Database configuration error:", error);
     throw error;
   }
 };
@@ -42,7 +42,7 @@ export const getDatabaseConfig = () => {
  * - Production: Larger pool for better concurrency
  */
 export const getPoolSize = (): number => {
-  const isDevelopment = process.env.NODE_ENV === 'development';
+  const isDevelopment = process.env.NODE_ENV === "development";
   return isDevelopment ? 5 : 20; // 5 connections in dev, 20 in production
 };
 
@@ -52,8 +52,8 @@ export const getPoolSize = (): number => {
  * @returns Configured PostgreSQL client options
  */
 export const getClientOptions = (customOptions = {}) => {
-  const isDevelopment = process.env.NODE_ENV === 'development';
-  
+  const isDevelopment = process.env.NODE_ENV === "development";
+
   return {
     ssl: { rejectUnauthorized: false },
     max: getPoolSize(),
@@ -64,9 +64,9 @@ export const getClientOptions = (customOptions = {}) => {
     onConnect: async (client: any) => {
       try {
         // Execute a simple query to verify connection is healthy
-        await client.query('SELECT 1');
+        await client.query("SELECT 1");
       } catch (err) {
-        console.error('Database connection health check failed:', err);
+        console.error("Database connection health check failed:", err);
         throw err;
       }
     },

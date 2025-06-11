@@ -1,5 +1,5 @@
-import { createClient } from '@/lib/supabase/client';
-import type { PortfolioProject } from '@/types/crm';
+import { createClient } from "@/lib/supabase/client";
+import type { PortfolioProject } from "@/types/crm";
 
 // Helper function to normalize portfolio project data
 function normalizePortfolioProject(project: any): PortfolioProject {
@@ -14,36 +14,34 @@ function normalizePortfolioProject(project: any): PortfolioProject {
 
 export async function getPortfolioProjects(options?: {
   featuredOnly?: boolean;
-  status?: 'published' | 'draft' | 'archived';
+  status?: "published" | "draft" | "archived";
   limit?: number;
   offset?: number;
   orderBy?: Array<{ column: string; ascending: boolean }>;
 }) {
   const supabase = createClient();
 
-  let query = supabase
-    .from('portfolio')
-    .select('*');
+  let query = supabase.from("portfolio").select("*");
 
   // Apply ordering
   if (options?.orderBy && options.orderBy.length > 0) {
-    options.orderBy.forEach(order => {
+    options.orderBy.forEach((order) => {
       query = query.order(order.column, { ascending: order.ascending });
     });
   } else {
     // Default ordering
-    query = query.order('created_at', { ascending: false });
+    query = query.order("created_at", { ascending: false });
   }
 
   if (options?.featuredOnly) {
-    query = query.eq('is_featured', true);
+    query = query.eq("is_featured", true);
   }
 
   if (options?.status) {
-    query = query.eq('status', options.status);
+    query = query.eq("status", options.status);
   } else {
     // By default, exclude archived projects
-    query = query.neq('status', 'archived');
+    query = query.neq("status", "archived");
   }
 
   if (options?.limit) {
@@ -57,7 +55,7 @@ export async function getPortfolioProjects(options?: {
   const { data: projects, error } = await query;
 
   if (error) {
-    console.error('Error fetching portfolio projects:', error);
+    console.error("Error fetching portfolio projects:", error);
     throw new Error(`Failed to fetch portfolio projects: ${error.message}`);
   }
 
@@ -73,13 +71,13 @@ export async function getPortfolioProject(id: string) {
   const supabase = createClient();
 
   const { data: project, error } = await supabase
-    .from('portfolio')
-    .select('*')
-    .eq('id', id)
+    .from("portfolio")
+    .select("*")
+    .eq("id", id)
     .single();
 
   if (error) {
-    console.error('Error fetching portfolio project:', error);
+    console.error("Error fetching portfolio project:", error);
     throw new Error(`Failed to fetch portfolio project: ${error.message}`);
   }
 
@@ -93,9 +91,7 @@ export async function getPortfolioProject(id: string) {
 export async function getPortfolioStats() {
   const supabase = createClient();
 
-  const { data, error } = await supabase
-    .from('portfolio')
-    .select('status');
+  const { data, error } = await supabase.from("portfolio").select("status");
 
   if (error) {
     throw new Error(`Failed to fetch portfolio stats: ${error.message}`);
@@ -103,9 +99,9 @@ export async function getPortfolioStats() {
 
   const stats = {
     total: data?.length || 0,
-    published: data?.filter(p => p.status === 'published').length || 0,
-    draft: data?.filter(p => p.status === 'draft').length || 0,
-    archived: data?.filter(p => p.status === 'archived').length || 0,
+    published: data?.filter((p) => p.status === "published").length || 0,
+    draft: data?.filter((p) => p.status === "draft").length || 0,
+    archived: data?.filter((p) => p.status === "archived").length || 0,
   };
 
   return stats;
@@ -115,16 +111,16 @@ export async function getFeaturedPortfolioProjects(limit = 3) {
   const supabase = createClient();
 
   const { data: projects, error } = await supabase
-    .from('portfolio')
-    .select('*')
-    .eq('is_featured', true)
-    .eq('status', 'published')
-    .order('created_at', { ascending: false })
+    .from("portfolio")
+    .select("*")
+    .eq("is_featured", true)
+    .eq("status", "published")
+    .order("created_at", { ascending: false })
     .limit(limit);
 
   if (error) {
-    console.error('Error fetching featured projects:', error);
-    throw new Error('Failed to fetch featured projects');
+    console.error("Error fetching featured projects:", error);
+    throw new Error("Failed to fetch featured projects");
   }
 
   return (projects || []) as PortfolioProject[];
@@ -135,22 +131,21 @@ export async function getRelatedProjects(currentProjectId: string, limit = 3) {
     const supabase = createClient();
 
     const { data: projects, error } = await supabase
-      .from('portfolio')
-      .select('*')
-      .neq('id', currentProjectId)
-      .order('created_at', { ascending: false })
+      .from("portfolio")
+      .select("*")
+      .neq("id", currentProjectId)
+      .order("created_at", { ascending: false })
       .limit(limit);
 
     if (error) {
-      console.error('Related projects fetch error:', error);
+      console.error("Related projects fetch error:", error);
       return [];
     }
 
     const normalizedProjects = (projects || []).map(normalizePortfolioProject);
     return normalizedProjects;
-
   } catch (error: any) {
-    console.error('Related projects service error:', error);
+    console.error("Related projects service error:", error);
     return [];
   }
-} 
+}

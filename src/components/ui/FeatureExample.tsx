@@ -3,12 +3,19 @@
 import { useFeatureFlag } from "@/lib/features/useFeatureFlag";
 import { FEATURE_FLAGS } from "@/lib/features/feature-list";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export function FeatureExample() {
   const { enabled: darkModeEnabled } = useFeatureFlag(FEATURE_FLAGS.DARK_MODE);
   const { enabled: enhancedContactEnabled } = useFeatureFlag(FEATURE_FLAGS.ENHANCED_CONTACT_FORM);
-  
+
   return (
     <div className="space-y-6">
       <Card className={darkModeEnabled ? "bg-slate-800 text-white" : "bg-white"}>
@@ -20,16 +27,15 @@ export function FeatureExample() {
         </CardHeader>
         <CardContent>
           <p>
-            The dark mode feature is currently: <span className="font-bold">{darkModeEnabled ? "Enabled" : "Disabled"}</span>
+            The dark mode feature is currently:{" "}
+            <span className="font-bold">{darkModeEnabled ? "Enabled" : "Disabled"}</span>
           </p>
         </CardContent>
         <CardFooter>
-          <Button variant={darkModeEnabled ? "outline" : "default"}>
-            Styled Button
-          </Button>
+          <Button variant={darkModeEnabled ? "outline" : "default"}>Styled Button</Button>
         </CardFooter>
       </Card>
-      
+
       {enhancedContactEnabled && (
         <Card>
           <CardHeader>
@@ -51,4 +57,4 @@ export function FeatureExample() {
       )}
     </div>
   );
-} 
+}

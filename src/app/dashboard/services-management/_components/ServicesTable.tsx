@@ -52,7 +52,7 @@ export function ServicesTable({ services, isAdmin }: ServicesTableProps) {
     setIsDeleting(true);
     try {
       const result = await deleteService(id);
-      
+
       if (result.error) {
         toast({
           title: "Error",
@@ -61,12 +61,12 @@ export function ServicesTable({ services, isAdmin }: ServicesTableProps) {
         });
         return;
       }
-      
+
       toast({
         title: "Success",
         description: result.success,
       });
-      
+
       router.refresh();
     } catch (error) {
       toast({
@@ -120,30 +120,20 @@ export function ServicesTable({ services, isAdmin }: ServicesTableProps) {
               </TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end gap-2">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    asChild
-                    title="View Details"
-                  >
+                  <Button variant="outline" size="icon" asChild title="View Details">
                     <Link href={`/services/${service.id}`}>
                       <Eye className="h-4 w-4" />
                     </Link>
                   </Button>
-                  
+
                   {isAdmin && (
                     <>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        asChild
-                        title="Edit Service"
-                      >
+                      <Button variant="outline" size="icon" asChild title="Edit Service">
                         <Link href={`/dashboard/services-management/${service.id}/edit`}>
                           <Edit className="h-4 w-4" />
                         </Link>
                       </Button>
-                      
+
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button
@@ -159,7 +149,8 @@ export function ServicesTable({ services, isAdmin }: ServicesTableProps) {
                           <AlertDialogHeader>
                             <AlertDialogTitle>Delete Service</AlertDialogTitle>
                             <AlertDialogDescription>
-                              Are you sure you want to delete &quot;{service.title}&quot;? This action cannot be undone.
+                              Are you sure you want to delete &quot;{service.title}&quot;? This
+                              action cannot be undone.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
@@ -189,4 +180,4 @@ export function ServicesTable({ services, isAdmin }: ServicesTableProps) {
       </Table>
     </div>
   );
-} 
+}

@@ -14,7 +14,7 @@ function ensureArray(value: any): string[] {
     return value.filter((item) => item && typeof item === "string" && item.trim() !== "");
   }
 
-  // If it's a string that looks like a JSON array, try to parse it
+  // If it&apos;s a string that looks like a JSON array, try to parse it
   if (typeof value === "string") {
     if (value.trim().startsWith("[") && value.trim().endsWith("]")) {
       try {
@@ -59,7 +59,7 @@ const createPortfolioProjectSchema = z.object({
   client_name: z.string().optional(),
   client_testimonial: z.string().optional(),
   is_featured: z.boolean().default(false),
-  status: z.enum(['published', 'draft', 'archived']).default('draft'),
+  status: z.enum(["published", "draft", "archived"]).default("draft"),
 });
 
 type PortfolioFormData = z.infer<typeof createPortfolioProjectSchema>;
@@ -100,11 +100,11 @@ export async function createPortfolioProject(formData: FormData) {
       client_name: formData.get("client_name") as string,
       client_testimonial: formData.get("client_testimonial") as string,
       is_featured: formData.get("is_featured") === "true",
-      status: (formData.get("status") as 'published' | 'draft' | 'archived') || 'draft',
+      status: (formData.get("status") as "published" | "draft" | "archived") || "draft",
     };
 
     // Handle status - get from form or use default
-    const status = rawData.status || 'draft';
+    const status = rawData.status || "draft";
 
     // Validate using the schema
     const validatedData = createPortfolioProjectSchema.parse(rawData);
@@ -129,9 +129,10 @@ export async function createPortfolioProject(formData: FormData) {
     revalidatePath("/portfolio-dash");
     revalidatePath("/portfolio");
 
-    const statusMessage = data.status === 'published'
-      ? "Portfolio project created and published!"
-      : "Portfolio project created as draft!";
+    const statusMessage =
+      data.status === "published"
+        ? "Portfolio project created and published!"
+        : "Portfolio project created as draft!";
 
     return {
       success: true,
@@ -188,8 +189,9 @@ export async function updatePortfolioProject(id: string, formData: FormData) {
       client_testimonial: (formData.get("client_testimonial") as string) || undefined,
       is_featured: formData.get("is_featured") === "true",
       // Handle status - get from form or determine from is_published for backwards compatibility
-      status: (formData.get("status") as 'published' | 'draft' | 'archived') ||
-              (formData.get("is_published") === "true" ? 'published' : 'draft'),
+      status:
+        (formData.get("status") as "published" | "draft" | "archived") ||
+        (formData.get("is_published") === "true" ? "published" : "draft"),
     };
 
     const { error, data } = await supabase
@@ -207,9 +209,10 @@ export async function updatePortfolioProject(id: string, formData: FormData) {
     revalidatePath("/portfolio-dash");
     revalidatePath("/portfolio");
 
-    const statusMessage = data.status === 'published'
-      ? `Portfolio "${data.title}" published successfully`
-      : `Portfolio "${data.title}" saved as ${data.status}`;
+    const statusMessage =
+      data.status === "published"
+        ? `Portfolio "${data.title}" published successfully`
+        : `Portfolio "${data.title}" saved as ${data.status}`;
 
     return {
       success: true,
@@ -249,7 +252,7 @@ export async function publishPortfolioProject(id: string) {
     const { error, data } = await supabase
       .from("portfolio")
       .update({
-        status: 'published',
+        status: "published",
         updated_by: session.user.id,
         updated_at: new Date().toISOString(),
       })
@@ -303,7 +306,7 @@ export async function unpublishPortfolioProject(id: string) {
     const { error, data } = await supabase
       .from("portfolio")
       .update({
-        status: 'draft',
+        status: "draft",
         updated_by: session.user.id,
         updated_at: new Date().toISOString(),
       })
@@ -357,7 +360,7 @@ export async function archivePortfolioProject(id: string) {
     const { error, data } = await supabase
       .from("portfolio")
       .update({
-        status: 'archived',
+        status: "archived",
         updated_at: new Date().toISOString(),
       })
       .eq("id", id)
@@ -410,7 +413,7 @@ export async function restorePortfolioProject(id: string) {
     const { error, data } = await supabase
       .from("portfolio")
       .update({
-        status: 'draft', // Restore as draft by default
+        status: "draft", // Restore as draft by default
         updated_at: new Date().toISOString(),
       })
       .eq("id", id)

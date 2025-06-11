@@ -5,6 +5,7 @@
 ✅ **Portfolio Load More Fixed** - Connected to real database with proper pagination
 ✅ **Navbar Optimization** - Clean circular profile button for logged users
 ✅ **Performance Optimizations** - Advanced caching, lazy loading, bundle optimization
+✅ **Repository Organization** - Moved all docs to `docs/` and SQL files to `sql/` directories
 
 ## **Key Features**
 
@@ -31,6 +32,23 @@ npm run dev
 # Build for production
 npm run build
 ```
+
+## **Documentation**
+
+📚 **Comprehensive documentation is available in the `docs/` directory:**
+
+- **[Setup Guide](docs/setup/)** - Complete installation and configuration
+- **[Development Guide](docs/development/)** - Development workflow and best practices
+- **[Color System Guide](docs/colors/)** - Design system and theming
+- **[Performance Guide](docs/performance/)** - Optimization strategies
+- **[Troubleshooting](docs/troubleshooting/)** - Common issues and solutions
+- **[Migration Guides](docs/)** - Database and feature migrations
+
+🗄️ **SQL scripts and migrations are in the `sql/` directory:**
+
+- **[Migration Scripts](sql/migrations/)** - Database schema updates
+- **[Utilities](sql/utilities/)** - Helper scripts and functions
+- **[Scripts](sql/scripts/)** - Automation and maintenance scripts
 
 ## **Deployment Status**
 
@@ -74,5 +92,5 @@ npm run commit "fix portfolio pagination" "Fix"
 
 ---
 
-**Last Updated**: Portfolio pagination fixed and connected to real database
+**Last Updated**: Repository organization completed - all docs moved to `docs/` and SQL to `sql/`
 **Status**: ✅ Production Ready

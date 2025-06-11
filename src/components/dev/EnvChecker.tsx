@@ -2,7 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
 
@@ -14,7 +21,7 @@ export function EnvChecker() {
   const checkEnv = async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch("/api/fix-supabase");
       const data = await response.json();
@@ -41,9 +48,7 @@ export function EnvChecker() {
     <Card className="w-full max-w-3xl mx-auto my-8">
       <CardHeader>
         <CardTitle>Supabase Connection Checker</CardTitle>
-        <CardDescription>
-          Debug your Supabase connection and environment variables
-        </CardDescription>
+        <CardDescription>Debug your Supabase connection and environment variables</CardDescription>
       </CardHeader>
       <CardContent>
         {error && (
@@ -124,8 +129,18 @@ export function EnvChecker() {
             <div className="p-4 border rounded-md bg-amber-50 dark:bg-amber-950">
               <h3 className="font-medium text-amber-800 dark:text-amber-300 mb-2">How to fix</h3>
               <ol className="list-decimal list-inside space-y-2 text-sm text-amber-700 dark:text-amber-400">
-                <li>Check that your <code className="bg-amber-100 dark:bg-amber-900 px-1 rounded">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> is set in <code className="bg-amber-100 dark:bg-amber-900 px-1 rounded">.env.local</code></li>
-                <li>Make sure you're using the <strong>anon key</strong> from Supabase, not the service role key</li>
+                <li>
+                  Check that your{" "}
+                  <code className="bg-amber-100 dark:bg-amber-900 px-1 rounded">
+                    NEXT_PUBLIC_SUPABASE_ANON_KEY
+                  </code>{" "}
+                  is set in{" "}
+                  <code className="bg-amber-100 dark:bg-amber-900 px-1 rounded">.env.local</code>
+                </li>
+                <li>
+                  Make sure you're using the <strong>anon key</strong> from Supabase, not the
+                  service role key
+                </li>
                 <li>Verify your Supabase project is active and not paused</li>
                 <li>Check if your API keys need to be rotated in the Supabase dashboard</li>
               </ol>
@@ -140,4 +155,4 @@ export function EnvChecker() {
       </CardFooter>
     </Card>
   );
-} 
+}

@@ -10,7 +10,7 @@ import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { PlusCircle } from "lucide-react";
 
 // Force dynamic rendering for this route to allow use of cookies
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Services Management",
@@ -19,35 +19,37 @@ export const metadata = {
 
 export default async function ServicesManagementPage() {
   const supabase = await createClient();
-  
+
   // Get the current user
-  const { data: { user } } = await supabase.auth.getUser();
-  
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   if (!user) {
     redirect("/login");
   }
-  
+
   // Check if the user is an admin or contributor
   const { data: userData, error: userError } = await supabase
     .from("users")
     .select("role")
     .eq("id", user.id)
     .single();
-  
+
   if (userError || !userData || (userData.role !== "admin" && userData.role !== "contributor")) {
     redirect("/dashboard");
   }
-  
+
   // Fetch services
   const { data: services, error: servicesError } = await supabase
     .from("services")
     .select("*")
     .order("created_at", { ascending: false });
-  
+
   if (servicesError) {
     console.error("Error fetching services:", servicesError);
   }
-  
+
   return (
     <DashboardShell>
       <DashboardHeader
@@ -61,7 +63,7 @@ export default async function ServicesManagementPage() {
           </Link>
         </Button>
       </DashboardHeader>
-      
+
       <div className="grid gap-8">
         {!services || services.length === 0 ? (
           <div className="text-center py-12 border rounded-md bg-muted/30">
@@ -82,4 +84,4 @@ export default async function ServicesManagementPage() {
       </div>
     </DashboardShell>
   );
-} 
+}

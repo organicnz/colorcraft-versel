@@ -1,24 +1,24 @@
 "use client";
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import { createClient } from '@/lib/supabase/client';
-import { toast } from 'sonner';
+import React, { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { createClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const router = useRouter();
   const supabase = createClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
+    setError("");
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -29,11 +29,11 @@ export default function LoginPage() {
       if (error) throw error;
 
       // Successful login
-      toast.success('Logged in successfully');
-      window.location.href = 'https://colorcraft.live/';
+      toast.success("Logged in successfully");
+      window.location.href = "https://colorcraft.live/";
     } catch (err: any) {
-      setError(err.message || 'Invalid email or password');
-      toast.error(err.message || 'Login failed');
+      setError(err.message || "Invalid email or password");
+      toast.error(err.message || "Login failed");
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -46,17 +46,10 @@ export default function LoginPage() {
         <div className="bg-primary py-6 px-8">
           <div className="flex justify-center mb-4">
             <div className="relative w-12 h-12">
-              <Image
-                src="/logo.svg"
-                alt="Color & Craft Logo"
-                fill
-                className="object-contain"
-              />
+              <Image src="/logo.svg" alt="Color & Craft Logo" fill className="object-contain" />
             </div>
           </div>
-          <h2 className="text-center text-2xl font-medium text-white">
-            Sign in to your account
-          </h2>
+          <h2 className="text-center text-2xl font-medium text-white">Sign in to your account</h2>
         </div>
 
         <div className="p-8">
@@ -130,7 +123,7 @@ export default function LoginPage() {
                 disabled={isLoading}
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
               >
-                {isLoading ? 'Signing in...' : 'Sign in'}
+                {isLoading ? "Signing in..." : "Sign in"}
               </button>
             </div>
           </form>
@@ -163,10 +156,10 @@ export default function LoginPage() {
                 onClick={() => {
                   setIsLoading(true);
                   supabase.auth.signInWithOAuth({
-                    provider: 'google',
+                    provider: "google",
                     options: {
-                      redirectTo: `${window.location.origin}/auth/callback`
-                    }
+                      redirectTo: `${window.location.origin}/auth/callback`,
+                    },
                   });
                 }}
                 disabled={isLoading}
@@ -179,10 +172,10 @@ export default function LoginPage() {
                 onClick={() => {
                   setIsLoading(true);
                   supabase.auth.signInWithOAuth({
-                    provider: 'facebook',
+                    provider: "facebook",
                     options: {
-                      redirectTo: `${window.location.origin}/auth/callback`
-                    }
+                      redirectTo: `${window.location.origin}/auth/callback`,
+                    },
                   });
                 }}
                 disabled={isLoading}

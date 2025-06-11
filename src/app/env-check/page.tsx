@@ -1,5 +1,5 @@
-import { redirect } from 'next/navigation';
+import { redirect } from "next/navigation";
 
 export default function EnvCheckPage() {
-  redirect('/api/check-env');
-} 
+  redirect("/api/check-env");
+}

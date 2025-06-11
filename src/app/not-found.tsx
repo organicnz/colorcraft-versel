@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 export default function NotFound() {
   return (
@@ -10,13 +10,13 @@ export default function NotFound() {
         We're sorry, but the page you're looking for doesn't exist or has been moved.
       </p>
       <div className="space-y-4 sm:space-y-0 sm:space-x-4 flex flex-col sm:flex-row">
-        <Link 
+        <Link
           href="/"
           className="px-8 py-3 bg-primary hover:bg-primary-dark text-white font-medium rounded-md transition-colors"
         >
           Return Home
         </Link>
-        <Link 
+        <Link
           href="/contact"
           className="px-8 py-3 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-medium rounded-md transition-colors"
         >
@@ -25,4 +25,4 @@ export default function NotFound() {
       </div>
     </div>
   );
-} 
+}

@@ -63,7 +63,7 @@ const portfolioSchema = z.object({
   client_name: z.string().optional(),
   client_testimonial: z.string().optional(),
   is_featured: z.boolean().default(false),
-  status: z.enum(['published', 'draft', 'archived']).default('draft'),
+  status: z.enum(["published", "draft", "archived"]).default("draft"),
 });
 
 export type PortfolioFormData = z.infer<typeof portfolioSchema>;
@@ -107,24 +107,24 @@ function ensureArray(value: any): string[] {
 
 // Helper function to parse comma-separated arrays
 function parseArrayField(value: string): string[] {
-  console.log("🔍 parseArrayField input:", value);
+  console.warn("🔍 parseArrayField input:", value);
   if (!value || value.trim() === "") {
-    console.log("🔍 parseArrayField: empty value, returning []");
+    console.warn("🔍 parseArrayField: empty value, returning []");
     return [];
   }
   const result = value
     .split(",")
     .map((item) => item.trim())
     .filter(Boolean);
-  console.log("🔍 parseArrayField result:", result);
+  console.warn("🔍 parseArrayField result:", result);
   return result;
 }
 
 export default function PortfolioForm({ initialData, isEditing = false }: PortfolioFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [portfolioId, setPortfolioId] = useState<string>(initialData?.id || "");
-  const [isDraft, setIsDraft] = useState(initialData?.status === 'draft');
-  const [isPublished, setIsPublished] = useState(initialData?.status === 'published');
+  const [isDraft, setIsDraft] = useState(initialData?.status === "draft");
+  const [isPublished, setIsPublished] = useState(initialData?.status === "published");
   const router = useRouter();
 
   const form = useForm({
@@ -142,7 +142,7 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
       client_name: initialData?.client_name || "",
       client_testimonial: initialData?.client_testimonial || "",
       is_featured: initialData?.is_featured || false,
-      status: (initialData?.status || 'draft') as 'published' | 'draft' | 'archived',
+      status: (initialData?.status || "draft") as "published" | "draft" | "archived",
     },
   });
 
@@ -151,15 +151,15 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
   const watchedIsDraft = form.watch("status");
 
   useEffect(() => {
-    setIsPublished(watchedIsPublished === 'published');
-    setIsDraft(watchedIsPublished === 'draft');
+    setIsPublished(watchedIsPublished === "published");
+    setIsDraft(watchedIsPublished === "draft");
   }, [watchedIsPublished]);
 
   const onSubmit = async (data: PortfolioFormData) => {
     setIsSubmitting(true);
-    console.log("🔍 Form submit data:", data);
-    console.log("🔍 Techniques array:", data.techniques);
-    console.log("🔍 Materials array:", data.materials);
+    console.warn("🔍 Form submit data:", data);
+    console.warn("🔍 Techniques array:", data.techniques);
+    console.warn("🔍 Materials array:", data.materials);
 
     try {
       const formData = new FormData();
@@ -174,7 +174,7 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
         ) {
           // Convert arrays to comma-separated strings for FormData
           const arrayValue = Array.isArray(value) ? value.join(", ") : String(value || "");
-          console.log(`🔍 FormData ${key}:`, arrayValue);
+          console.warn(`🔍 FormData ${key}:`, arrayValue);
           formData.append(key, arrayValue);
         } else if (typeof value === "boolean") {
           formData.append(key, value.toString());
@@ -232,8 +232,8 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
         toast.error(result.error);
       } else {
         toast.success(result.message);
-        setIsPublished(result.data.status === 'published');
-        setIsDraft(result.data.status === 'draft');
+        setIsPublished(result.data.status === "published");
+        setIsDraft(result.data.status === "draft");
         form.setValue("status", result.data.status);
       }
     } catch (error) {
@@ -368,7 +368,10 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                         <SelectContent>
                           <SelectItem value="draft">
                             <div className="flex items-center gap-2">
-                              <Badge variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-200">
+                              <Badge
+                                variant="outline"
+                                className="bg-yellow-50 text-yellow-800 border-yellow-200"
+                              >
                                 Draft
                               </Badge>
                               <span>Working on it</span>
@@ -376,9 +379,7 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                           </SelectItem>
                           <SelectItem value="published">
                             <div className="flex items-center gap-2">
-                              <Badge className="bg-green-100 text-green-800">
-                                Published
-                              </Badge>
+                              <Badge className="bg-green-100 text-green-800">Published</Badge>
                               <span>Visible to public</span>
                             </div>
                           </SelectItem>
@@ -520,10 +521,10 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                                   : ""
                             }
                             onChange={(e) => {
-                              console.log("🔍 Techniques input value:", e.target.value);
-                              console.log("🔍 Current field value:", field.value);
+                              console.warn("🔍 Techniques input value:", e.target.value);
+                              console.warn("🔍 Current field value:", field.value);
                               const parsed = parseArrayField(e.target.value);
-                              console.log("🔍 Calling field.onChange with:", parsed);
+                              console.warn("🔍 Calling field.onChange with:", parsed);
                               field.onChange(parsed);
                             }}
                             className="text-base pr-12"
@@ -539,7 +540,8 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                       </FormControl>
                       <FormDescription className="space-y-2">
                         <div className="text-sm text-muted-foreground">
-                          💡 Tip: Type your techniques and separate them with commas. Press Enter or Tab to see them as individual tags.
+                          💡 Tip: Type your techniques and separate them with commas. Press Enter or
+                          Tab to see them as individual tags.
                         </div>
                         {field.value && Array.isArray(field.value) && field.value.length > 0 && (
                           <div className="flex flex-wrap gap-2 p-2 bg-muted/50 rounded-md border">
@@ -581,10 +583,10 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                                   : ""
                             }
                             onChange={(e) => {
-                              console.log("🔍 Materials input value:", e.target.value);
-                              console.log("🔍 Current field value:", field.value);
+                              console.warn("🔍 Materials input value:", e.target.value);
+                              console.warn("🔍 Current field value:", field.value);
                               const parsed = parseArrayField(e.target.value);
-                              console.log("🔍 Calling field.onChange with:", parsed);
+                              console.warn("🔍 Calling field.onChange with:", parsed);
                               field.onChange(parsed);
                             }}
                             className="text-base pr-12"
@@ -600,7 +602,8 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
                       </FormControl>
                       <FormDescription className="space-y-2">
                         <div className="text-sm text-muted-foreground">
-                          💡 Tip: Type your materials and separate them with commas. Press Enter or Tab to see them as individual tags.
+                          💡 Tip: Type your materials and separate them with commas. Press Enter or
+                          Tab to see them as individual tags.
                         </div>
                         {field.value && Array.isArray(field.value) && field.value.length > 0 && (
                           <div className="flex flex-wrap gap-2 p-2 bg-muted/50 rounded-md border">
@@ -745,7 +748,7 @@ export default function PortfolioForm({ initialData, isEditing = false }: Portfo
               <Upload className="w-4 h-4" />
               <p className="text-sm font-medium">
                 New projects are automatically saved as drafts with a unique UUID. After saving,
-                you'll be able to upload images.
+                you&apos;ll be able to upload images.
               </p>
             </div>
           </CardContent>

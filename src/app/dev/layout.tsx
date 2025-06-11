@@ -9,11 +9,7 @@ interface DevToolLink {
   icon: React.ReactNode;
 }
 
-export default function DevLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function DevLayout({ children }: { children: React.ReactNode }) {
   const devTools: DevToolLink[] = [
     {
       href: "/dev/colors",
@@ -49,10 +45,10 @@ export default function DevLayout({
         <div className="flex items-center space-x-2 mb-8 px-2">
           <span className="font-bold text-primary">Dev Tools</span>
         </div>
-        
+
         <nav className="space-y-1">
           {devTools.map((tool) => (
-            <Link 
+            <Link
               key={tool.href}
               href={tool.href}
               className="flex items-center px-3 py-2 text-sm rounded-md hover:bg-muted transition-colors"
@@ -68,7 +64,7 @@ export default function DevLayout({
       <div className="md:hidden w-full border-b border-border px-4 py-3 bg-background sticky top-0 z-10">
         <div className="flex items-center justify-between">
           <span className="font-bold text-primary">Dev Tools</span>
-          <select 
+          <select
             className="py-1 px-2 bg-background border border-border rounded-md text-sm"
             onChange={(e) => {
               window.location.href = e.target.value;
@@ -94,4 +90,4 @@ export default function DevLayout({
       </div>
     </div>
   );
-} 
+}

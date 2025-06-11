@@ -1,7 +1,7 @@
 "use client";
 
-import { lazy, Suspense, ComponentType, ReactNode } from 'react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { lazy, Suspense, ComponentType, ReactNode } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Higher-order component for lazy loading with proper error boundary
 function withLazyLoading<T extends ComponentType<any>>(
@@ -9,7 +9,7 @@ function withLazyLoading<T extends ComponentType<any>>(
   fallback?: ReactNode
 ) {
   const LazyComponent = lazy(importFunc);
-  
+
   return function LazyWrapper(props: React.ComponentProps<T>) {
     const defaultFallback = (
       <div className="w-full h-64 space-y-4">
@@ -65,7 +65,7 @@ export const DashboardChartSkeleton = () => (
 
 // Lazy-loaded components
 export const LazyPortfolioGrid = withLazyLoading(
-  () => import('@/components/portfolio/PortfolioGrid'),
+  () => import("@/components/portfolio/PortfolioGrid"),
   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
     {Array.from({ length: 6 }).map((_, i) => (
       <PortfolioCardSkeleton key={i} />
@@ -74,7 +74,7 @@ export const LazyPortfolioGrid = withLazyLoading(
 );
 
 export const LazyTeamSection = withLazyLoading(
-  () => import('@/components/homepage/TeamSection'),
+  () => import("@/components/homepage/TeamSection"),
   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
     {Array.from({ length: 3 }).map((_, i) => (
       <TeamCardSkeleton key={i} />
@@ -83,7 +83,7 @@ export const LazyTeamSection = withLazyLoading(
 );
 
 export const LazyDashboardStats = withLazyLoading(
-  () => import('@/components/dashboard/DashboardStats'),
+  () => import("@/components/dashboard/DashboardStats"),
   <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
     {Array.from({ length: 4 }).map((_, i) => (
       <Skeleton key={i} className="h-32 w-full" />
@@ -92,7 +92,7 @@ export const LazyDashboardStats = withLazyLoading(
 );
 
 export const LazyPortfolioForm = withLazyLoading(
-  () => import('@/components/forms/PortfolioForm'),
+  () => import("@/components/forms/PortfolioForm"),
   <div className="space-y-6">
     <Skeleton className="h-12 w-full" />
     <Skeleton className="h-32 w-full" />
@@ -102,7 +102,7 @@ export const LazyPortfolioForm = withLazyLoading(
 );
 
 export const LazyServiceForm = withLazyLoading(
-  () => import('@/components/forms/ServiceForm'),
+  () => import("@/components/forms/ServiceForm"),
   <div className="space-y-6">
     <Skeleton className="h-12 w-full" />
     <Skeleton className="h-24 w-full" />
@@ -112,7 +112,7 @@ export const LazyServiceForm = withLazyLoading(
 );
 
 export const LazyCustomerTable = withLazyLoading(
-  () => import('@/components/crm/CustomerTable'),
+  () => import("@/components/crm/CustomerTable"),
   <div className="space-y-4">
     <Skeleton className="h-12 w-full" />
     {Array.from({ length: 5 }).map((_, i) => (
@@ -122,26 +122,26 @@ export const LazyCustomerTable = withLazyLoading(
 );
 
 export const LazyChatWidget = withLazyLoading(
-  () => import('@/components/chat/ChatWidget'),
+  () => import("@/components/chat/ChatWidget"),
   <div className="fixed bottom-4 right-4">
     <Skeleton className="h-14 w-14 rounded-full" />
   </div>
 );
 
 // Utility function for conditional lazy loading
-export function LazyLoad({ 
-  condition, 
-  children, 
-  fallback 
-}: { 
-  condition: boolean; 
-  children: ReactNode; 
-  fallback?: ReactNode; 
+export function LazyLoad({
+  condition,
+  children,
+  fallback,
+}: {
+  condition: boolean;
+  children: ReactNode;
+  fallback?: ReactNode;
 }) {
   if (!condition) {
     return fallback || null;
   }
-  
+
   return <>{children}</>;
 }
 
@@ -151,31 +151,29 @@ export function withPerformanceTracking<T extends ComponentType<any>>(
   componentName: string
 ) {
   return function PerformanceWrapper(props: React.ComponentProps<T>) {
-    if (typeof window !== 'undefined' && window.performance) {
+    if (typeof window !== "undefined" && window.performance) {
       const startTime = performance.now();
-      
+
       return (
-        <Component 
+        <Component
           {...props}
           onLoad={() => {
             const endTime = performance.now();
             const loadTime = endTime - startTime;
-            
-            if (process.env.NODE_ENV === 'development' && loadTime > 100) {
-              console.warn(
-                `⚠️ ${componentName} took ${loadTime.toFixed(2)}ms to load`
-              );
+
+            if (process.env.NODE_ENV === "development" && loadTime > 100) {
+              console.warn(`⚠️ ${componentName} took ${loadTime.toFixed(2)}ms to load`);
             }
-            
+
             // Call original onLoad if provided
-            if ('onLoad' in props && typeof props.onLoad === 'function') {
+            if ("onLoad" in props && typeof props.onLoad === "function") {
               props.onLoad();
             }
           }}
         />
       );
     }
-    
+
     return <Component {...props} />;
   };
-} 
+}

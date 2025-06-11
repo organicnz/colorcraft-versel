@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server'
-import { z } from 'zod'
-import { env } from '@/lib/config/env'
-import { sendEmail } from '@/lib/resend/client'
+import { NextResponse } from "next/server";
+import { z } from "zod";
+import { env } from "@/lib/config/env";
+import { sendEmail } from "@/lib/resend/client";
 
 // Contact form schema
 const contactFormSchema = z.object({
@@ -9,27 +9,30 @@ const contactFormSchema = z.object({
   email: z.string().email("Valid email is required"),
   phone: z.string().optional(),
   message: z.string().min(10, "Message must be at least 10 characters"),
-})
+});
 
 export async function POST(request: Request) {
   try {
     // Parse the request body
-    const body = await request.json()
-    console.log('Received contact form submission:', { ...body, message: body.message?.substring(0, 20) + '...' })
-    
+    const body = await request.json();
+    console.warn("Received contact form submission:", {
+      ...body,
+      message: body.message?.substring(0, 20) + "...",
+    });
+
     // Validate the request data
-    const result = contactFormSchema.safeParse(body)
+    const result = contactFormSchema.safeParse(body);
     if (!result.success) {
-      console.error('Validation failed:', result.error.format())
+      console.error("Validation failed:", result.error.format());
       return NextResponse.json(
         { error: "Invalid form data", details: result.error.format() },
         { status: 400 }
-      )
+      );
     }
-    
-    const { name, email, phone, message } = result.data
-    console.log('Attempting to send email...')
-    
+
+    const { name, email, phone, message } = result.data;
+    console.warn("Attempting to send email...");
+
     // Prepare email content
     const emailText = `
 Thank you for contacting Color & Craft Furniture Painting!
@@ -39,7 +42,7 @@ We've received your message and will get back to you shortly.
 Your submitted information:
 Name: ${name}
 Email: ${email}
-Phone: ${phone || 'Not provided'}
+Phone: ${phone || "Not provided"}
 Message: ${message}
 
 Best regards,
@@ -50,51 +53,50 @@ The Color & Craft Team
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
   <h2 style="color: #0F72C1;">Thank you for contacting Color & Craft Furniture Painting!</h2>
   <p>We've received your message and will get back to you shortly.</p>
-  
+
   <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin-top: 20px;">
     <h3 style="margin-top: 0;">Your submitted information:</h3>
     <p><strong>Name:</strong> ${name}</p>
     <p><strong>Email:</strong> ${email}</p>
-    <p><strong>Phone:</strong> ${phone || 'Not provided'}</p>
+    <p><strong>Phone:</strong> ${phone || "Not provided"}</p>
     <p><strong>Message:</strong></p>
     <p>${message}</p>
   </div>
-  
+
   <p style="margin-top: 20px;">Best regards,<br>The Color & Craft Team</p>
 </div>
     `;
-    
+
     // Send the email
     const emailResult = await sendEmail({
       to: email,
-      subject: 'Your message to Color & Craft Furniture Painting',
+      subject: "Your message to Color & Craft Furniture Painting",
       text: emailText,
       html: emailHtml,
-      bcc: 'tamerlanium@gmail.com',
+      bcc: "tamerlanium@gmail.com",
     });
-    
+
     if (!emailResult.success) {
-      console.error('Failed to send email:', emailResult.error);
-      
+      console.error("Failed to send email:", emailResult.error);
+
       return NextResponse.json(
         { error: `Failed to send email: ${emailResult.error}` },
         { status: 500 }
       );
     }
-    
-    console.log('Email sent successfully:', emailResult.data);
-    
-    return NextResponse.json({ 
+
+    console.warn("Email sent successfully:", emailResult.data);
+
+    return NextResponse.json({
       success: true,
-      message: "Contact form submitted successfully" 
+      message: "Contact form submitted successfully",
     });
-    
   } catch (error: any) {
-    console.error('Contact form error:', error);
-    console.error('Stack trace:', error.stack);
+    console.error("Contact form error:", error);
+    console.error("Stack trace:", error.stack);
     return NextResponse.json(
-      { error: `Internal server error: ${error.message || 'Unknown error'}` },
+      { error: `Internal server error: ${error.message || "Unknown error"}` },
       { status: 500 }
     );
   }
-} 
+}

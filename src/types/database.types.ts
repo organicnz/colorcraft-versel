@@ -6,11 +6,11 @@ export type Customer = {
   email: string;
   phone?: string;
   address?: string;
-  status: 'active' | 'inactive' | 'potential';
+  status: "active" | "inactive" | "potential";
   source?: string;
   notes?: string;
   user_id?: string;
-}
+};
 
 export type Lead = {
   id: string;
@@ -19,16 +19,16 @@ export type Lead = {
   name: string;
   email: string;
   phone?: string;
-  status: 'new' | 'contacted' | 'qualified' | 'converted' | 'lost';
+  status: "new" | "contacted" | "qualified" | "converted" | "lost";
   source: string;
   notes?: string;
   user_id?: string;
-}
+};
 
 export interface User {
   id: string;
   email: string;
-  role: 'admin' | 'contributor' | 'customer';
+  role: "admin" | "contributor" | "customer";
   created_at: string | null;
   updated_at: string | null;
   full_name?: string | null;
@@ -46,7 +46,7 @@ export interface Project {
   materials?: string[];
   duration_days?: number;
   location?: string;
-  status: 'draft' | 'published';
+  status: "draft" | "published";
   created_at?: string;
   updated_at?: string;
   featured?: boolean;
@@ -71,37 +71,37 @@ export type Communication = {
   created_at: string;
   customer_id?: string;
   lead_id?: string;
-  type: 'email' | 'call' | 'meeting' | 'note';
-  direction: 'inbound' | 'outbound';
+  type: "email" | "call" | "meeting" | "note";
+  direction: "inbound" | "outbound";
   subject?: string;
   content: string;
   user_id: string;
   related_project_id?: string;
-}
+};
 
 export interface Database {
   public: {
     Tables: {
       customers: {
         Row: Customer;
-        Insert: Omit<Customer, 'id' | 'created_at' | 'updated_at'>;
-        Update: Partial<Omit<Customer, 'id' | 'created_at' | 'updated_at'>>;
+        Insert: Omit<Customer, "id" | "created_at" | "updated_at">;
+        Update: Partial<Omit<Customer, "id" | "created_at" | "updated_at">>;
       };
       leads: {
         Row: Lead;
-        Insert: Omit<Lead, 'id' | 'created_at' | 'updated_at'>;
-        Update: Partial<Omit<Lead, 'id' | 'created_at' | 'updated_at'>>;
+        Insert: Omit<Lead, "id" | "created_at" | "updated_at">;
+        Update: Partial<Omit<Lead, "id" | "created_at" | "updated_at">>;
       };
       projects: {
         Row: Project;
-        Insert: Omit<Project, 'id' | 'created_at' | 'updated_at'>;
-        Update: Partial<Omit<Project, 'id' | 'created_at' | 'updated_at'>>;
+        Insert: Omit<Project, "id" | "created_at" | "updated_at">;
+        Update: Partial<Omit<Project, "id" | "created_at" | "updated_at">>;
       };
       communications: {
         Row: Communication;
-        Insert: Omit<Communication, 'id' | 'created_at'>;
-        Update: Partial<Omit<Communication, 'id' | 'created_at'>>;
+        Insert: Omit<Communication, "id" | "created_at">;
+        Update: Partial<Omit<Communication, "id" | "created_at">>;
       };
     };
   };
-} 
+}

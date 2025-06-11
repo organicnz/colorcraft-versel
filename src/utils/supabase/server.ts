@@ -1,20 +1,20 @@
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
 
 export const createClient = async () => {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
-    console.error('Missing Supabase environment variables:', {
-      url: supabaseUrl ? 'defined' : 'undefined',
-      key: supabaseKey ? 'defined' : 'undefined',
+    console.error("Missing Supabase environment variables:", {
+      url: supabaseUrl ? "defined" : "undefined",
+      key: supabaseKey ? "defined" : "undefined",
       url_length: supabaseUrl?.length || 0,
-      key_length: supabaseKey?.length || 0
+      key_length: supabaseKey?.length || 0,
     });
-    
+
     throw new Error(
-      'Missing Supabase environment variables. Check that NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set in your .env.local file.'
+      "Missing Supabase environment variables. Check that NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set in your .env.local file."
     );
   }
 
@@ -40,7 +40,7 @@ export const createClient = async () => {
       },
     });
   } catch (error) {
-    console.error('Error creating Supabase client:', error);
+    console.error("Error creating Supabase client:", error);
     throw error;
   }
-} 
+};

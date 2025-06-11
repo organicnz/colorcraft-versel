@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { errorMonitor, AppError, ErrorCode } from './monitoring';
+import { useState, useCallback } from "react";
+import { errorMonitor, AppError, ErrorCode } from "./monitoring";
 
 /**
  * Error state for use in React components
@@ -11,7 +11,7 @@ export interface ErrorState {
 }
 
 const initialErrorState: ErrorState = {
-  message: '',
+  message: "",
   code: undefined,
   hasError: false,
 };
@@ -27,7 +27,7 @@ export function useErrorHandler() {
    * Handle and capture an error
    */
   const handleError = useCallback((err: unknown, contextMessage?: string) => {
-    let errorMessage = 'An unexpected error occurred';
+    let errorMessage = "An unexpected error occurred";
     let errorCode = ErrorCode.UNEXPECTED_ERROR;
 
     if (err instanceof AppError) {
@@ -39,7 +39,7 @@ export function useErrorHandler() {
       errorMessage = contextMessage ? `${contextMessage}: ${err.message}` : err.message;
       // Track standard errors too
       errorMonitor.captureError(err);
-    } else if (typeof err === 'string') {
+    } else if (typeof err === "string") {
       errorMessage = err;
       // Create and track an error from the string
       errorMonitor.captureError(new Error(err));
@@ -71,7 +71,7 @@ export function useErrorHandler() {
 /**
  * Wrap an async function with error handling
  */
-export function useAsyncErrorHandler<T extends (...args: any[]) => Promise<any>>(
+export function useAsyncErrorHandler<T extends (...args: Parameters<T>) => Promise<ReturnType<T>>>(
   asyncFn: T,
   options?: {
     onError?: (error: Error) => void;
@@ -79,19 +79,19 @@ export function useAsyncErrorHandler<T extends (...args: any[]) => Promise<any>>
   }
 ) {
   const { handleError } = useErrorHandler();
-  
+
   return useCallback(
     async (...args: Parameters<T>): Promise<Awaited<ReturnType<T>> | null> => {
       try {
         return await asyncFn(...args);
       } catch (error) {
-        const context = options?.context ?? 'Error executing operation';
+        const context = options?.context ?? "Error executing operation";
         handleError(error, context);
-        
+
         if (options?.onError && error instanceof Error) {
           options.onError(error);
         }
-        
+
         return null;
       }
     },
@@ -117,10 +117,10 @@ export function withErrorHandling<T extends Record<string, unknown>>(
       };
 
       // Catch unhandled errors
-      window.addEventListener('error', errorHandler);
-      
+      window.addEventListener("error", errorHandler);
+
       return () => {
-        window.removeEventListener('error', errorHandler);
+        window.removeEventListener("error", errorHandler);
       };
     }, [handleError]);
 
@@ -132,8 +132,8 @@ export function withErrorHandling<T extends Record<string, unknown>>(
     return <Component {...props} />;
   };
 
-  const displayName = Component.displayName || Component.name || 'Component';
+  const displayName = Component.displayName || Component.name || "Component";
   WithErrorHandling.displayName = `withErrorHandling(${displayName})`;
 
   return WithErrorHandling;
-} 
+}

@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { User } from '@/types/database.types';
+import { useState } from "react";
+import { User } from "@/types/database.types";
 import {
   Table,
   TableBody,
@@ -10,17 +10,17 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
-import { formatDistanceToNow } from 'date-fns';
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { formatDistanceToNow } from "date-fns";
 
 interface UserRoleManagementProps {
   users: User[];
@@ -42,10 +42,10 @@ export default function UserRoleManagement({ users, currentUserId }: UserRoleMan
       setIsUpdating(true);
       setUpdatingUserId(userId);
 
-      const response = await fetch('/api/admin/users/update-role', {
-        method: 'POST',
+      const response = await fetch("/api/admin/users/update-role", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ userId, role: newRole }),
       });
@@ -53,20 +53,19 @@ export default function UserRoleManagement({ users, currentUserId }: UserRoleMan
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to update user role');
+        throw new Error(data.error || "Failed to update user role");
       }
 
-      toast.success('User role updated successfully');
-      
+      toast.success("User role updated successfully");
+
       // Update the state with the new role
       setRoleSelections((prev) => ({
         ...prev,
         [userId]: newRole,
       }));
-      
     } catch (error) {
-      console.error('Error updating user role:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to update user role');
+      console.error("Error updating user role:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to update user role");
     } finally {
       setIsUpdating(false);
       setUpdatingUserId(null);
@@ -113,9 +112,9 @@ export default function UserRoleManagement({ users, currentUserId }: UserRoleMan
                   </Select>
                 </TableCell>
                 <TableCell>
-                  {user.created_at 
-                    ? formatDistanceToNow(new Date(user.created_at), { addSuffix: true }) 
-                    : 'N/A'}
+                  {user.created_at
+                    ? formatDistanceToNow(new Date(user.created_at), { addSuffix: true })
+                    : "N/A"}
                 </TableCell>
                 <TableCell>
                   {user.id === currentUserId ? (
@@ -124,17 +123,16 @@ export default function UserRoleManagement({ users, currentUserId }: UserRoleMan
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handleRoleChange(user.id, roleSelections[user.id] || user.role)}
-                      disabled={
-                        isUpdating || 
-                        (roleSelections[user.id] || user.role) === user.role
+                      onClick={() =>
+                        handleRoleChange(user.id, roleSelections[user.id] || user.role)
                       }
+                      disabled={isUpdating || (roleSelections[user.id] || user.role) === user.role}
                     >
                       {isUpdating && updatingUserId === user.id
-                        ? 'Updating...'
+                        ? "Updating..."
                         : (roleSelections[user.id] || user.role) === user.role
-                        ? 'No Change'
-                        : 'Update Role'}
+                          ? "No Change"
+                          : "Update Role"}
                     </Button>
                   )}
                 </TableCell>
@@ -145,4 +143,4 @@ export default function UserRoleManagement({ users, currentUserId }: UserRoleMan
       </Table>
     </div>
   );
-} 
+}

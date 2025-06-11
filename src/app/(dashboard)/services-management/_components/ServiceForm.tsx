@@ -7,7 +7,14 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -50,9 +57,7 @@ export function ServiceForm({ initialData, isEditing = false }: ServiceFormProps
   async function onSubmit(data: any) {
     setIsSubmitting(true);
     try {
-      const result = isEditing
-        ? await updateService(data)
-        : await createService(data);
+      const result = isEditing ? await updateService(data) : await createService(data);
 
       if (result.error) {
         toast.error(result.error);
@@ -110,9 +115,7 @@ export function ServiceForm({ initialData, isEditing = false }: ServiceFormProps
                   <FormControl>
                     <Input placeholder="Brief description" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    A short description for service listings
-                  </FormDescription>
+                  <FormDescription>A short description for service listings</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -125,11 +128,7 @@ export function ServiceForm({ initialData, isEditing = false }: ServiceFormProps
                 <FormItem>
                   <FormLabel>Full Description</FormLabel>
                   <FormControl>
-                    <Textarea 
-                      placeholder="Describe the service in detail" 
-                      {...field} 
-                      rows={5}
-                    />
+                    <Textarea placeholder="Describe the service in detail" {...field} rows={5} />
                   </FormControl>
                   <FormDescription>
                     Provide a comprehensive description of what this service includes
@@ -146,14 +145,9 @@ export function ServiceForm({ initialData, isEditing = false }: ServiceFormProps
                 <FormItem>
                   <FormLabel>Price Range</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="e.g. $250 - $500" 
-                      {...field}
-                    />
+                    <Input placeholder="e.g. $250 - $500" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    Set the price range for this service
-                  </FormDescription>
+                  <FormDescription>Set the price range for this service</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -199,4 +193,4 @@ export function ServiceForm({ initialData, isEditing = false }: ServiceFormProps
       </CardContent>
     </Card>
   );
-} 
+}

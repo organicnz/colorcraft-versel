@@ -13,8 +13,12 @@ import { measurePerformance } from "@/lib/logger";
 
 // Define response types for improved client-side handling
 export type ActionResponse<T> =
-  | { success: true; data: T; }
-  | { success: false; error: string; code: 'UNAUTHORIZED' | 'VALIDATION' | 'NOT_FOUND' | 'SERVER_ERROR' | 'RATE_LIMITED'; };
+  | { success: true; data: T }
+  | {
+      success: false;
+      error: string;
+      code: "UNAUTHORIZED" | "VALIDATION" | "NOT_FOUND" | "SERVER_ERROR" | "RATE_LIMITED";
+    };
 
 // Validation schema for project creation/updates
 const projectSchema = z.object({
@@ -28,15 +32,17 @@ const projectSchema = z.object({
  * Base implementation of create project action
  */
 async function createProjectBase(formData: FormData): Promise<ActionResponse<Project>> {
-  return await measurePerformance('createProject', async () => {
+  return await measurePerformance("createProject", async () => {
     try {
       // Validate user is authenticated
-      const { data: { session } } = await auth();
+      const {
+        data: { session },
+      } = await auth();
       if (!session?.user) {
         return {
           success: false,
           error: "You must be logged in to create a project",
-          code: "UNAUTHORIZED"
+          code: "UNAUTHORIZED",
         };
       }
 
@@ -68,21 +74,21 @@ async function createProjectBase(formData: FormData): Promise<ActionResponse<Pro
         apiLogger.info(`Project created: ${project.id}`, {
           metadata: {
             userId: session.user.id,
-            projectId: project.id
-          }
+            projectId: project.id,
+          },
         });
 
         return { success: true, data: project };
       } catch (validationError) {
         if (validationError instanceof z.ZodError) {
-          const errorMessages = validationError.errors.map(err =>
-            `${err.path.join('.')}: ${err.message}`
-          ).join(", ");
+          const errorMessages = validationError.errors
+            .map((err) => `${err.path.join(".")}: ${err.message}`)
+            .join(", ");
 
           return {
             success: false,
             error: `Validation failed: ${errorMessages}`,
-            code: "VALIDATION"
+            code: "VALIDATION",
           };
         }
         throw validationError; // Re-throw unexpected validation errors
@@ -92,7 +98,7 @@ async function createProjectBase(formData: FormData): Promise<ActionResponse<Pro
       return {
         success: false,
         error: "An unexpected error occurred",
-        code: "SERVER_ERROR"
+        code: "SERVER_ERROR",
       };
     }
   });
@@ -102,15 +108,17 @@ async function createProjectBase(formData: FormData): Promise<ActionResponse<Pro
  * Base implementation of update project action
  */
 async function updateProjectBase(id: string, formData: FormData): Promise<ActionResponse<Project>> {
-  return await measurePerformance('updateProject', async () => {
+  return await measurePerformance("updateProject", async () => {
     try {
       // Validate user is authenticated
-      const { data: { session } } = await auth();
+      const {
+        data: { session },
+      } = await auth();
       if (!session?.user) {
         return {
           success: false,
           error: "You must be logged in to update a project",
-          code: "UNAUTHORIZED"
+          code: "UNAUTHORIZED",
         };
       }
 
@@ -124,8 +132,8 @@ async function updateProjectBase(id: string, formData: FormData): Promise<Action
       if (!existingProject) {
         return {
           success: false,
-          error: "Project not found or you don't have permission to update it",
-          code: "NOT_FOUND"
+          error: "Project not found or you don&apos;t have permission to update it",
+          code: "NOT_FOUND",
         };
       }
 
@@ -157,21 +165,21 @@ async function updateProjectBase(id: string, formData: FormData): Promise<Action
         apiLogger.info(`Project updated: ${id}`, {
           metadata: {
             userId: session.user.id,
-            projectId: id
-          }
+            projectId: id,
+          },
         });
 
         return { success: true, data: updatedProject };
       } catch (validationError) {
         if (validationError instanceof z.ZodError) {
-          const errorMessages = validationError.errors.map(err =>
-            `${err.path.join('.')}: ${err.message}`
-          ).join(", ");
+          const errorMessages = validationError.errors
+            .map((err) => `${err.path.join(".")}: ${err.message}`)
+            .join(", ");
 
           return {
             success: false,
             error: `Validation failed: ${errorMessages}`,
-            code: "VALIDATION"
+            code: "VALIDATION",
           };
         }
         throw validationError; // Re-throw unexpected validation errors
@@ -181,7 +189,7 @@ async function updateProjectBase(id: string, formData: FormData): Promise<Action
       return {
         success: false,
         error: "An unexpected error occurred",
-        code: "SERVER_ERROR"
+        code: "SERVER_ERROR",
       };
     }
   });
@@ -191,15 +199,17 @@ async function updateProjectBase(id: string, formData: FormData): Promise<Action
  * Base implementation of delete project action
  */
 async function deleteProjectBase(id: string): Promise<ActionResponse<{ id: string }>> {
-  return await measurePerformance('deleteProject', async () => {
+  return await measurePerformance("deleteProject", async () => {
     try {
       // Validate user is authenticated
-      const { data: { session } } = await auth();
+      const {
+        data: { session },
+      } = await auth();
       if (!session?.user) {
         return {
           success: false,
           error: "You must be logged in to delete a project",
-          code: "UNAUTHORIZED"
+          code: "UNAUTHORIZED",
         };
       }
 
@@ -213,15 +223,13 @@ async function deleteProjectBase(id: string): Promise<ActionResponse<{ id: strin
       if (!existingProject) {
         return {
           success: false,
-          error: "Project not found or you don't have permission to delete it",
-          code: "NOT_FOUND"
+          error: "Project not found or you don&apos;t have permission to delete it",
+          code: "NOT_FOUND",
         };
       }
 
       // Delete project from database
-      await db
-        .delete(projects)
-        .where(eq(projects.id, id));
+      await db.delete(projects).where(eq(projects.id, id));
 
       // Revalidate cache
       revalidatePath("/dashboard/portfolio");
@@ -229,8 +237,8 @@ async function deleteProjectBase(id: string): Promise<ActionResponse<{ id: strin
       apiLogger.info(`Project deleted: ${id}`, {
         metadata: {
           userId: session.user.id,
-          projectId: id
-        }
+          projectId: id,
+        },
       });
 
       return { success: true, data: { id } };
@@ -239,7 +247,7 @@ async function deleteProjectBase(id: string): Promise<ActionResponse<{ id: strin
       return {
         success: false,
         error: "An unexpected error occurred",
-        code: "SERVER_ERROR"
+        code: "SERVER_ERROR",
       };
     }
   });
@@ -249,17 +257,17 @@ async function deleteProjectBase(id: string): Promise<ActionResponse<{ id: strin
 export const createProject = withRateLimit(createProjectBase, {
   limit: 10, // 10 creations per minute
   windowInSeconds: 60,
-  identifier: 'createProject'
+  identifier: "createProject",
 });
 
 export const updateProject = withRateLimit(updateProjectBase, {
   limit: 20, // 20 updates per minute
   windowInSeconds: 60,
-  identifier: 'updateProject'
+  identifier: "updateProject",
 });
 
 export const deleteProject = withRateLimit(deleteProjectBase, {
   limit: 5, // 5 deletions per minute
   windowInSeconds: 60,
-  identifier: 'deleteProject'
+  identifier: "deleteProject",
 });

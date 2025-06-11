@@ -32,11 +32,11 @@ export default function ColorPalette() {
     const isCopied = copied === color;
 
     return (
-      <div 
-        key={displayName} 
+      <div
+        key={displayName}
         className="relative flex flex-col overflow-hidden rounded-md shadow-sm border border-border/30"
       >
-        <div 
+        <div
           className="h-16 w-full cursor-pointer flex items-center justify-center transition-all duration-200 hover:opacity-90"
           style={{ backgroundColor: color }}
           onClick={() => copyToClipboard(color)}
@@ -46,10 +46,13 @@ export default function ColorPalette() {
               Copied!
             </div>
           )}
-          <Copy size={16} className={cn(
-            "opacity-0 transition-opacity duration-200 group-hover:opacity-100",
-            isLightColor(color) ? "text-black/70" : "text-white/70"
-          )} />
+          <Copy
+            size={16}
+            className={cn(
+              "opacity-0 transition-opacity duration-200 group-hover:opacity-100",
+              isLightColor(color) ? "text-black/70" : "text-white/70"
+            )}
+          />
         </div>
         <div className="p-2 text-xs bg-background">
           <div className="font-medium">{displayName}</div>
@@ -63,15 +66,15 @@ export default function ColorPalette() {
   const isLightColor = (hex: string): boolean => {
     // Remove the # if it exists
     hex = hex.replace("#", "");
-    
+
     // Convert hex to RGB
     const r = parseInt(hex.substring(0, 2), 16);
     const g = parseInt(hex.substring(2, 4), 16);
     const b = parseInt(hex.substring(4, 6), 16);
-    
+
     // Calculate brightness
     const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-    
+
     // Return true if the color is light
     return brightness > 128;
   };
@@ -79,19 +82,18 @@ export default function ColorPalette() {
   // Render a color category with all its shades
   const renderColorCategory = (colorType: ColorType, title: string) => {
     const colorData = colors[colorType];
-    
+
     if (!colorData) return null;
 
     return (
       <div className="mb-8">
         <h3 className="text-lg font-semibold mb-3">{title}</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {hasShades(colorData) 
-            ? Object.entries(colorData).map(([shade, value]) => 
+          {hasShades(colorData)
+            ? Object.entries(colorData).map(([shade, value]) =>
                 renderSwatch(value as string, colorType, shade)
               )
-            : renderSwatch(colorData as string, colorType)
-          }
+            : renderSwatch(colorData as string, colorType)}
         </div>
       </div>
     );
@@ -100,25 +102,27 @@ export default function ColorPalette() {
   // Render gradients
   const renderGradients = () => {
     if (!colors.gradients) return null;
-    
+
     return (
       <div className="mb-8">
         <h3 className="text-lg font-semibold mb-3">Gradients</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {Object.entries(colors.gradients).map(([name, value]) => (
-            <div 
+            <div
               key={name}
               className="rounded-md overflow-hidden shadow-sm border border-border/30"
             >
-              <div 
+              <div
                 className="h-24 w-full cursor-pointer flex items-center justify-center transition-all duration-200"
                 style={{ background: value }}
                 onClick={() => copyToClipboard(value)}
               >
-                <span className={cn(
-                  "font-medium text-sm",
-                  name.includes("Glass") ? "text-black" : "text-white"
-                )}>
+                <span
+                  className={cn(
+                    "font-medium text-sm",
+                    name.includes("Glass") ? "text-black" : "text-white"
+                  )}
+                >
                   {name}
                 </span>
               </div>
@@ -143,13 +147,15 @@ export default function ColorPalette() {
           </Link>
         </Button>
       </div>
-      
+
       <p className="text-muted-foreground mb-8">
-        Click on any color to copy its hex value. This component visualizes all colors from the 
-        <code className="mx-1 px-1 py-0.5 bg-muted rounded font-mono text-xs">src/styles/colors.ts</code>
+        Click on any color to copy its hex value. This component visualizes all colors from the
+        <code className="mx-1 px-1 py-0.5 bg-muted rounded font-mono text-xs">
+          src/styles/colors.ts
+        </code>
         file.
       </p>
-      
+
       {renderColorCategory("primary", "Primary Colors")}
       {renderColorCategory("secondary", "Secondary Colors")}
       {renderColorCategory("accent", "Accent Colors")}
@@ -160,4 +166,4 @@ export default function ColorPalette() {
       {renderGradients()}
     </div>
   );
-} 
+}

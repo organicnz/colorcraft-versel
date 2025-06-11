@@ -1,14 +1,14 @@
-import { createClient } from '@/lib/supabase/server';
-import { getPortfolioProjects } from '@/services/portfolio.service';
+import { createClient } from "@/lib/supabase/server";
+import { getPortfolioProjects } from "@/services/portfolio.service";
 
 export default async function PortfolioArraysDebugPage() {
   const supabase = await createClient();
-  
+
   // Get raw data directly from Supabase
   const { data: rawProjects } = await supabase
-    .from('portfolio')
-    .select('*')
-    .eq('status', 'published')
+    .from("portfolio")
+    .select("*")
+    .eq("status", "published")
     .limit(3);
 
   // Get normalized data through service
@@ -17,7 +17,7 @@ export default async function PortfolioArraysDebugPage() {
   return (
     <div className="container py-12">
       <h1 className="text-2xl font-bold mb-6">Portfolio Array Debugging</h1>
-      
+
       <div className="space-y-8">
         <div>
           <h2 className="text-xl font-semibold mb-4">Raw Data from Supabase</h2>
@@ -41,8 +41,8 @@ export default async function PortfolioArraysDebugPage() {
               <div className="mt-2">
                 <strong>Raw after_images:</strong>
                 <div className="text-sm text-slate-600">
-                  Type: {typeof project.after_images}, 
-                  Length: {Array.isArray(project.after_images) ? project.after_images.length : 'N/A'}
+                  Type: {typeof project.after_images}, Length:{" "}
+                  {Array.isArray(project.after_images) ? project.after_images.length : "N/A"}
                 </div>
                 <pre className="text-xs bg-slate-50 p-2 rounded mt-1">
                   {JSON.stringify(project.after_images, null, 2)}
@@ -51,10 +51,9 @@ export default async function PortfolioArraysDebugPage() {
               <div className="mt-2">
                 <strong>First after image:</strong>
                 <div className="text-sm text-slate-600">
-                  {Array.isArray(project.after_images) && project.after_images.length > 0 
+                  {Array.isArray(project.after_images) && project.after_images.length > 0
                     ? project.after_images[0]
-                    : 'No images found'
-                  }
+                    : "No images found"}
                 </div>
               </div>
             </div>
@@ -63,4 +62,4 @@ export default async function PortfolioArraysDebugPage() {
       </div>
     </div>
   );
-} 
+}

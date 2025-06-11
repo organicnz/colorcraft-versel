@@ -90,9 +90,7 @@ export function GlassCard({
       {...props}
     >
       {/* Inner content with padding */}
-      <div className="relative z-10 p-6">
-        {children}
-      </div>
+      <div className="relative z-10 p-6">{children}</div>
 
       {/* Optional shimmer effect */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-glass-shimmer opacity-50" />

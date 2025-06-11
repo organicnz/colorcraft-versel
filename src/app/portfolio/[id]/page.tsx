@@ -1,16 +1,16 @@
-import React from 'react';
-import { notFound } from 'next/navigation';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { CalendarDays, ArrowLeft, Quote, User, Palette, Wrench } from 'lucide-react';
-import { getPortfolioProject, getRelatedProjects } from '@/services/portfolio.service';
-import EditorialButton from '@/components/portfolio/EditorialButton';
-import AdminProjectEditButton from '@/components/portfolio/AdminProjectEditButton';
-import RandomShowcaseImage from '@/components/portfolio/RandomShowcaseImage';
+import React from "react";
+import { notFound } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { CalendarDays, ArrowLeft, Quote, User, Palette, Wrench } from "lucide-react";
+import { getPortfolioProject, getRelatedProjects } from "@/services/portfolio.service";
+import EditorialButton from "@/components/portfolio/EditorialButton";
+import AdminProjectEditButton from "@/components/portfolio/AdminProjectEditButton";
+import RandomShowcaseImage from "@/components/portfolio/RandomShowcaseImage";
 
 interface PortfolioProjectPageProps {
   params: {
@@ -20,11 +20,11 @@ interface PortfolioProjectPageProps {
 
 export async function generateMetadata({ params }: PortfolioProjectPageProps) {
   const project = await getPortfolioProject(params.id);
-  
+
   if (!project) {
     return {
-      title: 'Project Not Found | Color & Craft',
-      description: 'The requested portfolio project could not be found.'
+      title: "Project Not Found | Color & Craft",
+      description: "The requested portfolio project could not be found.",
     };
   }
 
@@ -34,14 +34,16 @@ export async function generateMetadata({ params }: PortfolioProjectPageProps) {
     openGraph: {
       title: project.title,
       description: project.brief_description,
-      images: project.after_images?.[0] ? [
-        {
-          url: project.after_images[0],
-          width: 1200,
-          height: 630,
-          alt: project.title,
-        }
-      ] : [],
+      images: project.after_images?.[0]
+        ? [
+            {
+              url: project.after_images[0],
+              width: 1200,
+              height: 630,
+              alt: project.title,
+            },
+          ]
+        : [],
     },
   };
 }
@@ -50,9 +52,9 @@ export default async function PortfolioProjectPage({ params }: PortfolioProjectP
   // Fetch the main project and related projects in parallel
   const [project, relatedProjects] = await Promise.all([
     getPortfolioProject(params.id),
-    getPortfolioProject(params.id).then(p => 
+    getPortfolioProject(params.id).then((p) =>
       p ? getRelatedProjects(params.id, p.techniques || []) : []
-    )
+    ),
   ]);
 
   if (!project) {
@@ -76,11 +78,9 @@ export default async function PortfolioProjectPage({ params }: PortfolioProjectP
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <h1 className="text-4xl font-bold mb-2">{project.title}</h1>
-            <p className="text-xl text-muted-foreground">
-              {project.brief_description}
-            </p>
+            <p className="text-xl text-muted-foreground">{project.brief_description}</p>
           </div>
-          
+
           {/* Admin Controls */}
           <div className="flex items-center gap-3 ml-4">
             <AdminProjectEditButton projectId={project.id} variant="button" />
@@ -94,21 +94,22 @@ export default async function PortfolioProjectPage({ params }: PortfolioProjectP
             <div className="flex items-center gap-1">
               <CalendarDays className="h-4 w-4" />
               <span>
-                Completed {new Date(project.completion_date).toLocaleDateString('en-US', {
-                  month: 'long',
-                  year: 'numeric'
+                Completed{" "}
+                {new Date(project.completion_date).toLocaleDateString("en-US", {
+                  month: "long",
+                  year: "numeric",
                 })}
               </span>
             </div>
           )}
-          
+
           {project.client_name && (
             <div className="flex items-center gap-1">
               <User className="h-4 w-4" />
               <span>Client: {project.client_name}</span>
             </div>
           )}
-          
+
           {project.is_featured && (
             <Badge variant="secondary" className="ml-auto">
               Featured Project
@@ -191,9 +192,7 @@ export default async function PortfolioProjectPage({ params }: PortfolioProjectP
                   "{project.client_testimonial}"
                 </blockquote>
                 {project.client_name && (
-                  <cite className="block mt-4 text-sm font-medium">
-                    — {project.client_name}
-                  </cite>
+                  <cite className="block mt-4 text-sm font-medium">— {project.client_name}</cite>
                 )}
               </CardContent>
             </Card>
@@ -297,7 +296,7 @@ export default async function PortfolioProjectPage({ params }: PortfolioProjectP
               </Link>
             ))}
           </div>
-          
+
           <div className="text-center mt-8">
             <Button variant="outline" asChild>
               <Link href="/portfolio">View All Projects</Link>
@@ -310,4 +309,4 @@ export default async function PortfolioProjectPage({ params }: PortfolioProjectP
       <EditorialButton variant="floating" />
     </div>
   );
-} 
+}

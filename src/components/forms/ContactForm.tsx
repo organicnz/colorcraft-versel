@@ -1,25 +1,25 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 const contactFormSchema = z.object({
   name: z.string().min(2, "Name is required"),
   email: z.string().email("Valid email is required"),
   phone: z.string().optional(),
   message: z.string().min(10, "Message must be at least 10 characters"),
-})
+});
 
-type ContactFormValues = z.infer<typeof contactFormSchema>
+type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 export default function ContactForm() {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   const [formStatus, setFormStatus] = useState<{
-    success?: string
-    error?: string
-  }>({})
+    success?: string;
+    error?: string;
+  }>({});
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
@@ -29,11 +29,11 @@ export default function ContactForm() {
       phone: "",
       message: "",
     },
-  })
+  });
 
   async function onSubmit(data: ContactFormValues) {
-    setIsLoading(true)
-    setFormStatus({})
+    setIsLoading(true);
+    setFormStatus({});
 
     try {
       const response = await fetch("/api/contact", {
@@ -42,19 +42,19 @@ export default function ContactForm() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-      })
+      });
 
-      const result = await response.json()
+      const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Something went wrong")
+        throw new Error(result.error || "Something went wrong");
       }
 
       // Reset the form on success
-      form.reset()
+      form.reset();
       setFormStatus({
         success: "Your message has been sent. We'll get back to you soon!",
-      })
+      });
     } catch (error) {
       let errorMessage = "Failed to send message. Please try again.";
       if (error instanceof Error) {
@@ -62,9 +62,9 @@ export default function ContactForm() {
       }
       setFormStatus({
         error: errorMessage,
-      })
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
@@ -77,10 +77,7 @@ export default function ContactForm() {
       ) : (
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-slate-700"
-            >
+            <label htmlFor="name" className="block text-sm font-medium text-slate-700">
               Name
             </label>
             <input
@@ -90,17 +87,12 @@ export default function ContactForm() {
               disabled={isLoading}
             />
             {form.formState.errors.name && (
-              <p className="mt-1 text-sm text-red-600">
-                {form.formState.errors.name.message}
-              </p>
+              <p className="mt-1 text-sm text-red-600">{form.formState.errors.name.message}</p>
             )}
           </div>
 
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-slate-700"
-            >
+            <label htmlFor="email" className="block text-sm font-medium text-slate-700">
               Email
             </label>
             <input
@@ -111,17 +103,12 @@ export default function ContactForm() {
               disabled={isLoading}
             />
             {form.formState.errors.email && (
-              <p className="mt-1 text-sm text-red-600">
-                {form.formState.errors.email.message}
-              </p>
+              <p className="mt-1 text-sm text-red-600">{form.formState.errors.email.message}</p>
             )}
           </div>
 
           <div>
-            <label
-              htmlFor="phone"
-              className="block text-sm font-medium text-slate-700"
-            >
+            <label htmlFor="phone" className="block text-sm font-medium text-slate-700">
               Phone (optional)
             </label>
             <input
@@ -132,17 +119,12 @@ export default function ContactForm() {
               disabled={isLoading}
             />
             {form.formState.errors.phone && (
-              <p className="mt-1 text-sm text-red-600">
-                {form.formState.errors.phone.message}
-              </p>
+              <p className="mt-1 text-sm text-red-600">{form.formState.errors.phone.message}</p>
             )}
           </div>
 
           <div>
-            <label
-              htmlFor="message"
-              className="block text-sm font-medium text-slate-700"
-            >
+            <label htmlFor="message" className="block text-sm font-medium text-slate-700">
               Message
             </label>
             <textarea
@@ -153,16 +135,12 @@ export default function ContactForm() {
               disabled={isLoading}
             />
             {form.formState.errors.message && (
-              <p className="mt-1 text-sm text-red-600">
-                {form.formState.errors.message.message}
-              </p>
+              <p className="mt-1 text-sm text-red-600">{form.formState.errors.message.message}</p>
             )}
           </div>
 
           {formStatus.error && (
-            <div className="rounded-md bg-red-50 p-4 text-sm text-red-700">
-              {formStatus.error}
-            </div>
+            <div className="rounded-md bg-red-50 p-4 text-sm text-red-700">{formStatus.error}</div>
           )}
 
           <button
@@ -175,5 +153,5 @@ export default function ContactForm() {
         </form>
       )}
     </div>
-  )
-} 
+  );
+}

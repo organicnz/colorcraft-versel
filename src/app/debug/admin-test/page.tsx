@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import { User, Shield, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { User, Shield, CheckCircle, XCircle, Loader2 } from "lucide-react";
 
 // Force dynamic rendering for this debug page
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default function AdminTestPage() {
   const [user, setUser] = useState<any>(null);
@@ -25,37 +25,39 @@ export default function AdminTestPage() {
   const checkAuthStatus = async () => {
     try {
       const supabase = createClient();
-      
+
       // Get current user
-      const { data: { user: currentUser }, error: userError } = await supabase.auth.getUser();
-      
+      const {
+        data: { user: currentUser },
+        error: userError,
+      } = await supabase.auth.getUser();
+
       if (userError) {
         setError(`User fetch error: ${userError.message}`);
         return;
       }
-      
+
       setUser(currentUser);
-      
+
       if (!currentUser) {
-        setError('No user logged in');
+        setError("No user logged in");
         return;
       }
-      
+
       // Check if user is admin
       const { data: userData, error: roleError } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', currentUser.id)
+        .from("users")
+        .select("*")
+        .eq("id", currentUser.id)
         .single();
-      
+
       if (roleError) {
         setError(`Role fetch error: ${roleError.message}`);
         return;
       }
-      
+
       setUserData(userData);
-      setIsAdmin(userData?.role === 'admin');
-      
+      setIsAdmin(userData?.role === "admin");
     } catch (error: any) {
       setError(`Unexpected error: ${error.message}`);
     } finally {
@@ -107,9 +109,15 @@ export default function AdminTestPage() {
                   <span>Authenticated</span>
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  <p><strong>Email:</strong> {user.email}</p>
-                  <p><strong>User ID:</strong> {user.id}</p>
-                  <p><strong>Created:</strong> {new Date(user.created_at).toLocaleString()}</p>
+                  <p>
+                    <strong>Email:</strong> {user.email}
+                  </p>
+                  <p>
+                    <strong>User ID:</strong> {user.id}
+                  </p>
+                  <p>
+                    <strong>Created:</strong> {new Date(user.created_at).toLocaleString()}
+                  </p>
                 </div>
               </div>
             ) : (
@@ -146,22 +154,33 @@ export default function AdminTestPage() {
                       <XCircle className="h-5 w-5 text-orange-600" />
                       <span className="text-orange-600">No Admin Access</span>
                       <Badge variant="outline" className="text-orange-600 border-orange-200">
-                        {userData.role?.toUpperCase() || 'NO ROLE'}
+                        {userData.role?.toUpperCase() || "NO ROLE"}
                       </Badge>
                     </>
                   )}
                 </div>
-                
+
                 <div className="text-sm text-muted-foreground">
-                  <p><strong>Database Role:</strong> {userData.role || 'null'}</p>
-                  <p><strong>Full Name:</strong> {userData.full_name || 'Not set'}</p>
-                  <p><strong>Profile Created:</strong> {userData.created_at ? new Date(userData.created_at).toLocaleString() : 'Unknown'}</p>
+                  <p>
+                    <strong>Database Role:</strong> {userData.role || "null"}
+                  </p>
+                  <p>
+                    <strong>Full Name:</strong> {userData.full_name || "Not set"}
+                  </p>
+                  <p>
+                    <strong>Profile Created:</strong>{" "}
+                    {userData.created_at
+                      ? new Date(userData.created_at).toLocaleString()
+                      : "Unknown"}
+                  </p>
                 </div>
               </div>
             ) : user ? (
               <div className="text-orange-600">
                 <p>User authenticated but no database profile found.</p>
-                <p className="text-sm mt-2">This means the user exists in auth but not in the users table.</p>
+                <p className="text-sm mt-2">
+                  This means the user exists in auth but not in the users table.
+                </p>
               </div>
             ) : (
               <p className="text-muted-foreground">Please sign in to check admin status.</p>
@@ -177,16 +196,22 @@ export default function AdminTestPage() {
           <CardContent>
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <div className={`w-3 h-3 rounded-full ${isAdmin ? 'bg-green-500' : 'bg-red-500'}`} />
-                <span>Portfolio items should {isAdmin ? 'show' : 'hide'} edit icons</span>
+                <div
+                  className={`w-3 h-3 rounded-full ${isAdmin ? "bg-green-500" : "bg-red-500"}`}
+                />
+                <span>Portfolio items should {isAdmin ? "show" : "hide"} edit icons</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className={`w-3 h-3 rounded-full ${isAdmin ? 'bg-green-500' : 'bg-red-500'}`} />
-                <span>Floating editorial button should {isAdmin ? 'appear' : 'be hidden'}</span>
+                <div
+                  className={`w-3 h-3 rounded-full ${isAdmin ? "bg-green-500" : "bg-red-500"}`}
+                />
+                <span>Floating editorial button should {isAdmin ? "appear" : "be hidden"}</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className={`w-3 h-3 rounded-full ${isAdmin ? 'bg-green-500' : 'bg-red-500'}`} />
-                <span>Project pages should {isAdmin ? 'show' : 'hide'} admin controls</span>
+                <div
+                  className={`w-3 h-3 rounded-full ${isAdmin ? "bg-green-500" : "bg-red-500"}`}
+                />
+                <span>Project pages should {isAdmin ? "show" : "hide"} admin controls</span>
               </div>
             </div>
           </CardContent>
@@ -202,7 +227,7 @@ export default function AdminTestPage() {
               <Button asChild>
                 <Link href="/portfolio">View Portfolio (Test Icons)</Link>
               </Button>
-              
+
               {isAdmin && (
                 <>
                   <Button variant="outline" asChild>
@@ -213,25 +238,21 @@ export default function AdminTestPage() {
                   </Button>
                 </>
               )}
-              
+
               {!user && (
                 <Button variant="outline" asChild>
                   <Link href="/auth/signin">Sign In</Link>
                 </Button>
               )}
-              
-              <Button 
-                variant="outline" 
-                onClick={checkAuthStatus}
-                disabled={isLoading}
-              >
+
+              <Button variant="outline" onClick={checkAuthStatus} disabled={isLoading}>
                 {isLoading ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin mr-2" />
                     Checking...
                   </>
                 ) : (
-                  'Refresh Status'
+                  "Refresh Status"
                 )}
               </Button>
             </div>
@@ -240,4 +261,4 @@ export default function AdminTestPage() {
       </div>
     </div>
   );
-} 
+}

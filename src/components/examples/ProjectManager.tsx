@@ -35,12 +35,13 @@ export default function ProjectManager() {
     queryKey: ["projects"],
     queryFn: async () => {
       // This would normally be a fetch call to your API
-      // For demo purposes, we'll return mock data
+      // For demo purposes, we&apos;ll return mock data
       return [
         {
           id: "1",
           title: "Modern Website Redesign",
-          description: "A complete overhaul of the client's website with a focus on modern design principles.",
+          description:
+            "A complete overhaul of the client's website with a focus on modern design principles.",
           image_url: null,
           is_published: true,
           created_at: new Date(),
@@ -88,7 +89,7 @@ export default function ProjectManager() {
       };
 
       // Optimistically update to the new value
-      queryClient.setQueryData<Project[]>(["projects"], old => 
+      queryClient.setQueryData<Project[]>(["projects"], (old) =>
         old ? [optimisticProject, ...old] : [optimisticProject]
       );
 
@@ -135,8 +136,8 @@ export default function ProjectManager() {
       const previousProjects = queryClient.getQueryData<Project[]>(["projects"]) || [];
 
       // Optimistically remove the project
-      queryClient.setQueryData<Project[]>(["projects"], old => 
-        old ? old.filter(project => project.id !== id) : []
+      queryClient.setQueryData<Project[]>(["projects"], (old) =>
+        old ? old.filter((project) => project.id !== id) : []
       );
 
       // Return the context
@@ -180,12 +181,12 @@ export default function ProjectManager() {
       const previousProjects = queryClient.getQueryData<Project[]>(["projects"]) || [];
 
       // Find the project being updated
-      const projectIndex = previousProjects.findIndex(p => p.id === id);
+      const projectIndex = previousProjects.findIndex((p) => p.id === id);
       if (projectIndex === -1) return { previousProjects };
 
       // Create a copy of the projects array
       const updatedProjects = [...previousProjects];
-      
+
       // Update the project with optimistic values
       updatedProjects[projectIndex] = {
         ...updatedProjects[projectIndex],
@@ -226,27 +227,33 @@ export default function ProjectManager() {
   });
 
   // Handle creating a new project
-  const handleCreateProject = useCallback((e: React.FormEvent) => {
-    e.preventDefault();
-    const form = new FormData();
-    form.append("title", formData.title);
-    form.append("description", formData.description);
-    form.append("is_published", formData.is_published.toString());
-    createProjectMutation.mutate(form);
-  }, [formData, createProjectMutation]);
+  const handleCreateProject = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      const form = new FormData();
+      form.append("title", formData.title);
+      form.append("description", formData.description);
+      form.append("is_published", formData.is_published.toString());
+      createProjectMutation.mutate(form);
+    },
+    [formData, createProjectMutation]
+  );
 
   // Handle updating a project
-  const handleUpdateProject = useCallback((e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingId) return;
-    
-    const form = new FormData();
-    form.append("title", formData.title);
-    form.append("description", formData.description);
-    form.append("is_published", formData.is_published.toString());
-    
-    updateProjectMutation.mutate({ id: editingId, formData: form });
-  }, [editingId, formData, updateProjectMutation]);
+  const handleUpdateProject = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!editingId) return;
+
+      const form = new FormData();
+      form.append("title", formData.title);
+      form.append("description", formData.description);
+      form.append("is_published", formData.is_published.toString());
+
+      updateProjectMutation.mutate({ id: editingId, formData: form });
+    },
+    [editingId, formData, updateProjectMutation]
+  );
 
   // Handle starting to edit a project
   const handleEdit = (project: Project) => {
@@ -261,13 +268,13 @@ export default function ProjectManager() {
   // Handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   // Handle checkbox changes
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
-    setFormData(prev => ({ ...prev, [name]: checked }));
+    setFormData((prev) => ({ ...prev, [name]: checked }));
   };
 
   // Cancel editing
@@ -279,16 +286,16 @@ export default function ProjectManager() {
   return (
     <div className="container mx-auto p-4 max-w-4xl">
       <h1 className="text-2xl font-bold mb-6">Project Manager</h1>
-      
+
       {/* Project Form */}
-      <form 
+      <form
         onSubmit={editingId ? handleUpdateProject : handleCreateProject}
         className="bg-card p-4 rounded-lg shadow mb-8"
       >
         <h2 className="text-xl font-semibold mb-4">
           {editingId ? "Edit Project" : "Create New Project"}
         </h2>
-        
+
         <div className="space-y-4">
           <div>
             <label htmlFor="title" className="block text-sm font-medium mb-1">
@@ -303,7 +310,7 @@ export default function ProjectManager() {
               required
             />
           </div>
-          
+
           <div>
             <label htmlFor="description" className="block text-sm font-medium mb-1">
               Description
@@ -317,7 +324,7 @@ export default function ProjectManager() {
               rows={3}
             />
           </div>
-          
+
           <div className="flex items-center">
             <input
               id="is_published"
@@ -332,9 +339,9 @@ export default function ProjectManager() {
             </label>
           </div>
         </div>
-        
+
         <div className="mt-6 flex space-x-2">
-          <Button 
+          <Button
             type="submit"
             disabled={createProjectMutation.isPending || updateProjectMutation.isPending}
           >
@@ -343,7 +350,7 @@ export default function ProjectManager() {
             )}
             {editingId ? "Update Project" : "Create Project"}
           </Button>
-          
+
           {editingId && (
             <Button type="button" variant="outline" onClick={cancelEdit}>
               Cancel
@@ -351,11 +358,11 @@ export default function ProjectManager() {
           )}
         </div>
       </form>
-      
+
       {/* Projects List */}
       <div>
         <h2 className="text-xl font-semibold mb-4">Your Projects</h2>
-        
+
         {isLoading ? (
           <div className="flex justify-center p-8">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -367,11 +374,11 @@ export default function ProjectManager() {
         ) : (
           <div className="space-y-4">
             {projects.map((project) => (
-              <div 
-                key={project.id} 
+              <div
+                key={project.id}
                 className={`p-4 rounded-lg border ${
-                  project.is_published 
-                    ? "border-green-200 bg-green-50 dark:bg-green-950/20 dark:border-green-900" 
+                  project.is_published
+                    ? "border-green-200 bg-green-50 dark:bg-green-950/20 dark:border-green-900"
                     : "border-yellow-200 bg-yellow-50 dark:bg-yellow-950/20 dark:border-yellow-900"
                 }`}
               >
@@ -382,10 +389,10 @@ export default function ProjectManager() {
                       {project.description || "No description provided"}
                     </p>
                     <div className="mt-2">
-                      <span 
+                      <span
                         className={`text-xs px-2 py-1 rounded-full ${
-                          project.is_published 
-                            ? "bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200" 
+                          project.is_published
+                            ? "bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200"
                             : "bg-yellow-200 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
                         }`}
                       >
@@ -393,25 +400,25 @@ export default function ProjectManager() {
                       </span>
                     </div>
                   </div>
-                  
+
                   <div className="flex space-x-2">
-                    <Button 
-                      variant="ghost" 
+                    <Button
+                      variant="ghost"
                       size="icon"
                       onClick={() => handleEdit(project)}
                       disabled={deleteProjectMutation.isPending}
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
-                    <Button 
-                      variant="ghost" 
+                    <Button
+                      variant="ghost"
                       size="icon"
                       onClick={() => deleteProjectMutation.mutate(project.id)}
                       disabled={deleteProjectMutation.isPending}
                       className="text-destructive hover:text-destructive"
                     >
-                      {deleteProjectMutation.isPending && 
-                       deleteProjectMutation.variables === project.id ? (
+                      {deleteProjectMutation.isPending &&
+                      deleteProjectMutation.variables === project.id ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
                       ) : (
                         <Trash className="h-4 w-4" />

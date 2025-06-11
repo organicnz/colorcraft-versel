@@ -1,5 +1,5 @@
-import { useMutation, useQueryClient, UseMutationOptions } from '@tanstack/react-query';
-import { useEffect, useRef } from 'react';
+import { useMutation, useQueryClient, UseMutationOptions } from "@tanstack/react-query";
+import { useEffect, useRef } from "react";
 
 /**
  * A utility hook for handling optimistic updates with React Query
@@ -7,13 +7,21 @@ import { useEffect, useRef } from 'react';
  * @param mutationFn The function that performs the mutation
  * @param options Additional options for optimistic updates
  */
-export function useOptimisticMutation<TData, TError, TVariables, TContext>(
+export function useOptimisticMutation<TData, TError, TVariables, TContext = unknown>(
   queryKey: string[],
   mutationFn: (variables: TVariables) => Promise<TData>,
   options?: {
     onMutate?: (variables: TVariables) => Promise<TContext> | TContext;
-    onSuccess?: (data: TData, variables: TVariables, context: TContext | undefined) => void | Promise<unknown>;
-    onError?: (error: TError, variables: TVariables, context: TContext | undefined) => void | Promise<unknown>;
+    onSuccess?: (
+      data: TData,
+      variables: TVariables,
+      context: TContext | undefined
+    ) => void | Promise<unknown>;
+    onError?: (
+      error: TError,
+      variables: TVariables,
+      context: TContext | undefined
+    ) => void | Promise<unknown>;
     optimisticUpdater?: (variables: TVariables, queryData: unknown) => unknown;
     rollbackOnError?: boolean;
   }
@@ -41,9 +49,7 @@ export function useOptimisticMutation<TData, TError, TVariables, TContext>(
       } catch (error) {
         // Check if this error is due to our own abort
         if (abortControllerRef.current?.signal.aborted) {
-          // TypeScript needs this cast because it doesn't understand
-          // that this throw will create a never-resolving promise
-          throw new Error('Mutation aborted') as unknown as TData;
+          throw new Error("Mutation aborted");
         }
         throw error;
       }
@@ -74,15 +80,15 @@ export function useOptimisticMutation<TData, TError, TVariables, TContext>(
         return options.onSuccess(data, variables, context);
       }
     },
-    onError: (error, variables, context: any) => {
-      // Rollback to the previous data if rollback is enabled
-      if (rollbackEnabled && context?.previousData !== undefined) {
-        queryClient.setQueryData(queryKey, context.previousData);
+    onError: (error, variables, context) => {
+      // Rollback to previous data if rollback is enabled
+      if (rollbackEnabled && context && "previousData" in context) {
+        queryClient.setQueryData(queryKey, (context as { previousData: unknown }).previousData);
       }
 
       // Apply the custom onError function if provided
       if (options?.onError) {
-        return options.onError(error as TError, variables, context);
+        return options.onError(error, variables, context);
       }
     },
   });
@@ -103,6 +109,6 @@ export function handleMutationResponse<T>(
   if (response.success && response.data && handlers.onSuccess) {
     handlers.onSuccess(response.data);
   } else if (!response.success && handlers.onError) {
-    handlers.onError(response.error || 'Something went wrong', response.code);
+    handlers.onError(response.error || "Something went wrong", response.code);
   }
 }

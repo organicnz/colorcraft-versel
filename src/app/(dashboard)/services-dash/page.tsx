@@ -8,32 +8,34 @@ export const dynamic = "force-dynamic";
 
 export default async function ServicesDashboardPage() {
   const supabase = await createClient();
-  
+
   // Check if user is logged in
-  const { data: { session } } = await supabase.auth.getSession();
-  
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
   if (!session) {
     redirect("/auth/signin");
   }
-  
+
   // Get user role
   const { data: userWithRole } = await supabase
     .from("users")
     .select("role")
     .eq("id", session.user.id)
     .single();
-    
+
   // Ensure only admins can access
   if (!userWithRole || userWithRole.role !== "admin") {
     notFound();
   }
-  
+
   // Fetch services
   const { data: services, error } = await supabase
     .from("services")
     .select("*")
     .order("created_at", { ascending: false });
-    
+
   if (error) {
     console.error("Error fetching services:", error);
     return (
@@ -45,7 +47,7 @@ export default async function ServicesDashboardPage() {
       </div>
     );
   }
-  
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
@@ -54,7 +56,7 @@ export default async function ServicesDashboardPage() {
           <Button>Add New Service</Button>
         </Link>
       </div>
-      
+
       {services && services.length > 0 ? (
         <ServicesTable services={services} />
       ) : (
@@ -70,4 +72,4 @@ export default async function ServicesDashboardPage() {
       )}
     </div>
   );
-} 
+}

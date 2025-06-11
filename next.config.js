@@ -7,87 +7,103 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 });
 
 const nextConfig = {
-  reactStrictMode: true,
-
-  // Compiler optimizations
-  compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
+  // Environment variables validation
+  env: {
+    CUSTOM_KEY: process.env.CUSTOM_KEY,
   },
 
-  // Experimental features for better performance
+  // Performance optimizations
   experimental: {
     optimizeCss: true,
-    optimizePackageImports: [
-      '@radix-ui/react-dialog',
-      '@radix-ui/react-dropdown-menu',
-      '@radix-ui/react-avatar',
-      '@radix-ui/react-toast',
-      '@tanstack/react-query',
-      'lucide-react',
-      'framer-motion',
-    ],
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
 
+  // Turbopack configuration (moved from experimental.turbo)
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
+      },
+    },
+  },
 
-
-  // Enhanced image optimization
+  // Image optimization
   images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '*.supabase.co',
+        port: '',
+        pathname: '/storage/v1/object/public/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'unsplash.com',
+      },
+    ],
     formats: ['image/webp', 'image/avif'],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 86400, // 24 hours
+    minimumCacheTTL: 60,
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    domains: [
-      'images.unsplash.com',
-      'via.placeholder.com',
-      'tydgehnkaszuvcaywwdm.supabase.co'
-    ],
   },
 
-  // Skip build optimizations for faster development
-  eslint: {
-    ignoreDuringBuilds: process.env.NODE_ENV === 'production',
-  },
-  typescript: {
-    ignoreBuildErrors: process.env.NODE_ENV === 'production',
-  },
+  // Build optimizations
+  swcMinify: true,
+  poweredByHeader: false,
+  compress: true,
+  productionBrowserSourceMaps: false,
 
-  // Optimize page loading
-  onDemandEntries: {
-    maxInactiveAge: 25 * 1000,
-    pagesBufferLength: 2,
-  },
+  // Headers for security and performance
+  headers: async () => [
+    {
+      source: '/(.*)',
+      headers: [
+        {
+          key: 'X-Content-Type-Options',
+          value: 'nosniff',
+        },
+        {
+          key: 'X-Frame-Options',
+          value: 'DENY',
+        },
+        {
+          key: 'X-XSS-Protection',
+          value: '1; mode=block',
+        },
+      ],
+    },
+    {
+      source: '/api/(.*)',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'no-store, max-age=0',
+        },
+      ],
+    },
+  ],
 
   // Advanced webpack configuration
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    // Path aliases for better module resolution
+  webpack: (config, { dev, isServer }) => {
+    // Path aliases
     config.resolve.alias['@'] = path.join(__dirname, 'src');
 
-    // Exclude problematic files from compilation
+    // Exclude test files from compilation
     config.module.rules.push({
-      test: /\.(ts|tsx)$/,
-      exclude: [
-        /\.test\.(ts|tsx)$/,
-        /\.spec\.(ts|tsx)$/,
-        /src\/lib\/db\/config\.test\.ts$/,
-        /src\/lib\/rate-limit\.test\.ts$/,
-        /src\/lib\/features\/features\.test\.ts$/,
-        /node_modules/,
-        /supabase\/functions/
-      ],
+      test: /\.(test|spec)\.(ts|tsx)$/,
+      exclude: /node_modules/,
+      use: 'ignore-loader',
     });
-
-    // Suppress specific warnings
-    config.ignoreWarnings = [
-      /Critical dependency: the request of a dependency is an expression/,
-      /Module not found/,
-      /Can't resolve.*supabase.*functions/,
-    ];
 
     // Performance optimizations for production
     if (!dev && !isServer) {
-      // Enhanced bundle splitting
       config.optimization.splitChunks = {
         chunks: 'all',
         minSize: 20000,
@@ -105,75 +121,38 @@ const nextConfig = {
             priority: 20,
             reuseExistingChunk: true,
           },
-          radixui: {
+          ui: {
             test: /[\\/]node_modules[\\/]@radix-ui[\\/]/,
-            name: 'radix-ui',
-            priority: 15,
-            reuseExistingChunk: true,
-          },
-          supabase: {
-            test: /[\\/]node_modules[\\/]@supabase[\\/]/,
-            name: 'supabase',
+            name: 'ui',
             priority: 15,
             reuseExistingChunk: true,
           },
         },
       };
 
-      // Tree shaking optimization
       config.optimization.usedExports = true;
       config.optimization.sideEffects = false;
-    }
-
-    // Development optimizations
-    if (dev) {
-      config.devtool = 'eval-cheap-module-source-map';
     }
 
     return config;
   },
 
-  // Headers for better caching and security
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block',
-          },
-        ],
-      },
-      {
-        source: '/api/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, s-maxage=60, stale-while-revalidate=300',
-          },
-        ],
-      },
-    ];
+  // TypeScript configuration
+  typescript: {
+    ignoreBuildErrors: false,
   },
 
-  // Redirect optimizations
-  async redirects() {
-    return [
-      {
-        source: '/home',
-        destination: '/',
-        permanent: true,
-      },
-    ];
+  // ESLint configuration
+  eslint: {
+    ignoreDuringBuilds: false,
+    dirs: ['src'],
+  },
+
+  // Logging configuration
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
   },
 };
 

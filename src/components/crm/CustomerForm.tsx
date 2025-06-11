@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Customer } from '@/types/database.types';
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Customer } from "@/types/database.types";
 
 const customerSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -24,28 +24,28 @@ interface CustomerFormProps {
   isLoading?: boolean;
 }
 
-export default function CustomerForm({ 
-  onSubmit, 
-  initialData = {}, 
-  isLoading = false 
+export default function CustomerForm({
+  onSubmit,
+  initialData = {},
+  isLoading = false,
 }: CustomerFormProps) {
-  const { 
-    register, 
-    handleSubmit, 
-    formState: { errors } 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
   } = useForm<CustomerFormValues>({
     resolver: zodResolver(customerSchema),
     defaultValues: {
-      name: initialData.name || '',
-      email: initialData.email || '',
-      phone: initialData.phone || '',
-      address: initialData.address || '',
-      status: initialData.status || 'active',
-      source: initialData.source || '',
-      notes: initialData.notes || '',
+      name: initialData.name || "",
+      email: initialData.email || "",
+      phone: initialData.phone || "",
+      address: initialData.address || "",
+      status: initialData.status || "active",
+      source: initialData.source || "",
+      notes: initialData.notes || "",
     },
   });
-  
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -56,14 +56,12 @@ export default function CustomerForm({
           <input
             id="name"
             type="text"
-            {...register('name')}
+            {...register("name")}
             className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           />
-          {errors.name && (
-            <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
-          )}
+          {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
         </div>
-        
+
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">
             Email*
@@ -71,14 +69,12 @@ export default function CustomerForm({
           <input
             id="email"
             type="email"
-            {...register('email')}
+            {...register("email")}
             className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           />
-          {errors.email && (
-            <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
-          )}
+          {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
         </div>
-        
+
         <div>
           <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-1">
             Phone
@@ -86,32 +82,28 @@ export default function CustomerForm({
           <input
             id="phone"
             type="tel"
-            {...register('phone')}
+            {...register("phone")}
             className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           />
-          {errors.phone && (
-            <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>
-          )}
+          {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>}
         </div>
-        
+
         <div>
           <label htmlFor="status" className="block text-sm font-medium text-slate-700 mb-1">
             Status*
           </label>
           <select
             id="status"
-            {...register('status')}
+            {...register("status")}
             className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
             <option value="potential">Potential</option>
           </select>
-          {errors.status && (
-            <p className="mt-1 text-sm text-red-600">{errors.status.message}</p>
-          )}
+          {errors.status && <p className="mt-1 text-sm text-red-600">{errors.status.message}</p>}
         </div>
-        
+
         <div>
           <label htmlFor="source" className="block text-sm font-medium text-slate-700 mb-1">
             Source
@@ -119,13 +111,13 @@ export default function CustomerForm({
           <input
             id="source"
             type="text"
-            {...register('source')}
+            {...register("source")}
             className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             placeholder="How did they find us?"
           />
         </div>
       </div>
-      
+
       <div>
         <label htmlFor="address" className="block text-sm font-medium text-slate-700 mb-1">
           Address
@@ -133,11 +125,11 @@ export default function CustomerForm({
         <input
           id="address"
           type="text"
-          {...register('address')}
+          {...register("address")}
           className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
-      
+
       <div>
         <label htmlFor="notes" className="block text-sm font-medium text-slate-700 mb-1">
           Notes
@@ -145,11 +137,11 @@ export default function CustomerForm({
         <textarea
           id="notes"
           rows={3}
-          {...register('notes')}
+          {...register("notes")}
           className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
-      
+
       <div className="flex justify-end">
         <button
           type="submit"
@@ -161,4 +153,4 @@ export default function CustomerForm({
       </div>
     </form>
   );
-} 
+}

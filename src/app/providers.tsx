@@ -17,7 +17,7 @@ export function Providers({ children }: { children: ReactNode }) {
           disableTransitionOnChange={false}
           storageKey="theme"
           enableColorScheme={true}
-          themes={['light', 'dark', 'system']}
+          themes={["light", "dark", "system"]}
         >
           {children}
           <Toaster />

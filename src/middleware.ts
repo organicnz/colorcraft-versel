@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/middleware";
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-  console.log(`🔍 [Middleware] Processing request to: ${pathname}`);
+  console.warn(`🔍 [Middleware] Processing request to: ${pathname}`);
 
   const { supabase, response } = createClient(request);
 
@@ -12,38 +12,38 @@ export async function middleware(request: NextRequest) {
     data: { session },
   } = await supabase.auth.getSession();
 
-  console.log(
+  console.warn(
     `🔍 [Middleware] Session status for ${pathname}: ${session ? `authenticated (${session.user.email})` : "not authenticated"}`
   );
 
   // Handle the portfolio-cards redirect
   if (request.nextUrl.pathname === "/portfolio-cards") {
-    console.log(`🔄 [Middleware] Redirecting /portfolio-cards to /portfolio`);
+    console.warn(`🔄 [Middleware] Redirecting /portfolio-cards to /portfolio`);
     return NextResponse.redirect(new URL("/portfolio", request.url));
   }
 
   // Handle the CRM redirect if needed
   if (request.nextUrl.pathname === "/crm") {
-    console.log(`🔄 [Middleware] Redirecting /crm to /dashboard/crm`);
+    console.warn(`🔄 [Middleware] Redirecting /crm to /dashboard/crm`);
     return NextResponse.redirect(new URL("/dashboard/crm", request.url));
   }
 
   // Handle the admin redirect
   if (request.nextUrl.pathname === "/admin") {
-    console.log(`🔄 [Middleware] Redirecting /admin to /dashboard/admin`);
+    console.warn(`🔄 [Middleware] Redirecting /admin to /dashboard/admin`);
     return NextResponse.redirect(new URL("/dashboard/admin", request.url));
   }
 
   // Protect dashboard routes
   if (request.nextUrl.pathname.startsWith("/dashboard")) {
     if (!session) {
-      console.log(
+      console.warn(
         `🚫 [Middleware] Blocking access to ${pathname} - not authenticated, redirecting to signin`
       );
       return NextResponse.redirect(new URL("/auth/signin", request.url));
     }
 
-    console.log(`✅ [Middleware] Allowing access to ${pathname} - user authenticated`);
+    console.warn(`✅ [Middleware] Allowing access to ${pathname} - user authenticated`);
 
     // Check user role for admin routes
     if (
@@ -52,7 +52,7 @@ export async function middleware(request: NextRequest) {
       request.nextUrl.pathname.includes("/portfolio-dash") ||
       request.nextUrl.pathname.includes("/services-management")
     ) {
-      console.log(`🔍 [Middleware] Checking admin role for ${pathname}`);
+      console.warn(`🔍 [Middleware] Checking admin role for ${pathname}`);
 
       try {
         const { data: userData } = await supabase
@@ -62,13 +62,13 @@ export async function middleware(request: NextRequest) {
           .single();
 
         if (!userData || userData.role !== "admin") {
-          console.log(
+          console.warn(
             `🚫 [Middleware] Blocking admin access to ${pathname} - user role: ${userData?.role || "none"}`
           );
           return NextResponse.redirect(new URL("/dashboard", request.url));
         }
 
-        console.log(`✅ [Middleware] Allowing admin access to ${pathname} - user is admin`);
+        console.warn(`✅ [Middleware] Allowing admin access to ${pathname} - user is admin`);
       } catch (error) {
         console.error(`💥 [Middleware] Error checking user role for ${pathname}:`, error);
         return NextResponse.redirect(new URL("/auth/signin", request.url));
@@ -79,16 +79,16 @@ export async function middleware(request: NextRequest) {
   // Protect account routes
   if (request.nextUrl.pathname.startsWith("/account")) {
     if (!session) {
-      console.log(
+      console.warn(
         `🚫 [Middleware] Blocking access to ${pathname} - not authenticated, redirecting to signin`
       );
       return NextResponse.redirect(new URL("/auth/signin", request.url));
     }
 
-    console.log(`✅ [Middleware] Allowing access to ${pathname} - user authenticated`);
+    console.warn(`✅ [Middleware] Allowing access to ${pathname} - user authenticated`);
   }
 
-  console.log(`✅ [Middleware] Request completed for ${pathname}`);
+  console.warn(`✅ [Middleware] Request completed for ${pathname}`);
   // Return the response to continue the request
   return response;
 }

@@ -9,4 +9,4 @@ export const serviceSchema = z.object({
   image_url: z.string().optional(),
 });
 
-export type ServiceFormData = z.infer<typeof serviceSchema>; 
+export type ServiceFormData = z.infer<typeof serviceSchema>;

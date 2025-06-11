@@ -22,23 +22,26 @@ interface OptimizedImageProps {
 }
 
 const OptimizedImage = forwardRef<HTMLImageElement, OptimizedImageProps>(
-  ({
-    src,
-    alt,
-    width,
-    height,
-    fill = false,
-    priority = false,
-    quality = 75,
-    placeholder = "empty",
-    sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
-    className,
-    fallbackSrc = "/images/placeholder.jpg",
-    blurDataURL,
-    onLoad,
-    onError,
-    ...props
-  }, ref) => {
+  (
+    {
+      src,
+      alt,
+      width,
+      height,
+      fill = false,
+      priority = false,
+      quality = 75,
+      placeholder = "empty",
+      sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
+      className,
+      fallbackSrc = "/images/placeholder.jpg",
+      blurDataURL,
+      onLoad,
+      onError,
+      ...props
+    },
+    ref
+  ) => {
     const [imageSrc, setImageSrc] = useState(src);
     const [isLoading, setIsLoading] = useState(true);
     const [hasError, setHasError] = useState(false);
@@ -56,7 +59,8 @@ const OptimizedImage = forwardRef<HTMLImageElement, OptimizedImageProps>(
     };
 
     // Generate blur data URL if none provided
-    const defaultBlurDataURL = blurDataURL || 
+    const defaultBlurDataURL =
+      blurDataURL ||
       `data:image/svg+xml;base64,${Buffer.from(
         `<svg width="${width || 400}" height="${height || 300}" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -67,7 +71,7 @@ const OptimizedImage = forwardRef<HTMLImageElement, OptimizedImageProps>(
           </defs>
           <rect width="100%" height="100%" fill="url(#grad)" />
         </svg>`
-      ).toString('base64')}`;
+      ).toString("base64")}`;
 
     const imageProps = {
       src: imageSrc,
@@ -92,12 +96,7 @@ const OptimizedImage = forwardRef<HTMLImageElement, OptimizedImageProps>(
     if (fill) {
       return (
         <div className="relative overflow-hidden">
-          <Image
-            {...imageProps}
-            fill
-            sizes={sizes}
-            style={{ objectFit: 'cover' }}
-          />
+          <Image {...imageProps} fill sizes={sizes} style={{ objectFit: "cover" }} />
           {isLoading && (
             <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-200 to-gray-300" />
           )}
@@ -107,14 +106,9 @@ const OptimizedImage = forwardRef<HTMLImageElement, OptimizedImageProps>(
 
     return (
       <div className="relative">
-        <Image
-          {...imageProps}
-          width={width!}
-          height={height!}
-          sizes={sizes}
-        />
+        <Image {...imageProps} width={width!} height={height!} sizes={sizes} />
         {isLoading && (
-          <div 
+          <div
             className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-200 to-gray-300 rounded"
             style={{ width, height }}
           />
@@ -126,4 +120,4 @@ const OptimizedImage = forwardRef<HTMLImageElement, OptimizedImageProps>(
 
 OptimizedImage.displayName = "OptimizedImage";
 
-export default OptimizedImage; 
+export default OptimizedImage;

@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/client';
+import { createClient } from "@/lib/supabase/client";
 
 /**
  * Upload images and automatically refresh the portfolio database
@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 export async function uploadAndRefreshPortfolioImages(
   portfolioId: string,
   files: File[],
-  category: 'before_images' | 'after_images'
+  category: "before_images" | "after_images"
 ): Promise<{
   success: boolean;
   uploadedFiles: string[];
@@ -20,10 +20,8 @@ export async function uploadAndRefreshPortfolioImages(
     // 1. Upload files to storage
     for (const file of files) {
       const fileName = `${portfolioId}/${category}/${Date.now()}-${file.name}`;
-      
-      const { data, error } = await supabase.storage
-        .from('portfolio')
-        .upload(fileName, file);
+
+      const { data, error } = await supabase.storage.from("portfolio").upload(fileName, file);
 
       if (error) {
         throw new Error(`Upload failed for ${file.name}: ${error.message}`);
@@ -34,30 +32,29 @@ export async function uploadAndRefreshPortfolioImages(
 
     // 2. Automatically refresh the portfolio database after upload
     const { data: refreshData, error: refreshError } = await supabase.rpc(
-      'refresh_portfolio_images',
+      "refresh_portfolio_images",
       { portfolio_uuid: portfolioId }
     );
 
     if (refreshError) {
-      console.warn('Upload succeeded but refresh failed:', refreshError);
+      console.warn("Upload succeeded but refresh failed:", refreshError);
       return {
         success: true,
         uploadedFiles,
-        error: `Upload succeeded but database refresh failed: ${refreshError.message}`
+        error: `Upload succeeded but database refresh failed: ${refreshError.message}`,
       };
     }
 
     return {
       success: true,
       uploadedFiles,
-      refreshResult: refreshData?.[0]
+      refreshResult: refreshData?.[0],
     };
-
   } catch (error: any) {
     return {
       success: false,
       uploadedFiles,
-      error: error.message
+      error: error.message,
     };
   }
 }
@@ -73,8 +70,8 @@ export async function refreshPortfolioImages(portfolioId: string): Promise<{
   const supabase = createClient();
 
   try {
-    const { data, error } = await supabase.rpc('refresh_portfolio_images', {
-      portfolio_uuid: portfolioId
+    const { data, error } = await supabase.rpc("refresh_portfolio_images", {
+      portfolio_uuid: portfolioId,
     });
 
     if (error) {
@@ -83,12 +80,12 @@ export async function refreshPortfolioImages(portfolioId: string): Promise<{
 
     return {
       success: true,
-      result: data?.[0]
+      result: data?.[0],
     };
   } catch (error: any) {
     return {
       success: false,
-      error: error.message
+      error: error.message,
     };
   }
 }
@@ -102,10 +99,10 @@ export async function triggerPortfolioRefresh(portfolioId?: string): Promise<{
   error?: string;
 }> {
   try {
-    const response = await fetch('/api/refresh-portfolio-images', {
-      method: 'POST',
+    const response = await fetch("/api/refresh-portfolio-images", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(portfolioId ? { portfolioId } : {}),
     });
@@ -113,17 +110,17 @@ export async function triggerPortfolioRefresh(portfolioId?: string): Promise<{
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.error || 'Failed to refresh');
+      throw new Error(data.error || "Failed to refresh");
     }
 
     return {
       success: true,
-      result: data
+      result: data,
     };
   } catch (error: any) {
     return {
       success: false,
-      error: error.message
+      error: error.message,
     };
   }
-} 
+}

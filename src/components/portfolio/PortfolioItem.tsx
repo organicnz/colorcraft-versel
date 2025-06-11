@@ -156,16 +156,22 @@ export default function PortfolioItem({
         {/* Status Badge - Top Left (only show in admin mode) */}
         {showAdminControls && (
           <div className="absolute top-3 left-3 z-10">
-            {project.status === 'archived' ? (
-              <Badge variant="secondary" className="bg-white/20 backdrop-blur-md text-slate-800 shadow-lg border border-white/30">
+            {project.status === "archived" ? (
+              <Badge
+                variant="secondary"
+                className="bg-white/20 backdrop-blur-md text-slate-800 shadow-lg border border-white/30"
+              >
                 Archived
               </Badge>
-            ) : project.status === 'published' ? (
+            ) : project.status === "published" ? (
               <Badge className="bg-green-500/20 backdrop-blur-md text-green-800 shadow-lg border border-green-300/30">
                 Published
               </Badge>
             ) : (
-              <Badge variant="outline" className="bg-yellow-400/20 backdrop-blur-md text-yellow-800 border border-yellow-300/40 shadow-lg">
+              <Badge
+                variant="outline"
+                className="bg-yellow-400/20 backdrop-blur-md text-yellow-800 border border-yellow-300/40 shadow-lg"
+              >
                 Draft
               </Badge>
             )}
@@ -197,12 +203,12 @@ export default function PortfolioItem({
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                {project.status === 'archived' ? (
+                {project.status === "archived" ? (
                   <DropdownMenuItem onClick={handleRestore}>
                     <RotateCcw className="h-4 w-4 mr-2" />
                     Restore
                   </DropdownMenuItem>
-                ) : project.status === 'published' ? (
+                ) : project.status === "published" ? (
                   <DropdownMenuItem onClick={handleArchive}>
                     <Archive className="h-4 w-4 mr-2" />
                     Archive
@@ -233,7 +239,9 @@ export default function PortfolioItem({
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel className="bg-white/20 backdrop-blur-md border border-white/30">Cancel</AlertDialogCancel>
+                      <AlertDialogCancel className="bg-white/20 backdrop-blur-md border border-white/30">
+                        Cancel
+                      </AlertDialogCancel>
                       <AlertDialogAction
                         onClick={handlePermanentDelete}
                         className="bg-red-600/90 hover:bg-red-700/90 backdrop-blur-md"
@@ -309,7 +317,9 @@ export default function PortfolioItem({
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 backdrop-blur-sm">
           <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-lg">
-              <h3 className="text-2xl font-bold mb-2 leading-tight line-clamp-2">{project.title}</h3>
+              <h3 className="text-2xl font-bold mb-2 leading-tight line-clamp-2">
+                {project.title}
+              </h3>
               <p className="text-sm text-slate-100 mb-4 line-clamp-3 leading-relaxed">
                 {project.brief_description}
               </p>
@@ -338,9 +348,7 @@ export default function PortfolioItem({
                 size="sm"
                 className="bg-white/20 backdrop-blur-md border-white/30 text-white hover:bg-white/30 hover:text-white font-medium transition-all duration-300 shadow-lg"
               >
-                <Link href={`/portfolio/${project.id}`}>
-                  View Details
-                </Link>
+                <Link href={`/portfolio/${project.id}`}>View Details</Link>
               </Button>
             </div>
           </div>
@@ -354,7 +362,9 @@ export default function PortfolioItem({
 
           {/* Content with proper z-index */}
           <div className="relative z-10 flex flex-col h-full">
-            <h3 className="text-xl font-bold text-slate-900 mb-2 line-clamp-2 leading-tight drop-shadow-sm">{project.title}</h3>
+            <h3 className="text-xl font-bold text-slate-900 mb-2 line-clamp-2 leading-tight drop-shadow-sm">
+              {project.title}
+            </h3>
             <p className="text-slate-800 text-sm mb-4 line-clamp-3 leading-relaxed flex-grow drop-shadow-sm">
               {project.brief_description}
             </p>
@@ -384,9 +394,7 @@ export default function PortfolioItem({
                 size="sm"
                 className="text-orange-700 border-orange-400/60 hover:bg-orange-200/60 backdrop-blur-sm font-medium bg-white/40 w-full shadow-sm border transition-all duration-300 hover:shadow-md"
               >
-                <Link href={`/portfolio/${project.id}`}>
-                  View Project
-                </Link>
+                <Link href={`/portfolio/${project.id}`}>View Project</Link>
               </Button>
             </div>
           </div>

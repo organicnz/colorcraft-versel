@@ -54,6 +54,6 @@ export interface TeamFilters {
 }
 
 export interface TeamSortOptions {
-  field: 'display_order' | 'full_name' | 'position' | 'created_at';
-  direction: 'asc' | 'desc';
-} 
+  field: "display_order" | "full_name" | "position" | "created_at";
+  direction: "asc" | "desc";
+}

@@ -17,8 +17,8 @@ export default function ThemePreference({ onPreferenceChange }: ThemePreferenceP
 
   useEffect(() => {
     // Load saved preference from localStorage on client side only
-    const saved = localStorage.getItem('colorcraft-homepage-modern');
-    if (saved === 'false') {
+    const saved = localStorage.getItem("colorcraft-homepage-modern");
+    if (saved === "false") {
       setHomepageStyle("classic");
     } else {
       setHomepageStyle("modern");
@@ -27,10 +27,10 @@ export default function ThemePreference({ onPreferenceChange }: ThemePreferenceP
 
   const handleStyleChange = (value: string) => {
     setHomepageStyle(value);
-    
+
     // Save to localStorage
-    localStorage.setItem('colorcraft-homepage-modern', value === 'modern' ? 'true' : 'false');
-    
+    localStorage.setItem("colorcraft-homepage-modern", value === "modern" ? "true" : "false");
+
     // Call callback if provided
     if (onPreferenceChange) {
       onPreferenceChange(value);
@@ -48,7 +48,8 @@ export default function ThemePreference({ onPreferenceChange }: ThemePreferenceP
           Homepage Theme
         </CardTitle>
         <CardDescription>
-          Choose your preferred homepage design style. Changes will apply on your next visit to the homepage.
+          Choose your preferred homepage design style. Changes will apply on your next visit to the
+          homepage.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -57,18 +58,28 @@ export default function ThemePreference({ onPreferenceChange }: ThemePreferenceP
           <div className="flex items-start space-x-3 p-4 rounded-lg border hover:bg-gray-50 transition-colors">
             <RadioGroupItem value="modern" id="modern" className="mt-1" />
             <div className="flex-1 space-y-2">
-              <Label htmlFor="modern" className="text-base font-medium cursor-pointer flex items-center gap-2">
+              <Label
+                htmlFor="modern"
+                className="text-base font-medium cursor-pointer flex items-center gap-2"
+              >
                 <Sparkles className="h-4 w-4 text-purple-600" />
                 Modern Design
-                <Badge variant="secondary" className="text-xs">Recommended</Badge>
+                <Badge variant="secondary" className="text-xs">
+                  Recommended
+                </Badge>
               </Label>
               <p className="text-sm text-gray-600">
-                Clean, contemporary layout with glassmorphic effects, smooth animations, and modern UI components.
+                Clean, contemporary layout with glassmorphic effects, smooth animations, and modern
+                UI components.
               </p>
               <div className="flex gap-2 text-xs text-gray-500">
-                <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full">Glassmorphic</span>
+                <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full">
+                  Glassmorphic
+                </span>
                 <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full">Animated</span>
-                <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full">Responsive</span>
+                <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full">
+                  Responsive
+                </span>
               </div>
             </div>
           </div>
@@ -77,17 +88,25 @@ export default function ThemePreference({ onPreferenceChange }: ThemePreferenceP
           <div className="flex items-start space-x-3 p-4 rounded-lg border hover:bg-gray-50 transition-colors">
             <RadioGroupItem value="classic" id="classic" className="mt-1" />
             <div className="flex-1 space-y-2">
-              <Label htmlFor="classic" className="text-base font-medium cursor-pointer flex items-center gap-2">
+              <Label
+                htmlFor="classic"
+                className="text-base font-medium cursor-pointer flex items-center gap-2"
+              >
                 <Monitor className="h-4 w-4 text-slate-600" />
                 Classic Design
               </Label>
               <p className="text-sm text-gray-600">
-                Traditional layout with clean cards, straightforward navigation, and familiar design patterns.
+                Traditional layout with clean cards, straightforward navigation, and familiar design
+                patterns.
               </p>
               <div className="flex gap-2 text-xs text-gray-500">
-                <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded-full">Traditional</span>
+                <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded-full">
+                  Traditional
+                </span>
                 <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded-full">Minimal</span>
-                <span className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full">Accessible</span>
+                <span className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full">
+                  Accessible
+                </span>
               </div>
             </div>
           </div>
@@ -99,7 +118,7 @@ export default function ThemePreference({ onPreferenceChange }: ThemePreferenceP
           <div className="mt-2 p-3 bg-gray-50 rounded-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                {homepageStyle === 'modern' ? (
+                {homepageStyle === "modern" ? (
                   <>
                     <Sparkles className="h-4 w-4 text-purple-600" />
                     <span className="font-medium">Modern Design</span>
@@ -111,15 +130,12 @@ export default function ThemePreference({ onPreferenceChange }: ThemePreferenceP
                   </>
                 )}
               </div>
-              <Badge variant={homepageStyle === 'modern' ? 'default' : 'secondary'}>
-                Active
-              </Badge>
+              <Badge variant={homepageStyle === "modern" ? "default" : "secondary"}>Active</Badge>
             </div>
             <p className="text-xs text-gray-600 mt-1">
-              {homepageStyle === 'modern' 
+              {homepageStyle === "modern"
                 ? "Enjoy the modern experience with smooth animations and glassmorphic effects."
-                : "Experience the clean, traditional design with straightforward navigation."
-              }
+                : "Experience the clean, traditional design with straightforward navigation."}
             </p>
           </div>
         </div>
@@ -137,4 +153,4 @@ export default function ThemePreference({ onPreferenceChange }: ThemePreferenceP
       </CardContent>
     </Card>
   );
-} 
+}

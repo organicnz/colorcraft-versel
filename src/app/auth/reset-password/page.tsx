@@ -78,13 +78,15 @@ function ResetPasswordForm() {
     // Handle auth callback
     if (accessToken && refreshToken && type === "recovery") {
       // Set the session from the URL parameters
-      supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken,
-      }).catch((error: any) => {
-        console.error("Error setting session:", error);
-        setError("Invalid or expired reset link. Please try again.");
-      });
+      supabase.auth
+        .setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        })
+        .catch((error: any) => {
+          console.error("Error setting session:", error);
+          setError("Invalid or expired reset link. Please try again.");
+        });
     } else if (!searchParams?.get("code") && !hashParams.get("access_token")) {
       // If no code or access token is present, redirect to forgot password
       setError("Invalid or expired reset link. Please try again.");
@@ -106,17 +108,30 @@ function ResetPasswordForm() {
         <div className="bg-white/30 dark:bg-white/10 backdrop-blur-md rounded-xl shadow-glass border border-white/30 dark:border-white/10 p-8 transition-all duration-300 hover:bg-white/40 hover:shadow-glass-heavy relative">
           {/* Glass gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent dark:from-white/5 pointer-events-none rounded-xl" />
-          
+
           <div className="text-center relative z-10">
             <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 dark:bg-green-900">
-              <svg className="h-6 w-6 text-green-600 dark:text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                className="h-6 w-6 text-green-600 dark:text-green-300"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
             </div>
-            <h3 className="mt-4 text-lg font-medium text-slate-900 dark:text-white">Password Reset Successful</h3>
+            <h3 className="mt-4 text-lg font-medium text-slate-900 dark:text-white">
+              Password Reset Successful
+            </h3>
             <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
               Your password has been reset successfully.
-              <br />You will be redirected to the login page.
+              <br />
+              You will be redirected to the login page.
             </p>
             <div className="mt-6">
               <Link href="/login" className="text-primary hover:text-primary-dark font-medium">
@@ -129,33 +144,52 @@ function ResetPasswordForm() {
         <div className="bg-white/30 dark:bg-white/10 backdrop-blur-md rounded-xl shadow-glass border border-white/30 dark:border-white/10 p-8 transition-all duration-300 hover:bg-white/40 hover:shadow-glass-heavy relative">
           {/* Glass gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent dark:from-white/5 pointer-events-none rounded-xl" />
-          
+
           <div className="text-center relative z-10">
             <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900">
-              <svg className="h-6 w-6 text-red-600 dark:text-red-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="h-6 w-6 text-red-600 dark:text-red-300"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </div>
-            <h3 className="mt-4 text-lg font-medium text-slate-900 dark:text-white">Reset Failed</h3>
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-              {error}
-            </p>
+            <h3 className="mt-4 text-lg font-medium text-slate-900 dark:text-white">
+              Reset Failed
+            </h3>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{error}</p>
             <div className="mt-6">
-              <Link href="/auth/forgot-password" className="text-primary hover:text-primary-dark font-medium">
+              <Link
+                href="/auth/forgot-password"
+                className="text-primary hover:text-primary-dark font-medium"
+              >
                 Request a new reset link
               </Link>
             </div>
           </div>
         </div>
       ) : (
-        <form onSubmit={form.handleSubmit(onSubmit)} className="bg-white/30 dark:bg-white/10 backdrop-blur-md rounded-xl shadow-glass border border-white/30 dark:border-white/10 p-8 transition-all duration-300 hover:bg-white/40 hover:shadow-glass-heavy relative">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="bg-white/30 dark:bg-white/10 backdrop-blur-md rounded-xl shadow-glass border border-white/30 dark:border-white/10 p-8 transition-all duration-300 hover:bg-white/40 hover:shadow-glass-heavy relative"
+        >
           {/* Glass gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent dark:from-white/5 pointer-events-none rounded-xl" />
-          
+
           <div className="relative z-10">
             <div className="space-y-6">
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+                >
                   New Password
                 </label>
                 <input
@@ -173,7 +207,10 @@ function ResetPasswordForm() {
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+                >
                   Confirm Password
                 </label>
                 <input
@@ -194,10 +231,10 @@ function ResetPasswordForm() {
                 type="submit"
                 disabled={isLoading}
                 className={`w-full py-3 px-4 rounded-md font-medium text-white bg-primary hover:bg-primary-dark transition-colors ${
-                  isLoading ? 'opacity-70 cursor-not-allowed' : ''
+                  isLoading ? "opacity-70 cursor-not-allowed" : ""
                 }`}
               >
-                {isLoading ? 'Updating...' : 'Update Password'}
+                {isLoading ? "Updating..." : "Update Password"}
               </button>
             </div>
           </div>

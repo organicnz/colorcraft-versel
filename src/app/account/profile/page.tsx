@@ -43,8 +43,10 @@ export default function ProfilePage() {
 
   const loadProfile = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       if (!user) {
         toast({
           title: "Error",
@@ -99,17 +101,15 @@ export default function ProfilePage() {
 
   const handleSaveProfile = async () => {
     if (!profile) return;
-    
+
     setIsSaving(true);
     try {
-      const { error } = await supabase
-        .from("users")
-        .upsert({
-          id: profile.id,
-          email: profile.email,
-          ...editForm,
-          updated_at: new Date().toISOString(),
-        });
+      const { error } = await supabase.from("users").upsert({
+        id: profile.id,
+        email: profile.email,
+        ...editForm,
+        updated_at: new Date().toISOString(),
+      });
 
       if (error) throw error;
 
@@ -196,9 +196,7 @@ export default function ProfilePage() {
             <User className="w-5 h-5" />
             Personal Information
           </CardTitle>
-          <CardDescription>
-            Your basic account information and contact details
-          </CardDescription>
+          <CardDescription>Your basic account information and contact details</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {isEditing ? (
@@ -215,12 +213,7 @@ export default function ProfilePage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email Address</Label>
-                  <Input
-                    id="email"
-                    value={profile.email}
-                    disabled
-                    className="bg-muted"
-                  />
+                  <Input id="email" value={profile.email} disabled className="bg-muted" />
                   <p className="text-xs text-muted-foreground">
                     Email cannot be changed here. Contact support if needed.
                   </p>
@@ -317,7 +310,10 @@ export default function ProfilePage() {
                 <Calendar className="w-5 h-5 text-muted-foreground" />
                 <div>
                   <p className="font-medium">
-                    Member since {profile.created_at ? new Date(profile.created_at).toLocaleDateString() : "Unknown"}
+                    Member since{" "}
+                    {profile.created_at
+                      ? new Date(profile.created_at).toLocaleDateString()
+                      : "Unknown"}
                   </p>
                   <p className="text-sm text-muted-foreground">Account Created</p>
                 </div>
@@ -331,21 +327,17 @@ export default function ProfilePage() {
       <Card>
         <CardHeader>
           <CardTitle>Account Status</CardTitle>
-          <CardDescription>
-            Your current account status and membership information
-          </CardDescription>
+          <CardDescription>Your current account status and membership information</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-4">
             <Badge variant="secondary" className="bg-green-100 text-green-800">
               Active Member
             </Badge>
-            <p className="text-sm text-muted-foreground">
-              Your account is in good standing
-            </p>
+            <p className="text-sm text-muted-foreground">Your account is in good standing</p>
           </div>
         </CardContent>
       </Card>
     </div>
   );
-} 
+}

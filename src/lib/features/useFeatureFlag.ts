@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { isFeatureEnabled } from './index';
+import { useState, useEffect } from "react";
+import { isFeatureEnabled } from "./index";
 
 // Remove unused cache and fetch function
 
@@ -11,41 +11,30 @@ type UseFeatureFlagResult = {
 };
 
 /**
- * React hook for checking if a feature flag is enabled in client components
- * 
- * @param flagName The name of the feature flag
- * @param userId The user ID for personalized feature flags
- * @returns Object containing the enabled status and loading state
- * 
- * @example
- * ```tsx
- * const { enabled } = useFeatureFlag(FEATURE_FLAGS.DARK_MODE);
- * 
- * return (
- *   <div className={enabled ? "dark-theme" : "light-theme"}>
- *     Content goes here
- *   </div>
- * );
- * ```
+ * Hook to check if a feature flag is enabled
+ * @param flagName - The name of the feature flag to check
+ * @returns Object containing enabled state and loading state
  */
-export function useFeatureFlag(
-  flagName: string, 
-  userId?: string
-): UseFeatureFlagResult {
-  const [enabled, setEnabled] = useState(false);
-  const [loading, setLoading] = useState(true);
+export function useFeatureFlag(flagName: string): UseFeatureFlagResult {
+  const [enabled, setEnabled] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    try {
-      const isEnabled = isFeatureEnabled(flagName, userId);
-      setEnabled(isEnabled);
-    } catch (error) {
-      console.warn(`Error checking feature flag '${flagName}':`, error);
-      setEnabled(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [flagName, userId]);
+    const checkFlag = async () => {
+      setLoading(true);
+      try {
+        const flagEnabled = await isFeatureEnabled(flagName);
+        setEnabled(flagEnabled);
+      } catch (error) {
+        console.warn(`Failed to check feature flag "${flagName}":`, error);
+        setEnabled(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkFlag();
+  }, [flagName]);
 
   return { enabled, loading };
 }

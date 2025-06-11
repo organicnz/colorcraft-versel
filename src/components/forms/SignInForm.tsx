@@ -28,22 +28,25 @@ export default function SignInForm() {
   const debug = (message: string) => {
     const timestamp = new Date().toLocaleTimeString();
     const logMessage = `${timestamp}: ${message}`;
-    console.log(`🔍 [Auth Debug] ${logMessage}`);
-    setDebugLogs(prev => [...prev.slice(-5), logMessage]);
+    console.warn(`🔍 [Auth Debug] ${logMessage}`);
+    setDebugLogs((prev) => [...prev.slice(-5), logMessage]);
   };
 
   useEffect(() => {
     debug("Component mounted - checking auth state");
-    
+
     // Check current session
     const checkSession = async () => {
       try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        debug(`Current session: ${session ? `exists (${session.user.email})` : 'none'}`);
-        
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
+        debug(`Current session: ${session ? `exists (${session.user.email})` : "none"}`);
+
         if (session && !isLoading) {
           debug("User already signed in - redirecting to dashboard");
-          router.push('/dashboard');
+          router.push("/dashboard");
         }
       } catch (err) {
         debug(`Error checking session: ${err}`);
@@ -53,14 +56,16 @@ export default function SignInForm() {
     checkSession();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      debug(`Auth event: ${event} | Session: ${session ? 'exists' : 'none'}`);
-      
-      if (event === 'SIGNED_IN' && session) {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      debug(`Auth event: ${event} | Session: ${session ? "exists" : "none"}`);
+
+      if (event === "SIGNED_IN" && session) {
         debug(`Successful sign-in detected for ${session.user.email}`);
         setIsLoading(false);
-        router.push('/dashboard');
-      } else if (event === 'SIGNED_OUT') {
+        router.push("/dashboard");
+      } else if (event === "SIGNED_OUT") {
         debug("Sign-out detected");
         setIsLoading(false);
       }
@@ -91,13 +96,14 @@ export default function SignInForm() {
         password: data.password,
       });
 
-      debug(`Sign-in response: ${authError ? 'ERROR' : 'SUCCESS'}`);
+      debug(`Sign-in response: ${authError ? "ERROR" : "SUCCESS"}`);
 
       if (authError) {
         debug(`Sign-in error: ${authError.message}`);
-        setError(authError.message.includes('Invalid login credentials') 
-          ? 'Invalid email or password' 
-          : authError.message
+        setError(
+          authError.message.includes("Invalid login credentials")
+            ? "Invalid email or password"
+            : authError.message
         );
         setIsLoading(false);
         return;
@@ -112,7 +118,6 @@ export default function SignInForm() {
 
       debug(`Sign-in successful for ${authData.user.email}`);
       // Don't redirect here - let the auth state change handle it
-      
     } catch (err: any) {
       debug(`Unexpected error: ${err.message}`);
       setError(err.message || "An unexpected error occurred");
@@ -123,7 +128,7 @@ export default function SignInForm() {
   return (
     <div className="grid gap-6">
       {/* Debug panel - always visible in dev */}
-      {process.env.NODE_ENV === 'development' && (
+      {process.env.NODE_ENV === "development" && (
         <div className="bg-yellow-50 border border-yellow-200 p-3 rounded-md">
           <div className="text-sm font-medium text-yellow-800 mb-2">
             🔍 Auth Debug (Last 5 logs):
@@ -141,7 +146,7 @@ export default function SignInForm() {
           </div>
         </div>
       )}
-      
+
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="grid gap-2">
           <div className="grid gap-1">
@@ -156,9 +161,7 @@ export default function SignInForm() {
               disabled={isLoading}
             />
             {form.formState.errors.email && (
-              <p className="text-sm text-red-500">
-                {form.formState.errors.email.message}
-              </p>
+              <p className="text-sm text-red-500">{form.formState.errors.email.message}</p>
             )}
           </div>
           <div className="grid gap-1">
@@ -181,9 +184,7 @@ export default function SignInForm() {
               disabled={isLoading}
             />
             {form.formState.errors.password && (
-              <p className="text-sm text-red-500">
-                {form.formState.errors.password.message}
-              </p>
+              <p className="text-sm text-red-500">{form.formState.errors.password.message}</p>
             )}
           </div>
           <button
@@ -196,18 +197,16 @@ export default function SignInForm() {
           {error && <p className="text-sm text-red-500">{error}</p>}
         </div>
       </form>
-      
+
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t"></span>
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
-            Or continue with
-          </span>
+          <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
         </div>
       </div>
-      
+
       <button
         type="button"
         className="border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex h-10 w-full items-center justify-center rounded-md border px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
@@ -215,7 +214,7 @@ export default function SignInForm() {
           debug("Google OAuth initiated");
           setIsLoading(true);
           setError(null);
-          
+
           try {
             const { error } = await supabase.auth.signInWithOAuth({
               provider: "google",
@@ -223,10 +222,9 @@ export default function SignInForm() {
                 redirectTo: `${window.location.origin}/auth/callback`,
               },
             });
-            
+
             if (error) throw error;
             debug("Google OAuth redirect started");
-            
           } catch (err: any) {
             debug(`Google OAuth error: ${err.message}`);
             setError(err.message || "Failed to sign in with Google");
@@ -239,4 +237,4 @@ export default function SignInForm() {
       </button>
     </div>
   );
-} 
+}
