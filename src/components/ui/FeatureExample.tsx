@@ -13,8 +13,8 @@ import {
 } from "@/components/ui/card";
 
 export function FeatureExample() {
-  const { enabled: darkModeEnabled } = useFeatureFlag(FEATURE_FLAGS.DARK_MODE);
-  const { enabled: enhancedContactEnabled } = useFeatureFlag(FEATURE_FLAGS.ENHANCED_CONTACT_FORM);
+  const { enabled: darkModeEnabled } = useFeatureFlag(FEATURE_FLAGS.DARK_MODE.name);
+  const { enabled: enhancedContactEnabled } = useFeatureFlag(FEATURE_FLAGS.ENHANCED_CONTACT_FORM.name);
 
   return (
     <div className="space-y-6">

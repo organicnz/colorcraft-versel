@@ -251,17 +251,15 @@ export class DatabaseQueryOptimizer {
   async getPortfolioItemsByIds(ids: string[]): Promise<any[]> {
     return batchManager.batchQuery(
       "portfolio_by_ids",
-      async (batchedIds: string[][]) => {
+      async (batchedParams: unknown[]) => {
+        const batchedIds = batchedParams as string[][];
         const allIds = Array.from(new Set(batchedIds.flat()));
 
         const { data, error } = await this.supabase.from("portfolio").select("*").in("id", allIds);
 
         if (error) throw error;
 
-        // Return results in the same order as requested
-        return batchedIds.map((idBatch) =>
-          idBatch.map((id) => data?.find((item) => item.id === id))
-        );
+        return batchedIds.map((idBatch) => idBatch.map((id) => data?.find((item: any) => item.id === id)));
       },
       ids
     );
@@ -339,7 +337,7 @@ export class DatabaseQueryOptimizer {
               .select("id, title, brief_description")
               .or(`title.ilike.%${searchTerm}%,brief_description.ilike.%${searchTerm}%`)
               .limit(limit);
-            return portfolioData?.map((item) => ({ ...item, type: "portfolio" })) || [];
+            return portfolioData?.map((item: any) => ({ ...item, type: "portfolio" })) || [];
 
           case "customers":
             const { data: customerData } = await this.supabase
@@ -347,7 +345,7 @@ export class DatabaseQueryOptimizer {
               .select("id, full_name, email")
               .or(`full_name.ilike.%${searchTerm}%,email.ilike.%${searchTerm}%`)
               .limit(limit);
-            return customerData?.map((item) => ({ ...item, type: "customer" })) || [];
+            return customerData?.map((item: any) => ({ ...item, type: "customer" })) || [];
 
           default:
             return [];

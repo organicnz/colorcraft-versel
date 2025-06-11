@@ -1,4 +1,6 @@
-import { useState, useCallback } from "react";
+"use client";
+
+import React, { useState, useCallback, useRef, useEffect, ReactNode } from "react";
 import { errorMonitor, AppError, ErrorCode } from "./monitoring";
 
 /**

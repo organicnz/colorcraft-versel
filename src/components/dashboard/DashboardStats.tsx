@@ -85,7 +85,7 @@ export default function DashboardStats() {
 
         if (revenueError) throw revenueError
 
-        const totalRevenue = revenueData?.reduce((sum, project) => sum + (project.price || 0), 0) || 0
+        const totalRevenue = revenueData?.reduce((sum: number, project: { price: number | null }) => sum + (project.price || 0), 0) || 0
 
         return {
           totalCustomers: customerCount || 0,

@@ -82,7 +82,7 @@ export function useOptimisticMutation<TData, TError, TVariables, TContext = unkn
     },
     onError: (error, variables, context) => {
       // Rollback to previous data if rollback is enabled
-      if (rollbackEnabled && context && "previousData" in context) {
+      if (rollbackEnabled && context && typeof context === "object" && context !== null && "previousData" in context) {
         queryClient.setQueryData(queryKey, (context as { previousData: unknown }).previousData);
       }
 

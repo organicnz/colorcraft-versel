@@ -6,13 +6,13 @@ import { Button } from "./button";
 
 export default function FeatureFlagExample() {
   const { enabled: darkModeEnabled, loading: darkModeLoading } = useFeatureFlag(
-    FEATURE_FLAGS.DARK_MODE
+    FEATURE_FLAGS.DARK_MODE.name
   );
   const { enabled: enhancedContactEnabled, loading: enhancedContactLoading } = useFeatureFlag(
-    FEATURE_FLAGS.ENHANCED_CONTACT_FORM
+    FEATURE_FLAGS.ENHANCED_CONTACT_FORM.name
   );
   const { enabled: analyticsEnabled, loading: analyticsLoading } = useFeatureFlag(
-    FEATURE_FLAGS.DASHBOARD_ANALYTICS
+    FEATURE_FLAGS.DASHBOARD_ANALYTICS.name
   );
 
   if (darkModeLoading || enhancedContactLoading || analyticsLoading) {

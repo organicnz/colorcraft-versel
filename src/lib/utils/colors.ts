@@ -179,17 +179,37 @@ export const createThemeStyles = (scheme: string, variant: string, isDark: boole
   const colorScheme = colorSchemes[scheme as keyof typeof colorSchemes];
 
   if (!colorScheme || !colorScheme[variant as keyof typeof colorScheme]) {
-    return {};
+    return {
+      backgroundColor: undefined,
+      color: undefined,
+      borderColor: undefined,
+    };
   }
 
-  const styles = colorScheme[variant as keyof typeof colorScheme][themeMode as "light" | "dark"];
+  const schemeVariant = colorScheme[variant as keyof typeof colorScheme];
+  if (!schemeVariant || typeof schemeVariant === 'string') {
+    return {
+      backgroundColor: undefined,
+      color: undefined,
+      borderColor: undefined,
+    };
+  }
+
+  const styles = schemeVariant[themeMode as "light" | "dark"];
+  if (!styles || typeof styles === 'string') {
+    return {
+      backgroundColor: undefined,
+      color: undefined,
+      borderColor: undefined,
+    };
+  }
 
   return {
-    backgroundColor: styles.bg,
-    color: styles.text,
-    borderColor: styles.border,
-    ...(styles.shadow && { boxShadow: styles.shadow }),
-    ...(styles.backdrop && { backdropFilter: styles.backdrop }),
+    backgroundColor: (styles as any).bg,
+    color: (styles as any).text,
+    borderColor: (styles as any).border,
+    ...((styles as any).shadow && { boxShadow: (styles as any).shadow }),
+    ...((styles as any).backdrop && { backdropFilter: (styles as any).backdrop }),
   };
 };
 
@@ -283,3 +303,24 @@ export const hexToHsl = (hex: string): string => {
 // Export individual color values for direct usage
 export { colors };
 export default colors;
+
+export function getPaletteStyles(palette: ColorPalette, variant: ColorVariant = "primary") {
+  // Get the appropriate styles based on palette and variant
+  const styles = getColorStyles(palette, variant);
+  
+  // If no styles found, return default values
+  if (!styles) {
+    return {
+      backgroundColor: undefined,
+      color: undefined,
+      borderColor: undefined,
+    };
+  }
+
+  return {
+    backgroundColor: styles.bg,
+    color: styles.text,
+    borderColor: styles.border,
+    ...(styles.shadow && { boxShadow: styles.shadow }),
+  };
+}

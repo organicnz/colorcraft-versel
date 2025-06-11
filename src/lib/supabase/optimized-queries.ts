@@ -259,7 +259,7 @@ export class OptimizedQueries {
     if (error) throw error;
 
     const activity =
-      recentInquiries?.map((inquiry) => ({
+      recentInquiries?.map((inquiry: any) => ({
         id: inquiry.id,
         type: "inquiry",
         description: `New inquiry: ${inquiry.description}`,

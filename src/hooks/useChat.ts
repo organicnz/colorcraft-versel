@@ -209,7 +209,7 @@ export function useChat() {
           schema: "public",
           table: "chat_messages",
         },
-        (payload) => {
+        (payload: { new: ChatMessage; old: ChatMessage | null; eventType: string }) => {
           const newMessage = payload.new as ChatMessage;
 
           setState((prev) => {

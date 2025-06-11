@@ -31,7 +31,7 @@ function rateWebVital(name: CoreWebVital["name"], value: number): CoreWebVital["
 
 // Hook for measuring component performance
 export function usePerformanceMeasure(componentName: string) {
-  const startTimeRef = useRef<number>();
+  const startTimeRef = useRef<number>(0);
 
   const startMeasure = useCallback(() => {
     startTimeRef.current = performance.now();
@@ -93,13 +93,13 @@ export function useWebVitals() {
     // Dynamic import to avoid SSR issues
     const initWebVitals = async () => {
       try {
-        const { onCLS, onFID, onFCP, onLCP, onTTFB } = await import("web-vitals");
+        const { getCLS, getFID, getFCP, getLCP, getTTFB } = await import("web-vitals");
 
-        onCLS(recordWebVital);
-        onFID(recordWebVital);
-        onFCP(recordWebVital);
-        onLCP(recordWebVital);
-        onTTFB(recordWebVital);
+        getCLS(recordWebVital);
+        getFID(recordWebVital);
+        getFCP(recordWebVital);
+        getLCP(recordWebVital);
+        getTTFB(recordWebVital);
       } catch (error) {
         if (process.env.NODE_ENV === "development") {
           perfLogger.warn("Web Vitals library not available", { metadata: error });

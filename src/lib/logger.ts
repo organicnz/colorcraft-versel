@@ -3,6 +3,15 @@
  * Consolidates all logging functionality with performance monitoring
  */
 
+// Type declaration for gtag global variable
+declare global {
+  function gtag(
+    command: "config" | "event" | "js",
+    targetId: string,
+    config?: Record<string, any>
+  ): void;
+}
+
 export enum LogLevel {
   DEBUG = 0,
   INFO = 1,
