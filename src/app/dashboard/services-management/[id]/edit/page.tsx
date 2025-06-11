@@ -54,7 +54,7 @@ export default async function EditServicePage({ params }: EditServicePageProps) 
         <p className="text-muted-foreground mt-2">Update the details of your service</p>
       </div>
       <div className="bg-card p-6 rounded-lg shadow-sm">
-        <ServiceForm service={service} />
+        <ServiceForm initialData={service} isEditing={true} />
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { lazy, Suspense, ComponentType, ReactNode } from "react";
+import React, { lazy, Suspense, ComponentType, ReactNode } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Higher-order component for lazy loading with proper error boundary
@@ -151,29 +151,20 @@ export function withPerformanceTracking<T extends ComponentType<any>>(
   componentName: string
 ) {
   return function PerformanceWrapper(props: React.ComponentProps<T>) {
-    if (typeof window !== "undefined" && window.performance) {
-      const startTime = performance.now();
+    const startTime = typeof window !== "undefined" && window.performance ? performance.now() : 0;
 
-      return (
-        <Component
-          {...props}
-          onLoad={() => {
-            const endTime = performance.now();
-            const loadTime = endTime - startTime;
+    // Always call React.useEffect - never conditionally
+    React.useEffect(() => {
+      if (typeof window !== "undefined" && window.performance && startTime) {
+        const endTime = performance.now();
+        const loadTime = endTime - startTime;
 
-            if (process.env.NODE_ENV === "development" && loadTime > 100) {
-              console.warn(`⚠️ ${componentName} took ${loadTime.toFixed(2)}ms to load`);
-            }
+        if (process.env.NODE_ENV === "development" && loadTime > 100) {
+          console.warn(`⚠️ ${componentName} took ${loadTime.toFixed(2)}ms to load`);
+        }
+      }
+    }, [startTime]);
 
-            // Call original onLoad if provided
-            if ("onLoad" in props && typeof props.onLoad === "function") {
-              props.onLoad();
-            }
-          }}
-        />
-      );
-    }
-
-    return <Component {...props} />;
+    return <Component {...(props as any)} />;
   };
 }

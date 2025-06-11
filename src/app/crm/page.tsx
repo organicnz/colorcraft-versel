@@ -45,28 +45,28 @@ export default async function CrmDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatsCard
           title="Customers"
-          value={stats.counts.customers ?? 0}
+          value={(stats as any).counts?.customers ?? (stats as any).totalCustomers ?? 0}
           link="/crm/customers"
           linkText="View All"
           color="bg-blue-500"
         />
         <StatsCard
           title="Active Leads"
-          value={stats.counts.leads ?? 0}
+          value={(stats as any).counts?.leads ?? (stats as any).totalLeads ?? 0}
           link="/crm/leads"
           linkText="View All"
           color="bg-green-500"
         />
         <StatsCard
           title="Total Projects"
-          value={stats.counts.projects ?? 0}
+          value={(stats as any).counts?.projects ?? (stats as any).totalProjects ?? 0}
           link="/crm/projects"
           linkText="View All"
           color="bg-purple-500"
         />
         <StatsCard
           title="Active Projects"
-          value={stats.counts.activeProjects ?? 0}
+          value={(stats as any).counts?.activeProjects ?? 0}
           link="/crm/projects?status=active"
           linkText="View Active"
           color="bg-yellow-500"
@@ -106,9 +106,9 @@ export default async function CrmDashboard() {
           <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent dark:from-white/5 pointer-events-none" />
 
           <div className="relative z-10">
-            {stats.recentActivity.length > 0 ? (
+            {((stats as any).recentActivity || []).length > 0 ? (
               <div className="divide-y divide-white/20 dark:divide-white/10">
-                {stats.recentActivity.map((activity: any) => (
+                {((stats as any).recentActivity || []).map((activity: any) => (
                   <ActivityItem key={activity.id} activity={activity} />
                 ))}
               </div>

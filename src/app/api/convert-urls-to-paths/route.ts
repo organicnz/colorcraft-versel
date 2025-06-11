@@ -30,7 +30,7 @@ export async function POST() {
 
     for (const project of projects || []) {
       let needsUpdate = false;
-      const updates: unknown = {};
+      const updates: { after_images?: string[]; before_images?: string[] } = {};
 
       // Convert after_images URLs to paths
       if (project.after_images && Array.isArray(project.after_images)) {

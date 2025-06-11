@@ -47,7 +47,7 @@ export default async function EditServicePage({ params }: EditServicePageProps) 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Edit Service: {service.title}</h1>
-      <ServiceForm initialData={service} isEditing={true} />
+      <ServiceForm service={service} />
     </div>
   );
 }

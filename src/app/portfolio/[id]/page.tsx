@@ -13,13 +13,14 @@ import AdminProjectEditButton from "@/components/portfolio/AdminProjectEditButto
 import RandomShowcaseImage from "@/components/portfolio/RandomShowcaseImage";
 
 interface PortfolioProjectPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: PortfolioProjectPageProps) {
-  const project = await getPortfolioProject(params.id);
+  const { id } = await params;
+  const project = await getPortfolioProject(id);
 
   if (!project) {
     return {
@@ -49,11 +50,13 @@ export async function generateMetadata({ params }: PortfolioProjectPageProps) {
 }
 
 export default async function PortfolioProjectPage({ params }: PortfolioProjectPageProps) {
+  const { id } = await params;
+
   // Fetch the main project and related projects in parallel
   const [project, relatedProjects] = await Promise.all([
-    getPortfolioProject(params.id),
-    getPortfolioProject(params.id).then((p) =>
-      p ? getRelatedProjects(params.id, p.techniques || []) : []
+    getPortfolioProject(id),
+    getPortfolioProject(id).then((p) =>
+      p ? getRelatedProjects(id, 3) : []
     ),
   ]);
 

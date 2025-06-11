@@ -4,13 +4,13 @@ import { getTeamMemberById, updateTeamMember, deleteTeamMember } from "@/service
 import type { UpdateTeamMemberData } from "@/types/team";
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 async function checkAdminAuth() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const {
     data: { session },
@@ -34,7 +34,8 @@ async function checkAdminAuth() {
 
 export async function GET(request: Request, { params }: RouteParams) {
   try {
-    const member = await getTeamMemberById(params.id);
+    const { id } = await params;
+    const member = await getTeamMemberById(id);
 
     if (!member) {
       return NextResponse.json({ error: "Team member not found" }, { status: 404 });
@@ -54,16 +55,17 @@ export async function PATCH(request: Request, { params }: RouteParams) {
       return NextResponse.json({ error: authCheck.message }, { status: authCheck.status });
     }
 
+    const { id } = await params;
     const data = await request.json();
 
     // Validate that the team member exists
-    const existingMember = await getTeamMemberById(params.id);
+    const existingMember = await getTeamMemberById(id);
     if (!existingMember) {
       return NextResponse.json({ error: "Team member not found" }, { status: 404 });
     }
 
     const updateData: UpdateTeamMemberData = {
-      id: params.id,
+      id,
       ...data,
     };
 
@@ -83,13 +85,15 @@ export async function DELETE(request: Request, { params }: RouteParams) {
       return NextResponse.json({ error: authCheck.message }, { status: authCheck.status });
     }
 
+    const { id } = await params;
+
     // Validate that the team member exists
-    const existingMember = await getTeamMemberById(params.id);
+    const existingMember = await getTeamMemberById(id);
     if (!existingMember) {
       return NextResponse.json({ error: "Team member not found" }, { status: 404 });
     }
 
-    await deleteTeamMember(params.id);
+    await deleteTeamMember(id);
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -4,7 +4,16 @@ import { createClient as createBrowserClient } from "@/lib/supabase/client";
 
 export async function GET() {
   try {
-    const results: unknown = {
+    const results: {
+      timestamp: string;
+      tests: Array<{
+        name: string;
+        success: boolean;
+        data?: any;
+        error?: string | null;
+        count?: number;
+      }>;
+    } = {
       timestamp: new Date().toISOString(),
       tests: [],
     };

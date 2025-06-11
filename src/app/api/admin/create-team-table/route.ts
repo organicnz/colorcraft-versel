@@ -5,7 +5,7 @@ import path from "path";
 
 export async function POST(request: Request) {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // Check if user is admin
     const {
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
           const { error: execError } = await supabase.from("dummy").select("*").limit(0);
 
           // Try a different approach - use the service role client
-          const serviceClient = createClient();
+          const serviceClient = await createClient();
           const { error: stmtError } = await serviceClient.rpc("exec", { sql: statement });
 
           if (stmtError) {

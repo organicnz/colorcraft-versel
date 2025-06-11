@@ -57,17 +57,18 @@ import { deletePortfolioProject } from "@/actions/portfolioActions";
 type Project = {
   id: string;
   title: string;
-  brief_description: string;
+  brief_description?: string;
   description?: string;
-  before_images: string[];
-  after_images: string[];
+  before_images?: string[];
+  after_images?: string[];
   techniques?: string[];
   materials?: string[];
   completion_date?: string;
   client_name?: string;
   client_testimonial?: string;
-  is_featured: boolean;
-  created_at: string;
+  is_featured?: boolean;
+  featured?: boolean;
+  created_at?: string;
   updated_at?: string;
 };
 
@@ -88,16 +89,22 @@ export default function PortfolioTable({ projects }: PortfolioTableProps) {
   const sortedProjects = React.useMemo(() => {
     return [...projects].sort((a, b) => {
       if (sortField === "is_featured") {
-        if (a.is_featured === b.is_featured) {
+        const aFeatured = a.is_featured || a.featured || false;
+        const bFeatured = b.is_featured || b.featured || false;
+        if (aFeatured === bFeatured) {
+          const aDate = new Date(a.created_at || "");
+          const bDate = new Date(b.created_at || "");
           return sortDirection === "desc"
-            ? new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-            : new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+            ? bDate.getTime() - aDate.getTime()
+            : aDate.getTime() - bDate.getTime();
         }
-        return sortDirection === "desc" ? (a.is_featured ? -1 : 1) : a.is_featured ? 1 : -1;
-      } else if (sortField === "created_at") {
-        return sortDirection === "desc"
-          ? new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-          : new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        return sortDirection === "desc" ? (aFeatured ? -1 : 1) : aFeatured ? 1 : -1;
+              } else if (sortField === "created_at") {
+          const aDate = new Date(a.created_at || "");
+          const bDate = new Date(b.created_at || "");
+          return sortDirection === "desc"
+            ? bDate.getTime() - aDate.getTime()
+            : aDate.getTime() - bDate.getTime();
       } else {
         return sortDirection === "desc"
           ? b.title.localeCompare(a.title)
@@ -227,7 +234,7 @@ export default function PortfolioTable({ projects }: PortfolioTableProps) {
                             </AvatarFallback>
                           </Avatar>
                         )}
-                        {project.is_featured && (
+                        {(project.is_featured || project.featured) && (
                           <div className="absolute -top-1 -right-1">
                             <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
                           </div>
@@ -241,7 +248,7 @@ export default function PortfolioTable({ projects }: PortfolioTableProps) {
                           {project.title}
                         </div>
                         <div className="text-sm text-muted-foreground line-clamp-2 max-w-sm">
-                          {project.brief_description}
+                          {project.brief_description || "No description available"}
                         </div>
                         {project.techniques && project.techniques.length > 0 && (
                           <div className="flex flex-wrap gap-1 mt-2">
@@ -266,7 +273,7 @@ export default function PortfolioTable({ projects }: PortfolioTableProps) {
 
                     <TableCell>
                       <div className="flex flex-col gap-1">
-                        {project.is_featured && (
+                        {(project.is_featured || project.featured) && (
                           <Badge className="w-fit bg-yellow-100 text-yellow-700 hover:bg-yellow-200 dark:bg-yellow-900 dark:text-yellow-300">
                             <Star className="w-3 h-3 mr-1" />
                             Featured
@@ -278,17 +285,17 @@ export default function PortfolioTable({ projects }: PortfolioTableProps) {
                     <TableCell>
                       <div className="flex flex-col gap-1">
                         <span className="text-sm font-medium">
-                          {format(new Date(project.created_at), "MMM dd, yyyy")}
+                          {format(new Date(project.created_at || ""), "MMM dd, yyyy")}
                         </span>
                         <span className="text-xs text-muted-foreground">
-                          {format(new Date(project.created_at), "h:mm a")}
+                          {format(new Date(project.created_at || ""), "h:mm a")}
                         </span>
                       </div>
                     </TableCell>
 
                     <TableCell>
                       <div className="flex items-center justify-center">
-                        {project.is_featured ? (
+                        {(project.is_featured || project.featured) ? (
                           <Tooltip>
                             <TooltipTrigger>
                               <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />

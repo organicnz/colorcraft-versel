@@ -58,7 +58,7 @@ export default function SignInForm() {
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange((event: any, session: any) => {
       debug(`Auth event: ${event} | Session: ${session ? "exists" : "none"}`);
 
       if (event === "SIGNED_IN" && session) {

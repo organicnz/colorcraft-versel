@@ -8,7 +8,10 @@ export async function POST(req: NextRequest) {
 
     if (result.error) {
       return NextResponse.json(
-        { error: result.error, fieldErrors: result.fieldErrors },
+        { 
+          error: result.error, 
+          fieldErrors: (result as any).fieldErrors || undefined 
+        },
         { status: 400 }
       );
     }
@@ -16,7 +19,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       success: true,
       message: result.message,
-      projectId: result.projectId,
+      projectId: (result as any).projectId || (result as any).data?.id,
     });
   } catch (error) {
     console.error("Error creating project:", error);

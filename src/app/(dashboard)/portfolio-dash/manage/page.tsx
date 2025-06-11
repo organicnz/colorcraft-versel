@@ -4,6 +4,7 @@ import Link from "next/link";
 import { PlusIcon } from "lucide-react";
 import PortfolioTable from "../_components/PortfolioTable";
 import { getPortfolioProjects } from "@/services/portfolio.service";
+import type { Project } from "@/types/database.types";
 
 // Force dynamic rendering due to Supabase auth using cookies
 export const dynamic = "force-dynamic";
@@ -14,8 +15,8 @@ export const metadata = {
 };
 
 export default async function DashboardPortfolioManagePage() {
-  let projects: unknown[] = [];
-  let error = null;
+  let projects: Project[] = [];
+  let error: string | null = null;
 
   try {
     projects = await getPortfolioProjects({
@@ -23,7 +24,7 @@ export default async function DashboardPortfolioManagePage() {
         { column: "is_featured", ascending: false },
         { column: "completion_date", ascending: false },
       ],
-    });
+    }) as Project[];
   } catch (err) {
     console.error("Error in dashboard portfolio page:", err);
     error = "Failed to load portfolio projects. Please try again.";

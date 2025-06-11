@@ -50,6 +50,10 @@ export interface Project {
   created_at?: string;
   updated_at?: string;
   featured?: boolean;
+  is_featured?: boolean;
+  completion_date?: string;
+  client_name?: string;
+  client_testimonial?: string;
 }
 
 export interface Service {

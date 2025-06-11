@@ -36,9 +36,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Check if feature is enabled
-    const isEnabled = await isFeatureEnabled(featureDefinition, {
-      userId: userId || undefined,
-    });
+    const isEnabled = isFeatureEnabled(featureDefinition.name, userId || undefined);
 
     // Return result
     return NextResponse.json({ enabled: isEnabled });

@@ -73,7 +73,7 @@ export function CircularProfileButton() {
     // Listen for auth state changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange(async (event: any, session: any) => {
       setUser(session?.user || null);
 
       if (session?.user) {

@@ -3,8 +3,17 @@
 import React from "react";
 import Link from "next/link";
 
+type Customer = {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  status: string;
+  source?: string;
+};
+
 interface CustomerListProps {
-  initialCustomers: unknown[]; // You may want to define a proper type here
+  initialCustomers: Customer[];
 }
 
 export default function CustomerList({ initialCustomers }: CustomerListProps) {
@@ -90,7 +99,7 @@ export default function CustomerList({ initialCustomers }: CustomerListProps) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200/30 dark:divide-slate-700/30">
-                {customers.map((customer) => (
+                {customers.map((customer: Customer) => (
                   <tr
                     key={customer.id}
                     className="hover:bg-white/20 dark:hover:bg-white/5 transition-colors duration-200"

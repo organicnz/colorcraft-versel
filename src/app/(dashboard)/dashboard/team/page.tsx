@@ -4,10 +4,11 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import TeamManagementTable from "./_components/TeamManagementTable";
 import { getTeamMembers } from "@/services/team.service";
+import type { TeamMember } from "@/types/team";
 
 export default async function TeamManagementPage() {
-  let teamMembers = [];
-  let error = null;
+  let teamMembers: TeamMember[] = [];
+  let error: string | null = null;
 
   try {
     teamMembers = await getTeamMembers();
@@ -42,13 +43,13 @@ export default async function TeamManagementPage() {
         </div>
         <div className="rounded-lg border bg-card p-4">
           <div className="text-2xl font-bold">
-            {teamMembers.filter((m: any) => m.is_featured).length}
+            {teamMembers.filter((m) => m.is_featured).length}
           </div>
           <div className="text-muted-foreground">Featured Members</div>
         </div>
         <div className="rounded-lg border bg-card p-4">
           <div className="text-2xl font-bold">
-            {teamMembers.filter((m: any) => m.is_active).length}
+            {teamMembers.filter((m) => m.is_active).length}
           </div>
           <div className="text-muted-foreground">Active Members</div>
         </div>

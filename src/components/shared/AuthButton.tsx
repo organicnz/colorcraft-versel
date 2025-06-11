@@ -60,7 +60,7 @@ export default function AuthButton({ className }: AuthButtonProps) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange(async (event: any, session: any) => {
       if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
         if (session?.user) {
           setUser(session.user as User);

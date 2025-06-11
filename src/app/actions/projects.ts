@@ -254,20 +254,29 @@ async function deleteProjectBase(id: string): Promise<ActionResponse<{ id: strin
 }
 
 // Apply rate limiting to server actions
-export const createProject = withRateLimit(createProjectBase, {
-  limit: 10, // 10 creations per minute
-  windowInSeconds: 60,
-  identifier: "createProject",
-});
+export const createProject = withRateLimit(
+  createProjectBase as (...args: unknown[]) => Promise<any>,
+  {
+    limit: 10, // 10 creations per minute
+    windowInSeconds: 60,
+    identifier: "createProject",
+  }
+) as typeof createProjectBase;
 
-export const updateProject = withRateLimit(updateProjectBase, {
-  limit: 20, // 20 updates per minute
-  windowInSeconds: 60,
-  identifier: "updateProject",
-});
+export const updateProject = withRateLimit(
+  updateProjectBase as (...args: unknown[]) => Promise<any>,
+  {
+    limit: 20, // 20 updates per minute
+    windowInSeconds: 60,
+    identifier: "updateProject",
+  }
+) as typeof updateProjectBase;
 
-export const deleteProject = withRateLimit(deleteProjectBase, {
-  limit: 5, // 5 deletions per minute
-  windowInSeconds: 60,
-  identifier: "deleteProject",
-});
+export const deleteProject = withRateLimit(
+  deleteProjectBase as (...args: unknown[]) => Promise<any>,
+  {
+    limit: 5, // 5 deletions per minute
+    windowInSeconds: 60,
+    identifier: "deleteProject",
+  }
+) as typeof deleteProjectBase;

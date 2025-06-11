@@ -66,7 +66,7 @@ export default function ProjectManager() {
   const createProjectMutation = useMutation({
     mutationFn: async (formData: FormData) => {
       const result = await createProject(formData);
-      if (result.error) throw new Error(result.error as string);
+      if (!result.success) throw new Error(result.error);
       return result.data;
     },
     onMutate: async (formData) => {
@@ -125,7 +125,7 @@ export default function ProjectManager() {
   const deleteProjectMutation = useMutation({
     mutationFn: async (id: string) => {
       const result = await deleteProject(id);
-      if (result.error) throw new Error(result.error as string);
+      if (!result.success) throw new Error(result.error);
       return result;
     },
     onMutate: async (id) => {
@@ -170,7 +170,7 @@ export default function ProjectManager() {
   const updateProjectMutation = useMutation({
     mutationFn: async ({ id, formData }: { id: string; formData: FormData }) => {
       const result = await updateProject(id, formData);
-      if (result.error) throw new Error(result.error as string);
+      if (!result.success) throw new Error(result.error);
       return result.data;
     },
     onMutate: async ({ id, formData }) => {

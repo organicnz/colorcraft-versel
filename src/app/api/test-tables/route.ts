@@ -8,7 +8,7 @@ export async function GET() {
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const results: unknown = {};
+    const results: Record<string, any> = {};
 
     // Test 1: Try projects table
     try {

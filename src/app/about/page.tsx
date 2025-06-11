@@ -97,8 +97,19 @@ export default function AboutPage() {
     },
   ];
 
+  // Helper function to normalize team member data
+  const normalizeTeamMember = (member: any) => ({
+    id: member.id,
+    name: member.full_name || member.name,
+    role: member.position || member.role,
+    specialty: member.specialty || member.specialties?.[0] || "",
+    achievement: member.achievement || "Expert",
+    bio: member.bio,
+    image: member.avatar_url || member.image || "/images/placeholder-avatar.png",
+  });
+
   // Display real team members if available, otherwise show fallback
-  const displayTeamMembers = teamMembers.length > 0 ? teamMembers : fallbackTeamMembers;
+  const displayTeamMembers = (teamMembers.length > 0 ? teamMembers : fallbackTeamMembers).map(normalizeTeamMember);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-violet-50 dark:from-slate-900 dark:via-slate-800 dark:to-violet-900">

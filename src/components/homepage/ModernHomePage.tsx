@@ -93,7 +93,7 @@ export default function ModernHomePage({
   // Transform team members from database for display with fallback
   const displayTeamMembers =
     teamMembers && teamMembers.length > 0
-      ? teamMembers.map((member) => ({
+      ? teamMembers.map((member: any) => ({
           name: member.full_name,
           role: member.position,
           image:
@@ -455,7 +455,7 @@ export default function ModernHomePage({
 
             {/* Fixed Grid - No Flickering, Consistent Sizing */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {featuredProjects.slice(0, 4).map((project, index) => (
+              {featuredProjects.slice(0, 4).map((project: any, index) => (
                 <div key={project.id || index} className="group h-[420px] flex flex-col">
                   <div className="relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all duration-300 h-full flex flex-col">
                     {/* Project Image - Fixed Height */}

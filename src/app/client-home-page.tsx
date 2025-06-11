@@ -6,7 +6,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { GlassPanel, GlassCard } from "@/components/ui/glass-card";
 import {
@@ -16,13 +16,8 @@ import {
   Send,
   Settings,
   Sparkles,
-  Star,
-  Phone,
-  Mail,
-  MapPin,
-  Clock,
 } from "lucide-react";
-import RandomShowcaseImage from "@/components/portfolio/RandomShowcaseImage";
+// Removed unused import
 import PhoneDisplay from "@/components/ui/phone-display";
 
 // Animation variants
@@ -33,19 +28,6 @@ const fadeIn = (delay = 0, duration = 0.8) => ({
     y: 0,
     transition: {
       duration,
-      delay,
-      ease: "easeOut",
-    },
-  },
-});
-
-const slideIn = (direction = "left", delay = 0) => ({
-  hidden: { opacity: 0, x: direction === "left" ? -50 : 50 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: {
-      duration: 0.6,
       delay,
       ease: "easeOut",
     },
@@ -63,7 +45,7 @@ const staggerContainer = {
   },
 };
 
-// Icon mapping
+// Icon mapping (used in services section)
 const iconMap = {
   Palette: Palette,
   Settings: Settings,
@@ -148,7 +130,7 @@ const defaultServices: Service[] = [
 const defaultTestimonials: Testimonial[] = [
   {
     name: "Sarah Johnson",
-    text: "Color & Craft transformed my grandmother&apos;s old dresser into a stunning centerpiece. The attention to detail is incredible!",
+    text: "Color & Craft transformed my grandmother's old dresser into a stunning centerpiece. The attention to detail is incredible!",
     rating: 5,
     image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150",
   },
@@ -183,8 +165,6 @@ export default function ClientHomePage({
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
 
   // Scroll progress tracking
@@ -195,12 +175,10 @@ export default function ClientHomePage({
   const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
   const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 0.95]);
 
-  // Services section transforms
-  const servicesY = useTransform(scrollYProgress, [0.1, 0.4], [50, -50]);
-  const servicesOpacity = useTransform(scrollYProgress, [0.1, 0.2, 0.35, 0.4], [0, 1, 1, 0]);
-
-  // Featured section transforms
-  const featuredY = useTransform(scrollYProgress, [0.3, 0.7], [100, -100]);
+  // Transform variables for future use (commented to avoid linting errors)
+  // const servicesY = useTransform(scrollYProgress, [0.1, 0.4], [50, -50]);
+  // const servicesOpacity = useTransform(scrollYProgress, [0.1, 0.2, 0.35, 0.4], [0, 1, 1, 0]);
+  // const featuredY = useTransform(scrollYProgress, [0.3, 0.7], [100, -100]);
   const featuredOpacity = useTransform(scrollYProgress, [0.3, 0.4, 0.6, 0.7], [0, 1, 1, 0]);
   const featuredScale = useTransform(scrollYProgress, [0.3, 0.7], [0.9, 1.1]);
 
@@ -269,15 +247,15 @@ export default function ClientHomePage({
     }
   }, [displayProjects.length]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.warn("Newsletter signup:", email);
-    setEmail("");
-  };
+  // Temporary: Comment out unused handlers to fix linting
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   console.warn("Newsletter signup:", email);
+  //   setEmail("");
+  // };
 
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
     console.warn("Contact form submitted:", { name, email, message });
   };
 

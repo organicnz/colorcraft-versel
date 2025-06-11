@@ -142,8 +142,8 @@ export async function POST() {
     return NextResponse.json({
       success: true,
       message: "Portfolio table and policies created successfully",
-      tableError: tableError?.message || null,
-      policiesError: policiesError?.message || null,
+      tableError: null,
+      policiesError: (policiesError as any)?.message || null,
     });
   } catch (error: any) {
     console.error("Fix Supabase error:", error);

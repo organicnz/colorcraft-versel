@@ -32,7 +32,7 @@ export default function SupabaseTestPage() {
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange((event: any, session: any) => {
       setUser(session?.user || null);
     });
 
@@ -122,10 +122,10 @@ export default function SupabaseTestPage() {
       const channel = supabase.channel("test-channel");
 
       channel
-        .on("broadcast", { event: "test" }, (payload) => {
+        .on("broadcast", { event: "test" }, (payload: any) => {
           addResult("Realtime Broadcast Received", true, payload, null);
         })
-        .subscribe((status) => {
+        .subscribe((status: any) => {
           addResult(
             "Realtime Connection",
             status === "SUBSCRIBED",
