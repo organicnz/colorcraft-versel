@@ -618,6 +618,8 @@ export default function ModernHomePage({
               </p>
             </motion.div>
 
+
+
             <motion.div
               variants={staggerContainer}
               className="grid grid-cols-1 @lg:grid-cols-3 gap-8 max-w-6xl mx-auto"

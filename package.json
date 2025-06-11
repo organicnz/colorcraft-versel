@@ -52,6 +52,7 @@
     "test:email:verify": "node scripts/test-custom-emails.js verify",
     "diagnose": "node scripts/verify-env.js && node scripts/verify-db-connection.js",
     "commit": "./scripts/commit.sh",
+    "setup:team": "node scripts/create-team-table.js",
     "optimize": "node scripts/optimize-codebase.js",
     "perf:monitor": "node scripts/performance-monitor.js",
     "perf:bundle": "npm run analyze:bundle",
