@@ -77,10 +77,68 @@ interface ProjectType {
   price_range?: string;
 }
 
+// Fallback sample data function
+const getSampleProjects = (): ProjectType[] => [
+  {
+    id: 'sample-1',
+    title: 'Victorian Dresser Revival',
+    description: 'Elegant restoration with chalk paint and brass accents.',
+    brief_description: 'Elegant restoration with chalk paint and brass accents.',
+    before_images: ['https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80'],
+    after_images: ['https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80'],
+    status: 'published' as const,
+    is_featured: true,
+    category: 'restoration',
+    completion_time: '3 weeks',
+    techniques: ['Chalk Paint', 'Distressing', 'Hardware Upgrade'],
+    price_range: '$800-1200',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: 'sample-2',
+    title: 'Modern Coffee Table Makeover',
+    description: 'Sleek transformation with geometric design.',
+    brief_description: 'Sleek transformation with geometric design.',
+    before_images: ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop&auto=format&q=80'],
+    after_images: ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop&auto=format&q=80'],
+    status: 'published' as const,
+    is_featured: true,
+    category: 'modern',
+    completion_time: '2 weeks',
+    techniques: ['Geometric Design', 'Premium Lacquer', 'Metal Accents'],
+    price_range: '$600-900',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  // Add more sample projects to demonstrate pagination
+  ...Array.from({ length: 20 }, (_, i) => ({
+    id: `sample-${i + 3}`,
+    title: `Project ${i + 3}`,
+    description: `Sample project ${i + 3} description`,
+    brief_description: `Sample project ${i + 3} brief description`,
+    before_images: [`https://images.unsplash.com/photo-${1586023492125 + i}?w=800&h=600&fit=crop&auto=format&q=80`],
+    after_images: [`https://images.unsplash.com/photo-${1586023492125 + i}?w=800&h=600&fit=crop&auto=format&q=80`],
+    status: 'published' as const,
+    is_featured: i < 5,
+    category: ['restoration', 'modern', 'vintage', 'industrial'][i % 4],
+    completion_time: `${Math.floor(Math.random() * 5) + 1} weeks`,
+    techniques: ['Technique 1', 'Technique 2'],
+    price_range: '$400-800',
+    created_at: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
+    updated_at: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
+  }))
+];
+
 export default function PortfolioPage() {
+  // Initialize with sample data to prevent empty state during SSR
+  const initialProjects = getSampleProjects();
+  
   const [isLoading, setIsLoading] = useState(true);
-  const [projects, setProjects] = useState<ProjectType[]>([]);
-  const [displayedProjects, setDisplayedProjects] = useState<ProjectType[]>([]);
+  const [projects, setProjects] = useState<ProjectType[]>(initialProjects);
+  const [displayedProjects, setDisplayedProjects] = useState<ProjectType[]>(
+    initialProjects.slice(0, 6)
+  );
   const [filterType, setFilterType] = useState("all");
   const [isAdmin, setIsAdmin] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -115,6 +173,8 @@ export default function PortfolioPage() {
           price_range: '$500-1500' // Default range, could be added to database later
         }));
 
+
+
         setProjects(transformedProjects);
         // Initialize displayed projects with first page
         setDisplayedProjects(transformedProjects.slice(0, projectsPerPage));
@@ -122,68 +182,16 @@ export default function PortfolioPage() {
         console.error('Error fetching portfolio projects:', err);
         setError('Failed to load portfolio projects. Please try again later.');
         // Fallback to sample data on error
-        setProjects(getSampleProjects());
-        setDisplayedProjects(getSampleProjects().slice(0, projectsPerPage));
+        const fallbackProjects = getSampleProjects();
+        setProjects(fallbackProjects);
+        setDisplayedProjects(fallbackProjects.slice(0, projectsPerPage));
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchProjects();
-  }, []);
-
-  // Fallback sample data function
-  const getSampleProjects = (): ProjectType[] => [
-    {
-      id: 'sample-1',
-      title: 'Victorian Dresser Revival',
-      description: 'Elegant restoration with chalk paint and brass accents.',
-      brief_description: 'Elegant restoration with chalk paint and brass accents.',
-      before_images: ['https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80'],
-      after_images: ['https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80'],
-      status: 'published' as const,
-      is_featured: true,
-      category: 'restoration',
-      completion_time: '3 weeks',
-      techniques: ['Chalk Paint', 'Distressing', 'Hardware Upgrade'],
-      price_range: '$800-1200',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    {
-      id: 'sample-2',
-      title: 'Modern Coffee Table Makeover',
-      description: 'Sleek transformation with geometric design.',
-      brief_description: 'Sleek transformation with geometric design.',
-      before_images: ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop&auto=format&q=80'],
-      after_images: ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop&auto=format&q=80'],
-      status: 'published' as const,
-      is_featured: true,
-      category: 'modern',
-      completion_time: '2 weeks',
-      techniques: ['Geometric Design', 'Premium Lacquer', 'Metal Accents'],
-      price_range: '$600-900',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    // Add more sample projects to demonstrate pagination
-    ...Array.from({ length: 20 }, (_, i) => ({
-      id: `sample-${i + 3}`,
-      title: `Project ${i + 3}`,
-      description: `Sample project ${i + 3} description`,
-      brief_description: `Sample project ${i + 3} brief description`,
-      before_images: [`https://images.unsplash.com/photo-${1586023492125 + i}?w=800&h=600&fit=crop&auto=format&q=80`],
-      after_images: [`https://images.unsplash.com/photo-${1586023492125 + i}?w=800&h=600&fit=crop&auto=format&q=80`],
-      status: 'published' as const,
-      is_featured: i < 5,
-      category: ['restoration', 'modern', 'vintage', 'industrial'][i % 4],
-      completion_time: `${Math.floor(Math.random() * 5) + 1} weeks`,
-      techniques: ['Technique 1', 'Technique 2'],
-      price_range: '$400-800',
-      created_at: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
-      updated_at: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
-    }))
-  ];
+      }, []);
 
   // Update displayed projects when filter changes
   useEffect(() => {
@@ -201,6 +209,8 @@ export default function PortfolioPage() {
 
   const hasMoreProjects = displayedProjects.length < filteredProjects.length;
 
+
+
   const loadMoreProjects = () => {
     if (isLoadingMore || !hasMoreProjects) return;
 
@@ -213,9 +223,9 @@ export default function PortfolioPage() {
         : projects.filter(project => project.category === filterType);
 
       const nextPage = currentPage + 1;
-      const newProjects = filtered.slice(0, nextPage * projectsPerPage);
+              const newProjects = filtered.slice(0, nextPage * projectsPerPage);
 
-      setDisplayedProjects(newProjects);
+        setDisplayedProjects(newProjects);
       setCurrentPage(nextPage);
       setIsLoadingMore(false);
     }, 500);
