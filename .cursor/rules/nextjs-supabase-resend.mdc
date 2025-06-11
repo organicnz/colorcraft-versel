@@ -982,8 +982,9 @@ describe('Button', () => {
 })
 ```
 
-## SQL 
-- Implement Jest for unit testing
-- Use React Testing Library for component tests
-- Set up Cypress for E2E testing
-- Implement test coverage reporting
+## SQL files
+- Keep sql files in sql directory respectevely
+
+## md docs
+- Keep md files in docs directory respectevely
+

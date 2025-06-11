@@ -152,6 +152,7 @@ export function CircularProfileButton() {
         <Button 
           variant="ghost" 
           className="rounded-full w-10 h-10 p-0 hover:scale-105 transition-transform duration-200"
+          title={userData.full_name || userData.email}
         >
           <Avatar className="h-9 w-9 ring-2 ring-white shadow-lg">
             <AvatarImage 

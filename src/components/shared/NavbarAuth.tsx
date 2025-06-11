@@ -42,14 +42,14 @@ export function NavbarAuth() {
 
   if (loading) {
     return (
-      <div className="flex items-center">
+      <Button variant="ghost" size="sm" disabled className="rounded-full w-10 h-10 p-0">
         <Loader2 className="h-4 w-4 animate-spin" />
-      </div>
+      </Button>
     );
   }
 
   if (user) {
-    // User is logged in - show circular profile button
+    // User is logged in - show ONLY circular profile button (no text)
     return <CircularProfileButton />;
   }
 

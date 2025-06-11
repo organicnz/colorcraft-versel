@@ -62,19 +62,7 @@ const nextConfig = {
     return config
   },
   trailingSlash: true,
-  // Turbopack configuration (stable in Next.js 15)
-  turbopack: {
-    resolveAlias: {
-      '@': './src',
-    },
-    rules: {
-      '*.svg': {
-        loaders: ['@svgr/webpack'],
-        as: '*.js',
-      },
-    },
-  },
-  // Server external packages (moved from experimental.serverComponentsExternalPackages)
+  // Server external packages
   serverExternalPackages: ["postgres"],
   images: {
     unoptimized: false,
@@ -132,7 +120,6 @@ const nextConfig = {
     ],
     // React 19 compatibility for Next.js 15
     reactCompiler: false, // Disable until React 19 is stable
-    // Legacy turbo config moved to turbopack section below
   },
   // Static optimization
   generateBuildId: async () => {
