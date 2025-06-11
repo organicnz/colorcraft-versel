@@ -12,9 +12,8 @@ import ClientHomePage from "./client-home-page";
 import ModernHomePage from "@/components/homepage/ModernHomePage";
 import HomePageRenderer from "@/components/homepage/HomePageRenderer";
 
-// Force dynamic rendering for each request to enable randomization
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// Enable static generation with periodic revalidation to reduce blinking
+export const revalidate = 300; // Revalidate every 5 minutes
 
 const services = [
   {
@@ -69,35 +68,45 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 export default async function Home() {
-  // Fetch featured projects from the database
+  // Fetch featured projects from the database with error handling
   let featuredProjects: any[] = [];
   let teamMembers: any[] = [];
 
   try {
-    // Fetch featured projects and team members in parallel
+    // Fetch featured projects and team members in parallel with timeout
     const [projectsResult, teamResult] = await Promise.allSettled([
-      getPortfolioProjects({
-        featuredOnly: true,
-        orderBy: [
-          { column: 'completion_date', ascending: false }
-        ]
-      }),
-      getFeaturedTeamMembers()
+      Promise.race([
+        getPortfolioProjects({
+          featuredOnly: true,
+          orderBy: [
+            { column: 'completion_date', ascending: false }
+          ]
+        }),
+                new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Projects timeout')), 5000)
+        )
+      ]),
+      Promise.race([
+        getFeaturedTeamMembers(),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Team timeout')), 5000)
+        )
+      ])
     ]);
 
     if (projectsResult.status === 'fulfilled') {
-      featuredProjects = projectsResult.value;
+      featuredProjects = Array.isArray(projectsResult.value) ? projectsResult.value : [];
     } else {
-      console.error('Failed to fetch featured projects:', projectsResult.reason);
+      console.warn('Using fallback for projects:', projectsResult.reason?.message);
     }
 
     if (teamResult.status === 'fulfilled') {
-      teamMembers = teamResult.value;
+      teamMembers = Array.isArray(teamResult.value) ? teamResult.value : [];
     } else {
-      console.error('Failed to fetch team members:', teamResult.reason);
+      console.warn('Using fallback for team members:', teamResult.reason?.message);
     }
   } catch (error) {
-    console.error('Failed to fetch data:', error);
+    console.warn('Data fetch failed, using fallbacks:', error);
   }
 
   // Transform and randomize projects

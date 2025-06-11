@@ -24,10 +24,18 @@ export default function HomePageRenderer({
     setIsHydrated(true);
   }, []);
 
-  // Prevent flash by only showing user preference after hydration
+  // Prevent flash by only showing user preference after hydration with minimal layout shift
   if (!isHydrated) {
-    return modernHomepage; // Always show modern during SSR/initial hydration
+    return (
+      <div style={{ minHeight: '100vh', opacity: 1 }}>
+        {modernHomepage}
+      </div>
+    );
   }
 
-  return isModern ? modernHomepage : classicHomepage;
+  return (
+    <div style={{ minHeight: '100vh', opacity: 1 }}>
+      {isModern ? modernHomepage : classicHomepage}
+    </div>
+  );
 } 
