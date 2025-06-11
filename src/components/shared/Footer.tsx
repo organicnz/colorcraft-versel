@@ -25,17 +25,17 @@ export default function Footer() {
       </div>
 
       <div className="relative">
-        {/* Newsletter Section */}
+        {/* Newsletter Section - Enhanced spacing */}
         <div className="border-b border-white/10">
-          <div className="container mx-auto py-20 px-6">
+          <div className="container mx-auto py-24 px-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               className="max-w-4xl mx-auto text-center"
             >
-              <div className="space-y-8">
-                <div className="flex items-center justify-center gap-3 mb-8">
+              <div className="space-y-12">
+                <div className="flex items-center justify-center gap-3 mb-10">
                   <Sparkles className="w-8 h-8 text-violet-400" />
                   <h3 className="text-4xl font-bold bg-gradient-to-r from-white to-slate-200 bg-clip-text text-transparent">
                     Stay Inspired
@@ -43,20 +43,22 @@ export default function Footer() {
                   <Sparkles className="w-8 h-8 text-violet-400" />
                 </div>
 
-                <p className="text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
-                  Get the latest design trends, transformation tips, and exclusive offers delivered to your inbox.
-                </p>
+                <div className="space-y-8">
+                  <p className="text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
+                    Get the latest design trends, transformation tips, and exclusive offers delivered to your inbox.
+                  </p>
 
-                <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto mt-8">
-                  <Input
-                    type="email"
-                    placeholder="Enter your email"
-                    className="bg-white/10 border-white/20 text-white placeholder:text-slate-400 rounded-xl backdrop-blur-sm h-12"
-                  />
-                  <Button className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-8 rounded-xl shadow-lg h-12">
-                    Subscribe
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
+                  <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto pt-6">
+                    <Input
+                      type="email"
+                      placeholder="Enter your email"
+                      className="bg-white/10 border-white/20 text-white placeholder:text-slate-400 rounded-xl backdrop-blur-sm h-12"
+                    />
+                    <Button className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-8 rounded-xl shadow-lg h-12">
+                      Subscribe
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -176,18 +178,18 @@ export default function Footer() {
             </motion.div>
           </div>
 
-          {/* Social Media */}
+          {/* Social Media - Enhanced spacing */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.4 }}
-            className="mt-16 pt-12 border-t border-white/10"
+            className="mt-20 pt-16 border-t border-white/10"
           >
-            <div className="flex flex-col items-center space-y-8">
-              <div className="text-center">
-                <p className="text-slate-300 mb-6 text-xl">Follow our journey and get inspired</p>
-                <div className="flex space-x-6">
+            <div className="flex flex-col items-center space-y-12">
+              <div className="text-center space-y-8">
+                <p className="text-slate-300 text-xl">Follow our journey and get inspired</p>
+                <div className="flex space-x-8">
                   {[
                     {
                       name: "Facebook",
@@ -219,12 +221,12 @@ export default function Footer() {
                       href={social.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`group relative w-14 h-14 rounded-2xl bg-gradient-to-br ${social.gradient} p-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110`}
+                      className={`group relative w-16 h-16 rounded-2xl bg-gradient-to-br ${social.gradient} p-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110`}
                       aria-label={`Follow us on ${social.name}`}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="w-8 h-8 text-white"
+                        className="w-10 h-10 text-white"
                         fill="currentColor"
                         viewBox="0 0 24 24"
                       >

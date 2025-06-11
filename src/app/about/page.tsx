@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { GlassCard, GlassPanel } from "@/components/ui/glass-card";
 import {
   ArrowRight,
   Award,
@@ -19,6 +20,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import type { TeamMember } from "@/types/team";
+import { getTeamMembers } from "@/services/team.service";
 
 export default function AboutPage() {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
@@ -50,22 +52,48 @@ export default function AboutPage() {
     fetchTeamMembers();
   }, []);
 
-  // Transform team members for display
-  const displayTeamMembers = teamMembers.map((member, index) => ({
-    id: member.id,
-    name: member.full_name,
-    role: member.position,
-    bio: member.bio || `Expert in ${member.specialties?.[0] || 'furniture restoration'}`,
-    image: member.avatar_url || (index % 2 === 0 ?
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face" :
-      "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face"
-    ),
-    specialty: member.specialties?.[0] || 'Furniture Expert',
-    achievement: member.years_experience ? `${member.years_experience}+ years` : 'Expert Craftsperson',
-    email: member.email,
-    phone: member.phone,
-    social_links: member.social_links
-  }));
+  // Use fallback data if no team members loaded
+  const fallbackTeamMembers = [
+    {
+      id: "sarah-mitchell-fallback",
+      name: "Sarah Mitchell",
+      role: "Lead Restoration Artist",
+      specialty: "Vintage Restoration",
+      achievement: "Master Craftsperson",
+      bio: "Sarah brings over 15 years of experience in furniture restoration and color theory. She specializes in bringing antique and vintage pieces back to their original glory while preserving their historical character.",
+      image: "https://images.unsplash.com/photo-1494790108755-2616b612b05c?w=400&h=400&fit=crop&auto=format&q=80"
+    },
+    {
+      id: "james-wilson-fallback", 
+      name: "James Wilson",
+      role: "Custom Finish Specialist",
+      specialty: "Modern Techniques",
+      achievement: "Innovation Award",
+      bio: "James is our go-to expert for contemporary finishes and modern paint techniques. His innovative approach has revolutionized how we approach furniture makeovers for modern homes.",
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&auto=format&q=80"
+    },
+    {
+      id: "emma-rodriguez-fallback",
+      name: "Emma Rodriguez", 
+      role: "Design Consultant",
+      specialty: "Color Coordination",
+      achievement: "Design Excellence",
+      bio: "Emma's keen eye for color and design helps clients envision the perfect finish for their furniture. She bridges the gap between artistic vision and practical application.",
+      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&auto=format&q=80"
+    },
+    {
+      id: "michael-chen-fallback",
+      name: "Michael Chen",
+      role: "Workshop Manager", 
+      specialty: "Quality Control",
+      achievement: "Excellence Award",
+      bio: "Michael ensures every project meets our exacting standards. His attention to detail and quality control processes guarantee exceptional results for every client.",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&auto=format&q=80"
+    }
+  ];
+
+  // Display real team members if available, otherwise show fallback
+  const displayTeamMembers = teamMembers.length > 0 ? teamMembers : fallbackTeamMembers;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-violet-50">
@@ -236,12 +264,16 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Meet Our Team Section */}
+      {/* Meet Our Team Section - Enhanced with glassmorphism and horizontal layout */}
       {displayTeamMembers.length > 0 && (
-        <section className="py-24 bg-white">
-          <div className="container mx-auto px-6">
+        <section className="py-24 relative">
+          {/* Background with glassmorphism effect */}
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 via-pink-50/30 to-blue-50/50 dark:from-purple-900/20 dark:via-pink-900/10 dark:to-blue-900/20" />
+          
+          <div className="container mx-auto px-6 relative z-10">
             <div className="space-y-16">
-              <div className="text-center space-y-6">
+              {/* Section Header with glassmorphism */}
+              <GlassPanel className="text-center space-y-6 bg-white/40 dark:bg-white/10 backdrop-blur-xl border-white/40 dark:border-white/20">
                 <Badge className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-200 text-amber-800 px-4 py-2">
                   <Users className="w-4 h-4 mr-2" />
                   Meet Our Team
@@ -253,53 +285,74 @@ export default function AboutPage() {
                 <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
                   Meet the talented individuals who bring passion, expertise, and creativity to every project.
                 </p>
-              </div>
+              </GlassPanel>
 
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {displayTeamMembers.map((member) => {
+              {/* Team Members - Horizontal Layout */}
+              <div className="space-y-6">
+                {displayTeamMembers.map((member, index) => {
                   // Trim bio to ensure consistent card heights
-                  const trimmedBio = member.bio && member.bio.length > 120 ? `${member.bio.substring(0, 120)}...` : member.bio;
+                  const trimmedBio = member.bio && member.bio.length > 180 ? `${member.bio.substring(0, 180)}...` : member.bio;
                   return (
-                    <div key={member.id} className="group h-full">
-                      <div className="relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 h-full flex flex-col">
-                        <div className="relative h-80 overflow-hidden flex-shrink-0">
-                          <Image
-                            src={member.image}
-                            alt={member.name}
-                            fill
-                            className="object-cover transition-transform duration-500 group-hover:scale-105"
-                            sizes="(max-width: 768px) 100vw, 50vw"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <div className="absolute bottom-4 left-4 right-4 text-white">
-                              <div className="flex items-center space-x-2 mb-2">
-                                <Star className="w-4 h-4 text-yellow-400" />
-                                <span className="text-sm font-medium">{member.achievement}</span>
-                              </div>
-                            </div>
+                    <GlassCard 
+                      key={member.id} 
+                      variant="light" 
+                      intensity="strong" 
+                      blur="lg"
+                      shadow="heavy"
+                      className={`group transition-all duration-500 hover:scale-[1.01] hover:shadow-glass-heavy border-white/30 dark:border-white/20 ${
+                        index % 2 === 0 ? 'ml-0 mr-8' : 'ml-8 mr-0'
+                      }`}
+                    >
+                      <div className={`flex items-center gap-8 h-full p-4 ${
+                        index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'
+                      }`}>
+                        {/* Avatar */}
+                        <div className="relative flex-shrink-0">
+                          <div className="w-32 h-32 rounded-3xl overflow-hidden ring-4 ring-white/30 shadow-xl">
+                            <Image
+                              src={member.image}
+                              alt={member.name}
+                              width={128}
+                              height={128}
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                              sizes="(max-width: 768px) 100vw, 50vw"
+                            />
+                          </div>
+                          
+                          {/* Achievement badge */}
+                          <div className="absolute -bottom-2 -right-2">
+                            <Badge variant="secondary" className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 shadow-lg backdrop-blur-sm">
+                              <Star className="w-3 h-3 mr-1" />
+                              {member.achievement}
+                            </Badge>
                           </div>
                         </div>
 
-                        <div className="p-6 flex flex-col flex-grow">
-                          <div className="flex-shrink-0 mb-4">
-                            <h3 className="text-xl font-bold text-slate-900">{member.name}</h3>
-                            <p className="text-violet-600 font-medium">{member.role}</p>
+                        {/* Content */}
+                        <div className="flex-1 min-w-0 space-y-4">
+                          {/* Name and Role */}
+                          <div className={`space-y-2 ${index % 2 === 0 ? 'text-left' : 'text-right'}`}>
+                            <h3 className="text-2xl font-bold text-slate-900">{member.name}</h3>
+                            <p className="text-violet-600 font-medium text-lg">{member.role}</p>
                           </div>
 
-                          <div className="flex-grow mb-4">
-                            <p className="text-slate-600 text-sm leading-relaxed h-16 overflow-hidden">
-                              {trimmedBio}
-                            </p>
-                          </div>
+                          {/* Bio */}
+                          <p className={`text-slate-600 leading-relaxed ${index % 2 === 0 ? 'text-left' : 'text-right'}`}>
+                            {trimmedBio}
+                          </p>
 
-                          <div className="flex items-center justify-between pt-4 border-t border-slate-100 flex-shrink-0">
-                            <Badge variant="secondary" className="bg-violet-50 text-violet-700 border-violet-200">
+                          {/* Specialty */}
+                          <div className={`flex ${index % 2 === 0 ? 'justify-start' : 'justify-end'}`}>
+                            <Badge 
+                              variant="outline" 
+                              className="bg-white/60 dark:bg-gray-800/60 border-violet-200/50 text-violet-700 backdrop-blur-sm px-4 py-2"
+                            >
                               {member.specialty}
                             </Badge>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </GlassCard>
                   );
                 })}
               </div>
