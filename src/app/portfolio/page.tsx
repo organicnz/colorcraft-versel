@@ -1,7 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
-import { getPortfolioProjects } from "@/services/portfolio.service";
+import { getPortfolioProjects } from "@/services/portfolio.service.client";
 import PortfolioItem from "@/components/portfolio/PortfolioItem";
 import PortfolioTabs from "@/components/portfolio/PortfolioTabs";
 import { Button } from "@/components/ui/button";
@@ -105,7 +105,7 @@ export default function PortfolioPage() {
         });
 
         // Transform projects to match UI requirements
-        const transformedProjects = fetchedProjects.map(project => ({
+        const transformedProjects = fetchedProjects.map((project: any) => ({
           ...project,
           // Add computed properties for backward compatibility
           category: project.techniques?.[0]?.toLowerCase() || 'general',
