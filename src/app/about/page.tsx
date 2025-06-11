@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,33 +19,6 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import type { TeamMember } from "@/types/team";
-
-// Ultra-modern animation variants
-const fadeInUp = {
-  hidden: { opacity: 0, y: 60, scale: 0.95 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { type: "spring", stiffness: 100, damping: 15, duration: 0.8 }
-  }
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2
-    }
-  }
-};
-
-const scaleOnHover = {
-  rest: { scale: 1 },
-  hover: { scale: 1.05, transition: { type: "spring", stiffness: 400, damping: 10 } }
-};
 
 export default function AboutPage() {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
@@ -97,30 +69,18 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-violet-50">
-      {/* Hero Section with Ultra-Modern Design */}
+      {/* Hero Section */}
       <section className="relative pt-20 lg:pt-32 pb-16 lg:pb-24 overflow-hidden">
-        {/* Background Elements */}
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-violet-200/40 to-purple-300/40 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-r from-blue-200/30 to-indigo-300/30 rounded-full blur-3xl animate-pulse delay-1000"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-white/50 to-transparent rounded-full"></div>
-        </div>
-
         <div className="container mx-auto px-6 text-center">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={staggerContainer}
-            className="space-y-8"
-          >
-            <motion.div variants={fadeInUp}>
+          <div className="space-y-8">
+            <div>
               <Badge className="bg-gradient-to-r from-violet-500/10 to-purple-500/10 border-violet-200 text-violet-700 px-6 py-3 text-sm font-medium">
                 <Sparkles className="w-4 h-4 mr-2" />
                 About Color & Craft
               </Badge>
-            </motion.div>
+            </div>
 
-            <motion.h1 variants={fadeInUp} className="text-5xl lg:text-7xl font-bold leading-tight">
+            <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
               <span className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 bg-clip-text text-transparent">
                 Where artistry meets
               </span>
@@ -128,14 +88,14 @@ export default function AboutPage() {
               <span className="bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
                 precision
               </span>
-            </motion.h1>
+            </h1>
 
-            <motion.p variants={fadeInUp} className="text-xl lg:text-2xl text-slate-600 leading-relaxed max-w-3xl mx-auto font-light">
+            <p className="text-xl lg:text-2xl text-slate-600 leading-relaxed max-w-3xl mx-auto font-light">
               At Color & Craft, we believe that furniture is more than just functional pieces;
               they're the foundation of your sanctuary where cherished memories are crafted.
-            </motion.p>
+            </p>
 
-            <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
                 <Link href="/portfolio" className="flex items-center">
                   View Our Work
@@ -148,23 +108,17 @@ export default function AboutPage() {
                   <Heart className="ml-2 w-5 h-5" />
                 </Link>
               </Button>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Our Story Section */}
       <section className="py-24 bg-white relative overflow-hidden">
         <div className="container mx-auto px-6">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="max-w-6xl mx-auto"
-          >
+          <div className="max-w-6xl mx-auto">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
-              <motion.div variants={fadeInUp} className="space-y-8">
+              <div className="space-y-8">
                 <div>
                   <Badge className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-200 text-amber-800 px-4 py-2 mb-6">
                     <Award className="w-4 h-4 mr-2" />
@@ -203,9 +157,9 @@ export default function AboutPage() {
                     <div className="text-sm text-slate-500 uppercase tracking-wide">Satisfaction</div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
 
-              <motion.div variants={fadeInUp} className="relative">
+              <div className="relative">
                 <div className="relative h-[600px] rounded-3xl overflow-hidden shadow-2xl">
                   <Image
                     src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=800&fit=crop&auto=format&q=80"
@@ -216,56 +170,17 @@ export default function AboutPage() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-tr from-violet-900/20 to-transparent"></div>
                 </div>
-
-                {/* Floating cards */}
-                <motion.div
-                  className="absolute -top-6 -left-6 bg-white rounded-2xl shadow-xl p-6 border border-violet-100"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-emerald-500 rounded-xl flex items-center justify-center">
-                      <Shield className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-slate-900">Guaranteed Quality</div>
-                      <div className="text-sm text-slate-500">100% Satisfaction</div>
-                    </div>
-                  </div>
-                </motion.div>
-
-                <motion.div
-                  className="absolute -bottom-6 -right-6 bg-white rounded-2xl shadow-xl p-6 border border-violet-100"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-gradient-to-r from-violet-400 to-purple-500 rounded-xl flex items-center justify-center">
-                      <TreePine className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-slate-900">Eco-Friendly</div>
-                      <div className="text-sm text-slate-500">Sustainable Materials</div>
-                    </div>
-                  </div>
-                </motion.div>
-              </motion.div>
+              </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Our Values Section */}
       <section className="py-24 bg-gradient-to-br from-slate-50 to-violet-50">
         <div className="container mx-auto px-6">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="text-center space-y-16"
-          >
-            <motion.div variants={fadeInUp} className="space-y-6">
+          <div className="text-center space-y-16">
+            <div className="space-y-6">
               <Badge className="bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border-blue-200 text-blue-800 px-4 py-2">
                 <CheckCircle className="w-4 h-4 mr-2" />
                 Our Values
@@ -277,9 +192,9 @@ export default function AboutPage() {
               <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
                 Our core values shape every project we undertake and every relationship we build.
               </p>
-            </motion.div>
+            </div>
 
-            <motion.div variants={staggerContainer} className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
               {[
                 {
                   icon: Palette,
@@ -302,16 +217,8 @@ export default function AboutPage() {
                   description: "Giving new life to furniture while protecting our environment."
                 }
               ].map((value, index) => (
-                <motion.div
-                  key={value.title}
-                  variants={fadeInUp}
-                  whileHover="hover"
-                  className="group cursor-pointer"
-                >
-                  <motion.div
-                    variants={scaleOnHover}
-                    className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-slate-100 h-full"
-                  >
+                <div key={value.title} className="group cursor-pointer">
+                  <div className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-slate-100 h-full">
                     <div className="space-y-6">
                       <div className="w-16 h-16 bg-gradient-to-r from-violet-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300">
                         <value.icon className="w-8 h-8 text-white" />
@@ -321,11 +228,11 @@ export default function AboutPage() {
                         <p className="text-slate-600 leading-relaxed">{value.description}</p>
                       </div>
                     </div>
-                  </motion.div>
-                </motion.div>
+                  </div>
+                </div>
               ))}
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -333,14 +240,8 @@ export default function AboutPage() {
       {displayTeamMembers.length > 0 && (
         <section className="py-24 bg-white">
           <div className="container mx-auto px-6">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={staggerContainer}
-              className="space-y-16"
-            >
-              <motion.div variants={fadeInUp} className="text-center space-y-6">
+            <div className="space-y-16">
+              <div className="text-center space-y-6">
                 <Badge className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-200 text-amber-800 px-4 py-2">
                   <Users className="w-4 h-4 mr-2" />
                   Meet Our Team
@@ -352,19 +253,12 @@ export default function AboutPage() {
                 <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
                   Meet the talented individuals who bring passion, expertise, and creativity to every project.
                 </p>
-              </motion.div>
+              </div>
 
-              <motion.div variants={staggerContainer} className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {displayTeamMembers.map((member) => (
-                  <motion.div
-                    key={member.id}
-                    variants={fadeInUp}
-                    className="group"
-                  >
-                    <motion.div
-                      className="relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500"
-                      whileHover={{ y: -8 }}
-                    >
+                  <div key={member.id} className="group">
+                    <div className="relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
                       <div className="relative h-80 overflow-hidden">
                         <Image
                           src={member.image}
@@ -399,39 +293,26 @@ export default function AboutPage() {
                           </Badge>
                         </div>
                       </div>
-                    </motion.div>
-                  </motion.div>
+                    </div>
+                  </div>
                 ))}
-              </motion.div>
-            </motion.div>
-          </motion.div>
+              </div>
+            </div>
+          </div>
         </section>
       )}
 
       {/* Call to Action Section */}
       <section className="py-24 bg-gradient-to-r from-violet-600 to-purple-700 text-white relative overflow-hidden">
-        {/* Background decoration */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 w-32 h-32 border border-white/20 rounded-full"></div>
-          <div className="absolute bottom-10 right-10 w-48 h-48 border border-white/20 rounded-full"></div>
-          <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-white/10 rounded-full blur-sm"></div>
-        </div>
-
         <div className="container mx-auto px-6 text-center relative z-10">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="space-y-8"
-          >
-            <motion.h2 variants={fadeInUp} className="text-4xl lg:text-5xl font-bold leading-tight">
+          <div className="space-y-8">
+            <h2 className="text-4xl lg:text-5xl font-bold leading-tight">
               Ready to transform your furniture?
-            </motion.h2>
-            <motion.p variants={fadeInUp} className="text-xl opacity-90 max-w-2xl mx-auto leading-relaxed">
+            </h2>
+            <p className="text-xl opacity-90 max-w-2xl mx-auto leading-relaxed">
               Let's discuss your vision and create something beautiful together. Every great transformation starts with a conversation.
-            </motion.p>
-            <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4 justify-center">
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="bg-white text-violet-700 hover:bg-gray-50 px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
                 <Link href="/contact" className="flex items-center">
                   Get Free Consultation
@@ -444,8 +325,8 @@ export default function AboutPage() {
                   <Sparkles className="ml-2 w-5 h-5" />
                 </Link>
               </Button>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </div>
       </section>
     </div>
