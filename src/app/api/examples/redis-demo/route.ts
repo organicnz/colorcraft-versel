@@ -168,15 +168,16 @@ export async function DELETE() {
     
     const deleteResults = []
     
-    for (const key of keysToDelete) {
+        for (const key of keysToDelete) {
       const deleted = await RedisService.del(key)
+      const deletedCount = typeof deleted === 'number' ? deleted : (deleted ? 1 : 0)
       deleteResults.push({
         key,
-        deleted: deleted > 0,
-        count: deleted
+        deleted: deletedCount > 0,
+        count: deletedCount
       })
     }
-    
+
     return NextResponse.json({
       success: true,
       message: 'Demo cache cleanup completed',

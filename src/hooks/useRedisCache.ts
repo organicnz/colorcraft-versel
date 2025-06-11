@@ -191,8 +191,9 @@ export function useRedisCounter(key: string, enabled = true) {
     setIsLoading(true)
     try {
       const newCount = await RedisService.incr(key, by)
-      setCount(newCount)
-      return newCount
+      const finalCount = newCount ?? count + by
+      setCount(finalCount)
+      return finalCount
     } catch (error) {
       console.error('Failed to increment counter:', error)
       return count
@@ -207,8 +208,9 @@ export function useRedisCounter(key: string, enabled = true) {
     setIsLoading(true)
     try {
       const newCount = await RedisService.decr(key, by)
-      setCount(Math.max(0, newCount)) // Prevent negative counts
-      return newCount
+      const finalCount = Math.max(0, newCount ?? count - by)
+      setCount(finalCount) // Prevent negative counts
+      return finalCount
     } catch (error) {
       console.error('Failed to decrement counter:', error)
       return count

@@ -166,6 +166,26 @@ export class QStashService {
       retries: 2,
     })
   }
+
+  /**
+   * Get messages (for demo purposes)
+   */
+  static async getMessages(): Promise<{ success: boolean; data?: any; error?: string }> {
+    try {
+      // Note: QStash doesn't have a direct getMessages method
+      // This is a mock implementation for demo purposes
+      return {
+        success: true,
+        data: [
+          { id: 'demo-msg-1', status: 'pending', url: '/api/webhooks/email' },
+          { id: 'demo-msg-2', status: 'delivered', url: '/api/webhooks/portfolio-process' }
+        ]
+      }
+    } catch (error: any) {
+      console.error('QStash get messages error:', error)
+      return { success: false, error: error.message }
+    }
+  }
 }
 
 // Webhook endpoint builders

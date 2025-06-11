@@ -81,11 +81,43 @@ export class RedisService {
   /**
    * Increment a numeric value
    */
-  static async incr(key: string): Promise<number | null> {
+  static async incr(key: string, by: number = 1): Promise<number | null> {
     try {
-      return await redis.incr(key)
+      if (by === 1) {
+        return await redis.incr(key)
+      } else {
+        return await redis.incrby(key, by)
+      }
     } catch (error) {
       console.error('Redis INCR error:', error)
+      return null
+    }
+  }
+
+  /**
+   * Decrement a numeric value
+   */
+  static async decr(key: string, by: number = 1): Promise<number | null> {
+    try {
+      if (by === 1) {
+        return await redis.decr(key)
+      } else {
+        return await redis.decrby(key, by)
+      }
+    } catch (error) {
+      console.error('Redis DECR error:', error)
+      return null
+    }
+  }
+
+  /**
+   * Get time-to-live for a key
+   */
+  static async ttl(key: string): Promise<number | null> {
+    try {
+      return await redis.ttl(key)
+    } catch (error) {
+      console.error('Redis TTL error:', error)
       return null
     }
   }
