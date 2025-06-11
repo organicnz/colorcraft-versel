@@ -1,6 +1,6 @@
 "use client";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/client";
 import { getPortfolioProjects } from "@/services/portfolio.service";
 import PortfolioItem from "@/components/portfolio/PortfolioItem";
 import PortfolioTabs from "@/components/portfolio/PortfolioTabs";
@@ -54,19 +54,27 @@ const scaleOnHover = {
 // Force dynamic rendering for authentication checks
 export const dynamic = 'force-dynamic';
 
-// Define the project type
+// Updated interface to match the database schema
 interface ProjectType {
   id: string;
   title: string;
-  description: string;
+  description?: string;
+  brief_description: string;
   before_images: string[];
   after_images: string[];
-  status: string;
+  status: 'published' | 'draft' | 'archived';
   is_featured: boolean;
-  category: string;
-  completion_time: string;
-  techniques: string[];
-  price_range: string;
+  techniques?: string[];
+  materials?: string[];
+  completion_date?: string;
+  client_name?: string;
+  client_testimonial?: string;
+  created_at: string;
+  updated_at: string;
+  // Additional computed properties for UI
+  category?: string;
+  completion_time?: string;
+  price_range?: string;
 }
 
 export default function PortfolioPage() {
@@ -77,120 +85,146 @@ export default function PortfolioPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const projectsPerPage = 6; // Show 6 projects (3 columns x 2 rows)
 
-  // Sample data with ultra-modern structure
-  const sampleProjects: ProjectType[] = [
+  // Fetch real projects from database
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        // Fetch published projects only for public view
+        const fetchedProjects = await getPortfolioProjects({
+          status: 'published',
+          orderBy: [
+            { column: 'is_featured', ascending: false },
+            { column: 'created_at', ascending: false }
+          ]
+        });
+
+        // Transform projects to match UI requirements
+        const transformedProjects = fetchedProjects.map(project => ({
+          ...project,
+          // Add computed properties for backward compatibility
+          category: project.techniques?.[0]?.toLowerCase() || 'general',
+          completion_time: project.completion_date
+            ? `${Math.ceil(Math.abs(new Date().getTime() - new Date(project.completion_date).getTime()) / (1000 * 3600 * 24 * 7))} weeks`
+            : '2-4 weeks',
+          price_range: '$500-1500' // Default range, could be added to database later
+        }));
+
+        setProjects(transformedProjects);
+        // Initialize displayed projects with first page
+        setDisplayedProjects(transformedProjects.slice(0, projectsPerPage));
+      } catch (err) {
+        console.error('Error fetching portfolio projects:', err);
+        setError('Failed to load portfolio projects. Please try again later.');
+        // Fallback to sample data on error
+        setProjects(getSampleProjects());
+        setDisplayedProjects(getSampleProjects().slice(0, projectsPerPage));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+  // Fallback sample data function
+  const getSampleProjects = (): ProjectType[] => [
     {
       id: 'sample-1',
       title: 'Victorian Dresser Revival',
       description: 'Elegant restoration with chalk paint and brass accents.',
+      brief_description: 'Elegant restoration with chalk paint and brass accents.',
       before_images: ['https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80'],
       after_images: ['https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80'],
-      status: 'published',
+      status: 'published' as const,
       is_featured: true,
       category: 'restoration',
       completion_time: '3 weeks',
       techniques: ['Chalk Paint', 'Distressing', 'Hardware Upgrade'],
-      price_range: '$800-1200'
+      price_range: '$800-1200',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     },
     {
       id: 'sample-2',
       title: 'Modern Coffee Table Makeover',
       description: 'Sleek transformation with geometric design.',
+      brief_description: 'Sleek transformation with geometric design.',
       before_images: ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop&auto=format&q=80'],
       after_images: ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop&auto=format&q=80'],
-      status: 'published',
+      status: 'published' as const,
       is_featured: true,
       category: 'modern',
       completion_time: '2 weeks',
       techniques: ['Geometric Design', 'Premium Lacquer', 'Metal Accents'],
-      price_range: '$600-900'
+      price_range: '$600-900',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     },
-    {
-      id: 'sample-3',
-      title: 'Vintage Chair Restoration',
-      description: 'Mid-century restoration with new upholstery.',
-      before_images: ['https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=800&h=600&fit=crop&auto=format&q=80'],
-      after_images: ['https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=800&h=600&fit=crop&auto=format&q=80'],
-      status: 'published',
-      is_featured: true,
-      category: 'vintage',
-      completion_time: '4 weeks',
-      techniques: ['Upholstery', 'Wood Refinishing', 'Structural Repair'],
-      price_range: '$500-800'
-    },
-    {
-      id: 'sample-4',
-      title: 'Industrial Bookshelf Conversion',
-      description: 'Industrial-style with metal pipe framework.',
-      before_images: ['https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&h=600&fit=crop&auto=format&q=80'],
-      after_images: ['https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&h=600&fit=crop&auto=format&q=80'],
-      status: 'published',
-      is_featured: false,
-      category: 'industrial',
-      completion_time: '2 weeks',
-      techniques: ['Metal Framework', 'Weathering', 'Industrial Hardware'],
-      price_range: '$400-700'
-    },
-    {
-      id: 'sample-5',
-      title: 'Antique Wardrobe Restoration',
-      description: 'Authentic French period restoration.',
-      before_images: ['https://images.unsplash.com/photo-1562113530-57ba4cea7cb3?w=800&h=600&fit=crop&auto=format&q=80'],
-      after_images: ['https://images.unsplash.com/photo-1562113530-57ba4cea7cb3?w=800&h=600&fit=crop&auto=format&q=80'],
-      status: 'published',
-      is_featured: true,
-      category: 'restoration',
-      completion_time: '6 weeks',
-      techniques: ['Period Restoration', 'Authentic Finishes', 'Hardware Restoration'],
-      price_range: '$1500-2000'
-    },
-    {
-      id: 'sample-6',
-      title: 'Contemporary Side Table',
-      description: 'Minimalist design with high-gloss finish.',
-      before_images: ['https://images.unsplash.com/photo-1549497538-303791108f95?w=800&h=600&fit=crop&auto=format&q=80'],
-      after_images: ['https://images.unsplash.com/photo-1549497538-303791108f95?w=800&h=600&fit=crop&auto=format&q=80'],
-      status: 'published',
-      is_featured: false,
-      category: 'modern',
-      completion_time: '1 week',
-      techniques: ['Minimalist Design', 'High-Gloss Finish', 'Clean Lines'],
-      price_range: '$300-500'
-    },
-    {
-      id: 'sample-7',
-      title: 'Rustic Dining Set Revival',
-      description: 'Weathered wood finish with comfort updates.',
-      before_images: ['https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop&auto=format&q=80'],
-      after_images: ['https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop&auto=format&q=80'],
-      status: 'published',
-      is_featured: false,
-      category: 'vintage',
-      completion_time: '5 weeks',
-      techniques: ['Weathered Finish', 'Comfort Updates', 'Rustic Styling'],
-      price_range: '$1200-1800'
-    },
-    {
-      id: 'sample-8',
-      title: 'Modern Storage Cabinet',
-      description: 'Contemporary design with hidden compartments.',
-      before_images: ['https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80'],
-      after_images: ['https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80'],
-      status: 'published',
-      is_featured: false,
-      category: 'modern',
-      completion_time: '3 weeks',
-      techniques: ['Hidden Compartments', 'Premium Materials', 'Contemporary Design'],
-      price_range: '$900-1300'
-    }
+    // Add more sample projects to demonstrate pagination
+    ...Array.from({ length: 20 }, (_, i) => ({
+      id: `sample-${i + 3}`,
+      title: `Project ${i + 3}`,
+      description: `Sample project ${i + 3} description`,
+      brief_description: `Sample project ${i + 3} brief description`,
+      before_images: [`https://images.unsplash.com/photo-${1586023492125 + i}?w=800&h=600&fit=crop&auto=format&q=80`],
+      after_images: [`https://images.unsplash.com/photo-${1586023492125 + i}?w=800&h=600&fit=crop&auto=format&q=80`],
+      status: 'published' as const,
+      is_featured: i < 5,
+      category: ['restoration', 'modern', 'vintage', 'industrial'][i % 4],
+      completion_time: `${Math.floor(Math.random() * 5) + 1} weeks`,
+      techniques: ['Technique 1', 'Technique 2'],
+      price_range: '$400-800',
+      created_at: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
+      updated_at: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
+    }))
   ];
+
+  // Update displayed projects when filter changes
+  useEffect(() => {
+    const filtered = filterType === "all"
+      ? projects
+      : projects.filter(project => project.category === filterType);
+
+    setDisplayedProjects(filtered.slice(0, projectsPerPage));
+    setCurrentPage(1);
+  }, [filterType, projects]);
+
+  const filteredProjects = filterType === "all"
+    ? projects
+    : projects.filter(project => project.category === filterType);
+
+  const hasMoreProjects = displayedProjects.length < filteredProjects.length;
+
+  const loadMoreProjects = () => {
+    if (isLoadingMore || !hasMoreProjects) return;
+
+    setIsLoadingMore(true);
+
+    // Simulate loading delay for better UX
+    setTimeout(() => {
+      const filtered = filterType === "all"
+        ? projects
+        : projects.filter(project => project.category === filterType);
+
+      const nextPage = currentPage + 1;
+      const newProjects = filtered.slice(0, nextPage * projectsPerPage);
+
+      setDisplayedProjects(newProjects);
+      setCurrentPage(nextPage);
+      setIsLoadingMore(false);
+    }, 500);
+  };
 
   const stats = [
     {
       icon: TrendingUp,
-      number: "150+",
+      number: `${projects.length}+`,
       label: "Projects Completed",
       gradient: "from-violet-500 to-purple-600",
       bgGradient: "from-violet-50 to-purple-50"
@@ -204,7 +238,7 @@ export default function PortfolioPage() {
     },
     {
       icon: Users,
-      number: "200+",
+      number: `${Math.ceil(projects.length * 0.8)}+`,
       label: "Happy Clients",
       gradient: "from-emerald-500 to-teal-600",
       bgGradient: "from-emerald-50 to-teal-50"
@@ -218,59 +252,66 @@ export default function PortfolioPage() {
     }
   ];
 
-  const categories = [
-    { id: "all", label: "All Projects", count: sampleProjects.length },
-    { id: "restoration", label: "Restoration", count: sampleProjects.filter(p => p.category === "restoration").length },
-    { id: "modern", label: "Modern", count: sampleProjects.filter(p => p.category === "modern").length },
-    { id: "vintage", label: "Vintage", count: sampleProjects.filter(p => p.category === "vintage").length },
-    { id: "industrial", label: "Industrial", count: sampleProjects.filter(p => p.category === "industrial").length }
-  ];
+  const getUniqueCategories = () => {
+    const categories = projects.map(p => p.category).filter(Boolean);
+    const uniqueCategories = [...new Set(categories)];
 
-  useEffect(() => {
-    setProjects(sampleProjects);
-    // Initialize displayed projects with first page
-    setDisplayedProjects(sampleProjects.slice(0, projectsPerPage));
-    setIsLoading(false);
-  }, []);
-
-  // Update displayed projects when filter changes
-  useEffect(() => {
-    const filtered = filterType === "all"
-      ? projects
-      : projects.filter(project => project.category === filterType);
-    
-    setDisplayedProjects(filtered.slice(0, projectsPerPage));
-    setCurrentPage(1);
-  }, [filterType, projects]);
-
-  const filteredProjects = filterType === "all"
-    ? projects
-    : projects.filter(project => project.category === filterType);
-
-  const hasMoreProjects = displayedProjects.length < filteredProjects.length;
-
-  const loadMoreProjects = () => {
-    if (isLoadingMore || !hasMoreProjects) return;
-    
-    setIsLoadingMore(true);
-    
-    // Simulate loading delay for better UX
-    setTimeout(() => {
-      const filtered = filterType === "all"
-        ? projects
-        : projects.filter(project => project.category === filterType);
-      
-      const nextPage = currentPage + 1;
-      const newProjects = filtered.slice(0, nextPage * projectsPerPage);
-      
-      setDisplayedProjects(newProjects);
-      setCurrentPage(nextPage);
-      setIsLoadingMore(false);
-    }, 500);
+    return [
+      { id: "all", label: "All Projects", count: projects.length },
+      ...uniqueCategories.map(category => ({
+        id: category!,
+        label: category!.charAt(0).toUpperCase() + category!.slice(1),
+        count: projects.filter(p => p.category === category).length
+      }))
+    ];
   };
+
+  const categories = getUniqueCategories();
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto text-violet-600" />
+          <p className="text-slate-600">Loading portfolio...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error && projects.length === 0) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center space-y-4 max-w-md mx-auto p-6">
+          <div className="text-red-500 text-5xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-bold text-slate-900">Unable to Load Portfolio</h2>
+          <p className="text-slate-600">{error}</p>
+          <Button
+            onClick={() => window.location.reload()}
+            className="bg-violet-600 hover:bg-violet-700"
+          >
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white overflow-hidden">
+      {/* Display error banner if there was an error but we have fallback data */}
+      {error && projects.length > 0 && (
+        <div className="bg-yellow-50 border-b border-yellow-200 px-6 py-3">
+          <div className="container mx-auto">
+            <p className="text-yellow-800 text-sm">
+              ⚠️ {error} Showing sample data.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Ultra-Modern Hero Section */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
         {/* Advanced Background */}
@@ -313,6 +354,11 @@ export default function PortfolioPage() {
                   <Button
                     size="lg"
                     className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl text-lg font-semibold"
+                    onClick={() => {
+                      document.getElementById('portfolio-section')?.scrollIntoView({
+                        behavior: 'smooth'
+                      });
+                    }}
                   >
                     <Sparkles className="mr-2 h-5 w-5" />
                     Explore Collection
@@ -323,6 +369,11 @@ export default function PortfolioPage() {
                     variant="outline"
                     size="lg"
                     className="border-2 border-slate-200 text-slate-700 hover:bg-slate-50 px-8 py-4 rounded-2xl backdrop-blur-sm bg-white/50 text-lg font-semibold"
+                    onClick={() => {
+                      document.getElementById('categories-section')?.scrollIntoView({
+                        behavior: 'smooth'
+                      });
+                    }}
                   >
                     <Search className="mr-2 h-5 w-5" />
                     Browse Categories
@@ -401,7 +452,7 @@ export default function PortfolioPage() {
       </section>
 
       {/* Modern Filter Section */}
-      <section className="py-16 bg-white">
+      <section id="categories-section" className="py-16 bg-white">
         <div className="container mx-auto px-6">
           <motion.div
             initial="hidden"
@@ -418,33 +469,45 @@ export default function PortfolioPage() {
               <h2 className="text-4xl lg:text-5xl font-bold bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 bg-clip-text text-transparent">
                 Featured Transformations
               </h2>
+              <p className="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto font-light">
+                Explore our diverse range of furniture restoration and design projects.
+              </p>
             </motion.div>
 
-            {/* Category Filter Tabs */}
             <motion.div variants={fadeInUp} className="flex flex-wrap justify-center gap-4">
               {categories.map((category) => (
-                <button
+                <Button
                   key={category.id}
+                  variant={filterType === category.id ? "default" : "outline"}
+                  className={`
+                    px-6 py-3 rounded-full transition-all duration-300 text-sm font-medium
+                    ${filterType === category.id
+                      ? "bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-lg"
+                      : "hover:bg-slate-50 hover:border-slate-300"
+                    }
+                  `}
                   onClick={() => setFilterType(category.id)}
-                  className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
-                    filterType === category.id
-                      ? "bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-lg scale-105"
-                      : "bg-white/60 text-slate-600 hover:bg-white/80 border border-slate-200"
-                  }`}
                 >
                   {category.label}
-                  <span className="ml-2 text-xs bg-white/20 px-2 py-0.5 rounded-full">
+                  <Badge
+                    variant="secondary"
+                    className={`ml-2 text-xs ${
+                      filterType === category.id
+                        ? "bg-white/20 text-white"
+                        : "bg-slate-100 text-slate-600"
+                    }`}
+                  >
                     {category.count}
-                  </span>
-                </button>
+                  </Badge>
+                </Button>
               ))}
             </motion.div>
           </motion.div>
         </div>
       </section>
 
-      {/* Portfolio Grid */}
-      <section className="py-20 bg-gradient-to-br from-slate-50 to-white">
+      {/* Portfolio Grid Section */}
+      <section id="portfolio-section" className="py-20 bg-gradient-to-br from-slate-50 to-white">
         <div className="container mx-auto px-6">
           <motion.div
             initial="hidden"
@@ -465,57 +528,68 @@ export default function PortfolioPage() {
                   whileHover={{ y: -8 }}
                 >
                   {/* Project Image */}
-                  <div className="relative h-64 overflow-hidden">
-                    <motion.img
-                      src={project.after_images[0]}
-                      alt={project.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      whileHover={{ scale: 1.1 }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="relative aspect-[4/3] bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden">
+                    {project.after_images && project.after_images.length > 0 && (
+                      <img
+                        src={project.after_images[0]}
+                        alt={project.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        onError={(e) => {
+                          // Fallback to a placeholder if image fails to load
+                          (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&auto=format&q=80";
+                        }}
+                      />
+                    )}
 
-                    {/* Category Badge */}
-                    <div className="absolute top-4 left-4">
-                      <Badge className="bg-gradient-to-r from-violet-600 to-purple-600 text-white text-xs">
-                        {project.category}
-                      </Badge>
-                    </div>
+                    {/* Featured Badge */}
+                    {project.is_featured && (
+                      <div className="absolute top-4 left-4">
+                        <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 shadow-lg">
+                          <Sparkles className="w-3 h-3 mr-1" />
+                          Featured
+                        </Badge>
+                      </div>
+                    )}
 
-                    {/* Price Range */}
-                    <div className="absolute top-4 right-4">
-                      <div className="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-semibold text-slate-700">
-                        {project.price_range}
+                    {/* Hover Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end">
+                      <div className="p-6 w-full">
+                        <Button variant="secondary" size="sm" className="w-full bg-white/90 hover:bg-white text-slate-900">
+                          <ArrowRight className="ml-2 h-3 w-3" />
+                          View Project
+                        </Button>
                       </div>
                     </div>
                   </div>
 
-                  {/* Project Details */}
                   <div className="p-6 space-y-4">
                     <div>
                       <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-violet-600 transition-colors">
                         {project.title}
                       </h3>
                       <p className="text-slate-600 text-sm line-clamp-2 leading-relaxed">
-                        {project.description}
+                        {project.brief_description || project.description}
                       </p>
                     </div>
 
                     <div className="flex items-center justify-between text-xs text-slate-500">
                       <span className="flex items-center">
                         <Calendar className="w-3 h-3 mr-1" />
-                        {project.completion_time}
+                        {project.completion_time || '2-4 weeks'}
                       </span>
                       <span className="flex items-center">
                         <Award className="w-3 h-3 mr-1" />
-                        {project.techniques.length} techniques
+                        {project.techniques?.length || 0} techniques
                       </span>
                     </div>
 
                     <div className="pt-4 border-t border-slate-100">
-                      <Button variant="outline" size="sm" className="w-full group-hover:bg-violet-50 group-hover:border-violet-200 group-hover:text-violet-600 transition-colors">
-                        View Details
-                        <ArrowRight className="ml-2 h-3 w-3" />
-                      </Button>
+                      <Link href={`/portfolio/${project.id}`}>
+                        <Button variant="outline" size="sm" className="w-full group-hover:bg-violet-50 group-hover:border-violet-200 group-hover:text-violet-600 transition-colors">
+                          View Details
+                          <ArrowRight className="ml-2 h-3 w-3" />
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 </motion.div>
@@ -548,11 +622,40 @@ export default function PortfolioPage() {
                   ) : (
                     <>
                       <Grid3X3 className="mr-2 h-5 w-5" />
-                      Load More Projects
+                      Load More Projects ({filteredProjects.length - displayedProjects.length} remaining)
                     </>
                   )}
                 </Button>
               </motion.div>
+            </motion.div>
+          )}
+
+          {/* No projects message */}
+          {displayedProjects.length === 0 && !isLoading && (
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeInUp}
+              className="text-center py-16"
+            >
+              <div className="text-6xl mb-6">🎨</div>
+              <h3 className="text-2xl font-bold text-slate-900 mb-4">No Projects Found</h3>
+              <p className="text-slate-600 mb-6">
+                {filterType === "all"
+                  ? "No portfolio projects are available at the moment."
+                  : `No projects found in the "${filterType}" category.`
+                }
+              </p>
+              {filterType !== "all" && (
+                <Button
+                  variant="outline"
+                  onClick={() => setFilterType("all")}
+                  className="hover:bg-violet-50 hover:border-violet-200 hover:text-violet-600"
+                >
+                  View All Projects
+                </Button>
+              )}
             </motion.div>
           )}
         </div>
