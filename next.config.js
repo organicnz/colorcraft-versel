@@ -9,9 +9,6 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 const nextConfig = {
   reactStrictMode: true,
 
-  // Performance optimizations
-  swcMinify: true,
-
   // Compiler optimizations
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
@@ -29,13 +26,14 @@ const nextConfig = {
       'lucide-react',
       'framer-motion',
     ],
-    // Turbo configuration for Next.js 15
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
+  },
+
+  // Turbopack configuration for Next.js 15
+  turbo: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
       },
     },
   },
@@ -48,6 +46,11 @@ const nextConfig = {
     minimumCacheTTL: 86400, // 24 hours
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    domains: [
+      'images.unsplash.com',
+      'via.placeholder.com',
+      'tydgehnkaszuvcaywwdm.supabase.co'
+    ],
   },
 
   // Skip build optimizations for faster development
@@ -63,12 +66,12 @@ const nextConfig = {
     maxInactiveAge: 25 * 1000,
     pagesBufferLength: 2,
   },
-  
+
   // Advanced webpack configuration
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     // Path aliases for better module resolution
     config.resolve.alias['@'] = path.join(__dirname, 'src');
-    
+
     // Exclude problematic files from compilation
     config.module.rules.push({
       test: /\.(ts|tsx)$/,
@@ -82,14 +85,14 @@ const nextConfig = {
         /supabase\/functions/
       ],
     });
-    
+
     // Suppress specific warnings
     config.ignoreWarnings = [
       /Critical dependency: the request of a dependency is an expression/,
       /Module not found/,
       /Can't resolve.*supabase.*functions/,
     ];
-    
+
     // Performance optimizations for production
     if (!dev && !isServer) {
       // Enhanced bundle splitting
@@ -124,12 +127,12 @@ const nextConfig = {
           },
         },
       };
-      
+
       // Tree shaking optimization
       config.optimization.usedExports = true;
       config.optimization.sideEffects = false;
     }
-    
+
     // Development optimizations
     if (dev) {
       config.devtool = 'eval-cheap-module-source-map';
@@ -137,7 +140,7 @@ const nextConfig = {
 
     return config;
   },
-  
+
   // Headers for better caching and security
   async headers() {
     return [
@@ -169,7 +172,7 @@ const nextConfig = {
       },
     ];
   },
-  
+
   // Redirect optimizations
   async redirects() {
     return [
