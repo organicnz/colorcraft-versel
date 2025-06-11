@@ -28,15 +28,7 @@ const nextConfig = {
     ],
   },
 
-  // Turbopack configuration for Next.js 15
-  turbo: {
-    rules: {
-      '*.svg': {
-        loaders: ['@svgr/webpack'],
-        as: '*.js',
-      },
-    },
-  },
+
 
   // Enhanced image optimization
   images: {
