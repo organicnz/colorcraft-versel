@@ -1,35 +1,75 @@
 /** @type {import('next').NextConfig} */
 const path = require('path');
 
+// Enable bundle analyzer in development
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
+
 const nextConfig = {
   reactStrictMode: true,
-  eslint: {
-    // Disable ESLint during builds to avoid deployment failures
-    ignoreDuringBuilds: true,
+
+  // Performance optimizations
+  swcMinify: true,
+
+  // Compiler optimizations
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
   },
-  // Skip TypeScript type checking during build for production deployments
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  // Suppress warnings during build
-  onDemandEntries: {
-    // period (in ms) where the server will keep pages in the buffer
-    maxInactiveAge: 25 * 1000,
-    // number of pages that should be kept simultaneously without being disposed
-    pagesBufferLength: 2,
-  },
-  // Configure Turbopack for Next.js 15
-  turbopack: {
-    rules: {
-      '*.svg': ['@svgr/webpack'],
+
+  // Experimental features for better performance
+  experimental: {
+    optimizeCss: true,
+    optimizePackageImports: [
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-dropdown-menu',
+      '@radix-ui/react-avatar',
+      '@radix-ui/react-toast',
+      '@tanstack/react-query',
+      'lucide-react',
+      'framer-motion',
+    ],
+    // Turbo configuration for Next.js 15
+    turbo: {
+      rules: {
+        '*.svg': {
+          loaders: ['@svgr/webpack'],
+          as: '*.js',
+        },
+      },
     },
   },
-  // Suppress specific warnings
+
+  // Enhanced image optimization
+  images: {
+    formats: ['image/webp', 'image/avif'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 86400, // 24 hours
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+  },
+
+  // Skip build optimizations for faster development
+  eslint: {
+    ignoreDuringBuilds: process.env.NODE_ENV === 'production',
+  },
+  typescript: {
+    ignoreBuildErrors: process.env.NODE_ENV === 'production',
+  },
+
+  // Optimize page loading
+  onDemandEntries: {
+    maxInactiveAge: 25 * 1000,
+    pagesBufferLength: 2,
+  },
+  
+  // Advanced webpack configuration
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    // Explicitly define path aliases to ensure proper resolution in Vercel
+    // Path aliases for better module resolution
     config.resolve.alias['@'] = path.join(__dirname, 'src');
     
-    // Exclude test files and problematic directories from compilation
+    // Exclude problematic files from compilation
     config.module.rules.push({
       test: /\.(ts|tsx)$/,
       exclude: [
@@ -50,10 +90,13 @@ const nextConfig = {
       /Can't resolve.*supabase.*functions/,
     ];
     
-    // Performance optimizations
+    // Performance optimizations for production
     if (!dev && !isServer) {
+      // Enhanced bundle splitting
       config.optimization.splitChunks = {
         chunks: 'all',
+        minSize: 20000,
+        maxSize: 244000,
         cacheGroups: {
           vendor: {
             test: /[\\/]node_modules[\\/]/,
@@ -61,88 +104,82 @@ const nextConfig = {
             priority: 10,
             reuseExistingChunk: true,
           },
+          react: {
+            test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+            name: 'react',
+            priority: 20,
+            reuseExistingChunk: true,
+          },
+          radixui: {
+            test: /[\\/]node_modules[\\/]@radix-ui[\\/]/,
+            name: 'radix-ui',
+            priority: 15,
+            reuseExistingChunk: true,
+          },
+          supabase: {
+            test: /[\\/]node_modules[\\/]@supabase[\\/]/,
+            name: 'supabase',
+            priority: 15,
+            reuseExistingChunk: true,
+          },
         },
-      }
+      };
+      
+      // Tree shaking optimization
+      config.optimization.usedExports = true;
+      config.optimization.sideEffects = false;
+    }
+    
+    // Development optimizations
+    if (dev) {
+      config.devtool = 'eval-cheap-module-source-map';
     }
 
-    return config
+    return config;
   },
-  trailingSlash: true,
-  // Server external packages
-  serverExternalPackages: ["postgres"],
-  images: {
-    unoptimized: false,
-    domains: [
-      'images.unsplash.com',
-      'via.placeholder.com',
-      'tydgehnkaszuvcaywwdm.supabase.co'
-    ],
-    remotePatterns: [
+  
+  // Headers for better caching and security
+  async headers() {
+    return [
       {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-        port: '',
-        pathname: '/**',
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+        ],
       },
       {
-        protocol: 'https',
-        hostname: 'via.placeholder.com',
-        port: '',
-        pathname: '/**',
+        source: '/api/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=60, stale-while-revalidate=300',
+          },
+        ],
       },
+    ];
+  },
+  
+  // Redirect optimizations
+  async redirects() {
+    return [
       {
-        protocol: 'https',
-        hostname: 'tydgehnkaszuvcaywwdm.supabase.co',
-        port: '',
-        pathname: '/**',
+        source: '/home',
+        destination: '/',
+        permanent: true,
       },
-    ],
-  },
-  logging: {
-    fetches: {
-      fullUrl: process.env.NODE_ENV === "development",
-    },
-  },
-  experimental: {
-    // Note: PPR is only available in canary, commented out for stable version
-    // ppr: 'incremental', // Partial Pre-rendering (Next.js canary feature)
-    serverActions: {
-      allowedOrigins: [process.env.NEXT_PUBLIC_SITE_URL || ""],
-    },
-    optimizeCss: true,
-    optimizePackageImports: [
-      '@radix-ui/react-dialog',
-      '@radix-ui/react-slot',
-      '@radix-ui/react-toast',
-      '@radix-ui/react-dropdown-menu',
-      '@radix-ui/react-avatar',
-      '@radix-ui/react-select',
-      '@tanstack/react-query',
-      'lucide-react',
-      'date-fns',
-      'framer-motion',
-      'react-hook-form',
-      'zod',
-    ],
-    // React 19 compatibility for Next.js 15
-    reactCompiler: false, // Disable until React 19 is stable
-  },
-  // Static optimization
-  generateBuildId: async () => {
-    return 'colorcraft-build'
-  },
-  // Environment variables available at build time
-  env: {
-    CUSTOM_KEY: 'colorcraft-production',
+    ];
   },
 };
 
-// Add bundle analyzer if environment variable is set
-if (process.env.ANALYZE === 'true') {
-  const withBundleAnalyzer = require('@next/bundle-analyzer')({
-    enabled: true,
-  });
-  module.exports = withBundleAnalyzer(nextConfig);
-} else {
-  module.exports = nextConfig;
-}
+module.exports = withBundleAnalyzer(nextConfig);

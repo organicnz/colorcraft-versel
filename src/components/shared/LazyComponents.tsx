@@ -1,123 +1,181 @@
-import dynamic from 'next/dynamic';
-import { ComponentType, Suspense } from 'react';
+"use client";
 
-// Loading components
-const LoadingSpinner = () => (
-  <div className="flex items-center justify-center p-4">
-    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-  </div>
-);
+import { lazy, Suspense, ComponentType, ReactNode } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 
-const LoadingCard = () => (
-  <div className="rounded-lg border bg-card p-4 animate-pulse">
-    <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
-    <div className="h-4 bg-muted rounded w-1/2"></div>
-  </div>
-);
-
-const LoadingButton = () => (
-  <div className="h-10 bg-muted rounded animate-pulse w-24"></div>
-);
-
-// Create a higher-order component for lazy loading with error boundaries
-function withLazyLoading<T extends object>(
-  importFn: () => Promise<{ default: ComponentType<T> }>,
-  fallback: ComponentType = LoadingSpinner
+// Higher-order component for lazy loading with proper error boundary
+function withLazyLoading<T extends ComponentType<any>>(
+  importFunc: () => Promise<{ default: T }>,
+  fallback?: ReactNode
 ) {
-  const LazyComponent = dynamic(importFn, {
-    loading: fallback,
-    ssr: true, // Enable SSR for better SEO
-  });
+  const LazyComponent = lazy(importFunc);
+  
+  return function LazyWrapper(props: React.ComponentProps<T>) {
+    const defaultFallback = (
+      <div className="w-full h-64 space-y-4">
+        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-4 w-3/4" />
+        <Skeleton className="h-4 w-1/2" />
+        <Skeleton className="h-32 w-full" />
+      </div>
+    );
 
-  return function LazyWrapper(props: T) {
     return (
-      <Suspense fallback={<fallback />}>
+      <Suspense fallback={fallback || defaultFallback}>
         <LazyComponent {...props} />
       </Suspense>
     );
   };
 }
 
-// Portfolio Components (heavy components that should be lazy loaded)
+// Specific loading skeletons for different component types
+export const PortfolioCardSkeleton = () => (
+  <div className="space-y-4 p-4 border rounded-lg">
+    <Skeleton className="h-48 w-full rounded" />
+    <div className="space-y-2">
+      <Skeleton className="h-4 w-3/4" />
+      <Skeleton className="h-3 w-1/2" />
+    </div>
+  </div>
+);
+
+export const TeamCardSkeleton = () => (
+  <div className="space-y-4 p-6 border rounded-lg">
+    <Skeleton className="h-24 w-24 rounded-full mx-auto" />
+    <div className="space-y-2 text-center">
+      <Skeleton className="h-4 w-32 mx-auto" />
+      <Skeleton className="h-3 w-24 mx-auto" />
+      <Skeleton className="h-3 w-full" />
+      <Skeleton className="h-3 w-full" />
+    </div>
+  </div>
+);
+
+export const DashboardChartSkeleton = () => (
+  <div className="space-y-4 p-6">
+    <Skeleton className="h-6 w-48" />
+    <Skeleton className="h-64 w-full" />
+    <div className="flex space-x-4">
+      <Skeleton className="h-4 w-16" />
+      <Skeleton className="h-4 w-16" />
+      <Skeleton className="h-4 w-16" />
+    </div>
+  </div>
+);
+
+// Lazy-loaded components
 export const LazyPortfolioGrid = withLazyLoading(
   () => import('@/components/portfolio/PortfolioGrid'),
-  LoadingCard
+  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {Array.from({ length: 6 }).map((_, i) => (
+      <PortfolioCardSkeleton key={i} />
+    ))}
+  </div>
 );
 
-export const LazyImageUpload = withLazyLoading(
-  () => import('@/components/ui/image-upload'),
-  LoadingCard
+export const LazyTeamSection = withLazyLoading(
+  () => import('@/components/homepage/TeamSection'),
+  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {Array.from({ length: 3 }).map((_, i) => (
+      <TeamCardSkeleton key={i} />
+    ))}
+  </div>
 );
 
-// Dashboard Components (admin-only, should be lazy loaded)
-export const LazyDashboardCharts = withLazyLoading(
-  () => import('@/components/dashboard/Charts').catch(() => ({ default: () => <div>Charts not available</div> })),
-  LoadingCard
+export const LazyDashboardStats = withLazyLoading(
+  () => import('@/components/dashboard/DashboardStats'),
+  <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+    {Array.from({ length: 4 }).map((_, i) => (
+      <Skeleton key={i} className="h-32 w-full" />
+    ))}
+  </div>
+);
+
+export const LazyPortfolioForm = withLazyLoading(
+  () => import('@/components/forms/PortfolioForm'),
+  <div className="space-y-6">
+    <Skeleton className="h-12 w-full" />
+    <Skeleton className="h-32 w-full" />
+    <Skeleton className="h-48 w-full" />
+    <Skeleton className="h-12 w-32" />
+  </div>
+);
+
+export const LazyServiceForm = withLazyLoading(
+  () => import('@/components/forms/ServiceForm'),
+  <div className="space-y-6">
+    <Skeleton className="h-12 w-full" />
+    <Skeleton className="h-24 w-full" />
+    <Skeleton className="h-32 w-full" />
+    <Skeleton className="h-12 w-32" />
+  </div>
 );
 
 export const LazyCustomerTable = withLazyLoading(
-  () => import('@/components/crm/CustomerTable').catch(() => ({ default: () => <div>Customer table not available</div> })),
-  LoadingCard
+  () => import('@/components/crm/CustomerTable'),
+  <div className="space-y-4">
+    <Skeleton className="h-12 w-full" />
+    {Array.from({ length: 5 }).map((_, i) => (
+      <Skeleton key={i} className="h-16 w-full" />
+    ))}
+  </div>
 );
 
-// Forms (can be heavy due to validation libraries)
-export const LazyContactForm = withLazyLoading(
-  () => import('@/components/forms/ContactForm'),
-  () => (
-    <div className="space-y-4 animate-pulse">
-      <div className="h-10 bg-muted rounded"></div>
-      <div className="h-10 bg-muted rounded"></div>
-      <div className="h-20 bg-muted rounded"></div>
-      <LoadingButton />
-    </div>
-  )
-);
-
-export const LazyQuoteForm = withLazyLoading(
-  () => import('@/components/forms/QuoteForm'),
-  () => (
-    <div className="space-y-4 animate-pulse">
-      <div className="h-10 bg-muted rounded"></div>
-      <div className="h-10 bg-muted rounded"></div>
-      <div className="h-20 bg-muted rounded"></div>
-      <LoadingButton />
-    </div>
-  )
-);
-
-// Chat Widget (heavy component with real-time features)
 export const LazyChatWidget = withLazyLoading(
   () => import('@/components/chat/ChatWidget'),
-  () => (
-    <div className="fixed bottom-4 right-4 w-12 h-12 bg-muted rounded-full animate-pulse"></div>
-  )
+  <div className="fixed bottom-4 right-4">
+    <Skeleton className="h-14 w-14 rounded-full" />
+  </div>
 );
 
-// Map components (typically heavy)
-export const LazyMapComponent = withLazyLoading(
-  () => import('@/components/ui/Map').catch(() => ({ default: () => <div>Map not available</div> })),
-  () => (
-    <div className="w-full h-64 bg-muted rounded animate-pulse flex items-center justify-center">
-      <span className="text-muted-foreground">Loading map...</span>
-    </div>
-  )
-);
+// Utility function for conditional lazy loading
+export function LazyLoad({ 
+  condition, 
+  children, 
+  fallback 
+}: { 
+  condition: boolean; 
+  children: ReactNode; 
+  fallback?: ReactNode; 
+}) {
+  if (!condition) {
+    return fallback || null;
+  }
+  
+  return <>{children}</>;
+}
 
-// Rich text editor (heavy component)
-export const LazyRichTextEditor = withLazyLoading(
-  () => import('@/components/ui/RichTextEditor').catch(() => ({ default: () => <textarea className="w-full h-32 p-2 border rounded" /> })),
-  () => (
-    <div className="w-full h-32 bg-muted rounded animate-pulse"></div>
-  )
-);
-
-// Code syntax highlighter (heavy component)
-export const LazyCodeHighlighter = withLazyLoading(
-  () => import('@/components/ui/CodeHighlighter').catch(() => ({ default: ({ children }: { children: string }) => <pre>{children}</pre> })),
-  () => (
-    <div className="w-full h-20 bg-muted rounded animate-pulse"></div>
-  )
-);
-
-// Export the HOC for custom use
-export { withLazyLoading }; 
+// Performance monitoring for lazy components
+export function withPerformanceTracking<T extends ComponentType<any>>(
+  Component: T,
+  componentName: string
+) {
+  return function PerformanceWrapper(props: React.ComponentProps<T>) {
+    if (typeof window !== 'undefined' && window.performance) {
+      const startTime = performance.now();
+      
+      return (
+        <Component 
+          {...props}
+          onLoad={() => {
+            const endTime = performance.now();
+            const loadTime = endTime - startTime;
+            
+            if (process.env.NODE_ENV === 'development' && loadTime > 100) {
+              console.warn(
+                `⚠️ ${componentName} took ${loadTime.toFixed(2)}ms to load`
+              );
+            }
+            
+            // Call original onLoad if provided
+            if ('onLoad' in props && typeof props.onLoad === 'function') {
+              props.onLoad();
+            }
+          }}
+        />
+      );
+    }
+    
+    return <Component {...props} />;
+  };
+} 

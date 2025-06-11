@@ -1,4 +1,6 @@
-@import "tailwindcss";
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 @theme {
   /* Custom theme variables for TailwindCSS v4 */
@@ -33,17 +35,23 @@
   html {
     background: white !important;
     transition: none !important;
+    color-scheme: light;
   }
 
   html.dark {
     background: #0f172a !important;
     transition: none !important;
+    color-scheme: dark;
   }
 
   /* Force stable backgrounds during initial load */
   body {
     background-color: white !important;
     transition: none !important;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   html.dark body {
@@ -209,6 +217,46 @@
   }
 
   /* Remove the old duplicate rules that were causing conflicts */
+
+  /* Performance optimizations */
+  * {
+    box-sizing: border-box;
+  }
+
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  /* Optimize image loading */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Hardware acceleration for animations */
+  .animate-spin,
+  .animate-pulse,
+  .animate-bounce {
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  /* Reduce reflows and repaints */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Custom focus styles for better accessibility */
+  *:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
 }
 
 @layer utilities {
@@ -342,6 +390,57 @@
     background-image: none !important;
     background-color: inherit !important;
   }
+
+  /* Performance-focused utilities */
+  .gpu-accelerated {
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  .optimize-legibility {
+    text-rendering: optimizeLegibility;
+  }
+
+  .subpixel-antialiased {
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
+  }
+
+  .antialiased {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Layout optimization utilities */
+  .contain-layout {
+    contain: layout;
+  }
+
+  .contain-paint {
+    contain: paint;
+  }
+
+  .contain-strict {
+    contain: strict;
+  }
+
+  /* Scroll optimization */
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+
+  .overscroll-none {
+    overscroll-behavior: none;
+  }
+
+  /* Performance grid */
+  .grid-auto-fit {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .grid-auto-fill {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
 }
 
 @layer components {
@@ -422,32 +521,15 @@
   }
 
   .btn-primary {
-    background-color: var(--primary);
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    transition: all 0.2s ease;
-  }
-
-  .btn-primary:hover {
-    background-color: var(--primary-light);
-    transform: translateY(-1px);
+    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium px-4 py-2 rounded-lg transition-colors;
   }
 
   .btn-secondary {
-    background-color: transparent;
-    color: rgb(var(--color-slate-600));
-    border: 1px solid rgb(var(--color-slate-300));
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    transition: all 0.2s ease;
+    @apply bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium px-4 py-2 rounded-lg transition-colors;
   }
 
-  .btn-secondary:hover {
-    background-color: rgb(var(--color-slate-50));
-    color: rgb(var(--color-slate-800));
+  html.dark .btn-secondary {
+    @apply bg-gray-800 hover:bg-gray-700 text-gray-100;
   }
 
   .section-heading {
@@ -492,28 +574,16 @@
   }
 
   .glass-card {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    background-color: rgba(255, 255, 255, 0.8);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 1rem;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    will-change: transform;
   }
 
-  .glass-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask-composite: subtract;
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: subtract;
+  html.dark .glass-card {
+    background-color: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .glass-navbar {
@@ -550,6 +620,24 @@
     border-radius: 1.5rem;
     padding: 2rem;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  }
+
+  /* Skeleton loading animation */
+  .skeleton {
+    @apply animate-pulse bg-gray-200 rounded;
+  }
+
+  html.dark .skeleton {
+    @apply bg-gray-700;
+  }
+
+  /* Optimized card component */
+  .card {
+    @apply bg-white border border-gray-200 rounded-lg shadow-sm;
+  }
+
+  html.dark .card {
+    @apply bg-gray-900 border-gray-800;
   }
 }
 
