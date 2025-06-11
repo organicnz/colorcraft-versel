@@ -63,6 +63,7 @@ interface ClientHomePageProps {
   featuredProjects: any[];
   services: any[];
   testimonials: any[];
+  teamMembers: any[];
   properties: any[];
 }
 
@@ -70,6 +71,7 @@ export default function ClientHomePage({
   featuredProjects,
   services,
   testimonials,
+  teamMembers,
   properties,
 }: ClientHomePageProps) {
   const heroRef = useRef<HTMLElement>(null);

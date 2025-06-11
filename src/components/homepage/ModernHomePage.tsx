@@ -29,6 +29,7 @@ interface ModernHomePageProps {
   featuredProjects: any[];
   services: any[];
   testimonials: any[];
+  teamMembers: any[];
 }
 
 // Modern animation variants with advanced spring physics
@@ -64,6 +65,7 @@ export default function ModernHomePage({
   featuredProjects,
   services,
   testimonials,
+  teamMembers,
 }: ModernHomePageProps) {
   const [email, setEmail] = useState("");
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -88,33 +90,18 @@ export default function ModernHomePage({
     setEmail("");
   };
 
-  // Enhanced team members with modern design
-  const teamMembers = [
-    {
-      name: "Sarah Mitchell",
-      role: "Lead Furniture Artist",
-      image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face",
-      description: "15+ years in furniture restoration and custom painting",
-      specialty: "Vintage Revival",
-      achievement: "200+ pieces restored"
-    },
-    {
-      name: "James Wilson",
-      role: "Restoration Specialist",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
-      description: "Expert in antique furniture and period-accurate finishes",
-      specialty: "Antique Expertise",
-      achievement: "Master Craftsman"
-    },
-    {
-      name: "Emma Rodriguez",
-      role: "Design Consultant",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
-      description: "Creative visionary specializing in modern upcycling",
-      specialty: "Modern Innovation",
-      achievement: "Award Winner 2024"
-    }
-  ];
+  // Transform team members from database for display
+  const displayTeamMembers = teamMembers.map(member => ({
+    name: member.full_name,
+    role: member.position,
+    image: member.avatar_url || `https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face`,
+    description: member.bio || `Expert in ${member.specialties?.[0] || 'furniture restoration'}`,
+    specialty: member.specialties?.[0] || 'Furniture Expert',
+    achievement: member.years_experience ? `${member.years_experience}+ years` : 'Expert',
+    email: member.email,
+    phone: member.phone,
+    social_links: member.social_links
+  }));
 
   // Enhanced services with modern icons and colors
   const modernServices = [
@@ -609,7 +596,7 @@ export default function ModernHomePage({
               variants={staggerContainer}
               className="grid grid-cols-1 @lg:grid-cols-3 gap-8 max-w-6xl mx-auto"
             >
-              {teamMembers.map((member, index) => (
+              {displayTeamMembers.map((member, index) => (
                 <motion.div
                   key={index}
                   variants={fadeInUp}

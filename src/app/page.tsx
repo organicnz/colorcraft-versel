@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { GlassPanel, GlassCard } from "@/components/ui/glass-card";
 import { ArrowRight, Award, Palette, Send, Settings, Sparkles } from "lucide-react";
 import { getPortfolioProjects } from "@/services/portfolio.service";
+import { getFeaturedTeamMembers } from "@/services/team.service";
 import ClientHomePage from "./client-home-page";
 import ModernHomePage from "@/components/homepage/ModernHomePage";
 import HomePageRenderer from "@/components/homepage/HomePageRenderer";
@@ -70,16 +71,33 @@ function shuffleArray<T>(array: T[]): T[] {
 export default async function Home() {
   // Fetch featured projects from the database
   let featuredProjects: any[] = [];
+  let teamMembers: any[] = [];
 
   try {
-    featuredProjects = await getPortfolioProjects({
-      featuredOnly: true,
-      orderBy: [
-        { column: 'completion_date', ascending: false }
-      ]
-    });
+    // Fetch featured projects and team members in parallel
+    const [projectsResult, teamResult] = await Promise.allSettled([
+      getPortfolioProjects({
+        featuredOnly: true,
+        orderBy: [
+          { column: 'completion_date', ascending: false }
+        ]
+      }),
+      getFeaturedTeamMembers()
+    ]);
+
+    if (projectsResult.status === 'fulfilled') {
+      featuredProjects = projectsResult.value;
+    } else {
+      console.error('Failed to fetch featured projects:', projectsResult.reason);
+    }
+
+    if (teamResult.status === 'fulfilled') {
+      teamMembers = teamResult.value;
+    } else {
+      console.error('Failed to fetch team members:', teamResult.reason);
+    }
   } catch (error) {
-    console.error('Failed to fetch featured projects:', error);
+    console.error('Failed to fetch data:', error);
   }
 
   // Transform and randomize projects
@@ -114,6 +132,7 @@ export default async function Home() {
       featuredProjects={projectsToShow}
       services={services}
       testimonials={testimonials}
+      teamMembers={teamMembers}
       properties={[]}
     />
   );
@@ -124,6 +143,7 @@ export default async function Home() {
       featuredProjects={projectsToShow}
       services={services}
       testimonials={testimonials}
+      teamMembers={teamMembers}
     />
   );
 
