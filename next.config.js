@@ -18,16 +18,6 @@ const nextConfig = {
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
 
-  // Turbopack configuration (moved from experimental.turbo)
-  turbopack: {
-    rules: {
-      '*.svg': {
-        loaders: ['@svgr/webpack'],
-        as: '*.js',
-      },
-    },
-  },
-
   // Image optimization
   images: {
     remotePatterns: [
@@ -55,7 +45,6 @@ const nextConfig = {
   },
 
   // Build optimizations
-  swcMinify: true,
   poweredByHeader: false,
   compress: true,
   productionBrowserSourceMaps: false,
