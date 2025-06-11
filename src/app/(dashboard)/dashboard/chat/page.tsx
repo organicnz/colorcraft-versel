@@ -24,18 +24,18 @@ async function ChatStats() {
   
   try {
     // Get conversation statistics
-    const { data: totalConversations } = await supabase
+    const { count: totalConversations } = await supabase
       .from('chat_conversations')
-      .select('id', { count: 'exact', head: true })
+      .select('*', { count: 'exact', head: true })
     
-    const { data: activeConversations } = await supabase
+    const { count: activeConversations } = await supabase
       .from('chat_conversations')
-      .select('id', { count: 'exact', head: true })
+      .select('*', { count: 'exact', head: true })
       .eq('status', 'active')
     
-    const { data: recentMessages } = await supabase
+    const { count: recentMessages } = await supabase
       .from('chat_messages')
-      .select('id', { count: 'exact', head: true })
+      .select('*', { count: 'exact', head: true })
       .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
 
     return (
@@ -46,7 +46,7 @@ async function ChatStats() {
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalConversations?.length || 0}</div>
+            <div className="text-2xl font-bold">{totalConversations || 0}</div>
           </CardContent>
         </Card>
         <Card>
@@ -55,7 +55,7 @@ async function ChatStats() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{activeConversations?.length || 0}</div>
+            <div className="text-2xl font-bold">{activeConversations || 0}</div>
           </CardContent>
         </Card>
         <Card>
@@ -64,7 +64,7 @@ async function ChatStats() {
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{recentMessages?.length || 0}</div>
+            <div className="text-2xl font-bold">{recentMessages || 0}</div>
           </CardContent>
         </Card>
       </div>
@@ -78,6 +78,7 @@ async function ChatStats() {
             <div className="text-center">
               <AlertCircle className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
               <p className="text-sm text-muted-foreground">Unable to load chat statistics</p>
+              <p className="text-xs text-red-500 mt-1">{error instanceof Error ? error.message : 'Unknown error'}</p>
             </div>
           </CardContent>
         </Card>
@@ -90,7 +91,7 @@ async function RecentConversations() {
   const supabase = await createClient()
   
   try {
-    const { data: conversations } = await supabase
+    const { data: conversations, error } = await supabase
       .from('chat_conversations')
       .select(`
         *,
@@ -98,11 +99,15 @@ async function RecentConversations() {
           id,
           content,
           created_at,
-          sender_type
+          sender_name
         )
       `)
       .order('last_message_at', { ascending: false })
       .limit(5)
+
+    if (error) {
+      throw error
+    }
 
     return (
       <Card>
@@ -114,38 +119,42 @@ async function RecentConversations() {
           {conversations && conversations.length > 0 ? (
             <div className="space-y-4">
               {conversations.map((conversation: any) => {
-                const lastMessage = conversation.chat_messages?.[0]
+                const messages = conversation.chat_messages || []
+                const lastMessage = messages.sort((a: any, b: any) =>
+                  new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+                )[0]
+                
                 const statusColor = conversation.status === 'active' ? 'bg-green-500' : 
-                                  conversation.status === 'waiting' ? 'bg-yellow-500' : 'bg-gray-500'
+                                  conversation.status === 'closed' ? 'bg-gray-500' : 'bg-yellow-500'
                 
                 return (
                   <div key={conversation.id} className="flex items-start space-x-4 p-4 border rounded-lg hover:bg-gray-50 transition-colors">
-                    <div className={`w-3 h-3 rounded-full ${statusColor} mt-2`} />
+                    <div className={`w-3 h-3 rounded-full ${statusColor} mt-2 flex-shrink-0`} />
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between mb-1">
                         <h4 className="text-sm font-medium text-gray-900 truncate">
-                          {conversation.customer_name}
+                          {conversation.customer_name || 'Unknown Customer'}
                         </h4>
-                        <Badge variant={conversation.status === 'active' ? 'default' : 'secondary'}>
+                        <Badge variant={conversation.status === 'active' ? 'default' : 'secondary'} className="text-xs">
                           {conversation.status}
                         </Badge>
                       </div>
-                      <p className="text-sm text-gray-600 truncate">
-                        {conversation.customer_email}
+                      <p className="text-sm text-gray-600 truncate mb-1">
+                        {conversation.customer_email || 'No email'}
                       </p>
-                      <p className="text-sm text-gray-900 font-medium mt-1">
-                        {conversation.subject}
+                      <p className="text-sm text-gray-900 font-medium mb-1 truncate">
+                        {conversation.title || 'Untitled Conversation'}
                       </p>
                       {lastMessage && (
-                        <p className="text-xs text-gray-500 mt-1 truncate">
-                          Last: {lastMessage.content}
+                        <p className="text-xs text-gray-500 mb-1 truncate">
+                          <span className="font-medium">{lastMessage.sender_name}:</span> {lastMessage.content}
                         </p>
                       )}
-                      <p className="text-xs text-gray-400 mt-1">
-                        {new Date(conversation.last_message_at).toLocaleString()}
+                      <p className="text-xs text-gray-400">
+                        {new Date(conversation.last_message_at || conversation.created_at).toLocaleString()}
                       </p>
                     </div>
-                    <Button size="sm" variant="outline" asChild>
+                    <Button size="sm" variant="outline" asChild className="flex-shrink-0">
                       <Link href={`/dashboard/chat/${conversation.id}`}>
                         View
                       </Link>
@@ -178,6 +187,7 @@ async function RecentConversations() {
           <div className="text-center py-8">
             <AlertCircle className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
             <p className="text-sm text-muted-foreground">Unable to load conversations</p>
+            <p className="text-xs text-red-500 mt-1">{error instanceof Error ? error.message : 'Unknown error'}</p>
           </div>
         </CardContent>
       </Card>
