@@ -99,9 +99,9 @@ export async function getPortfolioStats() {
 
   const stats = {
     total: data?.length || 0,
-    published: data?.filter((p) => p.status === "published").length || 0,
-    draft: data?.filter((p) => p.status === "draft").length || 0,
-    archived: data?.filter((p) => p.status === "archived").length || 0,
+    published: data?.filter((p: any) => p.status === "published").length || 0,
+    draft: data?.filter((p: any) => p.status === "draft").length || 0,
+    archived: data?.filter((p: any) => p.status === "archived").length || 0,
   };
 
   return stats;

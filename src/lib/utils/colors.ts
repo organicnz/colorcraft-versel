@@ -304,23 +304,3 @@ export const hexToHsl = (hex: string): string => {
 export { colors };
 export default colors;
 
-export function getPaletteStyles(palette: ColorPalette, variant: ColorVariant = "primary") {
-  // Get the appropriate styles based on palette and variant
-  const styles = getColorStyles(palette, variant);
-  
-  // If no styles found, return default values
-  if (!styles) {
-    return {
-      backgroundColor: undefined,
-      color: undefined,
-      borderColor: undefined,
-    };
-  }
-
-  return {
-    backgroundColor: styles.bg,
-    color: styles.text,
-    borderColor: styles.border,
-    ...(styles.shadow && { boxShadow: styles.shadow }),
-  };
-}

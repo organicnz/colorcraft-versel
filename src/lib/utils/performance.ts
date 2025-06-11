@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { debounce as debounceUtil } from "@/lib/utils";
 
 // Get the performance object with fallback for environments without it
@@ -27,13 +27,13 @@ export class PerformanceMonitor {
   }
 
   // Throttle function for performance optimization
-  throttle<T extends (...args: Parameters<T>) => ReturnType<T>>(
+  throttle<T extends (...args: any[]) => any>(
     func: T,
     limit: number
   ): (...args: Parameters<T>) => void {
     let inThrottle: boolean;
 
-    return function executedFunction(...args: Parameters<T>) {
+    return function executedFunction(this: any, ...args: Parameters<T>) {
       if (!inThrottle) {
         func.apply(this, args);
         inThrottle = true;
@@ -385,9 +385,10 @@ export function useOptimizedEventListener<T extends keyof WindowEventMap>(
     let fn = (event: WindowEventMap[T]) => handlerRef.current(event);
 
     if (options.debounce) {
-      fn = debounce(fn, options.debounce);
+      fn = debounceUtil(fn, options.debounce);
     } else if (options.throttle) {
-      fn = throttle(fn, options.throttle);
+      const monitor = PerformanceMonitor.getInstance();
+      fn = monitor.throttle(fn, options.throttle);
     }
 
     return fn;

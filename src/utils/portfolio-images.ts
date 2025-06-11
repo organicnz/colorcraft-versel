@@ -28,7 +28,7 @@ export async function getRandomAfterImage(portfolioId: string): Promise<string |
     }
 
     // Filter out .gitkeep and other non-image files
-    const imageFiles = files.filter((file) => {
+    const imageFiles = files.filter((file: any) => {
       const extension = file.name.toLowerCase().split(".").pop();
       return extension && ["jpg", "jpeg", "png", "webp", "gif"].includes(extension);
     });
@@ -81,13 +81,13 @@ export async function getAllAfterImages(portfolioId: string): Promise<string[]> 
     }
 
     // Filter out .gitkeep and other non-image files
-    const imageFiles = files.filter((file) => {
+    const imageFiles = files.filter((file: any) => {
       const extension = file.name.toLowerCase().split(".").pop();
       return extension && ["jpg", "jpeg", "png", "webp", "gif"].includes(extension);
     });
 
     // Get public URLs for all images
-    return imageFiles.map((file) => {
+    return imageFiles.map((file: any) => {
       const { data: urlData } = supabase.storage
         .from("portfolio")
         .getPublicUrl(`${portfolioId}/after_images/${file.name}`);
@@ -126,13 +126,13 @@ export async function getAllBeforeImages(portfolioId: string): Promise<string[]>
     }
 
     // Filter out .gitkeep and other non-image files
-    const imageFiles = files.filter((file) => {
+    const imageFiles = files.filter((file: any) => {
       const extension = file.name.toLowerCase().split(".").pop();
       return extension && ["jpg", "jpeg", "png", "webp", "gif"].includes(extension);
     });
 
     // Get public URLs for all images
-    return imageFiles.map((file) => {
+    return imageFiles.map((file: any) => {
       const { data: urlData } = supabase.storage
         .from("portfolio")
         .getPublicUrl(`${portfolioId}/before_images/${file.name}`);
