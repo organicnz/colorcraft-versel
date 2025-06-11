@@ -34,15 +34,18 @@ function TeamCard({ member }: TeamCardProps) {
     years_experience,
   } = member;
 
+  // Trim bio to ensure consistent card heights
+  const trimmedBio = bio && bio.length > 100 ? `${bio.substring(0, 100)}...` : bio;
+
   return (
     <GlassCard 
       variant="light" 
       intensity="medium" 
-      className="group transition-all duration-300 hover:scale-[1.02] hover:shadow-glass-heavy"
+      className="group transition-all duration-300 hover:scale-[1.02] hover:shadow-glass-heavy h-full"
     >
-      <div className="flex flex-col items-center text-center space-y-4">
+      <div className="flex flex-col items-center text-center space-y-4 h-full">
         {/* Avatar */}
-        <div className="relative">
+        <div className="relative flex-shrink-0">
           <div className="w-32 h-32 rounded-full overflow-hidden ring-4 ring-white/20 shadow-lg">
             {avatar_url ? (
               <Image
@@ -70,7 +73,7 @@ function TeamCard({ member }: TeamCardProps) {
         </div>
 
         {/* Name and Position */}
-        <div className="space-y-1">
+        <div className="space-y-1 flex-shrink-0">
           <h3 className="text-xl font-bold text-gray-900 dark:text-white">
             {full_name}
           </h3>
@@ -79,17 +82,19 @@ function TeamCard({ member }: TeamCardProps) {
           </p>
         </div>
 
-        {/* Bio */}
-        {bio && (
-          <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed line-clamp-3">
-            {bio}
-          </p>
-        )}
+        {/* Bio - Fixed height container */}
+        <div className="flex-grow flex items-start justify-center">
+          {trimmedBio && (
+            <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed text-center max-w-full h-16 overflow-hidden">
+              {trimmedBio}
+            </p>
+          )}
+        </div>
 
         {/* Specialties */}
         {specialties && specialties.length > 0 && (
-          <div className="flex flex-wrap gap-2 justify-center">
-            {specialties.slice(0, 3).map((specialty) => (
+          <div className="flex flex-wrap gap-2 justify-center flex-shrink-0">
+            {specialties.slice(0, 2).map((specialty) => (
               <Badge 
                 key={specialty} 
                 variant="outline" 
@@ -98,16 +103,16 @@ function TeamCard({ member }: TeamCardProps) {
                 {specialty}
               </Badge>
             ))}
-            {specialties.length > 3 && (
+            {specialties.length > 2 && (
               <Badge variant="outline" className="text-xs bg-white/50 dark:bg-gray-800/50">
-                +{specialties.length - 3} more
+                +{specialties.length - 2} more
               </Badge>
             )}
           </div>
         )}
 
         {/* Contact and Social */}
-        <div className="flex items-center gap-2 pt-2">
+        <div className="flex items-center gap-2 pt-2 flex-shrink-0">
           {email && (
             <Button
               variant="ghost"

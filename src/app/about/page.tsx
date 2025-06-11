@@ -256,46 +256,52 @@ export default function AboutPage() {
               </div>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {displayTeamMembers.map((member) => (
-                  <div key={member.id} className="group">
-                    <div className="relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
-                      <div className="relative h-80 overflow-hidden">
-                        <Image
-                          src={member.image}
-                          alt={member.name}
-                          fill
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
-                          sizes="(max-width: 768px) 100vw, 50vw"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <div className="absolute bottom-4 left-4 right-4 text-white">
-                            <div className="flex items-center space-x-2 mb-2">
-                              <Star className="w-4 h-4 text-yellow-400" />
-                              <span className="text-sm font-medium">{member.achievement}</span>
+                {displayTeamMembers.map((member) => {
+                  // Trim bio to ensure consistent card heights
+                  const trimmedBio = member.bio && member.bio.length > 120 ? `${member.bio.substring(0, 120)}...` : member.bio;
+                  return (
+                    <div key={member.id} className="group h-full">
+                      <div className="relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 h-full flex flex-col">
+                        <div className="relative h-80 overflow-hidden flex-shrink-0">
+                          <Image
+                            src={member.image}
+                            alt={member.name}
+                            fill
+                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="absolute bottom-4 left-4 right-4 text-white">
+                              <div className="flex items-center space-x-2 mb-2">
+                                <Star className="w-4 h-4 text-yellow-400" />
+                                <span className="text-sm font-medium">{member.achievement}</span>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
 
-                      <div className="p-6 space-y-4">
-                        <div>
-                          <h3 className="text-xl font-bold text-slate-900">{member.name}</h3>
-                          <p className="text-violet-600 font-medium">{member.role}</p>
-                        </div>
+                        <div className="p-6 flex flex-col flex-grow">
+                          <div className="flex-shrink-0 mb-4">
+                            <h3 className="text-xl font-bold text-slate-900">{member.name}</h3>
+                            <p className="text-violet-600 font-medium">{member.role}</p>
+                          </div>
 
-                        <p className="text-slate-600 text-sm leading-relaxed line-clamp-3">
-                          {member.bio}
-                        </p>
+                          <div className="flex-grow mb-4">
+                            <p className="text-slate-600 text-sm leading-relaxed h-16 overflow-hidden">
+                              {trimmedBio}
+                            </p>
+                          </div>
 
-                        <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                          <Badge variant="secondary" className="bg-violet-50 text-violet-700 border-violet-200">
-                            {member.specialty}
-                          </Badge>
+                          <div className="flex items-center justify-between pt-4 border-t border-slate-100 flex-shrink-0">
+                            <Badge variant="secondary" className="bg-violet-50 text-violet-700 border-violet-200">
+                              {member.specialty}
+                            </Badge>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>
