@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+sss#!/usr/bin/env node
 
 /**
  * Advanced Bundle Analyzer

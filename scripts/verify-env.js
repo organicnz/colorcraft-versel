@@ -33,7 +33,10 @@ const REQUIRED_VARS = [
 // Optional variables - will show warnings but not errors
 const OPTIONAL_VARS = [
   'RESEND_API_KEY',
-  'NEXT_PUBLIC_EMAIL_FROM'
+  'NEXT_PUBLIC_EMAIL_FROM',
+  'UPSTASH_REDIS_REST_URL',
+  'UPSTASH_REDIS_REST_TOKEN',
+  'QSTASH_TOKEN'
 ];
 
 // Get current environment

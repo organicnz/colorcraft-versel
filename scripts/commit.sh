@@ -1,21 +1,19 @@
 #!/usr/bin/env node
 
 /**
- * Auto-commit script for CareEcho project
- * This script follows the commit rules defined in .cursor/rules/commit_rules.mdc
- * Usage: node auto-commit.js "Commit message" "Type of change"
- * Example: node auto-commit.js "add dark mode toggle" "Feat"
+ * Auto-commit script for ColorCraft project
+ * This script follows the commit rules defined in the workspace rules
+ * Usage: ./scripts/commit.sh "Commit message" "Type of change"
+ * Example: ./scripts/commit.sh "add dark mode toggle" "Feat"
  */
 
 const { execSync } = require('child_process');
 const readline = require('readline');
-const fs = require('fs');
-const path = require('path');
 
 // Valid commit types according to our rules
 const VALID_TYPES = [
   'Feat',
-  'Fix',
+  'Fix', 
   'Docs',
   'Refactor',
   'Style',
@@ -31,7 +29,7 @@ const rl = readline.createInterface({
 
 // Display the commit rules header
 function displayRulesHeader() {
-  console.log('\n🚀 CareEcho Commit Helper 🚀');
+  console.log('\n🎨 ColorCraft Commit Helper 🎨');
   console.log('Following commit message format: Type(scope): description');
   console.log('Example: Feat(component): add dark mode toggle\n');
 }
@@ -75,22 +73,34 @@ function determineComponent(files) {
   // Check patterns in files to determine component
   if (files.some(file => file.includes('/components/'))) {
     component = "component";
-  } else if (files.some(file => file.includes('/utils/'))) {
+  } else if (files.some(file => file.includes('/utils/') || file.includes('/lib/'))) {
     component = "utils";
   } else if (files.some(file => file.includes('/api/'))) {
     component = "api";
-  } else if (files.some(file => file.includes('/pages/'))) {
+  } else if (files.some(file => file.includes('/app/') && file.includes('/page.'))) {
     component = "page";
-  } else if (files.some(file => file.includes('/styles/'))) {
+  } else if (files.some(file => file.includes('/styles/') || file.includes('tailwind') || file.includes('.css'))) {
     component = "styles";
   } else if (files.some(file => file.includes('/ui/'))) {
     component = "ui";
-  } else if (files.some(file => file.includes('/tests/'))) {
+  } else if (files.some(file => file.includes('/tests/') || file.includes('.test.') || file.includes('.spec.'))) {
     component = "test";
-  } else if (files.some(file => file.includes('/public/'))) {
+  } else if (files.some(file => file.includes('/public/') || file.includes('/assets/'))) {
     component = "assets";
-  } else if (files.some(file => file.includes('package.json'))) {
+  } else if (files.some(file => file.includes('package.json') || file.includes('package-lock.json'))) {
     component = "deps";
+  } else if (files.some(file => file.includes('tsconfig') || file.includes('next.config') || file.includes('.env'))) {
+    component = "config";
+  } else if (files.some(file => file.includes('/hooks/'))) {
+    component = "hooks";
+  } else if (files.some(file => file.includes('/types/'))) {
+    component = "types";
+  } else if (files.some(file => file.includes('/portfolio/'))) {
+    component = "portfolio";
+  } else if (files.some(file => file.includes('/auth/'))) {
+    component = "auth";
+  } else if (files.some(file => file.includes('/dashboard/') || file.includes('/crm/'))) {
+    component = "dashboard";
   }
   
   return component;
@@ -135,17 +145,17 @@ function executeGitCommands(commitMessage) {
 function showCommitTypeExamples() {
   console.log('Commit Type Examples:');
   console.log('- Feat: New feature or functionality');
-  console.log('  Example: "Feat(player): add audio speed control"');
+  console.log('  Example: "Feat(portfolio): add image gallery component"');
   console.log('- Fix: Bug fix');
-  console.log('  Example: "Fix(api): resolve authentication token expiration issue"');
+  console.log('  Example: "Fix(auth): resolve authentication token expiration issue"');
   console.log('- Docs: Documentation changes');
   console.log('  Example: "Docs(readme): update installation instructions"');
   console.log('- Refactor: Code changes that neither fix bugs nor add features');
-  console.log('  Example: "Refactor(utils): simplify date formatting functions"');
+  console.log('  Example: "Refactor(utils): simplify color formatting functions"');
   console.log('- Style: Changes related to styling, formatting, or UI');
   console.log('  Example: "Style(tailwind): update button hover states"');
   console.log('- Test: Adding or updating tests');
-  console.log('  Example: "Test(unit): add tests for user authentication"');
+  console.log('  Example: "Test(unit): add tests for portfolio service"');
   console.log('- Chore: Maintenance tasks, dependency updates, etc.');
   console.log('  Example: "Chore(deps): update dependencies to latest versions"');
   console.log('');
@@ -165,6 +175,7 @@ function main() {
     const component = determineComponent(files);
     const formattedMessage = generateCommitMessage(commitType, commitMessage, component);
     
+    console.log(`Generated commit message: "${formattedMessage}"`);
     executeGitCommands(formattedMessage);
     rl.close();
     return;

@@ -93,13 +93,13 @@ export function useWebVitals() {
     // Dynamic import to avoid SSR issues
     const initWebVitals = async () => {
       try {
-        const { getCLS, getFID, getFCP, getLCP, getTTFB } = await import("web-vitals");
+        const { onCLS, onFID, onFCP, onLCP, onTTFB } = await import("web-vitals");
 
-        getCLS(recordWebVital);
-        getFID(recordWebVital);
-        getFCP(recordWebVital);
-        getLCP(recordWebVital);
-        getTTFB(recordWebVital);
+        onCLS(recordWebVital);
+        onFID(recordWebVital);
+        onFCP(recordWebVital);
+        onLCP(recordWebVital);
+        onTTFB(recordWebVital);
       } catch (error) {
         if (process.env.NODE_ENV === "development") {
           perfLogger.warn("Web Vitals library not available", { metadata: error });
@@ -229,25 +229,25 @@ export function usePerformance(): PerformanceData {
 
     async function initWebVitals() {
       try {
-        const { getCLS, getFID, getFCP, getLCP, getTTFB } = await import("web-vitals")
+        const { onCLS, onFID, onFCP, onLCP, onTTFB } = await import("web-vitals")
 
-        getCLS((metric) => {
+        onCLS((metric: any) => {
           setMetrics(prev => ({ ...prev, cls: metric.value }))
         })
 
-        getFID((metric) => {
+        onFID((metric: any) => {
           setMetrics(prev => ({ ...prev, fid: metric.value }))
         })
 
-        getFCP((metric) => {
+        onFCP((metric: any) => {
           setMetrics(prev => ({ ...prev, fcp: metric.value }))
         })
 
-        getLCP((metric) => {
+        onLCP((metric: any) => {
           setMetrics(prev => ({ ...prev, lcp: metric.value }))
         })
 
-        getTTFB((metric) => {
+        onTTFB((metric: any) => {
           setMetrics(prev => ({ ...prev, ttfb: metric.value }))
         })
 
