@@ -189,7 +189,7 @@ export default function PortfolioItem({
                   )}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-white/80 backdrop-blur-md border border-white/20">
+              <DropdownMenuContent align="end">
                 <DropdownMenuItem asChild>
                   <Link href={`/portfolio-dash/${project.id}/edit`}>
                     <Pencil className="h-4 w-4 mr-2" />

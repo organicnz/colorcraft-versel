@@ -197,7 +197,7 @@ export default function EditorialButton({
           </Badge>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuContent align="end" className="w-56">
         <div className="flex items-center gap-2 p-2">
           <div className="h-2 w-2 bg-green-500 rounded-full"></div>
           <span className="text-sm font-medium">Admin Panel</span>
@@ -252,7 +252,7 @@ export default function EditorialButton({
               <Edit3 className="h-5 w-5" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent side="left" align="center" className="w-56">
+                        <DropdownMenuContent side="left" align="center" className="w-56">
             <div className="flex items-center gap-2 p-2">
               <div className="h-2 w-2 bg-green-500 rounded-full"></div>
               <span className="text-sm font-medium">Portfolio Editor</span>
