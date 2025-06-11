@@ -101,33 +101,7 @@ export default function ModernHomePage({
     email: member.email,
     phone: member.phone,
     social_links: member.social_links
-  })) : [
-    // Fallback team members to prevent section disappearing
-    {
-      name: "Sarah Mitchell",
-      role: "Lead Furniture Artist",
-      image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face",
-      description: "15+ years in furniture restoration and custom painting",
-      specialty: "Vintage Revival",
-      achievement: "15+ years"
-    },
-    {
-      name: "James Wilson",
-      role: "Restoration Specialist",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
-      description: "Expert in antique furniture and period-accurate finishes",
-      specialty: "Antique Expertise",
-      achievement: "Master Craftsman"
-    },
-    {
-      name: "Emma Rodriguez",
-      role: "Design Consultant",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
-      description: "Creative visionary specializing in modern upcycling",
-      specialty: "Modern Innovation",
-      achievement: "Award Winner"
-    }
-  ];
+  })) : [];
 
   // Enhanced services with modern icons and colors
   const modernServices = [
@@ -596,91 +570,91 @@ export default function ModernHomePage({
       </section>
 
       {/* Modern Team Section */}
-      <section className="py-32 bg-white relative overflow-hidden">
-        <div className="container mx-auto px-6 @container">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="space-y-16"
-          >
-            <motion.div variants={fadeInUp} className="text-center space-y-6">
-              <Badge className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-200 text-amber-800 px-4 py-2">
-                <Heart className="w-4 h-4 mr-2" />
-                Our Team
-              </Badge>
-              <h2 className="text-5xl lg:text-6xl font-bold bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 bg-clip-text text-transparent">
-                Meet the artisans behind every transformation
-              </h2>
-              <p className="text-xl lg:text-2xl text-slate-600 leading-relaxed max-w-3xl mx-auto font-light">
-                Our passionate team of experts brings decades of combined experience to every project.
-              </p>
-            </motion.div>
-
-
-
+      {displayTeamMembers.length > 0 && (
+        <section className="py-32 bg-white relative overflow-hidden">
+          <div className="container mx-auto px-6 @container">
             <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
               variants={staggerContainer}
-              className="grid grid-cols-1 @lg:grid-cols-3 gap-8 max-w-6xl mx-auto"
+              className="space-y-16"
             >
-              {displayTeamMembers.map((member, index) => (
-                <motion.div
-                  key={`team-${member.name}-${index}`}
-                  variants={fadeInUp}
-                  className="group @container"
-                >
+              <motion.div variants={fadeInUp} className="text-center space-y-6">
+                <Badge className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-200 text-amber-800 px-4 py-2">
+                  <Heart className="w-4 h-4 mr-2" />
+                  Our Team
+                </Badge>
+                <h2 className="text-5xl lg:text-6xl font-bold bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 bg-clip-text text-transparent">
+                  Meet the artisans behind every transformation
+                </h2>
+                <p className="text-xl lg:text-2xl text-slate-600 leading-relaxed max-w-3xl mx-auto font-light">
+                  Our passionate team of experts brings decades of combined experience to every project.
+                </p>
+              </motion.div>
+
+              <motion.div
+                variants={staggerContainer}
+                className="grid grid-cols-1 @lg:grid-cols-3 gap-8 max-w-6xl mx-auto"
+              >
+                {displayTeamMembers.map((member, index) => (
                   <motion.div
-                    className="relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500"
-                    whileHover={{ y: -8 }}
+                    key={`team-${member.name}-${index}`}
+                    variants={fadeInUp}
+                    className="group @container"
                   >
-                    {/* Member Image */}
-                    <div className="relative h-80 overflow-hidden">
-                      <motion.div
-                        whileHover={{ scale: 1.1 }}
-                        transition={{ duration: 0.6 }}
-                      >
-                        <Image
-                          src={member.image}
-                          alt={member.name}
-                          fill
-                          className="object-cover"
-                          priority={index < 3} // Prioritize first 3 images
-                        />
-                      </motion.div>
+                    <motion.div
+                      className="relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500"
+                      whileHover={{ y: -8 }}
+                    >
+                      {/* Member Image */}
+                      <div className="relative h-80 overflow-hidden">
+                        <motion.div
+                          whileHover={{ scale: 1.1 }}
+                          transition={{ duration: 0.6 }}
+                        >
+                          <Image
+                            src={member.image}
+                            alt={member.name}
+                            fill
+                            className="object-cover"
+                            priority={index < 3} // Prioritize first 3 images
+                          />
+                        </motion.div>
 
-                      {/* Overlay gradient */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                        {/* Overlay gradient */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                      {/* Achievement badge */}
-                      <div className="absolute top-4 left-4">
-                        <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg">
-                          {member.achievement}
-                        </Badge>
-                      </div>
-                    </div>
-
-                    {/* Member Details */}
-                    <div className="p-8 space-y-4">
-                      <div>
-                        <h3 className="text-2xl font-bold text-slate-900 mb-1">{member.name}</h3>
-                        <p className="text-lg font-medium bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">{member.role}</p>
+                        {/* Achievement badge */}
+                        <div className="absolute top-4 left-4">
+                          <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg">
+                            {member.achievement}
+                          </Badge>
+                        </div>
                       </div>
 
-                      <div className="space-y-2">
-                        <div className="text-sm font-medium text-slate-500">Specialty</div>
-                        <div className="text-slate-700 font-medium">{member.specialty}</div>
-                      </div>
+                      {/* Member Details */}
+                      <div className="p-8 space-y-4">
+                        <div>
+                          <h3 className="text-2xl font-bold text-slate-900 mb-1">{member.name}</h3>
+                          <p className="text-lg font-medium bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">{member.role}</p>
+                        </div>
 
-                      <p className="text-slate-600 leading-relaxed">{member.description}</p>
-                    </div>
+                        <div className="space-y-2">
+                          <div className="text-sm font-medium text-slate-500">Specialty</div>
+                          <div className="text-slate-700 font-medium">{member.specialty}</div>
+                        </div>
+
+                        <p className="text-slate-600 leading-relaxed">{member.description}</p>
+                      </div>
+                    </motion.div>
                   </motion.div>
-                </motion.div>
-              ))}
+                ))}
+              </motion.div>
             </motion.div>
-          </motion.div>
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
 
       {/* Ultra-Modern Contact Section */}
       <section className="py-32 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white relative overflow-hidden">
