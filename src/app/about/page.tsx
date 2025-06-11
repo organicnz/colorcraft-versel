@@ -21,6 +21,7 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import type { TeamMember } from "@/types/team";
 import { getTeamMembers } from "@/services/team.service";
+import StudioLocation from "@/components/shared/StudioLocation";
 
 export default function AboutPage() {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
@@ -100,29 +101,29 @@ export default function AboutPage() {
   const displayTeamMembers = teamMembers.length > 0 ? teamMembers : fallbackTeamMembers;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-violet-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-violet-50 dark:from-slate-900 dark:via-slate-800 dark:to-violet-900">
       {/* Hero Section */}
       <section className="relative pt-20 lg:pt-32 pb-16 lg:pb-24 overflow-hidden">
         <div className="container mx-auto px-6 text-center">
           <div className="space-y-8">
             <div>
-              <Badge className="bg-gradient-to-r from-violet-500/10 to-purple-500/10 border-violet-200 text-violet-700 px-6 py-3 text-sm font-medium">
+              <Badge className="bg-gradient-to-r from-violet-500/10 to-purple-500/10 border-violet-200 dark:border-violet-700 text-violet-700 dark:text-violet-300 px-6 py-3 text-sm font-medium">
                 <Sparkles className="w-4 h-4 mr-2" />
                 About Color & Craft
               </Badge>
             </div>
 
             <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
-              <span className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 dark:from-slate-100 dark:via-slate-200 dark:to-slate-300 bg-clip-text text-transparent">
                 Where artistry meets
               </span>
               <br />
-              <span className="bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-violet-600 to-purple-600 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent">
                 precision
               </span>
             </h1>
 
-            <p className="text-xl lg:text-2xl text-slate-600 leading-relaxed max-w-3xl mx-auto font-light">
+            <p className="text-xl lg:text-2xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl mx-auto font-light">
               At Color & Craft, we believe that furniture is more than just functional pieces;
               they're the foundation of your sanctuary where cherished memories are crafted.
             </p>
@@ -130,7 +131,7 @@ export default function AboutPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 size="lg"
-                className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+                className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 dark:from-violet-500 dark:to-purple-500 dark:hover:from-violet-600 dark:hover:to-purple-600 text-white px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 <Link href="/portfolio" className="flex items-center">
                   View Our Work
@@ -140,7 +141,7 @@ export default function AboutPage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-2 border-violet-200 text-violet-700 hover:bg-violet-50 px-8 py-4 rounded-full transition-all duration-300"
+                className="border-2 border-violet-200 dark:border-violet-700 text-violet-700 dark:text-violet-300 hover:bg-violet-50 dark:hover:bg-violet-900/50 px-8 py-4 rounded-full transition-all duration-300"
               >
                 <Link href="/contact" className="flex items-center">
                   Start Your Project
@@ -153,7 +154,7 @@ export default function AboutPage() {
       </section>
 
       {/* Our Story Section */}
-      <section className="py-24 bg-white relative overflow-hidden">
+      <section className="py-24 bg-white dark:bg-slate-800 relative overflow-hidden">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -186,22 +187,23 @@ export default function AboutPage() {
                   </p>
                 </div>
 
+                {/* Fixed Stats Section with proper dark mode support */}
                 <div className="grid grid-cols-3 gap-8 py-8">
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-violet-600">1000+</div>
-                    <div className="text-sm text-slate-500 uppercase tracking-wide">
+                    <div className="text-3xl font-bold text-primary-600 dark:text-primary-400">1000+</div>
+                    <div className="text-sm text-slate-500 dark:text-slate-400 uppercase tracking-wide">
                       Projects Completed
                     </div>
                   </div>
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-violet-600">5</div>
-                    <div className="text-sm text-slate-500 uppercase tracking-wide">
+                    <div className="text-3xl font-bold text-primary-600 dark:text-primary-400">5</div>
+                    <div className="text-sm text-slate-500 dark:text-slate-400 uppercase tracking-wide">
                       Years Experience
                     </div>
                   </div>
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-violet-600">100%</div>
-                    <div className="text-sm text-slate-500 uppercase tracking-wide">
+                    <div className="text-3xl font-bold text-primary-600 dark:text-primary-400">100%</div>
+                    <div className="text-sm text-slate-500 dark:text-slate-400 uppercase tracking-wide">
                       Satisfaction
                     </div>
                   </div>
@@ -348,9 +350,9 @@ export default function AboutPage() {
                         {/* Enhanced Avatar Section */}
                         <div className="relative flex-shrink-0">
                           {/* Glow effect behind avatar */}
-                          <div className="absolute inset-0 bg-gradient-to-br from-amber-400/30 via-orange-500/30 to-red-500/30 rounded-3xl blur-xl transform group-hover:scale-110 transition-transform duration-700"></div>
+                          <div className="absolute inset-0 bg-gradient-to-br from-amber-400/30 via-orange-500/30 to-red-500/30 dark:from-amber-500/20 dark:via-orange-600/20 dark:to-red-600/20 rounded-3xl blur-xl transform group-hover:scale-110 transition-transform duration-700"></div>
 
-                          <div className="relative w-36 h-36 rounded-3xl overflow-hidden ring-4 ring-white/40 shadow-2xl transform group-hover:ring-white/60 transition-all duration-500">
+                          <div className="relative w-36 h-36 rounded-3xl overflow-hidden ring-4 ring-white/40 dark:ring-white/20 shadow-2xl transform group-hover:ring-white/60 dark:group-hover:ring-white/40 transition-all duration-500">
                             <Image
                               src={member.image}
                               alt={member.name}
@@ -366,7 +368,7 @@ export default function AboutPage() {
 
                           {/* Enhanced Achievement badge */}
                           <div className="absolute -bottom-3 -right-3">
-                            <Badge className="bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 text-white border-0 shadow-xl backdrop-blur-sm px-4 py-2 transform group-hover:scale-110 transition-transform duration-300">
+                            <Badge className="bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 dark:from-amber-400 dark:via-orange-400 dark:to-red-400 text-white border-0 shadow-xl backdrop-blur-sm px-4 py-2 transform group-hover:scale-110 transition-transform duration-300">
                               <Star className="w-4 h-4 mr-1" />
                               {member.achievement}
                             </Badge>
@@ -374,7 +376,7 @@ export default function AboutPage() {
 
                           {/* Sparkles animation */}
                           <div className="absolute -top-3 -left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                            <Sparkles className="w-7 h-7 text-amber-400 animate-pulse" />
+                            <Sparkles className="w-7 h-7 text-amber-400 dark:text-amber-300 animate-pulse" />
                           </div>
                         </div>
 
@@ -384,30 +386,29 @@ export default function AboutPage() {
                         >
                           {/* Enhanced Name and Role */}
                           <div className="space-y-3">
-                            <h3 className="text-3xl font-bold bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-white dark:via-gray-100 dark:to-white bg-clip-text text-transparent">
+                            <h3 className="text-3xl font-bold text-slate-900 dark:text-white group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-amber-600 group-hover:via-orange-600 group-hover:to-red-600 dark:group-hover:from-amber-400 dark:group-hover:via-orange-400 dark:group-hover:to-red-400 group-hover:bg-clip-text transition-all duration-500">
                               {member.name}
                             </h3>
-                            <p className="text-violet-600 dark:text-violet-400 font-semibold text-xl tracking-wide">
+                            <Badge className="bg-gradient-to-r from-purple-500/20 via-violet-500/20 to-blue-500/20 border-purple-300/50 dark:border-purple-600/50 text-purple-800 dark:text-purple-200 px-4 py-2 text-sm font-medium">
                               {member.role}
-                            </p>
+                            </Badge>
                           </div>
 
                           {/* Enhanced Bio */}
-                          <p
-                            className={`text-slate-600 dark:text-slate-300 leading-relaxed font-medium text-base ${isEven ? "text-left" : "text-right"}`}
-                          >
-                            {trimmedBio}
+                          <p className="text-lg text-slate-600 dark:text-slate-300 leading-relaxed group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors duration-300">
+                            {trimmedBio || member.bio}
                           </p>
 
-                          {/* Enhanced Specialty Badge */}
+                          {/* Enhanced CTA */}
                           <div className={`flex ${isEven ? "justify-start" : "justify-end"}`}>
-                            <Badge
+                            <Button
                               variant="outline"
-                              className="bg-gradient-to-r from-white/70 to-white/50 dark:from-gray-800/70 dark:to-gray-800/50 border-violet-200/60 dark:border-violet-700/60 text-violet-700 dark:text-violet-300 backdrop-blur-sm px-6 py-3 text-sm font-medium hover:scale-105 transition-transform duration-200"
+                              size="sm"
+                              className="border-amber-300/50 dark:border-amber-600/50 text-amber-700 dark:text-amber-300 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-900/50 dark:hover:to-orange-900/50 group-hover:border-amber-400/70 dark:group-hover:border-amber-500/70 transition-all duration-300 backdrop-blur-sm"
                             >
-                              <Sparkles className="w-4 h-4 mr-2" />
-                              {member.specialty}
-                            </Badge>
+                              Learn More
+                              <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                            </Button>
                           </div>
                         </div>
                       </div>
@@ -420,36 +421,43 @@ export default function AboutPage() {
         </section>
       )}
 
+      {/* Studio Location Section */}
+      <StudioLocation showContactForm={false} />
+
       {/* Call to Action Section */}
-      <section className="py-24 bg-gradient-to-r from-violet-600 to-purple-700 text-white relative overflow-hidden">
-        <div className="container mx-auto px-6 text-center relative z-10">
-          <div className="space-y-8">
-            <h2 className="text-4xl lg:text-5xl font-bold leading-tight">
-              Ready to transform your furniture?
+      <section className="py-24 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-violet-900/40 via-transparent to-transparent"></div>
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="text-center space-y-8">
+            <h2 className="text-4xl lg:text-5xl font-bold">
+              Ready to transform
+              <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                {" "}
+                your space?
+              </span>
             </h2>
-            <p className="text-xl opacity-90 max-w-2xl mx-auto leading-relaxed">
-              Let's discuss your vision and create something beautiful together. Every great
-              transformation starts with a conversation.
+            <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+              Let's bring your vision to life with our expert craftsmanship and attention to
+              detail.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 size="lg"
-                className="bg-white text-violet-700 hover:bg-gray-50 px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+                className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-8 py-4 rounded-full"
+                asChild
               >
-                <Link href="/contact" className="flex items-center">
-                  Get Free Consultation
+                <Link href="/contact">
+                  Start Your Project
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Link>
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="border-2 border-white text-white hover:bg-white hover:text-violet-700 px-8 py-4 rounded-full transition-all duration-300"
+                className="border-2 border-white/20 text-white hover:bg-white/10 px-8 py-4 rounded-full"
+                asChild
               >
-                <Link href="/portfolio" className="flex items-center">
-                  View Portfolio
-                  <Sparkles className="ml-2 w-5 h-5" />
-                </Link>
+                <Link href="/portfolio">View Portfolio</Link>
               </Button>
             </div>
           </div>

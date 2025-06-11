@@ -507,7 +507,7 @@ export default function PortfolioPage() {
       </section>
 
       {/* Modern Filter Section */}
-      <section id="categories-section" className="py-16 bg-white">
+      <section id="categories-section" className="py-16 bg-white dark:bg-slate-800">
         <div className="container mx-auto px-6">
           <motion.div
             initial="hidden"
@@ -517,14 +517,14 @@ export default function PortfolioPage() {
             className="space-y-12"
           >
             <motion.div variants={fadeInUp} className="text-center space-y-6">
-              <Badge className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border-blue-200 text-blue-800 px-4 py-2">
+              <Badge className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border-blue-200 dark:border-blue-700 text-blue-800 dark:text-blue-300 px-4 py-2">
                 <Filter className="w-4 h-4 mr-2" />
                 Browse by Category
               </Badge>
-              <h2 className="text-4xl lg:text-5xl font-bold bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 bg-clip-text text-transparent">
+              <h2 className="text-4xl lg:text-5xl font-bold bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 dark:from-slate-100 dark:via-slate-200 dark:to-slate-300 bg-clip-text text-transparent">
                 Featured Transformations
               </h2>
-              <p className="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto font-light">
+              <p className="text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl mx-auto font-light">
                 Explore our diverse range of furniture restoration and design projects.
               </p>
             </motion.div>
@@ -563,7 +563,7 @@ export default function PortfolioPage() {
       </section>
 
       {/* Portfolio Grid Section */}
-      <section id="portfolio-section" className="py-20 bg-gradient-to-br from-slate-50 to-white">
+      <section id="portfolio-section" className="py-20 bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-800">
         <div className="container mx-auto px-6">
           <motion.div
             initial="hidden"
@@ -575,7 +575,7 @@ export default function PortfolioPage() {
             {displayedProjects.map((project, index) => (
               <motion.div key={project.id} variants={fadeInUp} custom={index} className="group">
                 <motion.div
-                  className="relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 h-full"
+                  className="relative overflow-hidden rounded-3xl bg-white dark:bg-slate-800 shadow-lg hover:shadow-2xl transition-all duration-500 h-full"
                   whileHover={{ y: -8 }}
                 >
                   {/* Project Image */}
@@ -596,7 +596,7 @@ export default function PortfolioPage() {
                     {/* Featured Badge */}
                     {project.is_featured && (
                       <div className="absolute top-4 left-4">
-                        <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 shadow-lg">
+                        <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-400 dark:to-orange-400 text-white border-0 shadow-lg">
                           <Sparkles className="w-3 h-3 mr-1" />
                           Featured
                         </Badge>
@@ -620,15 +620,15 @@ export default function PortfolioPage() {
 
                   <div className="p-6 space-y-4">
                     <div>
-                      <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-violet-600 transition-colors">
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">
                         {project.title}
                       </h3>
-                      <p className="text-slate-600 text-sm line-clamp-2 leading-relaxed">
+                      <p className="text-slate-600 dark:text-slate-300 text-sm line-clamp-2 leading-relaxed">
                         {project.brief_description || project.description}
                       </p>
                     </div>
 
-                    <div className="flex items-center justify-between text-xs text-slate-500">
+                    <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                       <span className="flex items-center">
                         <Calendar className="w-3 h-3 mr-1" />
                         {project.completion_time || "2-4 weeks"}
@@ -639,7 +639,7 @@ export default function PortfolioPage() {
                       </span>
                     </div>
 
-                    <div className="pt-4 border-t border-slate-100">
+                    <div className="pt-4 border-t border-slate-100 dark:border-slate-700">
                       <Link href={`/portfolio/${project.id}`}>
                         <Button
                           variant="outline"

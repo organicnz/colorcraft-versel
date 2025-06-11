@@ -4,15 +4,15 @@
 
 @theme {
   /* Custom theme variables for TailwindCSS v4 */
-  --color-primary: #0F72C1;
-  --color-primary-light: #1a85d9;
-  --color-primary-dark: #0c5ea0;
-  --color-secondary: #E4A04C;
-  --color-secondary-light: #f4b871;
-  --color-secondary-dark: #c4842c;
-  --color-accent: #2A9D8F;
-  --color-accent-light: #34c2b0;
-  --color-accent-dark: #1c7268;
+  --color-primary: #D3A273;
+  --color-primary-light: #E5C9AE;
+  --color-primary-dark: #C08A5A;
+  --color-secondary: #40BAA9;
+  --color-secondary-light: #65C9BA;
+  --color-secondary-dark: #297A70;
+  --color-accent: #E67A91;
+  --color-accent-light: #F5CAD3;
+  --color-accent-dark: #BA3D5D;
 
   /* Slate colors for TailwindCSS v4 compatibility */
   --color-slate-50: #f8fafc;
@@ -76,6 +76,31 @@
     background-color: #0f172a !important;
   }
 
+  /* Enhanced visibility fixes for stats and icons */
+  .text-primary-600 {
+    color: #C08A5A !important;
+  }
+
+  html.dark .dark\:text-primary-400 {
+    color: #DCB690 !important;
+  }
+
+  .text-slate-500 {
+    color: #64748b !important;
+  }
+
+  html.dark .dark\:text-slate-400 {
+    color: #94a3b8 !important;
+  }
+
+  .text-violet-600 {
+    color: #7c3aed !important;
+  }
+
+  html.dark .dark\:text-violet-400 {
+    color: #a78bfa !important;
+  }
+
   /* Only enable transitions after the anti-flash script enables them */
   .transitions-enabled * {
     transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out !important;
@@ -95,7 +120,7 @@
     transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out !important;
   }
 
-  /* Theme variables */
+  /* Theme variables - Enhanced for better contrast */
   :root {
     --background: 0 0% 100%;
     --foreground: 224 71.4% 4.1%;
@@ -103,13 +128,13 @@
     --card-foreground: 224 71.4% 4.1%;
     --popover: 0 0% 100%;
     --popover-foreground: 224 71.4% 4.1%;
-    --primary: 220.9 39.3% 11%;
+    --primary: 26 52% 64%;  /* D3A273 */
     --primary-foreground: 210 20% 98%;
-    --secondary: 220 14.3% 95.9%;
+    --secondary: 173 58% 47%; /* 40BAA9 */
     --secondary-foreground: 220.9 39.3% 11%;
     --muted: 220 14.3% 95.9%;
     --muted-foreground: 220 8.9% 46.1%;
-    --accent: 220 14.3% 95.9%;
+    --accent: 347 57% 69%; /* E67A91 */
     --accent-foreground: 220.9 39.3% 11%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 20% 98%;
@@ -129,8 +154,8 @@
     --text-secondary: hsl(220, 8.9%, 46.1%);
     --bg-card: hsl(0, 0%, 100%);
     --border: hsl(220, 13%, 91%);
-    --primary: hsl(220.9, 39.3%, 11%);
-    --primary-light: hsl(220.9, 39.3%, 21%);
+    --primary: hsl(26, 52%, 64%);
+    --primary-light: hsl(26, 52%, 74%);
   }
 
   .dark {
@@ -140,13 +165,13 @@
     --card-foreground: 210 20% 98%;
     --popover: 224 71.4% 4.1%;
     --popover-foreground: 210 20% 98%;
-    --primary: 210 20% 98%;
-    --primary-foreground: 220.9 39.3% 11%;
-    --secondary: 215 27.9% 16.9%;
+    --primary: 26 52% 74%; /* DCB690 - lighter for dark mode */
+    --primary-foreground: 26 52% 14%;
+    --secondary: 173 58% 57%; /* Lighter teal for dark mode */
     --secondary-foreground: 210 20% 98%;
     --muted: 215 27.9% 16.9%;
     --muted-foreground: 217.9 10.6% 64.9%;
-    --accent: 215 27.9% 16.9%;
+    --accent: 347 57% 79%; /* Lighter accent for dark mode */
     --accent-foreground: 210 20% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 20% 98%;
@@ -165,8 +190,8 @@
     --text-secondary: hsl(217.9, 10.6%, 64.9%);
     --bg-card: hsl(224, 71.4%, 4.1%);
     --border: hsl(215, 27.9%, 16.9%);
-    --primary: hsl(210, 20%, 98%);
-    --primary-light: hsl(210, 20%, 88%);
+    --primary: hsl(26, 52%, 74%);
+    --primary-light: hsl(26, 52%, 84%);
   }
 
   /* Ensure text colors are properly applied */
@@ -176,6 +201,10 @@
 
   html.dark .dark\:text-white {
     color: #ffffff !important;
+  }
+
+  html.dark .dark\:text-slate-100 {
+    color: #f1f5f9 !important;
   }
 
   /* Ensure slate text colors work correctly */

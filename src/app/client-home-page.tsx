@@ -502,8 +502,8 @@ export default function ClientHomePage({
                     className="h-full hover:scale-[1.02] transition-all duration-300 group"
                   >
                     <div className="text-center">
-                      <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-100/50 rounded-2xl mb-6 group-hover:bg-primary-200/50 transition-colors">
-                        <IconComponent className="h-8 w-8 text-primary-600" />
+                      <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-100/50 dark:bg-primary-800/50 rounded-2xl mb-6 group-hover:bg-primary-200/50 dark:group-hover:bg-primary-700/50 transition-colors">
+                        <IconComponent className="h-8 w-8 text-primary-600 dark:text-primary-400" />
                       </div>
                       <h3 className="text-2xl font-semibold mb-4">{service.title}</h3>
                       <p className="text-muted-foreground mb-6 leading-relaxed">
@@ -642,7 +642,7 @@ export default function ClientHomePage({
                       <p className="text-xs text-muted-foreground/80 mb-3 line-clamp-1">
                         {project.material}
                       </p>
-                      <p className="text-base font-semibold text-primary mt-auto mb-3">
+                      <p className="text-base font-semibold text-primary-600 dark:text-primary-400 mt-auto mb-3">
                         {project.price}
                       </p>
                       <Button
@@ -811,7 +811,7 @@ export default function ClientHomePage({
 
               {/* CTA Content */}
               <div className="text-center lg:text-left order-1 lg:order-2">
-                <h3 className="text-3xl font-bold mb-6">Free Consultation</h3>
+                <h3 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-6">Free Consultation</h3>
                 <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
                   Schedule a free consultation to discuss your project. We'll assess your furniture
                   and provide expert recommendations for the perfect transformation.
