@@ -6,49 +6,32 @@ import { Button } from "@/components/ui/button";
 import { CircularProfileButton } from "./CircularProfileButton";
 import { createClient } from "@/lib/supabase/client";
 import { Loader2 } from "lucide-react";
+import { type User, type AuthError } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
 
-export function NavbarAuth() {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+interface NavbarAuthProps {
+  user: User | null;
+}
+
+export default function NavbarAuth({ user: initialUser }: NavbarAuthProps) {
+  const [user, setUser] = useState<User | null>(initialUser);
+  const router = useRouter();
   const supabase = createClient();
 
   useEffect(() => {
-    const getSession = async () => {
-      try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        setUser(session?.user || null);
-      } catch (error) {
-        console.error("Error getting session:", error);
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getSession();
-
-    // Listen for auth state changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user || null);
-      setLoading(false);
+    } = supabase.auth.onAuthStateChange((event: string, session: any) => {
+      if (session?.user) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+      }
+      router.refresh();
     });
 
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [supabase]);
-
-  if (loading) {
-    return (
-      <Button variant="ghost" size="sm" disabled className="rounded-full w-10 h-10 p-0">
-        <Loader2 className="h-4 w-4 animate-spin" />
-      </Button>
-    );
-  }
+    return () => subscription.unsubscribe();
+  }, [router, supabase.auth]);
 
   if (user) {
     // User is logged in - show ONLY circular profile button (no text)

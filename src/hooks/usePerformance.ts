@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useCallback, useRef } from "react";
+import { useEffect, useCallback, useRef, useState } from "react";
 import { performanceUtils, perfLogger } from "@/lib/logger";
 
 // Types for performance monitoring
@@ -189,4 +189,81 @@ export function useMemoryMonitor() {
   }, [checkMemoryUsage]);
 
   return { checkMemoryUsage };
+}
+
+interface PerformanceMetrics {
+  fcp?: number
+  lcp?: number
+  fid?: number
+  cls?: number
+  ttfb?: number
+}
+
+interface PerformanceData {
+  metrics: PerformanceMetrics
+  isLoading: boolean
+  error: string | null
+}
+
+export function usePerformance(): PerformanceData {
+  const [metrics, setMetrics] = useState<PerformanceMetrics>({})
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const startTimeRef = useRef<number>(0)
+
+  // Measure component render time
+  const measureRenderTime = useCallback(() => {
+    const now = performance.now()
+    const renderTime = now - startTimeRef.current
+
+    if (renderTime > 100) {
+      console.warn(`Slow render detected: ${renderTime.toFixed(2)}ms`)
+    }
+
+    return renderTime
+  }, [])
+
+  // Initialize web vitals tracking
+  useEffect(() => {
+    startTimeRef.current = performance.now()
+
+    async function initWebVitals() {
+      try {
+        const { getCLS, getFID, getFCP, getLCP, getTTFB } = await import("web-vitals")
+
+        getCLS((metric) => {
+          setMetrics(prev => ({ ...prev, cls: metric.value }))
+        })
+
+        getFID((metric) => {
+          setMetrics(prev => ({ ...prev, fid: metric.value }))
+        })
+
+        getFCP((metric) => {
+          setMetrics(prev => ({ ...prev, fcp: metric.value }))
+        })
+
+        getLCP((metric) => {
+          setMetrics(prev => ({ ...prev, lcp: metric.value }))
+        })
+
+        getTTFB((metric) => {
+          setMetrics(prev => ({ ...prev, ttfb: metric.value }))
+        })
+
+        setIsLoading(false)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load web vitals')
+        setIsLoading(false)
+      }
+    }
+
+    initWebVitals()
+  }, [])
+
+  return {
+    metrics,
+    isLoading,
+    error
+  }
 }

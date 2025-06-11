@@ -30,12 +30,14 @@ export const FEATURE_FLAGS: Record<string, FeatureConfig> = {
   DARK_MODE: {
     name: "dark_mode",
     defaultValue: true,
+    enabled: true,
     environments: ["development", "staging", "production"],
     description: "Enable dark mode theme option for the application",
   },
   NEW_UI: {
     name: "new_ui",
     defaultValue: false,
+    enabled: false,
     environments: ["development", "staging"],
     description: "Enable the new UI design system throughout the application",
   },
@@ -44,12 +46,14 @@ export const FEATURE_FLAGS: Record<string, FeatureConfig> = {
   PORTFOLIO_GALLERY: {
     name: "portfolio_gallery",
     defaultValue: true,
+    enabled: true,
     environments: ["development", "staging", "production"],
     description: "Enable the enhanced portfolio gallery with filtering options",
   },
   PORTFOLIO_COMMENTS: {
     name: "portfolio_comments",
     defaultValue: false,
+    enabled: false,
     environments: ["development"],
     description: "Allow customers to leave comments on portfolio items",
   },
@@ -58,6 +62,7 @@ export const FEATURE_FLAGS: Record<string, FeatureConfig> = {
   ADVANCED_CRM: {
     name: "advanced_crm",
     defaultValue: false,
+    enabled: false,
     environments: ["development", "staging"],
     description: "Enable advanced CRM features such as customer segmentation and reporting",
   },
@@ -66,12 +71,14 @@ export const FEATURE_FLAGS: Record<string, FeatureConfig> = {
   SOCIAL_AUTH: {
     name: "social_auth",
     defaultValue: false,
+    enabled: false,
     environments: ["development"],
     description: "Enable social authentication options (Google, Facebook)",
   },
   PASSWORDLESS_LOGIN: {
     name: "passwordless_login",
     defaultValue: true,
+    enabled: true,
     environments: ["development", "staging", "production"],
     description: "Enable magic link (passwordless) authentication",
   },
@@ -80,6 +87,7 @@ export const FEATURE_FLAGS: Record<string, FeatureConfig> = {
   STRIPE_INTEGRATION: {
     name: "stripe_integration",
     defaultValue: false,
+    enabled: false,
     environments: ["development", "staging"],
     description: "Enable Stripe payment integration for services",
   },
@@ -88,6 +96,7 @@ export const FEATURE_FLAGS: Record<string, FeatureConfig> = {
   IMAGE_OPTIMIZATION: {
     name: "image_optimization",
     defaultValue: true,
+    enabled: true,
     environments: ["development", "staging", "production"],
     description: "Enable advanced image optimization for portfolio images",
   },
@@ -96,6 +105,7 @@ export const FEATURE_FLAGS: Record<string, FeatureConfig> = {
   ENHANCED_CONTACT_FORM: {
     name: "enhanced_contact_form",
     defaultValue: false,
+    enabled: false,
     environments: ["development", "staging"],
     description: "Enable enhanced contact form with service selection and scheduling",
   },

@@ -83,9 +83,11 @@ function isUserInRollout(userId: string, percentage: number): boolean {
 /**
  * Check if feature is enabled for current environment
  */
-function isEnvironmentMatch(environment?: string): boolean {
-  if (!environment || environment === "all") return true;
-  return process.env.NODE_ENV === environment || process.env.VERCEL_ENV === environment;
+function isEnvironmentMatch(environments?: Environment[]): boolean {
+  if (!environments || environments.includes("all" as Environment)) return true;
+  const currentEnv = process.env.NODE_ENV as Environment;
+  const vercelEnv = process.env.VERCEL_ENV as Environment;
+  return environments.includes(currentEnv) || environments.includes(vercelEnv);
 }
 
 /**
@@ -113,7 +115,7 @@ export function isFeatureEnabled(
   }
 
   // Check environment
-  if (!isEnvironmentMatch(config.environment)) {
+  if (!isEnvironmentMatch(config.environments)) {
     featureFlagCache.set(cacheKey, false);
     return false;
   }
@@ -218,50 +220,35 @@ export const FEATURE_FLAGS: Record<string, FeatureConfig> = {
     environments: ["development", "staging", "production"],
     enabled: true,
   },
-
   /**
-   * Enhanced contact form with additional fields and scheduling options
-   */
-  ENHANCED_CONTACT_FORM: {
-    name: "enhanced_contact_form",
-    description: "Enables advanced contact form features including scheduling",
-    defaultValue: false,
-    environments: ["development", "staging"],
-    enabled: true,
-  },
-
-  /**
-   * Dashboard analytics feature
+   * New dashboard analytics
    */
   DASHBOARD_ANALYTICS: {
     name: "dashboard_analytics",
-    description: "Displays analytics dashboard for admin users",
-    defaultValue: true,
-    environments: ["development", "staging", "production"],
-    enabled: true,
-  },
-
-  "portfolio-management-v2": {
-    enabled: true,
-    description: "New portfolio management interface",
-    environment: "all",
-  },
-  "enhanced-chat-system": {
-    enabled: true,
-    rolloutPercentage: 100,
-    description: "Enhanced chat system with real-time messaging",
-    environment: "all",
-  },
-  "advanced-analytics": {
+    description: "Advanced analytics dashboard for administrators",
+    defaultValue: false,
+    environments: ["all"],
     enabled: false,
-    rolloutPercentage: 25,
-    description: "Advanced analytics dashboard",
-    environment: "production",
   },
-  "beta-features": {
-    enabled: process.env.NODE_ENV === "development",
-    description: "Beta features for testing",
-    environment: "development",
+  /**
+   * Enhanced portfolio features
+   */
+  ENHANCED_PORTFOLIO: {
+    name: "enhanced_portfolio",
+    description: "Enhanced portfolio with advanced filtering and search",
+    defaultValue: false,
+    environments: ["production"],
+    enabled: false,
+  },
+  /**
+   * Beta testing features
+   */
+  BETA_FEATURES: {
+    name: "beta_features",
+    description: "Beta features for testing new functionality",
+    defaultValue: false,
+    environments: ["development"],
+    enabled: false,
   },
 };
 
@@ -274,14 +261,8 @@ export const FEATURE_FLAGS: Record<string, FeatureConfig> = {
  * @returns boolean indicating if the feature is enabled based on environment
  */
 export function isFeatureEnabledByEnvironment(feature: FeatureConfig): boolean {
-  // Determine current environment
-  const environment =
-    process.env.NODE_ENV === "production"
-      ? "production"
-      : process.env.VERCEL_ENV === "preview"
-        ? "staging"
-        : "development";
-
-  // Check if feature is enabled for current environment
-  return feature.environments.includes(environment as any) ? feature.defaultValue : false;
+  if (!feature.environments) {
+    return feature.defaultValue;
+  }
+  return feature.environments.includes(process.env.NODE_ENV as Environment) ? feature.defaultValue : false;
 }
