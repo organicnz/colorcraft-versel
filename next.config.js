@@ -1,10 +1,10 @@
 /** @type {import('next').NextConfig} */
 const path = require('path');
 
-// Enable bundle analyzer in development
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-});
+// Enable bundle analyzer in development (temporarily disabled for deployment)
+// const withBundleAnalyzer = require('@next/bundle-analyzer')({
+//   enabled: process.env.ANALYZE === 'true',
+// });
 
 const nextConfig = {
   // Environment variables validation
@@ -156,4 +156,5 @@ const nextConfig = {
   },
 };
 
-module.exports = withBundleAnalyzer(nextConfig);
+// module.exports = withBundleAnalyzer(nextConfig);
+module.exports = nextConfig;
