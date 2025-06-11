@@ -18,6 +18,12 @@ const nextConfig = {
     // number of pages that should be kept simultaneously without being disposed
     pagesBufferLength: 2,
   },
+  // Configure Turbopack for Next.js 15
+  turbopack: {
+    rules: {
+      '*.svg': ['@svgr/webpack'],
+    },
+  },
   // Suppress specific warnings
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     // Explicitly define path aliases to ensure proper resolution in Vercel

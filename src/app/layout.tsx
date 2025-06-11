@@ -88,13 +88,25 @@ export default function RootLayout({
                   var theme = 'light';
                   try {
                     var stored = localStorage.getItem('theme');
+                    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    
                     if (stored === 'dark') {
                       theme = 'dark';
-                    } else if (stored === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    } else if (stored === 'system' && prefersDark) {
+                      theme = 'dark';
+                    } else if (!stored && prefersDark) {
+                      // If no preference is stored, respect system preference
                       theme = 'dark';
                     }
                   } catch(e) {
-                    // Fallback to light if localStorage fails
+                    // Fallback: check system preference if localStorage fails
+                    try {
+                      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        theme = 'dark';
+                      }
+                    } catch(e2) {
+                      // Final fallback to light
+                    }
                   }
 
                   // Apply theme immediately to prevent flash

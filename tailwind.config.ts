@@ -1,5 +1,4 @@
 import type { Config } from 'tailwindcss'
-import { colors } from './src/styles/colors'
 
 const config: Config = {
   darkMode: "class",
@@ -24,7 +23,57 @@ const config: Config = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         
-        // Standard color scales - TailwindCSS v4 compatible
+        // Primary theme colors
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+          50: '#F5F9FF',
+          100: '#E0EEFF',
+          200: '#B8D1F5',
+          300: '#8AB1E4',
+          400: '#5C91D3',
+          500: '#3A75BE', // Main primary color
+          600: '#2E5A88',
+          700: '#254B72',
+          800: '#1D3C5C',
+          900: '#152D46',
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+          50: '#FEF9F3',
+          100: '#FAEBD2',
+          200: '#F5D7A6',
+          300: '#EFC379',
+          400: '#D6A35C', // Main secondary color
+          500: '#C48A3A',
+          600: '#A37232',
+          700: '#825A28',
+          800: '#61421E',
+          900: '#412C14',
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+        
+        // Standard color scales - Consistent with both light and dark modes
         gray: {
           50: '#f9fafb',
           100: '#f3f4f6',
@@ -77,6 +126,30 @@ const config: Config = {
           900: '#1c1917',
           950: '#0c0a09',
         },
+        
+        // Color scheme specific colors
+        neutral: {
+          DEFAULT: '#E9EBF0',
+          50: '#FFFFFF',
+          100: '#F9FAFC',
+          200: '#E9EBF0',
+          300: '#D8DCE4',
+          400: '#BEC5D2',
+          500: '#A4AFBF',
+          600: '#8A97AC',
+          700: '#707F98',
+          800: '#586579',
+          900: '#3F4A59',
+        },
+        
+        // Brand specific colors
+        brand: {
+          primary: '#3ECF8E', // Green CTA color
+          secondary: '#2E5A88', // Dark blue
+          accent: '#D6A35C', // Gold accent
+        },
+        
+        // Standard color scales - TailwindCSS v4 compatible
         red: {
           50: '#fef2f2',
           100: '#fee2e2',
@@ -298,62 +371,6 @@ const config: Config = {
           900: '#881337',
           950: '#4c0519',
         },
-        
-        // Primary colors
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        
-        // Secondary colors
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        
-        // Accent colors
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        
-        // Neutral colors
-        neutral: {
-          DEFAULT: colors.neutral[500],
-          ...colors.neutral
-        },
-        
-        // Status colors
-        success: {
-          DEFAULT: colors.success[500],
-          ...colors.success
-        },
-        warning: {
-          DEFAULT: colors.warning[500],
-          ...colors.warning
-        },
-        danger: {
-          DEFAULT: colors.danger[500],
-          ...colors.danger
-        },
-        
-        // Legacy shadcn-ui colors
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
         chart: {
           "1": "hsl(var(--chart-1))",
           "2": "hsl(var(--chart-2))",
@@ -366,6 +383,10 @@ const config: Config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      fontFamily: {
+        sans: ['var(--font-dmSans)', 'system-ui', 'sans-serif'],
+        heading: ['var(--font-poppins)', 'system-ui', 'sans-serif'],
       },
       // Enhanced glassmorphism utilities
       backdropBlur: {
@@ -414,4 +435,5 @@ const config: Config = {
   },
   plugins: [require("tailwindcss-animate")],
 }
+
 export default config 
