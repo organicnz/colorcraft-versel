@@ -7,7 +7,9 @@ import dynamic from "next/dynamic";
 // Dynamically import React Query Devtools to avoid including in production bundle
 const ReactQueryDevtools = dynamic(
   () =>
-    import("@tanstack/react-query-devtools").then((mod) => ({ default: mod.ReactQueryDevtools })),
+    import("@tanstack/react-query-devtools").then((mod) => ({
+      default: mod.ReactQueryDevtools
+    })),
   { ssr: false }
 );
 
@@ -72,7 +74,7 @@ export function ReactQueryProvider({ children }: { children: ReactNode }) {
     <QueryClientProvider client={queryClient}>
       {children}
       {/* Only include React Query Devtools in development */}
-      {process.env.NODE_ENV === "development" && <ReactQueryDevtools initialIsOpen={false} />}
+      {/* Temporarily disabled: {process.env.NODE_ENV === "development" && <ReactQueryDevtools initialIsOpen={false} />} */}
     </QueryClientProvider>
   );
 }
