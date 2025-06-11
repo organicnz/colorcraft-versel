@@ -22,7 +22,7 @@ import {
   Loader2
 } from "lucide-react";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 // Ultra-modern animation variants
 const fadeInUp = {
@@ -173,8 +173,6 @@ export default function PortfolioPage() {
           price_range: '$500-1500' // Default range, could be added to database later
         }));
 
-
-
         setProjects(transformedProjects);
         // Initialize displayed projects with first page
         setDisplayedProjects(transformedProjects.slice(0, projectsPerPage));
@@ -191,7 +189,7 @@ export default function PortfolioPage() {
     };
 
     fetchProjects();
-      }, []);
+  }, []);
 
   // Update displayed projects when filter changes
   useEffect(() => {
@@ -209,10 +207,20 @@ export default function PortfolioPage() {
 
   const hasMoreProjects = displayedProjects.length < filteredProjects.length;
 
+  const loadMoreProjects = useCallback(() => {
+    console.log('loadMoreProjects called', {
+      isLoadingMore,
+      hasMoreProjects,
+      displayedLength: displayedProjects.length,
+      filteredLength: filteredProjects.length,
+      currentPage,
+      filterType
+    });
 
-
-  const loadMoreProjects = () => {
-    if (isLoadingMore || !hasMoreProjects) return;
+    if (isLoadingMore || !hasMoreProjects) {
+      console.log('Early return:', { isLoadingMore, hasMoreProjects });
+      return;
+    }
 
     setIsLoadingMore(true);
 
@@ -223,13 +231,25 @@ export default function PortfolioPage() {
         : projects.filter(project => project.category === filterType);
 
       const nextPage = currentPage + 1;
-              const newProjects = filtered.slice(0, nextPage * projectsPerPage);
+      const startIndex = 0;
+      const endIndex = nextPage * projectsPerPage;
+      const newProjects = filtered.slice(startIndex, endIndex);
 
-        setDisplayedProjects(newProjects);
+      console.log('Loading more projects:', {
+        currentPage,
+        nextPage,
+        filtered: filtered.length,
+        displayed: displayedProjects.length,
+        newProjects: newProjects.length,
+        endIndex,
+        projectsPerPage
+      });
+
+      setDisplayedProjects(newProjects);
       setCurrentPage(nextPage);
       setIsLoadingMore(false);
-    }, 500);
-  };
+    }, 300);
+  }, [isLoadingMore, hasMoreProjects, displayedProjects.length, filteredProjects.length, currentPage, filterType, projects, projectsPerPage]);
 
   const stats = [
     {
@@ -621,7 +641,10 @@ export default function PortfolioPage() {
                   size="lg"
                   variant="outline"
                   className="border-2 border-slate-200 text-slate-700 hover:bg-slate-50 px-8 py-4 rounded-2xl backdrop-blur-sm bg-white/50"
-                  onClick={loadMoreProjects}
+                  onClick={() => {
+                    console.log('Load More button clicked');
+                    loadMoreProjects();
+                  }}
                   disabled={isLoadingMore}
                 >
                   {isLoadingMore ? (
@@ -637,6 +660,18 @@ export default function PortfolioPage() {
                   )}
                 </Button>
               </motion.div>
+              
+              {/* Debug Information - Remove this in production */}
+              <div className="mt-4 text-xs text-gray-500 space-y-1">
+                <div>Total Projects: {projects.length}</div>
+                <div>Filtered Projects: {filteredProjects.length}</div>
+                <div>Displayed Projects: {displayedProjects.length}</div>
+                <div>Current Page: {currentPage}</div>
+                <div>Projects Per Page: {projectsPerPage}</div>
+                <div>Has More: {hasMoreProjects ? 'Yes' : 'No'}</div>
+                <div>Is Loading: {isLoadingMore ? 'Yes' : 'No'}</div>
+                <div>Filter: {filterType}</div>
+              </div>
             </motion.div>
           )}
 
