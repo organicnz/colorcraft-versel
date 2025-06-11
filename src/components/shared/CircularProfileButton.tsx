@@ -188,7 +188,7 @@ export function CircularProfileButton() {
         <DropdownMenuSeparator />
         
         <DropdownMenuItem asChild>
-          <Link href="/account" className="cursor-pointer">
+          <Link href="/account/profile" className="cursor-pointer">
             <User className="mr-2 h-4 w-4" />
             Profile
           </Link>

@@ -422,7 +422,7 @@ export function AuthButton() {
             </div>
             
             <DropdownMenuItem asChild>
-              <Link href="/account" className="flex items-center gap-3 cursor-pointer px-3 py-2.5 rounded-lg mx-1 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+              <Link href="/account/profile" className="flex items-center gap-3 cursor-pointer px-3 py-2.5 rounded-lg mx-1 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                 <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
                   <UserCircle className="h-4 w-4 text-slate-600 dark:text-slate-400" />
                 </div>
