@@ -62,10 +62,16 @@ const nextConfig = {
     return config
   },
   trailingSlash: true,
-  // Turbopack configuration (moved from experimental.turbo)
+  // Turbopack configuration (stable in Next.js 15)
   turbopack: {
     resolveAlias: {
       '@': './src',
+    },
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
+      },
     },
   },
   // Server external packages (moved from experimental.serverComponentsExternalPackages)
@@ -114,11 +120,19 @@ const nextConfig = {
       '@radix-ui/react-dialog',
       '@radix-ui/react-slot',
       '@radix-ui/react-toast',
+      '@radix-ui/react-dropdown-menu',
+      '@radix-ui/react-avatar',
+      '@radix-ui/react-select',
+      '@tanstack/react-query',
       'lucide-react',
       'date-fns',
+      'framer-motion',
+      'react-hook-form',
+      'zod',
     ],
     // React 19 compatibility for Next.js 15
     reactCompiler: false, // Disable until React 19 is stable
+    // Legacy turbo config moved to turbopack section below
   },
   // Static optimization
   generateBuildId: async () => {

@@ -9,44 +9,38 @@ export default function ThemeSwitcher() {
 
   // Wait for the page to be fully hydrated before showing the theme switcher
   useEffect(() => {
-    console.log('🎛️ [THEME-SWITCHER] Initializing...');
-    console.log('🎛️ [THEME-SWITCHER] Current theme:', theme);
-    
-    // Wait for the anti-flash system to complete
+    // Wait for anti-flash system or timeout
     const checkReady = () => {
-      if (document.documentElement.classList.contains('ready')) {
-        console.log('✅ [THEME-SWITCHER] Anti-flash system ready, mounting switcher');
+      if (document.documentElement.classList.contains('ready') || window.__antiFlashComplete) {
         setMounted(true);
       } else {
-        console.log('⏳ [THEME-SWITCHER] Waiting for anti-flash system...');
         setTimeout(checkReady, 50);
       }
     };
     
-    checkReady();
-  }, [theme]);
+    // Start checking after a brief delay to allow the anti-flash script to run
+    setTimeout(checkReady, 16);
+  }, []);
 
-  // Handle theme change with anti-flash protection
+  // Handle theme change with smooth transition
   const handleThemeChange = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
-    console.log('🎨 [THEME-SWITCHER] Changing theme from', theme, 'to', newTheme);
     
-    // Temporarily disable transitions during theme change
-    console.log('🔒 [THEME-SWITCHER] Disabling transitions...');
+    // Temporarily disable transitions to prevent flash
     document.documentElement.classList.remove('transitions-enabled');
     
     setTheme(newTheme);
     
-    // Re-enable transitions after a short delay
-    setTimeout(() => {
-      console.log('✅ [THEME-SWITCHER] Re-enabling transitions');
-      document.documentElement.classList.add('transitions-enabled');
-    }, 100);
+    // Re-enable transitions after theme is applied
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        document.documentElement.classList.add('transitions-enabled');
+      });
+    });
   };
 
   // Show a stable placeholder during hydration
   if (!mounted) {
-    console.log('⏳ [THEME-SWITCHER] Not mounted yet, showing placeholder');
     return (
       <button
         className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center opacity-50"
@@ -64,7 +58,6 @@ export default function ThemeSwitcher() {
   }
 
   const isDark = theme === 'dark';
-  console.log('🎛️ [THEME-SWITCHER] Rendering mounted switcher, isDark:', isDark);
 
   return (
     <button

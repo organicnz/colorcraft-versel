@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { FeatureConfig } from './index';
+import { isFeatureEnabled } from './index';
 
 // Remove unused cache and fetch function
 
@@ -13,7 +13,8 @@ type UseFeatureFlagResult = {
 /**
  * React hook for checking if a feature flag is enabled in client components
  * 
- * @param feature The feature flag configuration object
+ * @param flagName The name of the feature flag
+ * @param userId The user ID for personalized feature flags
  * @returns Object containing the enabled status and loading state
  * 
  * @example
@@ -27,42 +28,24 @@ type UseFeatureFlagResult = {
  * );
  * ```
  */
-export function useFeatureFlag(feature: FeatureConfig): UseFeatureFlagResult {
-  const [result, setResult] = useState<UseFeatureFlagResult>({
-    enabled: feature.defaultValue,
-    loading: true,
-  });
+export function useFeatureFlag(
+  flagName: string, 
+  userId?: string
+): UseFeatureFlagResult {
+  const [enabled, setEnabled] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkFeatureStatus = async () => {
-      try {
-        // Determine current environment
-        const environment = process.env.NODE_ENV === "production" 
-          ? "production"
-          : process.env.NEXT_PUBLIC_VERCEL_ENV === "preview" 
-            ? "staging" 
-            : "development";
+    try {
+      const isEnabled = isFeatureEnabled(flagName, userId);
+      setEnabled(isEnabled);
+    } catch (error) {
+      console.warn(`Error checking feature flag '${flagName}':`, error);
+      setEnabled(false);
+    } finally {
+      setLoading(false);
+    }
+  }, [flagName, userId]);
 
-        // Check if feature is enabled for current environment
-        const isEnabled = feature.environments.includes(environment as any) 
-          ? feature.defaultValue 
-          : false;
-
-        setResult({
-          enabled: isEnabled,
-          loading: false,
-        });
-      } catch (error) {
-        console.error(`Error checking feature flag status for ${feature.name}:`, error);
-        setResult({
-          enabled: feature.defaultValue, // Fall back to default value
-          loading: false,
-        });
-      }
-    };
-
-    checkFeatureStatus();
-  }, [feature]);
-
-  return result;
+  return { enabled, loading };
 }

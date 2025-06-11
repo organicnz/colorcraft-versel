@@ -5,6 +5,8 @@ import { apiLogger } from '@/lib/logger';
 import { errorMonitor } from '@/lib/errors/monitoring';
 import { cache } from 'react';
 import { FeatureDefinition } from './feature-list';
+import { hashString } from '../utils';
+import { logger } from '../logger';
 
 /**
  * Feature flag environment types
@@ -23,205 +25,189 @@ export interface FeatureConfig {
   environments?: Environment[];
   /** Description of the feature */
   description?: string;
+  enabled: boolean;
+  rolloutPercentage?: number;
+  userIds?: string[];
 }
 
 /**
- * In-memory cache of feature flags
- * Used to prevent excessive database queries
+ * Consolidated Feature Flag System
+ * Manages feature toggles with caching and user-based assignment
  */
-const featureFlagCache = new Map<string, { value: boolean; timestamp: number }>();
 
 /**
- * Time-to-live for cached flags in milliseconds (5 minutes)
+ * In-memory cache of feature flags with TTL
  */
-const CACHE_TTL = 5 * 60 * 1000;
+class FeatureFlagCache {
+  private cache = new Map<string, { value: boolean; timestamp: number }>();
+  private readonly TTL = 5 * 60 * 1000; // 5 minutes
+
+  set(key: string, value: boolean): void {
+    this.cache.set(key, { value, timestamp: Date.now() });
+  }
+
+  get(key: string): boolean | null {
+    const item = this.cache.get(key);
+    if (!item) return null;
+
+    if (Date.now() - item.timestamp > this.TTL) {
+      this.cache.delete(key);
+      return null;
+    }
+
+    return item.value;
+  }
+
+  clear(): void {
+    this.cache.clear();
+  }
+
+  size(): number {
+    return this.cache.size;
+  }
+}
+
+const featureFlagCache = new FeatureFlagCache();
 
 /**
- * Clear all cached feature flags
+ * Check if user is in rollout percentage
+ */
+function isUserInRollout(userId: string, percentage: number): boolean {
+  if (percentage >= 100) return true;
+  if (percentage <= 0) return false;
+
+  const hash = hashString(userId);
+  return (hash % 100) < percentage;
+}
+
+/**
+ * Check if feature is enabled for current environment
+ */
+function isEnvironmentMatch(environment?: string): boolean {
+  if (!environment || environment === 'all') return true;
+  return process.env.NODE_ENV === environment || process.env.VERCEL_ENV === environment;
+}
+
+/**
+ * Core function to check if a feature flag is enabled
+ */
+export function isFeatureEnabled(
+  flagName: string,
+  userId?: string,
+  context?: Record<string, any>
+): boolean {
+  // Check cache first
+  const cacheKey = `${flagName}_${userId || 'anonymous'}`;
+  const cached = featureFlagCache.get(cacheKey);
+  if (cached !== null) {
+    return cached;
+  }
+
+  const config = FEATURE_FLAGS[flagName];
+  
+  // Feature doesn't exist
+  if (!config) {
+    logger.warn(`Feature flag '${flagName}' not found`);
+    featureFlagCache.set(cacheKey, false);
+    return false;
+  }
+
+  // Check environment
+  if (!isEnvironmentMatch(config.environment)) {
+    featureFlagCache.set(cacheKey, false);
+    return false;
+  }
+
+  // Feature is disabled
+  if (!config.enabled) {
+    featureFlagCache.set(cacheKey, false);
+    return false;
+  }
+
+  // Check specific user IDs
+  if (userId && config.userIds?.includes(userId)) {
+    featureFlagCache.set(cacheKey, true);
+    return true;
+  }
+
+  // Check rollout percentage
+  if (userId && config.rolloutPercentage !== undefined) {
+    const inRollout = isUserInRollout(userId, config.rolloutPercentage);
+    featureFlagCache.set(cacheKey, inRollout);
+    return inRollout;
+  }
+
+  // Default to enabled if no specific rules
+  const enabled = config.enabled;
+  featureFlagCache.set(cacheKey, enabled);
+  return enabled;
+}
+
+/**
+ * Get all feature flags for a user
+ */
+export function getAllFeatureFlags(userId?: string): Record<string, boolean> {
+  const flags: Record<string, boolean> = {};
+  
+  for (const flagName in FEATURE_FLAGS) {
+    flags[flagName] = isFeatureEnabled(flagName, userId);
+  }
+
+  return flags;
+}
+
+/**
+ * Clear feature flag cache
  */
 export function clearFeatureFlagCache(): void {
   featureFlagCache.clear();
-}
-
-interface FeatureContext {
-  userId?: string;
+  logger.debug('Feature flag cache cleared');
 }
 
 /**
- * Check if a feature is enabled
+ * Get cache statistics
  */
-export async function isFeatureEnabled(
-  feature: FeatureDefinition,
-  context: FeatureContext = {}
-): Promise<boolean> {
-  // In this simplified implementation, we just return the default value
-  // In a real app, you would check against a database or feature flag service
-  return feature.defaultValue;
+export function getCacheStats(): { size: number; ttl: number } {
+  return {
+    size: featureFlagCache.size(),
+    ttl: 5 * 60 * 1000, // 5 minutes in milliseconds
+  };
 }
 
 /**
- * Get the value of a feature flag
+ * Add or update a feature flag at runtime
  */
-export async function getFeatureValue(
-  featureName: string,
-  context: FeatureContext = {}
-): Promise<boolean> {
-  const response = await fetch(`/api/features?feature=${featureName}&userId=${context.userId || ''}`);
-  
-  if (!response.ok) {
-    // Default to false if there's an error
-    return false;
+export function setFeatureFlag(flagName: string, config: FeatureConfig): void {
+  FEATURE_FLAGS[flagName] = config;
+  // Clear related cache entries
+  featureFlagCache.clear();
+  logger.info(`Feature flag '${flagName}' updated`);
+}
+
+/**
+ * Remove a feature flag
+ */
+export function removeFeatureFlag(flagName: string): boolean {
+  if (flagName in FEATURE_FLAGS) {
+    delete FEATURE_FLAGS[flagName];
+    featureFlagCache.clear();
+    logger.info(`Feature flag '${flagName}' removed`);
+    return true;
   }
-  
-  const data = await response.json();
-  return data.enabled;
+  return false;
 }
 
 /**
- * Check if a feature flag is enabled (React Server Component cached version)
- * This uses React cache() to deduplicate requests within the same RSC tree
+ * List all available feature flags with their configurations
  */
-export const getFeatureFlag = cache(async (
-  featureConfig: FeatureConfig,
-  context?: { userId?: string; environment?: Environment }
-): Promise<boolean> => {
-  return isFeatureEnabled(featureConfig, context);
-});
-
-/**
- * Create or update a feature flag
- */
-export async function setFeatureFlag(
-  feature: Pick<FeatureFlag, 'name' | 'is_enabled' | 'description'>,
-  environment: Environment = 'development'
-): Promise<FeatureFlag> {
-  try {
-    // Check if flag exists
-    const [existingFlag] = await db
-      .select()
-      .from(feature_flags)
-      .where(
-        and(
-          eq(feature_flags.name, feature.name),
-          eq(feature_flags.environment, environment)
-        )
-      )
-      .limit(1);
-    
-    let flag: FeatureFlag;
-    
-    if (existingFlag) {
-      // Update existing flag
-      const [updatedFlag] = await db
-        .update(feature_flags)
-        .set({
-          is_enabled: feature.is_enabled,
-          description: feature.description,
-          updated_at: new Date(),
-        })
-        .where(eq(feature_flags.id, existingFlag.id))
-        .returning();
-      
-      flag = updatedFlag;
-    } else {
-      // Create new flag
-      const [newFlag] = await db
-        .insert(feature_flags)
-        .values({
-          name: feature.name,
-          is_enabled: feature.is_enabled,
-          description: feature.description,
-          environment,
-        })
-        .returning();
-      
-      flag = newFlag;
-    }
-    
-    // Clear the cache for this flag
-    clearFeatureFlagCache();
-    
-    return flag;
-  } catch (error) {
-    errorMonitor.captureError(error as Error, {
-      context: 'setFeatureFlag',
-      feature: feature.name,
-      environment,
-    });
-    throw error;
-  }
+export function listFeatureFlags(): Record<string, FeatureConfig> {
+  return { ...FEATURE_FLAGS };
 }
-
-/**
- * Delete a feature flag
- */
-export async function deleteFeatureFlag(name: string, environment: Environment = 'development'): Promise<void> {
-  try {
-    await db
-      .delete(feature_flags)
-      .where(
-        and(
-          eq(feature_flags.name, name),
-          eq(feature_flags.environment, environment)
-        )
-      );
-    
-    // Clear the cache for this flag
-    clearFeatureFlagCache();
-  } catch (error) {
-    errorMonitor.captureError(error as Error, {
-      context: 'deleteFeatureFlag',
-      feature: name,
-      environment,
-    });
-    throw error;
-  }
-}
-
-/**
- * Get the current environment
- */
-function getEnvironment(): Environment {
-  const env = process.env.NODE_ENV || 'development';
-  if (env === 'production') return 'production';
-  if (env === 'test') return 'development';
-  return 'development';
-}
-
-/**
- * Simple string hash function for deterministic flag assignment
- */
-function hashString(str: string): number {
-  let hash = 0;
-  if (str.length === 0) return hash;
-  
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash; // Convert to 32bit integer
-  }
-  
-  return Math.abs(hash);
-}
-
-/**
- * Type definition for a feature flag configuration
- */
-export type FeatureConfig = {
-  /** Unique name of the feature */
-  name: string;
-  /** Short description of what the feature does */
-  description: string;
-  /** Default value when the feature flag cannot be determined */
-  defaultValue: boolean;
-  /** The environments where this feature is available */
-  environments: Array<"development" | "staging" | "production">;
-};
 
 /**
  * Feature flags configuration
  */
-export const FEATURE_FLAGS = {
+export const FEATURE_FLAGS: Record<string, FeatureConfig> = {
   /**
    * Dark mode feature for the UI
    */
@@ -230,7 +216,8 @@ export const FEATURE_FLAGS = {
     description: "Enables dark mode theme for the website",
     defaultValue: true,
     environments: ["development", "staging", "production"],
-  } as FeatureConfig,
+    enabled: true,
+  },
 
   /**
    * Enhanced contact form with additional fields and scheduling options
@@ -240,7 +227,8 @@ export const FEATURE_FLAGS = {
     description: "Enables advanced contact form features including scheduling",
     defaultValue: false,
     environments: ["development", "staging"],
-  } as FeatureConfig,
+    enabled: true,
+  },
 
   /**
    * Dashboard analytics feature
@@ -250,7 +238,31 @@ export const FEATURE_FLAGS = {
     description: "Displays analytics dashboard for admin users",
     defaultValue: true,
     environments: ["development", "staging", "production"],
-  } as FeatureConfig,
+    enabled: true,
+  },
+
+  'portfolio-management-v2': {
+    enabled: true,
+    description: 'New portfolio management interface',
+    environment: 'all',
+  },
+  'enhanced-chat-system': {
+    enabled: true,
+    rolloutPercentage: 100,
+    description: 'Enhanced chat system with real-time messaging',
+    environment: 'all',
+  },
+  'advanced-analytics': {
+    enabled: false,
+    rolloutPercentage: 25,
+    description: 'Advanced analytics dashboard',
+    environment: 'production',
+  },
+  'beta-features': {
+    enabled: process.env.NODE_ENV === 'development',
+    description: 'Beta features for testing',
+    environment: 'development',
+  },
 };
 
 /**

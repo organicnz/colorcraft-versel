@@ -27,26 +27,22 @@
 }
 
 @layer base {
-  /* NUCLEAR ANTI-FLASH CSS - Simplified for speed */
+  /* ENHANCED ANTI-FLASH CSS - Reliable theme switching */
 
   /* Ensure proper background colors are applied immediately */
   html {
     background: white;
+    transition: none;
   }
 
   html.dark {
     background: #0f172a;
+    transition: none;
   }
 
-  /* Only enable transitions after the nuclear script enables them */
+  /* Only enable transitions after the anti-flash script enables them */
   .transitions-enabled * {
-    transition: all 0.15s ease-in-out;
-  }
-
-  .transitions-enabled .dark\\:bg-slate-900,
-  .transitions-enabled .bg-white,
-  .transitions-enabled [data-theme] {
-    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out;
   }
 
   .transitions-enabled button,
@@ -54,6 +50,13 @@
   .transitions-enabled input,
   .transitions-enabled select {
     transition: all 0.15s ease-in-out;
+  }
+
+  /* Ensure smooth transitions for theme changes */
+  .transitions-enabled .dark\\:bg-slate-900,
+  .transitions-enabled .bg-white,
+  .transitions-enabled [data-theme] {
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
   }
 
   /* Theme variables */
