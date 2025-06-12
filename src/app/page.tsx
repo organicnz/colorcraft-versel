@@ -1,5 +1,13 @@
-import ClientHomePage from "./client-home-page";
+import ModernHomePage from "@/components/homepage/ModernHomePage";
 
 export default function HomePage() {
-  return <ClientHomePage />;
+  // Default data for the modern homepage
+  const defaultData = {
+    featuredProjects: [],
+    services: [],
+    testimonials: [],
+    teamMembers: [],
+  };
+
+  return <ModernHomePage {...defaultData} />;
 }
