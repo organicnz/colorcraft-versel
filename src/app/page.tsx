@@ -1,7 +1,9 @@
 import ModernHomePage from "@/components/homepage/ModernHomePage";
+import { ClassicHomePage } from "@/components/homepage/ClassicHomePage";
+import { ThemeAwareHomePage } from "@/components/homepage/ThemeAwareHomePage";
 
-export default function HomePage() {
-  // Default data for the modern homepage
+export default async function HomePage() {
+  // Data fetching can happen here in the future
   const defaultData = {
     featuredProjects: [],
     services: [],
@@ -9,5 +11,10 @@ export default function HomePage() {
     teamMembers: [],
   };
 
-  return <ModernHomePage {...defaultData} />;
+  return (
+    <ThemeAwareHomePage
+      modernPage={<ModernHomePage {...defaultData} />}
+      classicPage={<ClassicHomePage />}
+    />
+  );
 }
