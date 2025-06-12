@@ -32,7 +32,7 @@ export class RedisService {
     try {
       const value = await redis.get(key)
       if (value === null) return null
-      return typeof value === 'string' ? JSON.parse(value) : value
+      return typeof value === 'string' ? JSON.parse(value) as T : (value as T)
     } catch (error) {
       console.error('Redis GET error:', error)
       return null
@@ -130,7 +130,7 @@ export class RedisService {
       const values = await redis.mget(...keys)
       return values.map(value => 
         value === null ? null : 
-        typeof value === 'string' ? JSON.parse(value) : value
+        typeof value === 'string' ? JSON.parse(value) as T : (value as T)
       )
     } catch (error) {
       console.error('Redis MGET error:', error)
