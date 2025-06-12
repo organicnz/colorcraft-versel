@@ -265,168 +265,137 @@ export default function ClientHomePage({
   };
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section with Advanced Parallax */}
-      <section
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 overflow-hidden">
+      {/* Hero Section */}
+      <motion.section
         ref={heroRef}
-        className="relative min-h-screen flex items-center justify-center overflow-hidden"
+        style={{ y: heroY, opacity: heroOpacity, scale: heroScale }}
+        className="relative min-h-screen flex items-center justify-center pt-20"
       >
-        {/* Multi-layered parallax backgrounds */}
+        {/* Background Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-br from-accent/20 to-primary/20 rounded-full blur-3xl animate-pulse delay-1000" />
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-secondary/10 to-accent/10 rounded-full blur-3xl animate-pulse delay-2000" />
+        </div>
+
+        {/* Floating Elements */}
         <motion.div
-          style={{ y: bgLayer1 }}
-          className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900"
+          animate={{
+            y: [0, -20, 0],
+            rotate: [0, 5, 0],
+          }}
+          transition={{
+            duration: 6,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="absolute top-32 left-20 w-16 h-16 bg-gradient-to-br from-primary/30 to-secondary/30 rounded-2xl backdrop-blur-sm border border-white/20 shadow-lg"
         />
         <motion.div
-          style={{ y: bgLayer2 }}
-          className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary-200/30 rounded-full blur-3xl"
-        />
-        <motion.div
-          style={{ y: bgLayer3 }}
-          className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-accent-200/30 rounded-full blur-3xl"
+          animate={{
+            y: [0, 20, 0],
+            rotate: [0, -5, 0],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1,
+          }}
+          className="absolute top-48 right-32 w-12 h-12 bg-gradient-to-br from-accent/30 to-primary/30 rounded-xl backdrop-blur-sm border border-white/20 shadow-lg"
         />
 
-        {/* Additional floating elements */}
-        <motion.div
-          style={{ y: floatingElement1Y }}
-          className="absolute top-1/3 left-1/3 w-32 h-32 bg-secondary-200/20 rounded-full blur-2xl"
-        />
-        <motion.div
-          style={{ y: floatingElement2Y }}
-          className="absolute bottom-1/3 right-1/3 w-48 h-48 bg-primary-300/20 rounded-full blur-2xl"
-        />
-
-        <motion.div
-          style={{ y: heroY, opacity: heroOpacity, scale: heroScale }}
-          className="relative z-10 container mx-auto px-4"
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Hero Content */}
-            <motion.div
-              initial={{ opacity: 1 }}
-              animate={{ opacity: 1 }}
-              variants={staggerContainer}
-              className="order-2 lg:order-1"
-            >
-              <motion.div variants={fadeIn(0)}>
-                <Badge
-                  variant="outline"
-                  className="mb-6 bg-white/50 backdrop-blur-sm border-white/30"
-                >
-                  ✨ Premium Furniture Restoration
-                </Badge>
-              </motion.div>
-
-              <motion.h1
-                variants={fadeIn(0.1)}
-                className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6"
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+            className="text-center max-w-5xl mx-auto"
+          >
+            <motion.div variants={fadeIn(0, 1)} className="mb-8">
+              <Badge
+                variant="outline"
+                className="px-6 py-2 text-sm font-body bg-white/50 backdrop-blur-sm border-primary/20 text-primary-700 mb-8"
               >
-                Transform Your
-                <span className="block bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
-                  Furniture Dreams
-                </span>
-              </motion.h1>
-
-              <motion.p
-                variants={fadeIn(0.2)}
-                className="text-xl text-muted-foreground mb-8 leading-relaxed"
-              >
-                Expert craftsmanship meets creative vision. We breathe new life into your beloved
-                furniture with premium finishes and meticulous attention to detail.
-              </motion.p>
-
-              <motion.div variants={fadeIn(0.3)} className="flex flex-col sm:flex-row gap-4">
-                <Button
-                  size="lg"
-                  asChild
-                  className="bg-primary hover:bg-primary/90 text-white px-8 py-4 text-lg"
-                >
-                  <Link href="/contact">
-                    Get Free Quote
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Link>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  asChild
-                  className="px-8 py-4 text-lg bg-white/50 backdrop-blur-sm border-white/30 hover:bg-white/70"
-                >
-                  <Link href="/portfolio">View Portfolio</Link>
-                </Button>
-              </motion.div>
+                ✨ Premium Furniture Transformation
+              </Badge>
             </motion.div>
 
-            {/* Featured Project Showcase with Parallax */}
-            {currentProject && (
-              <motion.div
-                initial={{ opacity: 1, scale: 1 }}
-                animate={{ opacity: 1, scale: 1 }}
-                style={{ y: heroProjectY }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="order-1 lg:order-2 relative"
+            <motion.h1
+              variants={fadeIn(0.2, 1)}
+              className="text-6xl md:text-7xl lg:text-8xl font-display font-bold mb-8 leading-tight"
+            >
+              <span className="bg-gradient-to-r from-primary-700 via-primary-600 to-primary-500 bg-clip-text text-transparent">
+                Transform
+              </span>
+              <br />
+              <span className="bg-gradient-to-r from-slate-800 via-slate-700 to-slate-600 bg-clip-text text-transparent">
+                Your Furniture
+              </span>
+            </motion.h1>
+
+            <motion.p
+              variants={fadeIn(0.4, 1)}
+              className="text-xl md:text-2xl font-body text-slate-600 mb-12 max-w-3xl mx-auto leading-relaxed"
+            >
+              Expert craftsmanship meets artistic vision. We breathe new life into your treasured
+              pieces with premium painting, restoration, and custom finishes.
+            </motion.p>
+
+            <motion.div
+              variants={fadeIn(0.6, 1)}
+              className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16"
+            >
+              <Button
+                size="lg"
+                className="px-8 py-4 text-lg font-body font-semibold bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 text-white rounded-xl shadow-xl shadow-primary/25 hover:shadow-2xl hover:shadow-primary/30 transition-all duration-300 hover:-translate-y-1"
               >
-                <div className="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-2xl">
-                  <motion.div style={{ scale: heroProjectScale }} className="w-full h-full">
-                    <Image
-                      src={currentProject.image}
-                      alt={currentProject.title}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      priority
-                    />
-                  </motion.div>
+                Start Your Project
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                className="px-8 py-4 text-lg font-body font-medium border-2 border-slate-300 hover:border-primary-400 text-slate-700 hover:text-primary-600 rounded-xl backdrop-blur-sm bg-white/50 hover:bg-white/70 transition-all duration-300"
+              >
+                View Portfolio
+              </Button>
+            </motion.div>
 
-                  {/* Gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-
-                  {/* Project info card */}
-                  <GlassPanel className="absolute bottom-8 left-8 right-8 p-5">
-                    <h3 className="text-xl font-semibold mb-2 text-white">
-                      {currentProject.title}
-                    </h3>
-                    <div className="flex flex-wrap gap-3 mb-3">
-                      <Badge
-                        variant="secondary"
-                        className="bg-secondary-100/50 text-secondary-700 dark:bg-secondary-900/30 dark:text-secondary-300 rounded-full backdrop-blur-sm"
-                      >
-                        Featured
-                      </Badge>
-                      <Badge
-                        variant="outline"
-                        className="rounded-full bg-white/20 text-white border-white/30"
-                      >
-                        {currentProject.material}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-primary-300">{currentProject.price}</span>
-                      <span className="text-sm text-neutral-300">Expert Craftsmanship</span>
-                    </div>
-                  </GlassPanel>
-                </div>
-
-                {/* Project selector dots */}
-                {displayProjects.length > 1 && (
-                  <div className="flex justify-center mt-6 space-x-2">
-                    {displayProjects.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setCurrentProjectIndex(index)}
-                        className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                          currentProjectIndex === index
-                            ? "bg-primary-500 scale-125"
-                            : "bg-white/50 hover:bg-white/70"
-                        }`}
-                      />
-                    ))}
+            {/* Stats */}
+            <motion.div
+              variants={fadeIn(0.8, 1)}
+              className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto"
+            >
+              {[
+                { number: "500+", label: "Projects Completed", icon: "🎨" },
+                { number: "15+", label: "Years Experience", icon: "⭐" },
+                { number: "100%", label: "Satisfaction Rate", icon: "❤️" },
+              ].map((stat, index) => (
+                <GlassCard key={index} className="p-6 text-center">
+                  <div className="text-3xl mb-2">{stat.icon}</div>
+                  <div className="text-3xl font-display font-bold text-primary-600 mb-1">
+                    {stat.number}
                   </div>
-                )}
-              </motion.div>
-            )}
+                  <div className="text-sm font-body text-slate-600">{stat.label}</div>
+                </GlassCard>
+              ))}
+            </motion.div>
+          </motion.div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+        >
+          <div className="w-6 h-10 border-2 border-primary/30 rounded-full flex justify-center">
+            <div className="w-1 h-3 bg-primary/50 rounded-full mt-2 animate-pulse" />
           </div>
         </motion.div>
-      </section>
+      </motion.section>
 
       {/* Services Section */}
       <section className="py-24 relative">

@@ -2,15 +2,25 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const router = useRouter();
   const supabase = createClient();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleSignOut = async () => {
     setIsLoading(true);
@@ -26,144 +36,165 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white border-b border-slate-200">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
+    <motion.header
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? "bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-lg shadow-black/5"
+          : "bg-white/60 backdrop-blur-md border-b border-white/10"
+      }`}
+    >
+      <div className="container mx-auto px-4 lg:px-8">
+        <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center">
-            <Image
-              src="/images/logo-abstract-small.jpg"
-              alt="Color&Craft Logo"
-              width={48}
-              height={48}
-              className="mr-3 rounded object-cover"
-            />
-            <span className="text-xl font-semibold text-primary">Color & Craft</span>
+          <Link href="/" className="flex items-center group">
+            <div className="relative">
+              <Image
+                src="/images/logo-abstract-small.jpg"
+                alt="Color&Craft Logo"
+                width={52}
+                height={52}
+                className="mr-4 rounded-xl object-cover transition-transform duration-300 group-hover:scale-105 shadow-md"
+              />
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-2xl font-display font-bold bg-gradient-to-r from-primary-700 via-primary-600 to-primary-500 bg-clip-text text-transparent">
+                Color & Craft
+              </span>
+              <span className="text-xs font-body text-slate-500 -mt-1 tracking-wide">
+                Furniture Artistry
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Menu */}
-          <nav className="hidden md:flex space-x-8">
-            <Link href="/" className="text-slate-600 hover:text-primary transition-colors">
-              Home
-            </Link>
-            <Link href="/portfolio" className="text-slate-600 hover:text-primary transition-colors">
-              Portfolio
-            </Link>
-            <Link href="/services" className="text-slate-600 hover:text-primary transition-colors">
-              Services
-            </Link>
-            <Link href="/contact" className="text-slate-600 hover:text-primary transition-colors">
-              Contact
-            </Link>
+          <nav className="hidden lg:flex items-center space-x-8">
+            {[
+              { href: "/", label: "Home" },
+              { href: "/portfolio", label: "Portfolio" },
+              { href: "/services", label: "Services" },
+              { href: "/contact", label: "Contact" },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="relative font-body font-medium text-slate-700 hover:text-primary-600 transition-all duration-300 group py-2"
+              >
+                {item.label}
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-primary-500 to-primary-600 transition-all duration-300 group-hover:w-full rounded-full" />
+              </Link>
+            ))}
           </nav>
 
           {/* Auth Buttons (Desktop) */}
-          <div className="hidden md:flex space-x-4">
+          <div className="hidden lg:flex items-center space-x-4">
             <Link
               href="/auth/signin"
-              className="px-4 py-2 text-primary hover:text-primary-dark transition-colors"
+              className="px-6 py-2.5 font-body font-medium text-slate-700 hover:text-primary-600 transition-all duration-300 relative group"
             >
               Sign In
+              <span className="absolute inset-0 rounded-lg bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </Link>
             <Link
               href="/auth/signup"
-              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
+              className="px-6 py-2.5 font-body font-semibold bg-gradient-to-r from-primary-600 to-primary-500 text-white rounded-lg hover:from-primary-700 hover:to-primary-600 transition-all duration-300 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5"
             >
-              Sign Up
+              Get Started
             </Link>
           </div>
 
           {/* Mobile menu button */}
           <button
             type="button"
-            className="md:hidden p-2 rounded-md text-slate-600 hover:text-primary"
+            className="lg:hidden p-3 rounded-xl text-slate-600 hover:text-primary-600 hover:bg-white/50 transition-all duration-300"
             onClick={() => setIsOpen(!isOpen)}
           >
             <span className="sr-only">Open menu</span>
-            {isOpen ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            )}
+            <motion.div
+              animate={isOpen ? "open" : "closed"}
+              className="w-6 h-6 flex flex-col justify-center items-center"
+            >
+              <motion.span
+                variants={{
+                  closed: { rotate: 0, y: 0 },
+                  open: { rotate: 45, y: 6 }
+                }}
+                className="w-6 h-0.5 bg-current block transition-all duration-300"
+              />
+              <motion.span
+                variants={{
+                  closed: { opacity: 1 },
+                  open: { opacity: 0 }
+                }}
+                className="w-6 h-0.5 bg-current block mt-1.5 transition-all duration-300"
+              />
+              <motion.span
+                variants={{
+                  closed: { rotate: 0, y: 0 },
+                  open: { rotate: -45, y: -6 }
+                }}
+                className="w-6 h-0.5 bg-current block mt-1.5 transition-all duration-300"
+              />
+            </motion.div>
           </button>
         </div>
 
         {/* Mobile Menu */}
-        {isOpen && (
-          <div className="md:hidden py-4 space-y-2">
-            <Link
-              href="/"
-              className="block px-4 py-2 text-slate-600 hover:bg-slate-50 rounded-md"
-              onClick={() => setIsOpen(false)}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="lg:hidden overflow-hidden"
             >
-              Home
-            </Link>
-            <Link
-              href="/portfolio"
-              className="block px-4 py-2 text-slate-600 hover:bg-slate-50 rounded-md"
-              onClick={() => setIsOpen(false)}
-            >
-              Portfolio
-            </Link>
-            <Link
-              href="/services"
-              className="block px-4 py-2 text-slate-600 hover:bg-slate-50 rounded-md"
-              onClick={() => setIsOpen(false)}
-            >
-              Services
-            </Link>
-            <Link
-              href="/contact"
-              className="block px-4 py-2 text-slate-600 hover:bg-slate-50 rounded-md"
-              onClick={() => setIsOpen(false)}
-            >
-              Contact
-            </Link>
-            <div className="pt-4 border-t border-slate-200 flex flex-col space-y-2">
-              <Link
-                href="/auth/signin"
-                className="block px-4 py-2 text-center text-primary hover:bg-slate-50 rounded-md"
-                onClick={() => setIsOpen(false)}
-              >
-                Sign In
-              </Link>
-              <Link
-                href="/auth/signup"
-                className="block px-4 py-2 text-center bg-primary text-white rounded-md hover:bg-primary/90"
-                onClick={() => setIsOpen(false)}
-              >
-                Sign Up
-              </Link>
-            </div>
-          </div>
-        )}
+              <div className="py-6 space-y-2 bg-white/80 backdrop-blur-xl rounded-2xl mt-4 mb-4 border border-white/20 shadow-xl">
+                {[
+                  { href: "/", label: "Home" },
+                  { href: "/portfolio", label: "Portfolio" },
+                  { href: "/services", label: "Services" },
+                  { href: "/contact", label: "Contact" },
+                ].map((item, index) => (
+                  <motion.div
+                    key={item.href}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <Link
+                      href={item.href}
+                      className="block px-6 py-3 font-body font-medium text-slate-700 hover:text-primary-600 hover:bg-gradient-to-r hover:from-primary/5 hover:to-transparent rounded-xl mx-2 transition-all duration-300"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  </motion.div>
+                ))}
+                <div className="pt-4 mt-4 border-t border-slate-200/50 flex flex-col space-y-3 px-2">
+                  <Link
+                    href="/auth/signin"
+                    className="block px-6 py-3 text-center font-body font-medium text-slate-700 hover:text-primary-600 hover:bg-gradient-to-r hover:from-primary/5 hover:to-transparent rounded-xl transition-all duration-300"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/auth/signup"
+                    className="block px-6 py-3 text-center font-body font-semibold bg-gradient-to-r from-primary-600 to-primary-500 text-white rounded-xl hover:from-primary-700 hover:to-primary-600 transition-all duration-300 shadow-lg shadow-primary/25"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Get Started
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </header>
+    </motion.header>
   );
 }

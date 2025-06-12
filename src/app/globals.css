@@ -36,6 +36,7 @@
     background: white !important;
     transition: none !important;
     color-scheme: light;
+    scroll-behavior: smooth;
   }
 
   html.dark {
@@ -52,11 +53,68 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    line-height: 1.6;
   }
 
   html.dark body {
     background-color: #0f172a !important;
     transition: none !important;
+  }
+
+  /* Modern Typography Enhancements */
+  .font-display {
+    font-family: var(--font-poppins), system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+
+  .font-heading {
+    font-family: var(--font-poppins), system-ui, sans-serif;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+
+  .font-body {
+    font-family: var(--font-manrope), system-ui, sans-serif;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+  }
+
+  .font-serif {
+    font-family: var(--font-playfair), Georgia, serif;
+    font-weight: 400;
+  }
+
+  /* Enhanced spacing for fixed header */
+  main {
+    padding-top: 0;
+  }
+
+  /* Smooth scrolling for anchor links */
+  html {
+    scroll-padding-top: 5rem;
+  }
+
+  /* Modern button styles */
+  .btn-modern {
+    @apply px-6 py-3 rounded-xl font-body font-medium transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0;
+  }
+
+  .btn-primary-modern {
+    @apply btn-modern bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 text-white shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30;
+  }
+
+  .btn-secondary-modern {
+    @apply btn-modern border-2 border-slate-300 hover:border-primary-400 text-slate-700 hover:text-primary-600 backdrop-blur-sm bg-white/50 hover:bg-white/70;
+  }
+
+  /* Enhanced glass effects */
+  .glass-modern {
+    @apply backdrop-blur-xl bg-white/80 border border-white/20 shadow-xl shadow-black/5;
+  }
+
+  .glass-card-modern {
+    @apply glass-modern rounded-2xl p-6 transition-all duration-300 hover:shadow-2xl hover:shadow-black/10;
   }
 
   /* Prevent any flash for common background classes */
