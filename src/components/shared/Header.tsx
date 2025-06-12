@@ -95,7 +95,7 @@ export default function Header() {
   if (!isMounted) {
     return <header className="sticky top-0 z-50 w-full border-b h-24 bg-transparent" />;
   }
-  
+
   if (homepageStyle === "classic") {
     return (
       <header className="sticky top-0 z-40 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -126,12 +126,51 @@ export default function Header() {
             </nav>
           </div>
 
-          <div className="flex items-center space-x-2">
-             <ThemeSwitcher />
-             <NavbarAuth user={user} />
-             {/* Mobile Menu can be added here if needed */}
+          <div className="flex items-center space-x-4">
+            <ThemeSwitcher />
+            <NavbarAuth user={user} />
+            {/* Mobile menu button */}
+            <button
+              className="flex md:hidden items-center justify-center p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              <span className="sr-only">Open main menu</span>
+              {isOpen ? (
+                <X className="block h-6 w-6" aria-hidden="true" />
+              ) : (
+                <Menu className="block h-6 w-6" aria-hidden="true" />
+              )}
+            </button>
           </div>
         </div>
+
+        {/* Mobile menu */}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="md:hidden"
+            >
+              <div className="px-2 pt-2 pb-3 space-y-1 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                {navigationItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="block px-3 py-2 rounded-md text-base font-medium text-foreground/60 hover:text-foreground hover:bg-gray-100 dark:hover:bg-gray-800"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+                <div className="flex items-center justify-center pt-4 pb-2">
+                  <ThemeSwitcher />
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
     );
   }
@@ -349,7 +388,7 @@ export default function Header() {
 
                   {/* Mobile auth buttons */}
                   <motion.div
-                    className="pt-6 mt-6 border-t border-slate-200/50 flex items-center justify-center space-y-0 space-x-4 px-3"
+                    className="pt-6 mt-6 border-t border-slate-200/50 flex items-center justify-center space-x-4 px-3"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6, duration: 0.4 }}

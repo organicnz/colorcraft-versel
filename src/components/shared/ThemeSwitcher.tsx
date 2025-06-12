@@ -8,22 +8,16 @@ export default function ThemeSwitcher() {
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme, systemTheme } = useTheme();
 
-  // Wait for the page to be fully hydrated before showing the theme switcher
+  // Improved hydration handling
   useEffect(() => {
-    const checkReady = () => {
-      if (document.documentElement.classList.contains("ready") || window.__antiFlashComplete) {
-        setMounted(true);
-      } else {
-        setTimeout(checkReady, 50);
-      }
-    };
-
-    // Start checking after a brief delay to allow the anti-flash script to run
-    setTimeout(checkReady, 16);
+    // Simpler mounting check that works more reliably
+    setMounted(true);
   }, []);
 
   // Handle theme cycling: light -> dark -> system -> light...
   const handleThemeChange = () => {
+    if (!mounted) return;
+
     let newTheme: string;
 
     if (theme === "light") {
@@ -34,17 +28,8 @@ export default function ThemeSwitcher() {
       newTheme = "light";
     }
 
-    // Temporarily disable transitions to prevent flash during theme change
-    document.documentElement.classList.remove("transitions-enabled");
-
+    // Apply theme change
     setTheme(newTheme);
-
-    // Re-enable transitions after theme is applied
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        document.documentElement.classList.add("transitions-enabled");
-      });
-    });
   };
 
   // Show a stable placeholder during hydration
@@ -54,23 +39,23 @@ export default function ThemeSwitcher() {
         className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center opacity-50"
         disabled
         aria-label="Loading theme switcher"
-        style={{
-          visibility: "visible",
-          pointerEvents: "none",
-          transition: "none",
-        }}
       >
         <div className="w-4 h-4 rounded-full bg-slate-400 dark:bg-slate-500" />
       </button>
     );
   }
 
-  // Determine which icon to show and what the next theme will be
+  // Determine which icon to show based on current theme
   const getCurrentIcon = () => {
     if (theme === "system") {
-      return <Monitor className="w-5 h-5 text-blue-600 dark:text-blue-400" />;
+      const resolvedTheme = systemTheme || "light";
+      return resolvedTheme === "dark" ? (
+        <Monitor className="w-5 h-5 text-yellow-400" />
+      ) : (
+        <Monitor className="w-5 h-5 text-blue-600" />
+      );
     } else if (theme === "dark") {
-      return <Moon className="w-5 h-5 text-slate-700 dark:text-yellow-500" />;
+      return <Moon className="w-5 h-5 text-yellow-500" />;
     } else {
       return <Sun className="w-5 h-5 text-yellow-600" />;
     }
@@ -82,30 +67,30 @@ export default function ThemeSwitcher() {
     return "Switch to light mode";
   };
 
-  const resolvedTheme = theme === "system" ? systemTheme : theme;
-
   return (
     <button
       onClick={handleThemeChange}
       className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 group
-                 glass-modern hover:shadow-lg hover:border-slate-300 dark:hover:border-slate-600"
+                 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700"
       aria-label={getNextThemeLabel()}
       title={getNextThemeLabel()}
     >
-      <span className="sr-only">
-        {getNextThemeLabel()}
-      </span>
+      <span className="sr-only">{getNextThemeLabel()}</span>
       {getCurrentIcon()}
 
       {/* Tooltip */}
-      <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2
+      <div
+        className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2
                      bg-slate-800 text-slate-100 text-xs py-1 px-3 rounded-md
                      opacity-0 group-hover:opacity-100 transition-opacity duration-300
-                     pointer-events-none whitespace-nowrap z-50">
-        Switch to {theme === 'light' ? 'Dark' : theme === 'dark' ? 'System' : 'Light'}
-        <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0
+                     pointer-events-none whitespace-nowrap z-50"
+      >
+        Switch to {theme === "light" ? "Dark" : theme === "dark" ? "System" : "Light"}
+        <div
+          className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0
                         border-x-4 border-x-transparent
-                        border-t-4 border-t-slate-800"></div>
+                        border-t-4 border-t-slate-800"
+        ></div>
       </div>
     </button>
   );
