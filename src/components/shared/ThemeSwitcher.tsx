@@ -87,16 +87,25 @@ export default function ThemeSwitcher() {
   return (
     <button
       onClick={handleThemeChange}
-      className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 flex items-center justify-center transition-colors duration-200 relative group"
+      className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 group
+                 glass-modern hover:shadow-lg hover:border-slate-300 dark:hover:border-slate-600"
       aria-label={getNextThemeLabel()}
       title={getNextThemeLabel()}
     >
+      <span className="sr-only">
+        {getNextThemeLabel()}
+      </span>
       {getCurrentIcon()}
 
       {/* Tooltip */}
-      <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-black dark:bg-white text-white dark:text-black text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-        {theme === "system" ? `System (${resolvedTheme})` : theme}
-        <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-black dark:border-t-white"></div>
+      <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2
+                     bg-slate-800 text-slate-100 text-xs py-1 px-3 rounded-md
+                     opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                     pointer-events-none whitespace-nowrap z-50">
+        Switch to {theme === 'light' ? 'Dark' : theme === 'dark' ? 'System' : 'Light'}
+        <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0
+                        border-x-4 border-x-transparent
+                        border-t-4 border-t-slate-800"></div>
       </div>
     </button>
   );

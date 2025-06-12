@@ -170,7 +170,10 @@ export function CircularProfileButton() {
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="w-56">
+      <DropdownMenuContent
+        align="end"
+        className="w-56 mt-2 card-glass"
+      >
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">{userData.full_name || "User"}</p>
@@ -184,42 +187,42 @@ export function CircularProfileButton() {
           </div>
         </DropdownMenuLabel>
 
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="bg-white/10" />
 
         <DropdownMenuItem asChild>
-          <Link href="/account/profile" className="cursor-pointer">
-            <User className="mr-2 h-4 w-4" />
-            Profile
+          <Link href="/account/profile" className="cursor-pointer flex items-center group">
+            <User className="mr-2 h-4 w-4 text-slate-400 group-hover:text-white" />
+            <span className="group-hover:text-white">Profile</span>
           </Link>
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
-          <Link href="/account/settings" className="cursor-pointer">
-            <Settings className="mr-2 h-4 w-4" />
-            Settings
+          <Link href="/account/settings" className="cursor-pointer flex items-center group">
+            <Settings className="mr-2 h-4 w-4 text-slate-400 group-hover:text-white" />
+            <span className="group-hover:text-white">Settings</span>
           </Link>
         </DropdownMenuItem>
 
         {isAdmin && (
           <>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className="bg-white/10" />
             <DropdownMenuItem asChild>
-              <Link href="/dashboard" className="cursor-pointer">
-                <Shield className="mr-2 h-4 w-4" />
-                Admin Dashboard
+              <Link href="/dashboard" className="cursor-pointer flex items-center group">
+                <Shield className="mr-2 h-4 w-4 text-slate-400 group-hover:text-white" />
+                <span className="group-hover:text-white">Admin Dashboard</span>
               </Link>
             </DropdownMenuItem>
           </>
         )}
 
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="bg-white/10" />
 
         <DropdownMenuItem
           onClick={handleSignOut}
-          className="cursor-pointer text-red-600 focus:text-red-600"
+          className="cursor-pointer text-red-500 focus:text-red-400 focus:bg-red-500/10 flex items-center group"
         >
-          <LogOut className="mr-2 h-4 w-4" />
-          Sign out
+          <LogOut className="mr-2 h-4 w-4 text-red-500 group-focus:text-red-400" />
+          <span className="group-focus:text-red-400">Sign out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
