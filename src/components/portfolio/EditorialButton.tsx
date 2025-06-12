@@ -106,7 +106,7 @@ export default function EditorialButton({ className, variant = "floating" }: Edi
             >
               <div className="bg-background/95 backdrop-blur-sm border shadow-lg rounded-lg p-2 min-w-[200px]">
                 <div className="flex items-center gap-2 p-2 border-b mb-2">
-                  <div className="h-2 w-2 bg-green-500 rounded-full"></div>
+                  <div className="h-2 w-2 bg-success-500 rounded-full"></div>
                   <span className="text-sm font-medium">Admin Mode</span>
                 </div>
 
@@ -120,7 +120,7 @@ export default function EditorialButton({ className, variant = "floating" }: Edi
                 <Link href="/portfolio-dash/new">
                   <Button
                     variant="ghost"
-                    className="w-full justify-start h-9 text-sm hover:bg-[#3ECF8E]/10 hover:text-[#3ECF8E] transition-colors"
+                    className="w-full justify-start h-9 text-sm hover:bg-success-500/10 hover:text-success-500 transition-colors"
                   >
                     <Plus className="h-4 w-4 mr-2" />
                     Add New Project
@@ -190,7 +190,7 @@ export default function EditorialButton({ className, variant = "floating" }: Edi
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <div className="flex items-center gap-2 p-2">
-          <div className="h-2 w-2 bg-green-500 rounded-full"></div>
+          <div className="h-2 w-2 bg-success-500 rounded-full"></div>
           <span className="text-sm font-medium">Admin Panel</span>
         </div>
 
@@ -245,7 +245,7 @@ export default function EditorialButton({ className, variant = "floating" }: Edi
           </DropdownMenuTrigger>
           <DropdownMenuContent side="left" align="center" className="w-56">
             <div className="flex items-center gap-2 p-2">
-              <div className="h-2 w-2 bg-green-500 rounded-full"></div>
+              <div className="h-2 w-2 bg-success-500 rounded-full"></div>
               <span className="text-sm font-medium">Portfolio Editor</span>
             </div>
 

@@ -86,7 +86,7 @@ export default function PortfolioTabs() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center">
-              <FolderOpen className="h-4 w-4 text-blue-600 mr-2" />
+              <FolderOpen className="h-4 w-4 text-primary-600 mr-2" />
               <span className="text-2xl font-bold">{totalCount}</span>
             </div>
           </CardContent>
@@ -100,8 +100,8 @@ export default function PortfolioTabs() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center">
-              <Eye className="h-4 w-4 text-green-600 mr-2" />
-              <span className="text-2xl font-bold text-green-600">{publishedCount}</span>
+              <Eye className="h-4 w-4 text-success-600 mr-2" />
+              <span className="text-2xl font-bold text-success-600">{publishedCount}</span>
             </div>
           </CardContent>
         </Card>
@@ -114,8 +114,8 @@ export default function PortfolioTabs() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center">
-              <EyeOff className="h-4 w-4 text-yellow-600 mr-2" />
-              <span className="text-2xl font-bold text-yellow-600">{draftCount}</span>
+              <EyeOff className="h-4 w-4 text-warning-600 mr-2" />
+              <span className="text-2xl font-bold text-warning-600">{draftCount}</span>
             </div>
           </CardContent>
         </Card>
@@ -161,7 +161,7 @@ export default function PortfolioTabs() {
               <Button
                 asChild
                 size="lg"
-                className="bg-[#3ECF8E] hover:bg-[#38BC81] backdrop-blur-md text-white font-semibold px-6 py-3 rounded-full shadow-lg border border-[#3ECF8E]/30 transition-all duration-300 hover:shadow-xl"
+                className="bg-success-500 hover:bg-success-600 text-white font-semibold px-6 py-3 rounded-full shadow-lg transition-all duration-300 hover:shadow-xl"
               >
                 <Link href="/portfolio-dash/new">
                   <Plus className="mr-2 h-5 w-5" />
@@ -225,7 +225,7 @@ export default function PortfolioTabs() {
             <Button
               asChild
               size="lg"
-              className="bg-[#3ECF8E] hover:bg-[#38BC81] backdrop-blur-md text-white font-semibold px-6 py-3 rounded-full shadow-lg border border-[#3ECF8E]/30 transition-all duration-300 hover:shadow-xl"
+              className="bg-success-500 hover:bg-success-600 text-white font-semibold px-6 py-3 rounded-full shadow-lg transition-all duration-300 hover:shadow-xl"
             >
               <Link href="/portfolio-dash/new">
                 <Plus className="mr-2 h-5 w-5" />
