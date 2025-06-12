@@ -156,14 +156,18 @@ export default function Header() {
           opacity: headerOpacity,
           scale: headerScale,
         }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
-            ? "bg-white/85 backdrop-blur-2xl border-b border-white/30 shadow-2xl shadow-black/10"
-            : "bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-lg shadow-black/5"
+            ? "bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-b border-white/20 dark:border-slate-800 shadow-md"
+            : "bg-transparent border-b border-transparent"
         }`}
       >
-        {/* Premium gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5 opacity-50" />
+        {/* Premium gradient overlay - only show when scrolled */}
+        <div
+          className={`absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5 transition-opacity duration-300 ${
+            isScrolled ? "opacity-50" : "opacity-0"
+          }`}
+        />
 
         {/* Animated border */}
         <motion.div
