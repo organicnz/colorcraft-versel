@@ -117,6 +117,20 @@
     @apply glass-modern rounded-2xl p-6 transition-all duration-300 hover:shadow-2xl hover:shadow-black/10;
   }
 
+  /* Shimmer animation for premium buttons */
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%) skewX(-12deg);
+    }
+    100% {
+      transform: translateX(200%) skewX(-12deg);
+    }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 1.5s ease-in-out;
+  }
+
   /* Prevent any flash for common background classes */
   .bg-white {
     background-color: white !important;
