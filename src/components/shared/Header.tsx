@@ -158,7 +158,7 @@ export default function Header() {
         }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
-            ? "bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-b border-white/20 dark:border-slate-800 shadow-md"
+            ? "bg-white/60 dark:bg-slate-900/60 backdrop-blur-2xl border-b border-white/20 dark:border-slate-800 shadow-lg"
             : "bg-transparent border-b border-transparent"
         }`}
       >
