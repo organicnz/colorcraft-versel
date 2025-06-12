@@ -79,7 +79,7 @@ export default async function PortfolioManagementPage() {
           {isAdmin && (
             <Button
               asChild
-              className="bg-[#3ECF8E] hover:bg-[#38BC81] text-white border border-[#3ECF8E]/30 transition-all duration-300 hover:shadow-lg"
+              className="bg-success-500 hover:bg-success-600 text-white"
             >
               <Link href="/admin/portfolio/new">
                 <Plus className="h-4 w-4 mr-2" />
@@ -106,30 +106,30 @@ export default async function PortfolioManagementPage() {
           <Card glass={true} glassVariant="light" glassIntensity="medium">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Published</CardTitle>
-              <Eye className="h-4 w-4 text-green-600" />
+              <Eye className="h-4 w-4 text-success-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">{stats.published}</div>
+              <div className="text-2xl font-bold text-success-600">{stats.published}</div>
             </CardContent>
           </Card>
 
           <Card glass={true} glassVariant="light" glassIntensity="medium">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Drafts</CardTitle>
-              <Pencil className="h-4 w-4 text-orange-600" />
+              <Pencil className="h-4 w-4 text-warning-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-orange-600">{stats.drafts}</div>
+              <div className="text-2xl font-bold text-warning-600">{stats.drafts}</div>
             </CardContent>
           </Card>
 
           <Card glass={true} glassVariant="light" glassIntensity="medium">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Archived</CardTitle>
-              <Archive className="h-4 w-4 text-slate-600" />
+              <Archive className="h-4 w-4 text-neutral-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-slate-600">{stats.archived}</div>
+              <div className="text-2xl font-bold text-neutral-600">{stats.archived}</div>
             </CardContent>
           </Card>
         </div>

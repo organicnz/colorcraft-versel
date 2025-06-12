@@ -194,6 +194,7 @@
 
   /* Theme variables - Enhanced for better contrast */
   :root {
+    /* Theme variables - Enhanced for better contrast */
     --background: 0 0% 100%;
     --foreground: 224 71.4% 4.1%;
     --card: 0 0% 100%;
@@ -214,56 +215,45 @@
     --input: 220 13% 91%;
     --ring: 224 71.4% 4.1%;
     --radius: 0.5rem;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
 
-    --background-start-rgb: 255, 255, 255;
-    --background-end-rgb: 255, 255, 255;
-    --text-main: hsl(224, 71.4%, 4.1%);
-    --text-secondary: hsl(220, 8.9%, 46.1%);
-    --bg-card: hsl(0, 0%, 100%);
-    --border: hsl(220, 13%, 91%);
-    --primary: hsl(26, 52%, 64%);
-    --primary-light: hsl(26, 52%, 74%);
+    /* New variables for glass and shadows */
+    --glass-bg: rgba(255, 255, 255, 0.2);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-shadow: 0 4px 16px 0 rgba(31, 38, 135, 0.25);
+    --subtle-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    --medium-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    --large-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
   }
 
   .dark {
+    /* Dark mode theme variables */
     --background: 224 71.4% 4.1%;
     --foreground: 210 20% 98%;
     --card: 224 71.4% 4.1%;
     --card-foreground: 210 20% 98%;
     --popover: 224 71.4% 4.1%;
     --popover-foreground: 210 20% 98%;
-    --primary: 26 52% 74%; /* DCB690 - lighter for dark mode */
+    --primary: 26 52% 74%;
     --primary-foreground: 26 52% 14%;
-    --secondary: 173 58% 57%; /* Lighter teal for dark mode */
+    --secondary: 173 58% 57%;
     --secondary-foreground: 210 20% 98%;
     --muted: 215 27.9% 16.9%;
     --muted-foreground: 217.9 10.6% 64.9%;
-    --accent: 347 57% 79%; /* Lighter accent for dark mode */
+    --accent: 347 57% 79%;
     --accent-foreground: 210 20% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 20% 98%;
     --border: 215 27.9% 16.9%;
     --input: 215 27.9% 16.9%;
     --ring: 216 12.2% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
 
-    --background-start-rgb: 15, 23, 42;
-    --background-end-rgb: 15, 23, 42;
-    --text-main: hsl(210, 20%, 98%);
-    --text-secondary: hsl(217.9, 10.6%, 64.9%);
-    --bg-card: hsl(224, 71.4%, 4.1%);
-    --border: hsl(215, 27.9%, 16.9%);
-    --primary: hsl(26, 52%, 74%);
-    --primary-light: hsl(26, 52%, 84%);
+    /* Dark mode glass and shadow variables */
+    --glass-bg: rgba(30, 30, 30, 0.5);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.4);
+    --subtle-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    --medium-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    --large-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
   }
 
   /* Ensure text colors are properly applied */
@@ -936,4 +926,185 @@ select:focus {
   padding: 1rem 0;
   text-align: center;
   color: var(--text-secondary);
+}
+
+.glass-card-light {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+.dark .glass-card-light {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+.glass-card-accent {
+  background: rgba(139, 92, 246, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  box-shadow: 0 4px 16px 0 rgba(139, 92, 246, 0.2);
+}
+
+.glass-button {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 12px 48px 0 rgba(31, 38, 135, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 0.75rem 1.5rem;
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--subtle-shadow);
+}
+
+/* Updated glassmorphism styles using CSS variables */
+.card-glass {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+}
+
+/* Reusable shadow classes */
+.shadow-subtle {
+  box-shadow: var(--subtle-shadow);
+}
+.shadow-medium {
+  box-shadow: var(--medium-shadow);
+}
+.shadow-large {
+  box-shadow: var(--large-shadow);
+}
+
+/* Fix for tooltip text colors */
+.tooltip-content {
+  color: white; /* Ensure high contrast for tooltips */
+}
+
+.dark .menu-item {
+  color: rgb(var(--color-slate-400));
+}
+
+.menu-item:hover,
+.dark .menu-item:hover,
+.dark .menu-item.active {
+  color: rgb(var(--color-slate-100));
+}
+
+.menu-sub-item {
+  color: rgb(var(--color-slate-600));
+}
+.dark .menu-sub-item {
+  color: rgb(var(--color-slate-400));
+}
+.menu-sub-item:hover,
+.menu-sub-item.active {
+  color: rgb(var(--color-slate-900));
+}
+.dark .menu-sub-item:hover,
+.dark .menu-sub-item.active {
+  color: rgb(var(--color-slate-100));
+}
+
+/* Consistent Header Styling */
+.header-light {
+  background-color: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(12px);
+}
+.dark .header-light {
+  background-color: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+}
+
+.header-scrolled {
+  background: var(--glass-bg);
+  box-shadow: var(--medium-shadow);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.header-button {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Drawer styles */
+.drawer {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 8px 25px 0 rgba(31, 38, 135, 0.4);
+}
+
+.drawer-item {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  transition: all 0.2s ease-in-out;
+}
+
+.drawer-item:hover {
+  /* Other global styles */
+  .custom-shadow {
+    box-shadow: var(--subtle-shadow);
+  }
+
+  .custom-shadow-dark {
+    box-shadow: var(--large-shadow);
+  }
+
+  .gradient-text {
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .custom-underline {
+    box-shadow: var(--medium-shadow);
+  }
+
+  .project-card {
+    box-shadow: var(--subtle-shadow);
+    transition: all 0.2s ease-in-out;
+  }
+
+  .project-card:hover {
+    box-shadow: var(--large-shadow);
+  }
+
+  .testimonial-card {
+    box-shadow: var(--subtle-shadow);
+  }
+
+  .testimonial-card-v2 {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease-in-out;
+  }
+
+  .testimonial-card-v2:hover {
+    /* Keyframes */
+    @keyframes gradient-animation {
+      0% {
+        /* ... existing code ... */
+      }
+    }
+
+    .gradient-border-card {
+      position: relative;
+      background: linear-gradient(135deg, rgba(15, 114, 193, 0.9), rgba(42, 157, 143, 0.8));
+      padding: 2rem;
+      border-radius: 1rem;
+      color: white;
+      /* ... existing code ... */
+    }
+  }
 }

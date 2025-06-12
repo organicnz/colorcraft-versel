@@ -5,13 +5,13 @@ export const getThemeColor = (colorName: string, shade: number, isDark: boolean 
   const colorFamily = colors[colorName as keyof typeof colors];
 
   if (!colorFamily || typeof colorFamily === "string") {
-    return colorFamily || "#000000";
+    return colorFamily || (isDark ? colors.dark.foreground : colors.light.foreground);
   }
 
   const shadeKey = shade.toString();
   const color = colorFamily[shadeKey as keyof typeof colorFamily];
 
-  return typeof color === "string" ? color : "#000000";
+  return typeof color === "string" ? color : (isDark ? colors.dark.foreground : colors.light.foreground);
 };
 
 // Component-specific color schemes
@@ -22,13 +22,13 @@ export const colorSchemes = {
       light: {
         bg: colors.primary[500],
         hoverBg: colors.primary[600],
-        text: "#FFFFFF",
+        text: colors.light.background,
         border: colors.primary[500],
       },
       dark: {
         bg: colors.primary[600],
         hoverBg: colors.primary[700],
-        text: "#FFFFFF",
+        text: colors.dark.background,
         border: colors.primary[600],
       },
     },
@@ -36,13 +36,13 @@ export const colorSchemes = {
       light: {
         bg: colors.secondary[500],
         hoverBg: colors.secondary[600],
-        text: "#FFFFFF",
+        text: colors.light.background,
         border: colors.secondary[500],
       },
       dark: {
         bg: colors.secondary[600],
         hoverBg: colors.secondary[700],
-        text: "#FFFFFF",
+        text: colors.dark.background,
         border: colors.secondary[600],
       },
     },
@@ -80,16 +80,18 @@ export const colorSchemes = {
     },
     glass: {
       light: {
-        bg: "rgba(255, 255, 255, 0.2)",
+        bg: 'transparent',
         text: colors.light.cardForeground,
-        border: "rgba(255, 255, 255, 0.2)",
-        backdrop: "blur(12px)",
+        border: 'rgba(255, 255, 255, 0.2)',
+        backdrop: 'blur(12px)',
+        backgroundImage: colors.gradients.glass,
       },
       dark: {
-        bg: "rgba(0, 0, 0, 0.2)",
+        bg: 'transparent',
         text: colors.dark.cardForeground,
-        border: "rgba(255, 255, 255, 0.1)",
-        backdrop: "blur(12px)",
+        border: 'rgba(255, 255, 255, 0.1)',
+        backdrop: 'blur(12px)',
+        backgroundImage: colors.gradients.darkGlass,
       },
     },
   },
@@ -231,7 +233,7 @@ export const getThemeClasses = (
     card: {
       default:
         "bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 border-neutral-200 dark:border-neutral-700",
-      glass: "bg-white/20 dark:bg-black/20 backdrop-blur-md border-white/20 dark:border-white/10",
+      glass: "bg-gradient-glass dark:bg-gradient-dark-glass backdrop-blur-md border-white/20 dark:border-white/10",
     },
     text: {
       primary: "text-neutral-900 dark:text-neutral-100",
@@ -298,6 +300,25 @@ export const hexToHsl = (hex: string): string => {
   }
 
   return `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
+};
+
+// Color conversion utilities
+export const hexToRgba = (hex: string, alpha: number): string => {
+  let r = 0,
+    g = 0,
+    b = 0;
+
+  if (hex.length === 4) {
+    r = parseInt(hex[1] + hex[1], 16);
+    g = parseInt(hex[2] + hex[2], 16);
+    b = parseInt(hex[3] + hex[3], 16);
+  } else if (hex.length === 7) {
+    r = parseInt(hex.substring(1, 3), 16);
+    g = parseInt(hex.substring(3, 5), 16);
+    b = parseInt(hex.substring(5, 7), 16);
+  }
+
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
 
 // Export individual color values for direct usage
