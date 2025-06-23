@@ -692,17 +692,7 @@ export default function PortfolioPage() {
                 </Button>
               </motion.div>
 
-              {/* Debug Information - Remove this in production */}
-              <div className="mt-4 text-xs text-gray-500 space-y-1">
-                <div>Total Projects: {projects.length}</div>
-                <div>Filtered Projects: {filteredProjects.length}</div>
-                <div>Displayed Projects: {displayedProjects.length}</div>
-                <div>Current Page: {currentPage}</div>
-                <div>Projects Per Page: {projectsPerPage}</div>
-                <div>Has More: {hasMoreProjects ? "Yes" : "No"}</div>
-                <div>Is Loading: {isLoadingMore ? "Yes" : "No"}</div>
-                <div>Filter: {filterType}</div>
-              </div>
+
             </motion.div>
           )}
 
