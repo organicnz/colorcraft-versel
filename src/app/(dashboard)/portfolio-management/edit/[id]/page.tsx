@@ -2,7 +2,13 @@ import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import PortfolioForm from "@/components/forms/PortfolioForm";
 
-export default async function EditPortfolioPage({ params }: { params: { id: string } }) {
+type PageProps = {
+  params: {
+    id: string;
+  };
+};
+
+export default async function EditPortfolioPage({ params }: PageProps) {
   const supabase = createClient();
 
   const { data: project } = await supabase
