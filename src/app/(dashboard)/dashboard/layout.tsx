@@ -57,13 +57,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </Alert>
       )}
 
-      <div className="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10">
-        <aside className="fixed top-14 z-30 -ml-2 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 md:sticky md:block">
-          <div className="h-full py-6 pl-2 pr-4">
-            <SidebarNav items={sidebarNavItems} isAdmin={isAdmin} className="px-2" />
-          </div>
+      <div className="flex flex-1 overflow-hidden">
+        <aside className="hidden w-64 flex-shrink-0 flex-col border-r lg:flex">
+          <SidebarNav items={sidebarNavItems} isAdmin={isAdmin} className="px-2" />
         </aside>
-        <main className="flex w-full flex-col overflow-hidden">{children}</main>
+        <main className="flex-1 overflow-y-auto pt-16 lg:pt-0">{children}</main>
       </div>
     </div>
   );
