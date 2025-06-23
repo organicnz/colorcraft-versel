@@ -79,7 +79,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               Portfolio
             </NavItem>
 
-            <NavItem href="/services-dash">
+            <NavItem href="/services">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"

@@ -69,7 +69,7 @@ export const sidebarNavItems = [
   },
   {
     title: "Services",
-    href: "/dashboard/services-dash",
+    href: "/services",
     icon: Briefcase,
     admin: true,
   },

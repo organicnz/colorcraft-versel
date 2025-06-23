@@ -79,6 +79,61 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       suppressHydrationWarning
       className={`${inter.variable} ${playfair.variable} ${poppins.variable} ${manrope.variable}`}
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  // Enhanced Anti-Flash System - Prevents theme switching flicker
+                  const theme = localStorage.getItem('theme') || 'light';
+                  const html = document.documentElement;
+
+                  // Apply theme immediately
+                  html.classList.remove('light', 'dark');
+                  html.classList.add(theme);
+                  html.style.colorScheme = theme;
+
+                  // Set background immediately to prevent flash
+                  if (theme === 'dark') {
+                    html.style.background = '#0f172a';
+                    document.body && (document.body.style.background = '#0f172a');
+                  } else {
+                    html.style.background = 'white';
+                    document.body && (document.body.style.background = 'white');
+                  }
+
+                  // Enable transitions after DOM is ready
+                  function enableTransitions() {
+                    html.classList.add('ready');
+                    document.body && document.body.classList.add('transitions-enabled');
+                    html.style.removeProperty('background');
+                    document.body && document.body.style.removeProperty('background');
+                    window.__antiFlashComplete = true;
+                  }
+
+                  // Multiple trigger points for reliability
+                  if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', enableTransitions);
+                  } else {
+                    requestAnimationFrame(enableTransitions);
+                  }
+
+                  // Backup timer
+                  setTimeout(enableTransitions, 100);
+                } catch (e) {
+                  // Fallback: enable transitions immediately if script fails
+                  setTimeout(() => {
+                    document.documentElement.classList.add('ready');
+                    document.body && document.body.classList.add('transitions-enabled');
+                    window.__antiFlashComplete = true;
+                  }, 50);
+                }
+              })();
+            `,
+          }}
+        />
+      </head>
       <body className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 font-sans antialiased selection:bg-primary/20 selection:text-primary-900">
         <Providers>
           <div className="flex min-h-screen flex-col relative">
