@@ -1,13 +1,10 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# Fix simple linter errors before running full lint
-bash ./scripts/fix-linter-errors.sh
+# Run lint-staged to lint and fix staged files
+npx lint-staged
 
-# Check for linting errors
-npm run lint
-
-# Run type check
+# Run type check on the whole project
 npm run type-check
 
 # Check for Vercel deployment issues
