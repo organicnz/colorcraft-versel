@@ -330,7 +330,7 @@ export default function PortfolioTable({ projects }: PortfolioTableProps) {
                             <Button variant="ghost" size="sm" asChild className="h-8 w-8 p-0">
                               <DropdownMenuItem asChild>
                                 <Link
-                                  href={`/dashboard/portfolio-management/edit/${project.id}`}
+                                  href={`/portfolio-management/edit/${project.id}`}
                                   className="flex items-center"
                                 >
                                   <Pencil className="h-4 w-4" />

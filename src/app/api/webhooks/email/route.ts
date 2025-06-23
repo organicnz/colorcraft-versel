@@ -2,10 +2,18 @@ import { NextResponse } from 'next/server'
 import { verifySignature } from '@upstash/qstash/nextjs'
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY!)
-
 async function handler(req: Request) {
   try {
+    // Initialize Resend inside the handler to avoid build-time errors
+    const apiKey = process.env.RESEND_API_KEY
+    if (!apiKey) {
+      return NextResponse.json(
+        { error: 'Email service not configured' },
+        { status: 500 }
+      )
+    }
+
+    const resend = new Resend(apiKey)
     const body = await req.json()
     
     const { to, subject, html, type } = body

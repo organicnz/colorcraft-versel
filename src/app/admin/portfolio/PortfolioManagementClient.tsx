@@ -299,7 +299,7 @@ function ProjectsList({ projects, isAdmin }: { projects: PortfolioProject[]; isA
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href={`/admin/portfolio/${project.id}/edit`}>
+                        <Link href={`/portfolio-dash/${project.id}/edit`}>
                           <Pencil className="h-4 w-4 mr-2" />
                           Edit
                         </Link>
@@ -354,7 +354,7 @@ function ProjectsList({ projects, isAdmin }: { projects: PortfolioProject[]; isA
                 </Button>
                 {isAdmin && (
                   <Button asChild variant="outline" size="sm" className="flex-1">
-                    <Link href={`/admin/portfolio/${project.id}/edit`}>
+                    <Link href={`/portfolio-dash/${project.id}/edit`}>
                       <Pencil className="h-3 w-3 mr-1" />
                       Edit
                     </Link>
