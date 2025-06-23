@@ -324,23 +324,23 @@ export default function ModernHomePage({
                   {/* Glassmorphism overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
 
-                  {/* Floating info card with glassmorphism */}
+                  {/* Floating info card with enhanced glassmorphism */}
                   <motion.div
-                    className="absolute bottom-6 right-6 p-6 rounded-2xl bg-white/80 backdrop-blur-md border border-white/20 shadow-xl"
+                    className="absolute bottom-6 right-6 p-6 rounded-3xl bg-white/20 backdrop-blur-xl border border-white/30 shadow-2xl before:absolute before:inset-0 before:rounded-3xl before:bg-gradient-to-br before:from-white/10 before:to-transparent before:pointer-events-none"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8 }}
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{ scale: 1.05, boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)" }}
                   >
-                    <div className="space-y-2">
-                      <Badge className="bg-gradient-to-r from-violet-500 to-purple-500 text-white">
-                        Featured
+                    <div className="relative space-y-3 z-10">
+                      <Badge className="bg-gradient-to-r from-violet-500/90 to-purple-500/90 text-white border border-white/20 backdrop-blur-sm shadow-lg">
+                        ✨ Featured
                       </Badge>
-                      <div className="font-semibold text-slate-900">Victorian Dresser Revival</div>
-                      <div className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+                      <div className="font-bold text-lg text-white drop-shadow-lg">Victorian Dresser Revival</div>
+                      <div className="text-3xl font-black bg-gradient-to-r from-white via-violet-100 to-purple-100 bg-clip-text text-transparent drop-shadow-sm">
                         $2,500
                       </div>
-                      <div className="text-sm text-slate-600">Starting from</div>
+                      <div className="text-sm text-white/80 font-medium">Starting from</div>
                     </div>
                   </motion.div>
                 </motion.div>

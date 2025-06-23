@@ -102,3 +102,4 @@ npm run commit "fix portfolio pagination" "Fix"
 - When I press edit to any portfolio item, it tries to take me to the edit page, but the page is loading 404 - Page Not Found.
 - Errors in Versel build logs.
 - The hero image on the main page with the elements inside of it is not working as expected. The element is moved to the left bottom of the image card.
+- Can you make that little element more glassmorpthic inside of the image card?
