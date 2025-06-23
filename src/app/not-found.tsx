@@ -1,97 +1,98 @@
-import Link from "next/link";
-
 export default function NotFound() {
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '1rem',
-        textAlign: 'center',
-        background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
-        fontFamily: 'system-ui, -apple-system, sans-serif'
-      }}
-    >
-      <div style={{ maxWidth: '28rem', margin: '0 auto' }}>
-        <h1
-          style={{
-            fontSize: 'clamp(2rem, 8vw, 4rem)',
-            fontWeight: '300',
-            color: '#1e293b',
-            marginBottom: '1.5rem',
-            lineHeight: '1.2'
-          }}
-        >
-          <span style={{ color: '#c99460', fontWeight: '500' }}>404</span> | Page Not Found
-        </h1>
-        <p
-          style={{
-            fontSize: '1.125rem',
-            color: '#475569',
-            marginBottom: '2rem',
-            lineHeight: '1.6'
-          }}
-        >
-          We are sorry, but the page you are looking for does not exist or has been moved.
-        </p>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1rem',
-            alignItems: 'center'
-          }}
-        >
-          <Link
-            href="/"
-            style={{
-              display: 'inline-block',
-              padding: '0.75rem 2rem',
-              backgroundColor: '#c99460',
-              color: 'white',
-              textDecoration: 'none',
-              fontWeight: '500',
-              borderRadius: '0.375rem',
-              transition: 'background-color 0.2s',
-              minWidth: '140px'
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.backgroundColor = '#b87940';
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.backgroundColor = '#c99460';
-            }}
-          >
-            Return Home
-          </Link>
-          <Link
-            href="/contact"
-            style={{
-              display: 'inline-block',
-              padding: '0.75rem 2rem',
-              backgroundColor: 'white',
-              color: '#1e293b',
-              textDecoration: 'none',
-              fontWeight: '500',
-              borderRadius: '0.375rem',
-              border: '1px solid #cbd5e1',
-              transition: 'background-color 0.2s',
-              minWidth: '140px'
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.backgroundColor = '#f1f5f9';
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.backgroundColor = 'white';
-            }}
-          >
-            Contact Us
-          </Link>
+    <html lang="en">
+      <head>
+        <title>404 - Page Not Found | ColorCraft</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+            }
+            body {
+              font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+              background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+              min-height: 100vh;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              padding: 1rem;
+            }
+            .container {
+              text-align: center;
+              max-width: 28rem;
+            }
+            .title {
+              font-size: clamp(2rem, 8vw, 4rem);
+              font-weight: 300;
+              color: #1e293b;
+              margin-bottom: 1.5rem;
+              line-height: 1.2;
+            }
+            .brand {
+              color: #c99460;
+              font-weight: 500;
+            }
+            .description {
+              font-size: 1.125rem;
+              color: #475569;
+              margin-bottom: 2rem;
+              line-height: 1.6;
+            }
+            .buttons {
+              display: flex;
+              flex-direction: column;
+              gap: 1rem;
+              align-items: center;
+            }
+            .btn {
+              display: inline-block;
+              padding: 0.75rem 2rem;
+              text-decoration: none;
+              font-weight: 500;
+              border-radius: 0.375rem;
+              transition: background-color 0.2s;
+              min-width: 140px;
+              text-align: center;
+            }
+            .btn-primary {
+              background-color: #c99460;
+              color: white;
+            }
+            .btn-primary:hover {
+              background-color: #b87940;
+            }
+            .btn-secondary {
+              background-color: white;
+              color: #1e293b;
+              border: 1px solid #cbd5e1;
+            }
+            .btn-secondary:hover {
+              background-color: #f1f5f9;
+            }
+          `
+        }} />
+      </head>
+      <body>
+        <div className="container">
+          <h1 className="title">
+            <span className="brand">404</span> | Page Not Found
+          </h1>
+          <p className="description">
+            We are sorry, but the page you are looking for does not exist or has been moved.
+          </p>
+          <div className="buttons">
+            <a href="/" className="btn btn-primary">
+              Return Home
+            </a>
+            <a href="/contact" className="btn btn-secondary">
+              Contact Us
+            </a>
+          </div>
         </div>
-      </div>
-    </div>
+      </body>
+    </html>
   );
 }
