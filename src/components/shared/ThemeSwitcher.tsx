@@ -10,7 +10,6 @@ export default function ThemeSwitcher() {
 
   // Improved hydration handling
   useEffect(() => {
-    // Simpler mounting check that works more reliably
     setMounted(true);
   }, []);
 
@@ -31,19 +30,6 @@ export default function ThemeSwitcher() {
     // Apply theme change
     setTheme(newTheme);
   };
-
-  // Show a stable placeholder during hydration
-  if (!mounted) {
-    return (
-      <button
-        className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center opacity-50"
-        disabled
-        aria-label="Loading theme switcher"
-      >
-        <div className="w-4 h-4 rounded-full bg-slate-400 dark:bg-slate-500" />
-      </button>
-    );
-  }
 
   // Determine which icon to show based on current theme
   const getCurrentIcon = () => {

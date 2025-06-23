@@ -98,4 +98,3 @@ npm run commit "fix portfolio pagination" "Fix"
 ### To fix
 - The 404 error page is still caught in an infinite reload loop. Take a more aggressive and systematic approach to isolate and fix it. Take a deep dive into the codebase and the error logs.
 - So, was it beter to use js script rather than sh according to our next js libraries for the leanter etc?
-- The dark and lihgt mode is not working for some reason.
