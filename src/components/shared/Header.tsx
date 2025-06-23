@@ -4,7 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { Sparkles, ArrowRight, Menu, X } from "lucide-react";
 import NavbarAuth from "./NavbarAuth";
@@ -16,11 +15,9 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [user, setUser] = useState<User | null>(null);
-  const router = useRouter();
   const supabase = createClient();
   const { scrollY } = useScroll();
   const [homepageStyle, setHomepageStyle] = useState("modern");
-  const [isMounted, setIsMounted] = useState(false);
 
   // Advanced scroll-based transforms
   const headerOpacity = useTransform(scrollY, [0, 100], [0.95, 0.98]);
@@ -50,7 +47,6 @@ export default function Header() {
 
     const savedStyle = localStorage.getItem("colorcraft-homepage-modern");
     setHomepageStyle(savedStyle === "false" ? "classic" : "modern");
-    setIsMounted(true);
 
     const handleStorageChange = () => {
       const updatedStyle = localStorage.getItem("colorcraft-homepage-modern");
@@ -91,10 +87,6 @@ export default function Header() {
       gradient: "from-amber-500 to-orange-600",
     },
   ];
-
-  if (!isMounted) {
-    return <header className="sticky top-0 z-50 w-full border-b h-24 bg-transparent" />;
-  }
 
   if (homepageStyle === "classic") {
     return (
