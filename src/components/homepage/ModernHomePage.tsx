@@ -326,7 +326,7 @@ export default function ModernHomePage({
 
                   {/* Floating info card with glassmorphism */}
                   <motion.div
-                    className="absolute -bottom-8 -left-8 p-6 rounded-2xl bg-white/80 backdrop-blur-md border border-white/20 shadow-xl"
+                    className="absolute bottom-6 right-6 p-6 rounded-2xl bg-white/80 backdrop-blur-md border border-white/20 shadow-xl"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8 }}

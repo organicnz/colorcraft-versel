@@ -101,3 +101,4 @@ npm run commit "fix portfolio pagination" "Fix"
 - The dark and lihgt modes are not working as expected when I click the button for some reason.
 - When I press edit to any portfolio item, it tries to take me to the edit page, but the page is loading 404 - Page Not Found.
 - Errors in Versel build logs.
+- The hero image on the main page with the elements inside of it is not working as expected. The element is moved to the left bottom of the image card.
