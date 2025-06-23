@@ -96,4 +96,4 @@ npm run commit "fix portfolio pagination" "Fix"
 **Status**: ✅ Production Ready
 
 ### To fix
-- 404 error page still constantly reloads loops though.
+- 404 error page still constantly reloads in loops though.
