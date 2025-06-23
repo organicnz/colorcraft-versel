@@ -19,7 +19,7 @@ export default function Footer() {
       <div className="relative">
         {/* Newsletter Section - Enhanced spacing */}
         <div className="border-b border-white/10">
-          <div className="container mx-auto py-24 px-6">
+          <div className="container mx-auto py-16 px-6 my-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -59,7 +59,7 @@ export default function Footer() {
         </div>
 
         {/* Main Footer Content */}
-        <div className="container mx-auto py-20 px-6">
+        <div className="container mx-auto py-20 px-6 mt-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
             {/* Company Info */}
             <motion.div
