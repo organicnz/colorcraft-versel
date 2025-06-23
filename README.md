@@ -103,3 +103,4 @@ npm run commit "fix portfolio pagination" "Fix"
 - Errors in Versel build logs.
 - The hero image on the main page with the elements inside of it is not working as expected. The element is moved to the left bottom of the image card.
 - Can you make that little element more glassmorpthic inside of the image card?
+- When I scroll down the page, the navbar has narrows downs on sides.  

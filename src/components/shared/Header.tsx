@@ -20,7 +20,6 @@ export default function Header() {
 
   // Advanced scroll-based transforms
   const headerOpacity = useTransform(scrollY, [0, 100], [0.95, 0.98]);
-  const headerScale = useTransform(scrollY, [0, 100], [1, 0.98]);
   const logoScale = useTransform(scrollY, [0, 100], [1, 0.95]);
 
   useEffect(() => {
@@ -95,7 +94,6 @@ export default function Header() {
         transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
         style={{
           opacity: headerOpacity,
-          scale: headerScale,
         }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
