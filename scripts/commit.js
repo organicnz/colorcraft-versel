@@ -7,8 +7,14 @@
  * Example: ./scripts/commit.sh "add dark mode toggle" "Feat"
  */
 
-const { execSync } = require('child_process');
-const readline = require('readline');
+// @ts-check
+
+import { execSync } from 'child_process';
+import readline from 'readline';
+
+/**
+ * @typedef {'Feat' | 'Fix' | 'Docs' | 'Refactor' | 'Style' | 'Test' | 'Chore'} CommitType
+ */
 
 // Valid commit types according to our rules
 const VALID_TYPES = [

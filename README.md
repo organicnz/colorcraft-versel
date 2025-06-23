@@ -94,3 +94,6 @@ npm run commit "fix portfolio pagination" "Fix"
 
 **Last Updated**: Repository organization completed - all docs moved to `docs/` and SQL to `sql/`
 **Status**: ✅ Production Ready
+
+### To fix
+- 404 still constantly reloads.
