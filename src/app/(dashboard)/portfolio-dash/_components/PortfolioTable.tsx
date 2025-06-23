@@ -328,9 +328,14 @@ export default function PortfolioTable({ projects }: PortfolioTableProps) {
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Button variant="ghost" size="sm" asChild className="h-8 w-8 p-0">
-                              <Link href={`/portfolio-dash/${project.id}/edit`}>
-                                <Pencil className="h-4 w-4" />
-                              </Link>
+                              <DropdownMenuItem asChild>
+                                <Link
+                                  href={`/dashboard/portfolio-management/edit/${project.id}`}
+                                  className="flex items-center"
+                                >
+                                  <Pencil className="h-4 w-4" />
+                                </Link>
+                              </DropdownMenuItem>
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent>
