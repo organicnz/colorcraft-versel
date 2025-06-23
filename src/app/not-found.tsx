@@ -1,4 +1,5 @@
 export default function NotFound() {
+  console.log('404 Page Rendered');
   return (
     <div style={{
       minHeight: '100vh',
