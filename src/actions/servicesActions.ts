@@ -19,7 +19,7 @@ export async function createService(formData: ServiceFormData) {
     const serviceData = validatedFields.data;
 
     // Initialize Supabase client
-    const supabase = await createClient();
+    const supabase = createClient();
 
     // Get user session to verify permissions
     const {
@@ -81,7 +81,7 @@ export async function updateService(formData: ServiceFormData) {
     }
 
     // Initialize Supabase client
-    const supabase = await createClient();
+    const supabase = createClient();
 
     // Get user session to verify permissions
     const {
@@ -137,7 +137,7 @@ export async function deleteService(id: string) {
     }
 
     // Initialize Supabase client
-    const supabase = await createClient();
+    const supabase = createClient();
 
     // Get user session to verify permissions
     const {
@@ -187,7 +187,7 @@ export async function getServiceById(id: string) {
     }
 
     // Initialize Supabase client
-    const supabase = await createClient();
+    const supabase = createClient();
 
     // Get service
     const { data, error } = await supabase.from("services").select("*").eq("id", id).single();
@@ -207,7 +207,7 @@ export async function getServiceById(id: string) {
 export async function getServices() {
   try {
     // Initialize Supabase client
-    const supabase = await createClient();
+    const supabase = createClient();
 
     // Get all services
     const { data, error } = await supabase
