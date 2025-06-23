@@ -1,5 +1,3 @@
-import { ClassicHomePage } from '@/components/homepage/ClassicHomePage';
-import { ThemeAwareHomePage } from '@/components/homepage/ThemeAwareHomePage';
 import ModernHomePage from '@/components/homepage/ModernHomePage';
 
 export default async function Page() {
@@ -11,10 +9,5 @@ export default async function Page() {
     teamMembers: [],
   };
 
-  return (
-    <ThemeAwareHomePage
-      modernPage={<ModernHomePage {...defaultData} />}
-      classicPage={<ClassicHomePage />}
-    />
-  );
+  return <ModernHomePage {...defaultData} />;
 }

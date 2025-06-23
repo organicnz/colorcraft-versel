@@ -118,7 +118,7 @@ async function main() {
   exec(`git push --set-upstream origin ${currentBranch}`);
 
   console.log('\n✨ All done! Your changes are on their way.');
-  rl.close();
+      rl.close();
 }
 
 main().catch(err => {
